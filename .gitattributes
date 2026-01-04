@@ -1,0 +1,35 @@
+# 强制所有文本文件在仓库中存储为 LF，但在 Windows 检出时根据系统决定（或者强制 LF）
+# 对于 Unity，强制统一使用 LF 是最安全的跨平台方案
+* text=auto eol=lf
+
+# 显式指定 Unity 的特定文件类型
+*.cs text eol=lf
+*.shader text eol=lf
+*.cginc text eol=lf
+*.xml text eol=lf
+*.json text eol=lf
+*.yaml text eol=lf
+*.txt text eol=lf
+
+# Unity 的元数据文件和序列化文件
+*.meta text eol=lf
+*.unity text merge=unityyamlmerge eol=lf
+*.prefab text merge=unityyamlmerge eol=lf
+*.mat text merge=unityyamlmerge eol=lf
+*.asset text merge=unityyamlmerge eol=lf
+*.controller text merge=unityyamlmerge eol=lf
+*.anim text merge=unityyamlmerge eol=lf
+
+# 图片和二进制模型文件（防止被当做文本修改）
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.psd binary
+*.tga binary
+*.fbx binary
+*.obj binary
+*.blend binary
+*.dll binary
+*.so binary
+*.dylib binary
