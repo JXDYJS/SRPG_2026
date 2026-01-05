@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 3314289360516581378}
   - component: {fileID: 9143396374663835896}
   - component: {fileID: 4651331350852955059}
+  - component: {fileID: 1961987464498547439}
+  - component: {fileID: -5098095463655688109}
   m_Layer: 0
   m_Name: Block_Dirt
   m_TagString: Untagged
@@ -85,6 +87,43 @@ MeshRenderer:
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!65 &4651331350852955059
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2198943423259780260}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1961987464498547439
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2198943423259780260}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10e8ba6e6eae4cf46934b8b6a582ae64, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefabId: 2
+  type: 0
+  isWalkable: 1
+  heightOffset: 0.5
+--- !u!65 &-5098095463655688109
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

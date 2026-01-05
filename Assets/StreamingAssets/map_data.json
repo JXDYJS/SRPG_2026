@@ -1,0 +1,104 @@
+{
+    "cellSize": 1.0,
+    "cells": [
+        {
+            "x": 5,
+            "z": -5,
+            "stack": [
+                {
+                    "prefabId": "1",
+                    "heightY": -0.4206748306751251,
+                    "rotationY": 0
+                }
+            ]
+        },
+        {
+            "x": 4,
+            "z": -6,
+            "stack": [
+                {
+                    "prefabId": "1",
+                    "heightY": -0.4206748306751251,
+                    "rotationY": 0
+                }
+            ]
+        },
+        {
+            "x": 4,
+            "z": -4,
+            "stack": [
+                {
+                    "prefabId": "1",
+                    "heightY": -0.4206748306751251,
+                    "rotationY": 0
+                }
+            ]
+        },
+        {
+            "x": 3,
+            "z": -5,
+            "stack": [
+                {
+                    "prefabId": "1",
+                    "heightY": -0.4206748306751251,
+                    "rotationY": 0
+                }
+            ]
+        },
+        {
+            "x": 3,
+            "z": -4,
+            "stack": [
+                {
+                    "prefabId": "1",
+                    "heightY": -0.4206748306751251,
+                    "rotationY": 0
+                }
+            ]
+        },
+        {
+            "x": 3,
+            "z": -6,
+            "stack": [
+                {
+                    "prefabId": "1",
+                    "heightY": -0.4206748306751251,
+                    "rotationY": 0
+                }
+            ]
+        },
+        {
+            "x": 4,
+            "z": -5,
+            "stack": [
+                {
+                    "prefabId": "1",
+                    "heightY": -0.4206748306751251,
+                    "rotationY": 0
+                }
+            ]
+        },
+        {
+            "x": 5,
+            "z": -6,
+            "stack": [
+                {
+                    "prefabId": "1",
+                    "heightY": -0.4206748306751251,
+                    "rotationY": 0
+                }
+            ]
+        },
+        {
+            "x": 5,
+            "z": -4,
+            "stack": [
+                {
+                    "prefabId": "1",
+                    "heightY": -0.4206748306751251,
+                    "rotationY": 0
+                }
+            ]
+        }
+    ]
+}
