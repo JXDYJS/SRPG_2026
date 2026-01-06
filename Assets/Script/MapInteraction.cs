@@ -32,7 +32,7 @@ namespace MapSystem
         {
             // 打中了！
             // 更新黄框位置
-            Vector3 localPoint = hit.point + hit.normal * 0.01f;
+            Vector3 localPoint = hit.point - hit.normal * 0.01f;
             int x = Mathf.RoundToInt(localPoint.x / mapManager.cellSize);
             int z = Mathf.RoundToInt(localPoint.z / mapManager.cellSize);
 

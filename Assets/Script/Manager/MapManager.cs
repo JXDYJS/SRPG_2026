@@ -12,7 +12,8 @@ public class MapManager : MonoBehaviour
     [Header("设置")]
     public Transform mapRoot; // 地图物体的父节点
     public float cellSize = 1.0f;
-    public string saveFileName = "map_data.json";
+    [Tooltip("当前要保存或加载的地图名称（不需要加 .json）")]
+    public string currentMapName = "Map_01";
 
     [Header("资源索引 (ID -> Prefab)")]
     // 你需要在 Inspector 里手动把预制体拖进去，或者写代码自动加载 Resources
@@ -22,7 +23,27 @@ public class MapManager : MonoBehaviour
     public LogicalGrid logicalGrid = new LogicalGrid();
 
     // 路径
-    string SavePath => Path.Combine(Application.streamingAssetsPath, saveFileName);
+    string SavePath => Path.Combine(Application.streamingAssetsPath, currentMapName + ".json");
+
+    [ContextMenu("List All Maps (列出所有存档)")]
+    public void ListAllMaps()
+    {
+        if (!Directory.Exists(Application.streamingAssetsPath))
+        {
+            Debug.Log("存档文件夹不存在。");
+            return;
+        }
+
+        // 获取所有 .json 文件
+        string[] files = Directory.GetFiles(Application.streamingAssetsPath, "*.json");
+        Debug.Log($"找到 {files.Length} 个地图存档：");
+        
+        foreach (string file in files)
+        {
+            // 只显示文件名，不显示长长的路径
+            Debug.Log($"📄 {Path.GetFileNameWithoutExtension(file)}");
+        }
+    }
 
     void Start()
     {
