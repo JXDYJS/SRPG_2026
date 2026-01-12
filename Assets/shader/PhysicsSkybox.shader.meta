@@ -1,0 +1,12 @@
+fileFormatVersion: 2
+guid: ea6da9e3c544fff4ea2986ed4598615f
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures:
+  - _TransmittanceLUT: {fileID: 2800000, guid: 8cb042bf2564cb84ab622fb10b870eaf, type: 3}
+  - _MultiScatLUT: {fileID: 2800000, guid: ed13929e769c98f48b25f4ca42b8398c, type: 3}
+  - _IrradianceLUT: {fileID: 2800000, guid: 503d0494f20966440ab9887dbf760807, type: 3}
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
