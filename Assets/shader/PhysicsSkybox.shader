@@ -1,4 +1,4 @@
-Shader "Skybox/PhysicsBased"
+Shader "Skybox/PhysicsBased_Final"
 {
     Properties
     {
@@ -10,6 +10,10 @@ Shader "Skybox/PhysicsBased"
         [Header(Sun Settings)]
         _SunIntensity ("Sun Intensity", Float) = 1.0
         _SunColor ("Sun Color", Color) = (1.68, 1.85, 1.91, 1)
+        
+        [Header(Moon Settings)]
+        _MoonIntensity ("Moon Intensity", Float) = 0.05
+        _MoonColor ("Moon Color", Color) = (0.6, 0.7, 0.8, 1)
         
         [Header(Atmosphere Settings)]
         _MieG ("Mie G", Range(0, 0.999)) = 0.8
@@ -43,6 +47,15 @@ Shader "Skybox/PhysicsBased"
             
             #include "UnityCG.cginc"
 
+            static const float3 SOLAR_IRRADIANCE = float3(1.68194, 1.85149, 1.91198);
+            static const float Re = 6360.0;
+            static const float Ra = 6420.0;
+            static const float Hr = 8.0;
+            static const float Hm = 1.2;
+            static const float3 betaR = float3(0.0058, 0.0135, 0.0331);
+            static const float3 betaM = float3(0.004, 0.004, 0.004);
+            static const float PI = 3.14159265359;
+
             struct appdata_t {
                 float4 vertex : POSITION;
                 float3 texcoord : TEXCOORD0;
@@ -56,9 +69,12 @@ Shader "Skybox/PhysicsBased"
             sampler2D _TransmittanceLUT;
             sampler2D _MultiScatLUT;
             sampler2D _IrradianceLUT;
-            
+
             float _SunIntensity;
             float3 _SunColor;
+            float _MoonIntensity;
+            float3 _MoonColor;
+
             float _MieG;
             float _UseLMS;
             float _CamHeight;
@@ -68,14 +84,6 @@ Shader "Skybox/PhysicsBased"
             int _Steps;
             
             float4 _LMS_Row1, _LMS_Row2, _LMS_Row3;
-
-            static const float Re = 6360.0;
-            static const float Ra = 6420.0;
-            static const float Hr = 8.0;
-            static const float Hm = 1.2;
-            static const float3 betaR = float3(0.0058, 0.0135, 0.0331);
-            static const float3 betaM = float3(0.004, 0.004, 0.004);
-            static const float PI = 3.14159265359;
 
             v2f vert (appdata_t v)
             {
@@ -96,7 +104,7 @@ Shader "Skybox/PhysicsBased"
                 return float2(-b - sqrt_d, -b + sqrt_d);
             }
 
-            // Bruneton UV 映射
+            // Bruneton UV
             float2 GetTransmittanceUV(float r, float mu) {
                 float H = sqrt(Ra * Ra - Re * Re);
                 float rho = safe_sqrt(r * r - Re * Re);
@@ -108,9 +116,10 @@ Shader "Skybox/PhysicsBased"
                 return float2(u_mu, u_r);
             }
 
-            // Irradiance UV 映射 (简单线性映射，对应之前 Python 的生成逻辑)
-            float2 GetIrradianceUV(float mu_s) {
-                return float2((mu_s + 1.0) * 0.5, 0.5);
+            float2 GetIrradianceUV(float r, float mu_s) {
+                 // Irradiance LUT 根据高度 r 和 太阳天顶角 cosine mu_s 映射
+                float u_mu_s = (mu_s + 0.2) / 1.2; // 简单的重映射，根据你的LUT生成逻辑可能需要调整
+                return float2(u_mu_s, 0.5); 
             }
 
             float3 SampleTransmittance(float r, float mu) {
@@ -119,12 +128,12 @@ Shader "Skybox/PhysicsBased"
             }
 
             float3 SampleMultiScat(float r, float mu) {
-                float2 uv = GetTransmittanceUV(r, mu); // MS 表通常复用 Transmittance 的映射
+                float2 uv = GetTransmittanceUV(r, mu);
                 return tex2Dlod(_MultiScatLUT, float4(uv, 0, 0)).rgb;
             }
 
-            float3 SampleIrradiance(float r,float mu_s) {
-                float2 uv = GetTransmittanceUV(r,mu_s);
+            float3 SampleIrradiance(float r, float mu_s) {
+                float2 uv = GetIrradianceUV(r, mu_s);
                 return tex2Dlod(_IrradianceLUT, float4(uv, 0, 0)).rgb;
             }
 
@@ -135,21 +144,40 @@ Shader "Skybox/PhysicsBased"
             float PhaseMie(float mu, float g) {
                 return 3.0 / (8.0 * PI) * ((1.0 - g * g) * (1.0 + mu * mu)) / ((2.0 + g * g) * pow(1.0 + g * g - 2.0 * g * mu, 1.5));
             }
-            
+
             float3 ApplyLMS(float3 color) {
                 float3x3 lms = float3x3(_LMS_Row1.xyz, _LMS_Row2.xyz, _LMS_Row3.xyz);
                 return mul(lms, color);
             }
 
+            // === 核心修复：解析法计算地平线遮挡 ===
+            // 不再使用射线检测，而是计算当前高度的地平线夹角
+            // 如果 mu_s < horizon_mu，说明太阳在地平线以下，被地球遮挡
+            float GetShadow(float r, float mu_s) {
+                // 地平线的 sin(theta) = Re / r
+                // 地平线的 cos(theta) = -sqrt(1 - (Re/r)^2)
+                // 注意是负的，因为地平线在下方
+                float sin_horizon = Re / r;
+                float mu_horizon = -safe_sqrt(1.0 - sin_horizon * sin_horizon);
+                
+                // 增加一点偏移量防止闪烁
+                return mu_s > mu_horizon ? 1.0 : 0.0;
+            }
+
             fixed4 frag (v2f i) : SV_Target
             {
                 float3 viewDir = normalize(i.viewDir);
-                float3 sunDir = _WorldSpaceLightPos0.xyz;
+                
+                // 1. 定义太阳和月亮方向
+                float3 sunDir = normalize(_WorldSpaceLightPos0.xyz);
+                float3 moonDir = -sunDir; // 月亮直接取反方向
 
                 float r = Re + max(_CamHeight, 0.001);
                 float mu = viewDir.y; 
-                float nu = dot(viewDir, sunDir);
-                float mu_s_origin = sunDir.y;
+                
+                // 视线夹角
+                float nu_sun = dot(viewDir, sunDir);
+                float nu_moon = dot(viewDir, moonDir);
 
                 float2 hitAtmos = ray_sphere_intersect(float3(0, r, 0), viewDir, Ra);
                 float dist = hitAtmos.y;
@@ -158,7 +186,7 @@ Shader "Skybox/PhysicsBased"
                 bool hitGround = hitEarth.x > 0.0;
                 
                 if (hitGround) {
-                    dist = min(dist, hitEarth.x); // 视线被地面截断
+                    dist = min(dist, hitEarth.x);
                 }
 
                 if (dist < 0.0) return float4(0,0,0,1);
@@ -181,52 +209,74 @@ Shader "Skybox/PhysicsBased"
                     float hm = exp(-h / Hm);
                     float3 stepOpticalDepth = (betaR * hr + betaM * hm) * dx;
                     
-                    // 1. 采样 T(Sun->P)
-                    float mu_s_sample = dot(normalize(pos), sunDir);
+                    // === 采样点上的局部坐标系 ===
+                    float3 up = pos / r_sample;
+                    float mu_s_sample = dot(sunDir, up);
+                    float mu_m_sample = dot(moonDir, up);
+
+                    // === 阴影计算 (关键修复) ===
+                    // 使用解析法判断当前采样点是否能看到太阳/月亮
+                    float sunVis = GetShadow(r_sample, mu_s_sample);
+                    float moonVis = GetShadow(r_sample, mu_m_sample);
+
+                    // 采样 Transmittance
                     float3 t_sun = SampleTransmittance(r_sample, mu_s_sample);
+                    float3 t_moon = SampleTransmittance(r_sample, mu_m_sample);
+
+                    // Multi-Scattering
+                    float3 ms_sun = SampleMultiScat(r_sample, mu_s_sample);
+                    float3 ms_moon = SampleMultiScat(r_sample, mu_m_sample);
+
+                    // === 组合光照 (Sun + Moon) ===
+                    // 只有当 Vis > 0 时才计算贡献，这解决了“白天黑影”和“晚上蓝天”的问题
                     
-                    // 2. 采样 Multi-Scattering (新增!)
-                    // 注意：这里的 MS 也是各向同性的近似，直接加到散射系数里
-                    float3 ms = SampleMultiScat(r_sample, mu_s_sample);
+                    // 太阳贡献
+                    float3 sunIn = (t_sun + ms_sun) * SOLAR_IRRADIANCE * _SunIntensity * _SunColor * sunVis;
                     
-                    // 3. 计算散射项 (Single + Multi)
-                    // Single: T * Beta
-                    // Multi:  MS * Beta / 4PI (近似各向同性)
-                    float3 S_r = (t_sun * betaR * hr) + (ms * betaR * hr / (4.0 * PI));
-                    float3 S_m = (t_sun * betaM * hm) + (ms * betaM * hm / (4.0 * PI));
-                    
-                    rayleighSum += S_r * transmittance * dx;
-                    mieSum += S_m * transmittance * dx;
+                    // 月亮贡献
+                    float3 moonIn = (t_moon + ms_moon) * SOLAR_IRRADIANCE * _MoonIntensity * _MoonColor * moonVis;
+
+                    // 分离计算散射 (Rayleigh & Mie)
+                    float3 totalIn_R = sunIn * PhaseRayleigh(nu_sun) + moonIn * PhaseRayleigh(nu_moon);
+                    float3 totalIn_M = sunIn * PhaseMie(nu_sun, _MieG) + moonIn * PhaseMie(nu_moon, _MieG);
+
+                    rayleighSum += totalIn_R * betaR * hr * transmittance * dx;
+                    mieSum += totalIn_M * betaM * hm * transmittance * dx;
                     
                     transmittance *= exp(-stepOpticalDepth);
                 }
 
-                // Phase Function 只作用于 Single Scattering (这里简单地作用于总和，因为MS通常很弱且各向同性)
-                // 更精确的做法是只对 Single 部分乘 Phase，对 MS 部分乘 1/(4PI)
-                // 但 Bruneton 近似通常直接混合。为了保持风格，我们按 Python 逻辑乘上去。
-                float3 rayleigh = rayleighSum * PhaseRayleigh(nu);
-                float3 mie = mieSum * PhaseMie(nu, _MieG);
+                float3 color = rayleighSum + mieSum;
 
-                float3 color = (rayleigh + mie) * _SunIntensity * _SunColor;
-
-                // === 4. 地面反射 (Irradiance) ===
+                // === 地面反射 ===
                 if (hitGround) {
+                    float3 groundPos = float3(0, r, 0) + viewDir * dist;
+                    float3 groundNormal = normalize(groundPos);
                     
-                    // Indirect (Sky Light)
-                    float3 E_indirect = SampleIrradiance(Re,mu_s_origin);
+                    float mu_s_ground = dot(groundNormal, sunDir);
+                    float mu_m_ground = dot(groundNormal, moonDir);
+
+                    // 阴影遮挡
+                    float sunVisGround = GetShadow(Re, mu_s_ground);
+                    float moonVisGround = GetShadow(Re, mu_m_ground);
+
+                    // 太阳直射 + 环境光
+                    float3 sunDirect = SampleTransmittance(Re, mu_s_ground) * max(mu_s_ground, 0.0) * sunVisGround;
+                    float3 sunAmbient = SampleIrradiance(Re, mu_s_ground); // 环境光通常不被自遮挡完全消除，这里简化处理
+                    float3 sunLight = (sunDirect + sunAmbient) * SOLAR_IRRADIANCE * _SunIntensity * _SunColor;
+
+                    // 月亮直射 + 环境光
+                    float3 moonDirect = SampleTransmittance(Re, mu_m_ground) * max(mu_m_ground, 0.0) * moonVisGround;
+                    float3 moonAmbient = SampleIrradiance(Re, mu_m_ground);
+                    float3 moonLight = (moonDirect + moonAmbient) * SOLAR_IRRADIANCE * _MoonIntensity * _MoonColor;
+
+                    float3 groundRadiance = (sunLight + moonLight) * (_GroundDirectIntensity / PI) * _GroundAlbedo;
                     
-                    // Direct (Sun Light)
-                    // Direct = T(Sun->Ground) * SunIntensity * dot(N, L)
-                    float3 T_sun_ground = SampleTransmittance(Re, mu_s_origin);
-                    float3 E_direct = T_sun_ground * max(mu_s_origin, 0.0);
-                    
-                    float3 ground_radiance = (E_indirect * _GroundIndirectIntensity + E_direct * _GroundDirectIntensity) * _SunIntensity * _SunColor; //* _GroundAlbedo;
-                    
-                    color += ground_radiance * transmittance;
+                    color += groundRadiance * transmittance;
                 }
 
                 if (_UseLMS > 0.5) color = ApplyLMS(color);
-
+                
                 return float4(color, 1.0);
             }
             ENDCG

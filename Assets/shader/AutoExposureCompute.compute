@@ -1,0 +1,105 @@
+//////////////  CREATE BY Gemini///////////////
+#pragma kernel CSMain
+
+// --- 注意 ---
+// 我们不再需要 #pragma use_dxc，也不需要 wave 函数
+// 这段代码兼容所有主流显卡和图形 API (DX11/Vulkan/OpenGL)
+
+// 输入输出
+Texture2D<float4> _SourceTexture;
+RWTexture2D<float2> _OutputTexture;
+
+// 必须显式声明采样器
+SamplerState sampler_LinearClamp;
+
+// 调试参数
+cbuffer Params
+{
+    float _DeltaTime;
+    float _KeyValue;
+    float _SpeedDarkToLight;
+    float _SpeedLightToDark;
+    float _MinLuminance;
+    float _MaxLuminance;
+    float _CompensationEV;
+}
+
+// --- 核心修改 ---
+// 我们不再依赖 Wave，而是申请一块足够大的共享内存
+// 线程组大小是 32 * 16 = 512，所以我们需要存 512 个结果
+groupshared float2 gs_SharedData[512];
+
+// 辅助函数：计算亮度
+float GetLuminance(float3 color)
+{
+    return dot(color, float3(0.2126, 0.7152, 0.0722));
+}
+
+[numthreads(32, 16, 1)]
+void CSMain (uint3 id : SV_DispatchThreadID, uint groupIndex : SV_GroupIndex, uint3 groupId : SV_GroupID)
+{
+    // --- 1. 采样与计算 (与你之前的逻辑一致) ---
+    float2 uv = (float2(id.xy) + 0.5) / float2(32.0, 16.0);
+    
+    float3 color = _SourceTexture.SampleLevel(sampler_LinearClamp, uv, 0).rgb;
+    float lum = clamp(GetLuminance(color), _MinLuminance, _MaxLuminance);
+
+    // 计算中心权重
+    float2 dist = uv * 2.0 - 1.0;
+    float weight = 1.0 - smoothstep(0.0, 1.5, length(dist));
+
+    // --- 关键改变：直接写入共享内存 ---
+    // 每个线程把自己算出来的 (亮度*权重, 权重) 写入数组对应的位置
+    gs_SharedData[groupIndex] = float2(lum * weight, weight);
+
+    // --- 2. 内存屏障 ---
+    // 等待这一组的 512 个线程全部写完，才能进行下一步
+    GroupMemoryBarrierWithGroupSync();
+
+    // --- 3. 并行归约 (Parallel Reduction) ---
+    // 这是一个经典的“折叠”算法，用来替代 WaveActiveSum
+    // 每一轮循环，活跃线程数减半，将后半部分的数据加到前半部分
+    // 512 -> 256 -> 128 -> ... -> 1
+    
+    [unroll] // 告诉编译器展开循环以优化性能
+    for (uint s = 256; s > 0; s >>= 1)
+    {
+        if (groupIndex < s)
+        {
+            gs_SharedData[groupIndex] += gs_SharedData[groupIndex + s];
+        }
+        // 每一轮加完必须同步，确保下一轮读取的是最新数据
+        GroupMemoryBarrierWithGroupSync();
+    }
+
+    // --- 4. 最终计算 ---
+    // 经过上面的折叠，所有数据的总和现在就在数组的第 0 个位置
+    if (groupIndex == 0)
+    {
+        float2 totalSum = gs_SharedData[0];
+
+        // 计算加权平均亮度
+        float currentLum = totalSum.x / max(totalSum.y, 0.0001);
+        
+        // 读取上一帧结果 (R通道)
+        // 建议在C#脚本初始化时，确保 _OutputTexture 已经被赋予了初始颜色（比如灰色），否则第一帧可能是黑的
+        float prevLum = _OutputTexture[uint2(0, 0)].r;
+        
+        // 简单的保护，防止第一帧出现 NaN
+        if (isnan(prevLum)) prevLum = currentLum;
+
+        // 计算插值速度
+        float speed = currentLum > prevLum ? _SpeedDarkToLight : _SpeedLightToDark;
+
+        // 时间平滑插值
+        float adjustedLum = prevLum + (currentLum - prevLum) * (1.0 - exp(-_DeltaTime * speed));
+        adjustedLum = max(adjustedLum, 0.0001);
+
+        // 计算曝光
+        float targetExposure = _KeyValue / adjustedLum;
+        targetExposure *= exp2(_CompensationEV);
+
+        // R: 平均亮度, G: 曝光乘数
+        _OutputTexture[uint2(0, 0)] = float2(adjustedLum, targetExposure);
+    }
+}
