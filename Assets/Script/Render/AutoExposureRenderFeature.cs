@@ -90,10 +90,16 @@ public class AutoExposureRenderFeature : ScriptableRendererFeature
 
     public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
     {
+        // 如果 Shader 没丢
         if (settings.computeShader == null) return;
-        CheckAndCreateTexture();
-        m_ScriptablePass.Setup(m_RawTexture);
-        renderer.EnqueuePass(m_ScriptablePass);
+
+        // 【关键修改】只允许 Game 类型的相机运行 (排除 SceneView, Preview, Reflection 等)
+        if (renderingData.cameraData.cameraType == CameraType.Game) 
+        {
+            CheckAndCreateTexture();
+            m_ScriptablePass.Setup(m_RawTexture);
+            renderer.EnqueuePass(m_ScriptablePass);
+        }
     }
 
     void CheckAndCreateTexture()

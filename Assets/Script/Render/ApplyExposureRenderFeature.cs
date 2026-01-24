@@ -126,7 +126,9 @@ public class ApplyExposureRenderFeature : ScriptableRendererFeature
 
     public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
     {
-        if (settings.shader != null && (renderingData.cameraData.cameraType == CameraType.Game || renderingData.cameraData.cameraType == CameraType.SceneView))
+        // 【修改】只保留 Game 类型的相机
+        // 确保它和 AutoExposure 的判断条件完全一致！
+        if (settings.shader != null && renderingData.cameraData.cameraType == CameraType.Game)
         {
             renderer.EnqueuePass(m_ScriptablePass);
         }

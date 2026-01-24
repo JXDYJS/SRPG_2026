@@ -39,32 +39,37 @@ Shader "Hidden/Custom/ApplyExposure"
             TEXTURE2D(_GlobalExposureTexture);
             SAMPLER(sampler_GlobalExposureTexture);
 
+            // 【关键修改】使用最基础的顶点变换，防止 Scene View 旋转导致画面扭曲
             Varyings Vert(Attributes input)
             {
                 Varyings output;
-                VertexPositionInputs vertexInput = GetVertexPositionInputs(input.positionOS.xyz);
-                output.positionCS = vertexInput.positionCS;
+                
+                // TransformObjectToHClip 是 URP 中最标准的 MVP 变换
+                // 对于 cmd.Blit 传入的 Quad，它能正确处理坐标
+                output.positionCS = TransformObjectToHClip(input.positionOS.xyz);
                 output.uv = input.uv;
+                
                 return output;
             }
 
             half4 Frag(Varyings input) : SV_Target
             {
-                // ===========================================
-                // 🚨 终极调试：如果屏幕不是红色的，说明 RenderFeature 没运行！
-                // (取消下面这一行的注释)
-                // return half4(1, 0, 0, 1); 
-                // ===========================================
-
                 // 1. 采样曝光 (G通道)
-                // 我们在 C# 里做好了 fallback，如果拿不到 AutoExposure，就会拿到一张纯绿色的图 (G=1)
+                // 假如 AutoExposure 没准备好，我们希望它默认是 1 (不黑屏)
                 float4 expData = SAMPLE_TEXTURE2D(_GlobalExposureTexture, sampler_GlobalExposureTexture, float2(0.5, 0.5));
                 float exposure = expData.g;
 
-                // 2. 采样屏幕
+                // 2. 安全保护：如果没读到数据(0)或者是 NaN，强制设为 1.0 (原色显示)
+                // 这样即使 Compute Shader 挂了，至少画面还是正常的，只是没有自动曝光而已
+                if (exposure <= 0.0001 || IsNaN(exposure)) 
+                {
+                    exposure = 1.0; 
+                }
+
+                // 3. 采样屏幕
                 float4 color = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, input.uv);
                 
-                // 3. 应用
+                // 4. 应用
                 color.rgb *= exposure;
                 
                 return color;
