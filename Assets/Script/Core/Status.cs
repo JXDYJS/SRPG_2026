@@ -121,6 +121,7 @@ namespace Status
     {
         using Character.instance;
         using UnityEngine.Rendering;
+        using GamePlay.unit;
 
         public enum DamageType
         {
@@ -131,17 +132,32 @@ namespace Status
             Ice,
             True,
         }
+
+        public interface IDamageModifier
+        {
+            int Priority { get; }
+            void OnOutgoingDamage(DamageInfo damageInfo);
+            void OnIncomingDamage(DamageInfo damageInfo);
+        }
         public class DamageInfo
         {
             public float damage;
             public CharacterInstance source;
             public CharacterInstance target;
             public DamageType damageType;
-            public DamageInfo(float damage, CharacterInstance source, CharacterInstance target, DamageType damageType)
+            
+            // 【新增】现场目击者 (用于获取藏品和Buff列表)
+            public MapUnit sourceUnit;
+            public MapUnit targetUnit;
+
+            // 更新构造函数
+            public DamageInfo(float damage, MapUnit source, MapUnit target, DamageType damageType)
             {
                 this.damage = damage;
-                this.source = source;
-                this.target = target;
+                this.sourceUnit = source; // 记录肉体
+                this.targetUnit = target; // 记录肉体
+                this.source = source?.Character; // 顺便记录灵魂
+                this.target = target?.Character; // 顺便记录灵魂
                 this.damageType = damageType;
             }
         }
@@ -150,29 +166,34 @@ namespace Status
         {
             public static float CalculateDamage(DamageInfo damageInfo)
             {
-                float damage = damageInfo.damage;
+                float finalDamage = damageInfo.damage;
+
                 switch(damageInfo.damageType)
                 {
                     case DamageType.Physical:
-                        // 物理伤害计算
+                        // 物理：减法公式 (至少为0)
+                        float def = damageInfo.target.statSystem.DEF.getValue();
+                        finalDamage = Math.Max(0, finalDamage - def);
                         break;
+                        
                     case DamageType.Magic:
-                        // 魔法伤害计算
+                        // 魔法：百分比减伤
+                        float res = damageInfo.target.statSystem.RES.getValue();
+                        finalDamage = finalDamage * (1.0f - (res / 100f));
                         break;
+                        
                     case DamageType.Fire:
-                        // 火伤害计算
-                        break;
                     case DamageType.Poison:
-                        // 毒伤害计算
-                        break;
                     case DamageType.Ice:
-                        // 冰伤害计算
-                        break;
                     case DamageType.True:
-                        // 真实伤害计算
+                        // 元素/真实：无视双抗
                         break;
                 }
-                return damage;
+                
+                damageInfo.damage = finalDamage;
+
+
+                return Math.Max(0, damageInfo.damage);
             }
         }
     }

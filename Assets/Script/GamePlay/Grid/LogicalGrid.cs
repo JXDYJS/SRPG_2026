@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-namespace MapSystem{
+namespace GamePlay{
 public class LogicalCell
 {
     public int x, z;
@@ -94,7 +94,7 @@ public class LogicalCell
 }
 }
 
-namespace MapSystem
+namespace GamePlay
 {
     public class LogicalGrid
     {

@@ -2,6 +2,8 @@ using UnityEngine;
 
 namespace MapSystem
 {
+    using Managers;
+    using GamePlay;
     public class MapInteraction : MonoBehaviour
     {
         [Header("引用")]

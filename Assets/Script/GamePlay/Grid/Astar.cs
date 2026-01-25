@@ -2,8 +2,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-namespace MapSystem
+namespace GamePlay
 {
+    using unit;
     public class AStar
     {
         class Node

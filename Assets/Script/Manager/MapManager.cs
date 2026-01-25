@@ -5,8 +5,9 @@ using UnityEngine;
 using UnityEditor;
 #endif
 
-namespace MapSystem
+namespace Managers
 {
+    using GamePlay;
 public class MapManager : MonoBehaviour
 {
     [Header("设置")]

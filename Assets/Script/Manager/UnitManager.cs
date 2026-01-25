@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace MapSystem
+namespace Managers
 {
+    using GamePlay.unit;
     public class UnitManager : MonoBehaviour
     {
         public static UnitManager Instance { get; private set; }
