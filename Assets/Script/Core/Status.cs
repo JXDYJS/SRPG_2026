@@ -122,6 +122,8 @@ namespace Status
         using Character.instance;
         using UnityEngine.Rendering;
         using GamePlay.unit;
+        using Modifier;
+        using GamePlay.relics;
 
         public enum DamageType
         {
@@ -132,12 +134,11 @@ namespace Status
             Ice,
             True,
         }
-
-        public interface IDamageModifier
+        public enum DamageMethod
         {
-            int Priority { get; }
-            void OnOutgoingDamage(DamageInfo damageInfo);
-            void OnIncomingDamage(DamageInfo damageInfo);
+            Normal,
+            Skill,
+            Environment,
         }
         public class DamageInfo
         {
@@ -149,9 +150,10 @@ namespace Status
             // 【新增】现场目击者 (用于获取藏品和Buff列表)
             public MapUnit sourceUnit;
             public MapUnit targetUnit;
+            public DamageMethod damageMethod;
 
             // 更新构造函数
-            public DamageInfo(float damage, MapUnit source, MapUnit target, DamageType damageType)
+            public DamageInfo(float damage, MapUnit source, MapUnit target, DamageType damageType, DamageMethod damageMethod)
             {
                 this.damage = damage;
                 this.sourceUnit = source; // 记录肉体
@@ -159,6 +161,7 @@ namespace Status
                 this.source = source?.Character; // 顺便记录灵魂
                 this.target = target?.Character; // 顺便记录灵魂
                 this.damageType = damageType;
+                this.damageMethod = damageMethod;
             }
         }
 
@@ -167,33 +170,71 @@ namespace Status
             public static float CalculateDamage(DamageInfo damageInfo)
             {
                 float finalDamage = damageInfo.damage;
+                
+                var sourceMods = damageInfo.sourceUnit?.GetModifiers() ?? new List<CombatModifier>();
+                var targetMods = damageInfo.targetUnit?.GetModifiers() ?? new List<CombatModifier>();
 
-                switch(damageInfo.damageType)
+                // =======================================================
+                // 阶段 1: 攻击者输出修正
+                // =======================================================
+                foreach (var mod in sourceMods)
+                {
+                    mod.OnOutgoingDamage(ref finalDamage, damageInfo);
+                }
+
+                // =======================================================
+                // 阶段 2: 防御/抗性减免
+                // =======================================================
+                float effectiveDefense = 0;
+                bool applyMitigation = false; // 是否需要进行防御减法
+
+                switch (damageInfo.damageType)
                 {
                     case DamageType.Physical:
-                        // 物理：减法公式 (至少为0)
-                        float def = damageInfo.target.statSystem.DEF.getValue();
-                        finalDamage = Math.Max(0, finalDamage - def);
+                        effectiveDefense = damageInfo.target.statSystem.DEF.getValue();
+                        applyMitigation = true;
                         break;
-                        
+
                     case DamageType.Magic:
-                        // 魔法：百分比减伤
-                        float res = damageInfo.target.statSystem.RES.getValue();
-                        finalDamage = finalDamage * (1.0f - (res / 100f));
+                        effectiveDefense = damageInfo.target.statSystem.RES.getValue();
+                        applyMitigation = true;
                         break;
                         
-                    case DamageType.Fire:
-                    case DamageType.Poison:
-                    case DamageType.Ice:
-                    case DamageType.True:
-                        // 元素/真实：无视双抗
+                    // Fire, Poison, True
+                    default:
+                        applyMitigation = false;
                         break;
                 }
-                
-                damageInfo.damage = finalDamage;
+                if (applyMitigation)
+                {
+                    foreach (var mod in targetMods) mod.OnDefense(ref effectiveDefense, damageInfo);
+                    foreach (var mod in sourceMods) mod.OnDefense(ref effectiveDefense, damageInfo);
 
+                    // 3. 应用公式
+                    if (damageInfo.damageType == DamageType.Physical)
+                    {
+                        // 物理：减法
+                        finalDamage = Math.Max(0, finalDamage - effectiveDefense);
+                    }
+                    else if (damageInfo.damageType == DamageType.Magic)
+                    {
+                        // 魔法：百分比 (注意防止抗性超过 100%)
+                        float resFactor = Mathf.Clamp01(effectiveDefense / 100f);
+                        finalDamage *= (1.0f - resFactor);
+                    }
+                }
 
-                return Math.Max(0, damageInfo.damage);
+                // =======================================================
+                // 阶段 3: 防御者受击修正
+                // =======================================================
+                foreach (var mod in targetMods)
+                {
+                    mod.OnIncomingDamage(ref finalDamage, damageInfo);
+                }
+
+                // 写回并返回
+                damageInfo.damage = Math.Max(0, finalDamage);
+                return damageInfo.damage;
             }
         }
     }

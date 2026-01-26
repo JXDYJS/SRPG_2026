@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Managers;
+using Modifier;
 
 namespace GamePlay
 {
@@ -9,18 +10,20 @@ namespace GamePlay
     {
         using Character.instance;
         using Status.damage;
-            // --- Auxiliary Class for Movement Definition ---
+        using Modifier;
+        using GamePlay.relics;
+        
+        // --- Auxiliary Class for Movement Definition ---
         [System.Serializable]
-
         public enum MoveType
         {
             Ground,     // Standard walking
             Flying,     // Ignores terrain height/liquids
             Amphibious  // Can walk on water
         }
+        
         public class UnitMoveStats
         {
-
             [Header("Movement Capabilities")]
             public MoveType moveType = MoveType.Ground;
 
@@ -47,7 +50,7 @@ namespace GamePlay
 
             // --- 2. Cache Optimization for Modifiers ---
             // We reuse this list instead of creating a new one every time damage is calculated.
-            private List<IDamageModifier> _cachedModifiers = new List<IDamageModifier>();
+            private List<CombatModifier> _cachedModifiers = new List<CombatModifier>();
             private bool _isModifiersDirty = true; // Default dirty to ensure first build
 
             // Internal Reference
@@ -104,10 +107,10 @@ namespace GamePlay
             // ================== Damage Pipeline Interface ==================
 
             /// <summary>
-            /// Retrieves all damage modifiers (Buffs + Relics) for this unit.
+            /// Retrieves all  modifiers (Buffs + Relics) for this unit.
             /// Uses caching to avoid Garbage Collection allocation in hot paths.
             /// </summary>
-            public List<IDamageModifier> GetDamageModifiers()
+            public List<CombatModifier> GetModifiers()
             {
                 if (_isModifiersDirty)
                 {
@@ -124,7 +127,7 @@ namespace GamePlay
                 // Assuming Character.BuffManager exists and holds IDamageModifier
                 /* if (Character.BuffManager != null) {
                     foreach (var buff in Character.BuffManager.ActiveBuffs) {
-                        if (buff is IDamageModifier mod) _cachedModifiers.Add(mod);
+                        if (buff is RelicBase relic) _cachedModifiers.Add(relic);
                     }
                 }
                 */
@@ -134,7 +137,7 @@ namespace GamePlay
                 {
                     foreach (var relic in RunManager.Instance.Relics)
                     {
-                        if (relic is IDamageModifier mod) _cachedModifiers.Add(mod);
+                        _cachedModifiers.Add(relic);
                     }
                 }
 

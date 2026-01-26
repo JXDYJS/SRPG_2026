@@ -34,11 +34,6 @@ namespace Managers
         // 测试辅助方法：给玩家发一个藏品
         public void AddRelic(RelicBase relic)
         {
-            if (relic != null && !Relics.Contains(relic))
-            {
-                Relics.Add(relic);
-                Debug.Log($"获得了藏品: {relic.RelicName}");
-            }
         }
     }
 }
