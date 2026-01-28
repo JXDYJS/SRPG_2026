@@ -37,8 +37,23 @@ namespace Modifier
             void OnBattleEnd(MapUnit owner);
         }
 
+        public interface IApplyModifier
+        {
+            int Priority { get; }
+            void OnApply(MapUnit owner);
+            void OnRemove(MapUnit owner);
+        }
 
-        public abstract class CombatModifier : ScriptableObject, IDamageModifier, IDefenseModifier, IResistanceModifier, ITurnModifier, IBattleModifier
+        public interface ICombatEventModifier
+        {
+            void OnHit(DamageInfo damageInfo);
+            void OnBeHurt(DamageInfo damageInfo);
+            void OnKill(DamageInfo damageInfo);
+            void OnDie(DamageInfo damageInfo);
+        }
+
+
+        public abstract class CombatModifier : ScriptableObject, IDamageModifier, IDefenseModifier, IResistanceModifier, ITurnModifier, IBattleModifier, IApplyModifier, ICombatEventModifier
         {
             [Header("基础描述")]
             public string ID;
@@ -56,6 +71,11 @@ namespace Modifier
             public virtual void OnTurnEnd(MapUnit owner) { }
             public virtual void OnBattleStart(MapUnit owner) { }
             public virtual void OnBattleEnd(MapUnit owner) { }
-
+            public virtual void OnApply(MapUnit owner) { }
+            public virtual void OnRemove(MapUnit owner) { }
+            public virtual void OnHit(DamageInfo damageInfo) { }
+            public virtual void OnBeHurt(DamageInfo damageInfo) { }
+            public virtual void OnKill(DamageInfo damageInfo) { }
+            public virtual void OnDie(DamageInfo damageInfo) { }
         }
 }

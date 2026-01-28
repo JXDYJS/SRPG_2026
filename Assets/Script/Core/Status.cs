@@ -45,7 +45,8 @@ namespace Status
             {
                 float value = baseValue;
                 float percentMod = 0;
-                foreach(StatModifier mod in modifiers)
+                foreach(StatModifier mod
+                 in modifiers)
                 {
                     if(mod.Type == StatModType.Percent)
                     {
@@ -66,6 +67,7 @@ namespace Status
                     return cachedValue;
                 }
                 cachedValue = calValue();
+                OnValueChanged?.Invoke();
                 isDirty = false;
                 return cachedValue;
             }

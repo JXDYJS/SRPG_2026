@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Managers;
 using Modifier;
+using GamePlay.buff;
 
 namespace GamePlay
 {
@@ -22,6 +23,7 @@ namespace GamePlay
             Amphibious  // Can walk on water
         }
         
+        [System.Serializable]
         public class UnitMoveStats
         {
             [Header("Movement Capabilities")]
@@ -48,19 +50,22 @@ namespace GamePlay
             // --- 1. Soul Reference (The Data) ---
             public CharacterInstance Character { get; private set; }
 
-            // --- 2. Cache Optimization for Modifiers ---
-            // We reuse this list instead of creating a new one every time damage is calculated.
+            // --- 2. Buff Storage (New!) ---
+            // 存储当前单位身上的临时 Buff (实现了 CombatModifier 的对象)
+            // 不在 Inspector 显示，防止误改引用
+            public List<BuffBase> ActiveBuffs = new List<BuffBase>();
+
+            // --- 3. Cache Optimization for Modifiers ---
             private List<CombatModifier> _cachedModifiers = new List<CombatModifier>();
             private bool _isModifiersDirty = true; // Default dirty to ensure first build
 
             // Internal Reference
-            private MapManager _mapManager; // Ensure you have a MapManager script to reference
+            private MapManager _mapManager; 
 
             // ================== Lifecycle ==================
 
             void Start()
             {
-                // Register self to the global UnitManager
                 if (UnitManager.Instance != null)
                 {
                     UnitManager.Instance.RegisterUnit(this);
@@ -69,7 +74,6 @@ namespace GamePlay
 
             void OnDestroy()
             {
-                // Unregister self when destroyed/killed
                 if (UnitManager.Instance != null)
                 {
                     UnitManager.Instance.UnregisterUnit(this);
@@ -78,38 +82,65 @@ namespace GamePlay
 
             // ================== Initialization ==================
 
-            /// <summary>
-            /// Called by BattleManager to spawn the unit and inject data.
-            /// </summary>
             public void Setup(CharacterInstance character, MapManager mapManager, int startX, int startZ)
             {
                 this.Character = character;
                 this._mapManager = mapManager;
 
-                // TODO: Here you would also update the visual Model/Animator based on CharacterData
-                // e.g., GetComponent<MeshFilter>().mesh = character.Data.Prefab...
-
                 // Snap to grid
                 SetGridPosition(startX, startZ);
                 
-                // Mark cache dirty just in case setup adds initial buffs
+                // 初始化时清空旧 Buff，并强制重刷缓存
+                ActiveBuffs.Clear();
                 SetModifiersDirty();
             }
 
-            /// <summary>
-            /// Call this whenever Buffs change or Relics are obtained
-            /// </summary>
             public void SetModifiersDirty()
             {
                 _isModifiersDirty = true;
             }
 
-            // ================== Damage Pipeline Interface ==================
+            // ================== Buff Management ==================
 
             /// <summary>
-            /// Retrieves all  modifiers (Buffs + Relics) for this unit.
-            /// Uses caching to avoid Garbage Collection allocation in hot paths.
+            /// 给单位添加一个 Buff，并自动标记缓存失效
             /// </summary>
+            public void AddBuff(BuffBase buff)
+            {
+                if (buff != null)
+                {
+                    if(ActiveBuffs.Contains(buff))
+                    {
+                        buff.OnRepeatedlyObtain();
+                        return;
+                    }
+                    ActiveBuffs.Add(buff);
+                    buff.OnApply(this);
+                    SetModifiersDirty();
+                    Debug.Log($"{name} 获得了 Buff: {buff.name}");
+                }
+                else
+                {
+                    Debug.LogError($"尝试添加无效 Buff为Null: {buff.name}");
+                }
+            }
+
+            /// <summary>
+            /// 移除 Buff
+            /// </summary>
+            public void RemoveBuff(BuffBase buff)
+            {
+                if (ActiveBuffs.Contains(buff))
+                {
+                    ActiveBuffs.Remove(buff);
+                    buff.OnRemove(this);
+                    SetModifiersDirty();
+                    Debug.Log($"{name} 失去了 Buff: {buff.name}");
+                }
+            }
+
+            // ================== Damage Pipeline Interface ==================
+
             public List<CombatModifier> GetModifiers()
             {
                 if (_isModifiersDirty)
@@ -123,21 +154,21 @@ namespace GamePlay
             {
                 _cachedModifiers.Clear();
 
-                // 1. Add Buffs from the Character Data (Soul)
-                // Assuming Character.BuffManager exists and holds IDamageModifier
-                /* if (Character.BuffManager != null) {
-                    foreach (var buff in Character.BuffManager.ActiveBuffs) {
-                        if (buff is RelicBase relic) _cachedModifiers.Add(relic);
-                    }
-                }
-                */
+                // 1. Add Buffs (Local)
+                // 直接把当前身上的 Buff 全部加进去
+                _cachedModifiers.AddRange(ActiveBuffs);
 
                 // 2. Add Relics from Global Manager (Only if this is a Player Unit)
                 if (CompareTag("Player") && RunManager.Instance != null)
                 {
+                    // 假设 RunManager.Relics 里的对象也继承自 CombatModifier
+                    // 因为我们之前设计 RelicBase 继承自 CombatModifier，所以这里是可以直接转型的
                     foreach (var relic in RunManager.Instance.Relics)
                     {
-                        _cachedModifiers.Add(relic);
+                        if (relic is CombatModifier mod)
+                        {
+                            _cachedModifiers.Add(mod);
+                        }
                     }
                 }
 
@@ -149,24 +180,48 @@ namespace GamePlay
 
             // ================== Combat Logic ==================
 
-            public void TakeDamage(float amount)
+            public void TakeDamage(DamageInfo info)
             {
-                // Modify the actual data (Soul)
-                Character.statSystem.currentHP -= (int)amount;
+                Character.statSystem.currentHP -= (int)info.damage;
+                Debug.Log($"{name} 受到 {info.damage} 点伤害 ({info.damageType})");
 
-                // Update Visuals (Body)
-                // e.g. Show floating text, update Health Bar UI, Play Animation
-                Debug.Log($"{name} took {amount} damage. Current HP: {Character.statSystem.currentHP}");
+                if (info.sourceUnit != null)
+                {
+                    // 遍历攻击者身上的所有 Buff 和 藏品
+                    foreach (var mod in info.sourceUnit.GetModifiers())
+                    {
+                        mod.OnHit(info);
+                    }
+                }
+
+                foreach (var mod in this.GetModifiers())
+                {
+                    mod.OnBeHurt(info);
+                }
 
                 if (Character.statSystem.currentHP <= 0)
                 {
+                    // A. 触发攻击者的 OnKill
+                    if (info.sourceUnit != null)
+                    {
+                        foreach (var mod in info.sourceUnit.GetModifiers())
+                        {
+                            mod.OnKill(info);
+                        }
+                    }
+                    
+                    // B. 触发自己的 OnDie
+                    foreach (var mod in this.GetModifiers())
+                    {
+                        mod.OnDie(info);
+                    }
+
                     Die();
                 }
             }
 
             private void Die()
             {
-                // Logic for death (Animation, removing from turn order, etc.)
                 Debug.Log($"{name} has died.");
                 UnitManager.Instance.UnregisterUnit(this);
                 Destroy(gameObject);
@@ -179,13 +234,11 @@ namespace GamePlay
                 Vector2Int oldPos = gridPosition;
                 gridPosition = new Vector2Int(x, z);
 
-                // Notify Manager
                 if (UnitManager.Instance != null)
                 {
                     UnitManager.Instance.UpdateUnitPosition(this, oldPos);
                 }
 
-                // Update World Position
                 float y = 0;
                 if (_mapManager != null && _mapManager.logicalGrid != null)
                 {
@@ -193,7 +246,6 @@ namespace GamePlay
                     if (cell != null) y = cell.floorHeight;
                 }
 
-                // Assumes mapManager.cellSize exists. If static, change accordingly.
                 float cellSize = _mapManager != null ? _mapManager.cellSize : 1f;
                 transform.position = new Vector3(x * cellSize, y, z * cellSize);
             }
@@ -213,7 +265,6 @@ namespace GamePlay
 
                 foreach (var step in path)
                 {
-                    // 1. Get Target Height
                     float targetY = 0;
                     if (_mapManager != null && _mapManager.logicalGrid != null)
                     {
@@ -221,21 +272,18 @@ namespace GamePlay
                         if (cell != null) targetY = cell.floorHeight;
                     }
 
-                    // 2. Get Target World Position
                     Vector3 targetWorldPos = new Vector3(
                         step.x * cellSize, 
                         targetY, 
                         step.y * cellSize
                     );
 
-                    // 3. Smooth Movement
                     while (Vector3.Distance(transform.position, targetWorldPos) > 0.05f)
                     {
                         transform.position = Vector3.MoveTowards(transform.position, targetWorldPos, moveSpeed * Time.deltaTime);
                         yield return null; 
                     }
 
-                    // 4. Snap to Grid & Update Logic
                     transform.position = targetWorldPos;
                     
                     Vector2Int oldPos = gridPosition;
@@ -248,6 +296,12 @@ namespace GamePlay
                 }
 
                 isMoving = false;
+            }
+
+            //=============Level===============
+            public virtual void LevelUp()
+            {
+                Character.LevelUp();
             }
         }
     }
