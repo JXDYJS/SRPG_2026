@@ -2,28 +2,11 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Status.state;
+using Global;
 
 namespace Character
 {
     namespace data{
-        public enum AttackRangeType
-        {
-            Melee,      // 近战 (上下左右1格)
-            Archer,     // 弓箭 (距离2-3格)
-            Magic,      // 魔法 (周围2格)
-            Lancer      // 长枪 (前方直刺2格)
-        }
-        
-
-        // 定义升级奖励的种类
-        public enum LevelRewardType
-        {
-            StatGrowth,     // 属性成长 (HP, ATK...)
-            UnlockSkill,    // 解锁新技能
-            UpgradeSkill,   // 升级已有技能 (你的需求)
-            UnlockPassive,  // 解锁被动/天赋
-            Custom          // 其他自定义逻辑
-        }
 
         // 单个奖励的数据包
         [System.Serializable]
@@ -71,6 +54,14 @@ namespace Character
             
             // 先用枚举定义范围类型
             public AttackRangeType RangeType;
+            public AttackPatternType Pattern;
+            public int MinRange = 1;
+            public int MaxRange = 1;
+
+            [Tooltip("自定义攻击范围 (相对坐标，仅在 Pattern 为 Custom 时生效)")]
+
+            public List<Vector2Int> CustomPattern;
+
             [Header("升级配置")]
             public List<LevelUpEntry> GrowthTable;
             

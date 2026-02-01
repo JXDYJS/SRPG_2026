@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-
+using Global;
 namespace GamePlay
 {
     using unit;

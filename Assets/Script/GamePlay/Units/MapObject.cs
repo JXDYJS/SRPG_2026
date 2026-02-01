@@ -1,13 +1,5 @@
 using UnityEngine;
-
-public enum BlockType
-{
-    Ground,     // 普通地面 (草、土)
-    Obstacle,   // 障碍 (墙、树干)
-    Decoration, // 装饰 (花、草丛 - 没有任何逻辑影响)
-    Liquid,     // 液体 (水、岩浆 - 只有特定单位能走)
-    Stairs      // 楼梯 (特殊的高度处理)
-}
+using Global;
 
 public class MapObject : MonoBehaviour
 {

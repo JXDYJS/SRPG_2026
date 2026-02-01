@@ -4,6 +4,8 @@ using UnityEngine;
 using Managers;
 using Modifier;
 using GamePlay.buff;
+using Global;
+using Command;
 
 namespace GamePlay
 {
@@ -13,17 +15,10 @@ namespace GamePlay
         using Status.damage;
         using Modifier;
         using GamePlay.relics;
+        using Command;
         
         // --- Auxiliary Class for Movement Definition ---
-        [System.Serializable]
-        public enum MoveType
-        {
-            Ground,     // Standard walking
-            Flying,     // Ignores terrain height/liquids
-            Amphibious  // Can walk on water
-        }
-        
-        [System.Serializable]
+
         public class UnitMoveStats
         {
             [Header("Movement Capabilities")]
@@ -37,7 +32,7 @@ namespace GamePlay
         }
 
         // --- Main MapUnit Class ---
-        public class MapUnit : MonoBehaviour
+        public class MapUnit : MonoBehaviour,ITrackable
         {
             [Header("Movement Config")]
             public UnitMoveStats moveStats = new UnitMoveStats(); 
@@ -45,7 +40,14 @@ namespace GamePlay
 
             [Header("Runtime State (Read-Only)")]
             public Vector2Int gridPosition; // Current Logical Position
-            public bool isMoving = false;
+            public bool isMoving => CurrentState == UnitState.Moving;
+
+            [Header("FSM")]
+            [SerializeField] // 方便 Inspector 调试看状态
+            private UnitState currentState = UnitState.Idle;
+            public UnitState CurrentState => currentState;
+
+            public bool IsBusy => currentState != UnitState.Idle;
 
             // --- 1. Soul Reference (The Data) ---
             public CharacterInstance Character { get; private set; }
@@ -107,6 +109,7 @@ namespace GamePlay
             /// </summary>
             public void AddBuff(BuffBase buff)
             {
+                UndoSystem.Instance.RegisterDirty(this);
                 if (buff != null)
                 {
                     if(ActiveBuffs.Contains(buff))
@@ -182,8 +185,14 @@ namespace GamePlay
 
             public void TakeDamage(DamageInfo info)
             {
+                UndoSystem.Instance.RegisterDirty(this);
                 Character.statSystem.currentHP -= (int)info.damage;
                 Debug.Log($"{name} 受到 {info.damage} 点伤害 ({info.damageType})");
+                //=======TODO 受击效果==========
+
+                StartCoroutine(HitFlashRoutine());
+
+                //=======TODO 受击效果==========
 
                 if (info.sourceUnit != null)
                 {
@@ -253,6 +262,7 @@ namespace GamePlay
             public void MoveAlongPath(List<Vector2Int> path)
             {
                 if (path == null || path.Count == 0) return;
+                UndoSystem.Instance.RegisterDirty(this);
                 
                 if (isMoving) StopAllCoroutines();
                 StartCoroutine(MoveRoutine(path));
@@ -260,7 +270,7 @@ namespace GamePlay
 
             IEnumerator MoveRoutine(List<Vector2Int> path)
             {
-                isMoving = true;
+                //isMoving = true;
                 float cellSize = _mapManager != null ? _mapManager.cellSize : 1f;
 
                 foreach (var step in path)
@@ -295,13 +305,89 @@ namespace GamePlay
                     }
                 }
 
-                isMoving = false;
+                //isMoving = false;
             }
 
             //=============Level===============
             public virtual void LevelUp()
             {
                 Character.LevelUp();
+            }
+
+            private void SwitchState(UnitState newState)
+            {
+                if (currentState == UnitState.Dead) return; // 死人不能复生
+                
+                // 退出旧状态逻辑 (可选)
+                // OnExitState(currentState);
+
+                currentState = newState;
+                
+                // 进入新状态逻辑
+                switch (newState)
+                {
+                    case UnitState.Idle:
+                        // 恢复呼吸动画
+                        break;
+                    case UnitState.Dead:
+                        //HandleDeath();
+                        break;
+                }
+            }
+
+            IEnumerator HitFlashRoutine()
+            {
+                Renderer renderer = GetComponentInChildren<Renderer>();
+
+                if (renderer != null)
+                {
+                    Color originalColor = renderer.material.color;
+
+                    renderer.material.color = Color.red;
+
+                    yield return new WaitForSeconds(0.1f);
+
+                    if (renderer != null)
+                    {
+                        renderer.material.color = originalColor;
+                    }
+                }
+            }
+            public object CaptureState() => new UnitSnapshot(this);
+            public void RestoreState(object state)
+            {
+                var snap = (UnitSnapshot)state;
+                
+                // 1. 还原位置
+                SetGridPosition(snap.GridPosition.x, snap.GridPosition.y);
+                
+                // 2. 还原 HP
+                Character.statSystem.currentHP = snap.CurrentHP;
+                // 如果有血条UI，这里记得调用 UpdateHealthUI();
+
+                // 3. 还原 Buff (最复杂的部分)
+                // A. 删除多余的 (现在的有，快照里没的)
+                for (int i = ActiveBuffs.Count - 1; i >= 0; i--)
+                {
+                    if (!snap.ActiveBuffs.Contains(ActiveBuffs[i]))
+                    {
+                        RemoveBuff(ActiveBuffs[i]); // 触发 OnRemove，移除属性修正
+                    }
+                }
+                // B. 补回缺失的 (快照里有，现在的没的)
+                foreach (var buff in snap.ActiveBuffs)
+                {
+                    if (!ActiveBuffs.Contains(buff))
+                    {
+                        ActiveBuffs.Add(buff);
+                        buff.OnApply(this); // 重新触发 OnApply，挂载属性修正
+                    }
+                }
+
+                currentState = snap.State;
+                
+                // 4. 重置状态
+                StopAllCoroutines();
             }
         }
     }
