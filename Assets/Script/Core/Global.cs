@@ -10,10 +10,11 @@ namespace Global
 
         public enum AttackPatternType
         {
-            Diamond,    // 菱形 (曼哈顿距离) - 适合普通近战/弓箭
-            Square,     // 方形 (切比雪夫距离) - 适合法师
-            Line,       // 直线 (十字) - 适合长枪/激光
-            Custom      // 自定义 - 读取 CustomPattern 列表
+            Diamond,        // 菱形 (曼哈顿距离) - 适合常规近战/弓箭
+            Square,         // 方形 (切比雪夫距离) - 适合大范围法术
+            Line,           // 直线 - 激光/突刺 (需要目标方向)
+            Cone,           // 扇形/锥形 - 喷火/横扫 (需要目标方向)
+            Ring            // 环形 - 自身周围一圈 (如旋风斩)
         }
         
 
@@ -58,5 +59,13 @@ namespace Global
             Decoration, // 装饰 (花、草丛 - 没有任何逻辑影响)
             Liquid,     // 液体 (水、岩浆 - 只有特定单位能走)
             Stairs      // 楼梯 (特殊的高度处理)
+        }
+
+        public enum FactionType
+        {
+            Player,     // 玩家
+            Enemy,      // 怪物/死敌
+            Neutral,    // 中立（如猪人、商人）
+            Guard       // 守卫（攻击怪物，但不攻击玩家，除非被惹怒）
         }
 }

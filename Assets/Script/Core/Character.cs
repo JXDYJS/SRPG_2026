@@ -64,6 +64,8 @@ namespace Character
 
             [Header("升级配置")]
             public List<LevelUpEntry> GrowthTable;
+            [Header("阵营配置")]
+            public FactionType DefaultFaction;
             
         }
 

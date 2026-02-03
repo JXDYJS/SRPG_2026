@@ -6,6 +6,7 @@ using Modifier;
 using GamePlay.buff;
 using Global;
 using Command;
+using GamePlay.Grid;
 
 namespace GamePlay
 {
@@ -16,7 +17,9 @@ namespace GamePlay
         using Modifier;
         using GamePlay.relics;
         using Command;
-        
+        using Unity.VisualScripting;
+        using UnityEditor;
+
         // --- Auxiliary Class for Movement Definition ---
 
         public class UnitMoveStats
@@ -63,6 +66,10 @@ namespace GamePlay
 
             // Internal Reference
             private MapManager _mapManager; 
+            [Header("阵营")]
+            public FactionType Faction;
+            private HashSet<MapUnit> _personalEnemies = new HashSet<MapUnit>();//个人仇恨列表
+            public virtual bool HasGrudgeAgainst(MapUnit target) => _personalEnemies.Contains(target);
 
             // ================== Lifecycle ==================
 
@@ -183,11 +190,20 @@ namespace GamePlay
 
             // ================== Combat Logic ==================
 
-            public void TakeDamage(DamageInfo info)
+            public virtual void TakeDamage(DamageInfo info)
             {
                 UndoSystem.Instance.RegisterDirty(this);
                 Character.statSystem.currentHP -= (int)info.damage;
                 Debug.Log($"{name} 受到 {info.damage} 点伤害 ({info.damageType})");
+                //处理仇恨
+                if(info.sourceUnit != null && info.sourceUnit != this)
+                {
+                    if(!_personalEnemies.Contains(info.sourceUnit))
+                    {
+                        _personalEnemies.Add(info.sourceUnit);
+                        Debug.Log($"{name} 被激怒了！将 {info.sourceUnit.name} 视为敌人！");
+                    }
+                }
                 //=======TODO 受击效果==========
 
                 StartCoroutine(HitFlashRoutine());
@@ -229,11 +245,82 @@ namespace GamePlay
                 }
             }
 
+            public virtual void Attack(MapUnit target)
+            {
+                if (IsBusy) return;
+                StartCoroutine(AttackVisualRoutine(target));
+                DamageInfo info = new DamageInfo(
+                    Character.statSystem.ATK.getValue(),
+                    this,
+                    target,
+                    DamageType.Physical,
+                    DamageMethod.Normal
+                );
+                ExecuteAttackLogic(target,info);
+            }
+
+            private void ExecuteAttackLogic(MapUnit target,DamageInfo info = null)
+            {
+                if (target != null && target.Character.statSystem.currentHP > 0)
+                {
+                    if(info == null)
+                    {
+                        Debug.LogError($"<color=red>⚠️ {name} 尝试攻击 {target.name}，但未提供伤害信息！</color>");
+                        return;
+                    }
+
+                    CombatCalculator.CalculateDamage(info);
+                    target.TakeDamage(info); 
+                }
+            }
+
+            IEnumerator AttackVisualRoutine(MapUnit target)
+            {
+                SwitchState(UnitState.Attacking);
+                transform.LookAt(target.transform);
+
+                // 前摇动画
+                yield return new WaitForSeconds(0.2f); 
+
+                // 【关键点】这里不再调用 TakeDamage（因为血已经扣过了）
+                // 这里只触发“视觉上的受击反馈”
+                if (target != null)
+                {
+                    Debug.Log($"<color=red>⚔️ {name} 攻击命中视觉效果！</color>");
+                    // 告诉目标：你该播放挨打动画了
+                    target.PlayHitVisual(); 
+                }
+
+                // 后摇
+                yield return new WaitForSeconds(0.3f); 
+                SwitchState(UnitState.Idle);
+            }
+
+            public void PlayHitVisual()
+            {
+                StartCoroutine(HitFlashRoutine());
+            }
+
+            public List<Vector2Int> GetCurrentAttackRange(Vector2Int? targetPos = null)
+            {
+                // 如果没有指定目标（比如只是想显示移动后的危险范围），默认向右或者上次的朝向
+                Vector2Int aimTarget = targetPos ?? (this.gridPosition + Vector2Int.right);
+                
+                return AttackRangeSystem.GetAttackRange(
+                    this.gridPosition, 
+                    aimTarget, 
+                    this.Character.characterData
+                );
+            }
+
             private void Die()
             {
                 Debug.Log($"{name} has died.");
+                UndoSystem.Instance.RegisterDirty(this);
                 UnitManager.Instance.UnregisterUnit(this);
-                Destroy(gameObject);
+                // Destroy(gameObject);
+                gameObject.SetActive(false);
+                SwitchState(UnitState.Dead);
             }
 
             // ================== Movement Logic ==================
@@ -318,7 +405,6 @@ namespace GamePlay
             {
                 if (currentState == UnitState.Dead) return; // 死人不能复生
                 
-                // 退出旧状态逻辑 (可选)
                 // OnExitState(currentState);
 
                 currentState = newState;
@@ -357,6 +443,12 @@ namespace GamePlay
             public void RestoreState(object state)
             {
                 var snap = (UnitSnapshot)state;
+
+                if (!gameObject.activeSelf)
+                {
+                    gameObject.SetActive(true);
+                    UnitManager.Instance.RegisterUnit(this); 
+                }
                 
                 // 1. 还原位置
                 SetGridPosition(snap.GridPosition.x, snap.GridPosition.y);

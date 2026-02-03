@@ -37,4 +37,21 @@ namespace Command
             _unit.MoveAlongPath(_path);
         }
     }
+
+    public class AttackCommand : BaseCommand
+    {
+        private MapUnit _attacker;
+        private MapUnit _target;
+
+        public AttackCommand(MapUnit attacker, MapUnit target)
+        {
+            _attacker = attacker;
+            _target = target;
+        }
+
+        protected override void OnExecute()
+        {
+            _attacker.Attack(_target);
+        }
+    }
 }
