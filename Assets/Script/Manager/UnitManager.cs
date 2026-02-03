@@ -12,7 +12,7 @@ namespace Managers
         private List<MapUnit> allUnits = new List<MapUnit>();
         
         // 坐标 -> 单位 的快速查找字典 (用于碰撞检测：我想去的格子上有没有人？)
-        private Dictionary<Vector2Int, MapUnit> unitPositions = new Dictionary<Vector2Int, MapUnit>();
+        private Dictionary<Vector3Int, MapUnit> unitPositions = new Dictionary<Vector3Int, MapUnit>();
 
         void Awake()
         {
@@ -47,7 +47,7 @@ namespace Managers
         }
 
         // 更新单位坐标记录
-        public void UpdateUnitPosition(MapUnit unit, Vector2Int oldPos)
+        public void UpdateUnitPosition(MapUnit unit, Vector3Int oldPos)
         {
             // 移除旧位置记录
             if (unitPositions.ContainsKey(oldPos) && unitPositions[oldPos] == unit)
@@ -64,7 +64,7 @@ namespace Managers
         }
 
         // 获取某格子的单位 (用于 A* 判断是否被敌方阻挡)
-        public MapUnit GetUnitAt(Vector2Int pos)
+        public MapUnit GetUnitAt(Vector3Int pos)
         {
             if (unitPositions.TryGetValue(pos, out MapUnit unit))
             {

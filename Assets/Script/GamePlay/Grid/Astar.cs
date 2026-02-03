@@ -1,160 +1,202 @@
+//CREATE BY GEMINI
+
+
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using Global;
+
 namespace GamePlay
 {
     using unit;
+
     public class AStar
     {
+        // 节点类升级为 3D 坐标
         class Node
         {
-            public int x, z;
+            public Vector3Int position; // 存储的是“脚底方块”的坐标
             public Node parent;
-            public int gCost;
-            public int hCost;
-            public int FCost => gCost + hCost;
-            public Node(int x, int z) { this.x = x; this.z = z; }
+            public float gCost; // 浮点数以支持半砖等微小的高度代价
+            public float hCost;
+            public float FCost => gCost + hCost;
+
+            public Node(Vector3Int pos) { this.position = pos; }
         }
 
-        // 修改点 1：函数签名加入 UnitMoveStats，让算法知道是谁在走
-        public static List<Vector2Int> FindPath(Vector2Int start, Vector2Int end, LogicalGrid grid, UnitMoveStats stats)
+        // 入口函数：现在接收 3D 坐标
+        public static List<Vector3Int> FindPath(Vector3Int start, Vector3Int end, LogicalGrid grid, UnitMoveStats stats)
         {
-            // 基础检查
-            LogicalCell endCell = grid.GetCell(end.x, end.y);
+            // 1. 基础检查：目标必须在数据范围内（或者是空气/方块）
+            // 注意：我们允许点选一个空气格作为目标（意味着走到它下面的地面上），
+            // 或者点选一个地面方块（意味着走到它上面）。
+            // 这里做一个简单的归一化：AStar 的目标 End 通常是指“脚下的方块”。
             
-            // 只要目标格子在数据上存在即可，具体能不能站上去由 IsTraversable 判断
-            // 但如果目标完全是虚空(null)，或者是绝对障碍(Obstacle)，通常直接排除
-            if (endCell == null) return null;
-
+            // 为了安全，我们检查一下终点是否合法（比如不能跳进虚空）
+            
             List<Node> openSet = new List<Node>();
-            HashSet<Vector2Int> closedSet = new HashSet<Vector2Int>();
+            HashSet<Vector3Int> closedSet = new HashSet<Vector3Int>();
 
-            Node startNode = new Node(start.x, start.y);
+            Node startNode = new Node(start);
             openSet.Add(startNode);
 
             while (openSet.Count > 0)
             {
+                // 取出 FCost 最小的节点
                 Node currentNode = openSet.OrderBy(n => n.FCost).ThenBy(n => n.hCost).First();
                 openSet.Remove(currentNode);
-                closedSet.Add(new Vector2Int(currentNode.x, currentNode.z));
+                closedSet.Add(currentNode.position);
 
-                if (currentNode.x == end.x && currentNode.z == end.y)
+                // 到达终点判定
+                if (currentNode.position == end)
                 {
                     return RetracePath(startNode, currentNode);
                 }
 
-                // 修改点 2：传入 currentNode 和 stats，进行复杂的邻居判断
-                foreach (Vector2Int neighborPos in GetValidNeighbors(currentNode, grid, stats))
+                // 获取 3D 邻居
+                foreach (Vector3Int neighborPos in GetValidNeighbors(currentNode, grid, stats))
                 {
                     if (closedSet.Contains(neighborPos)) continue;
 
-                    int newCost = currentNode.gCost + GetDistance(currentNode, neighborPos);
-                    
-                    Node neighborNode = openSet.Find(n => n.x == neighborPos.x && n.z == neighborPos.y);
+                    // 计算代价：平面距离 + 高度差代价
+                    // 高度差代价可以设大一点，让角色倾向于走平路
+                    float dist = GetDistance(currentNode.position, neighborPos);
+                    float heightDiff = Mathf.Abs(currentNode.position.y - neighborPos.y);
+                    float newCost = currentNode.gCost + dist + (heightDiff * 1.5f); // 爬坡稍累
+
+                    Node neighborNode = openSet.Find(n => n.position == neighborPos);
                     if (neighborNode == null || newCost < neighborNode.gCost)
                     {
                         if (neighborNode == null)
                         {
-                            neighborNode = new Node(neighborPos.x, neighborPos.y);
+                            neighborNode = new Node(neighborPos);
                             openSet.Add(neighborNode);
                         }
                         neighborNode.gCost = newCost;
-                        neighborNode.hCost = GetDistance(neighborNode, end);
+                        neighborNode.hCost = GetDistance(neighborPos, end);
                         neighborNode.parent = currentNode;
                     }
                 }
             }
-            return null;
+
+            return null; // 没找到路径
         }
 
-        // === 核心修改：基于能力的邻居获取 ===
-        static List<Vector2Int> GetValidNeighbors(Node currentNode, LogicalGrid grid, UnitMoveStats stats)
+        // === 核心逻辑：垂直扫描寻找邻居 ===
+        static List<Vector3Int> GetValidNeighbors(Node currentNode, LogicalGrid grid, UnitMoveStats stats)
         {
-            List<Vector2Int> validNeighbors = new List<Vector2Int>();
+            List<Vector3Int> validNeighbors = new List<Vector3Int>();
+            
+            // 四个平面方向
             Vector2Int[] dirs = { Vector2Int.up, Vector2Int.down, Vector2Int.left, Vector2Int.right };
 
-            // 获取当前脚下的格子数据
-            LogicalCell currentCell = grid.GetCell(currentNode.x, currentNode.z);
-            if (currentCell == null) return validNeighbors; // 理论上不会发生
+            Vector3Int currentPos = currentNode.position;
 
             foreach (var dir in dirs)
             {
-                int nextX = currentNode.x + dir.x;
-                int nextZ = currentNode.z + dir.y;
-                LogicalCell nextCell = grid.GetCell(nextX, nextZ);
+                int nx = currentPos.x + dir.x;
+                int nz = currentPos.z + dir.y;
 
-                // 调用通行判断逻辑
-                if (IsTraversable(currentCell, nextCell, stats))
+                // --- 垂直扫描 (Vertical Scan) ---
+                // 目标不仅仅是 (nx, current.y, nz)，还要看上下
+                // 扫描范围：从脚下 dropHeight 到 头顶 jumpHeight
+                // 假设 dropHeight=3, jumpHeight=1，则扫描 [y-3, y+1]
+                
+                int scanMinY = currentPos.y - Mathf.CeilToInt(stats.dropHeight);
+                int scanMaxY = currentPos.y + Mathf.CeilToInt(stats.jumpHeight);
+
+                // 优化：从高往低找，或者从当前高度向两边找。
+                // 这里简单地从上往下扫，找到合法的落脚点
+                for (int ny = scanMaxY; ny >= scanMinY; ny--)
                 {
-                    // 扩展：这里还可以加入 "UnitManager.Instance.GetUnitAt(nextPos)" 
-                    // 来判断是否有敌方单位阻挡 (ZOC控制区域)
-                    validNeighbors.Add(new Vector2Int(nextX, nextZ));
+                    Vector3Int targetBlockPos = new Vector3Int(nx, ny, nz);
+
+                    // 判定是否能站立
+                    if (CanStandAt(grid, targetBlockPos, currentPos, stats))
+                    {
+                        validNeighbors.Add(targetBlockPos);
+                        
+                        // 找到一个落脚点后，通常不需要再找这一列更下面的点了（除非做立交桥逻辑）
+                        // 为了防止“穿过桥面跳到桥下”，我们找到最高的可行点就 Break
+                        break; 
+                    }
                 }
             }
             return validNeighbors;
         }
 
-        // === 核心修改：通行判断逻辑 (可扩展性极强) ===
-        static bool IsTraversable(LogicalCell from, LogicalCell to, UnitMoveStats stats)
+        // === 核心判定：能不能站在这个方块上 ===
+        // targetBase: 目标脚下的方块坐标
+        // currentBase: 当前脚下的方块坐标
+        static bool CanStandAt(LogicalGrid grid, Vector3Int targetBase, Vector3Int currentBase, UnitMoveStats stats)
         {
-            // 1. 虚空检查
-            if (to == null) return false;
-
-            // 2. 障碍物类型检查 (绝对障碍)
-            // 即使是飞行单位，也许也不能穿过高墙 (Obstacle)，除非你设定飞行单位无视 Obstacle
-            // 这里假设 Obstacle 是天花板级别的阻挡，谁都过不去
-            // 如果你的 LogicalGrid 里 Obstacle 仅仅代表"地面上有障碍"，那飞行单位可能可以过
-            // 现在的逻辑假设：canWalk=false 代表该格子被塞满了（如墙壁），除非是水
+            // 1. 脚踏实地检查 (Footing)
+            BlockType floor = grid.GetBlock(targetBase.x, targetBase.y, targetBase.z);
             
-            // 特殊：如果是飞行单位
-            if (stats.moveType == MoveType.Flying)
-            {
-                // 飞行单位只怕绝对墙壁，不怕水，也不怕没有地面(canWalk=false)
-                // 但要小心：如果 grid 设计上 null 代表空气，飞行单位是可以去 null 的吗？
-                // 通常战棋地图不让去格子以外的地方，所以我们只看 to 是否存在
-                return true; 
-            }
+            // 必须是固体或半砖，空气和水不能站（除非两栖）
+            if (floor == BlockType.Air || floor == BlockType.Liquid) 
+                return false;
 
-            // 3. 地面单位检查
-            if (stats.moveType == MoveType.Ground)
+            // 2. 计算实际的世界坐标高度 (World Y)
+            float targetStandY = targetBase.y + grid.GetBlockHeight(floor);
+            
+            BlockType currentBlock = grid.GetBlock(currentBase.x, currentBase.y, currentBase.z);
+            float currentStandY = currentBase.y + grid.GetBlockHeight(currentBlock);
+
+            // 3. 膝盖能迈检查 (Step Height)
+            float diff = targetStandY - currentStandY;
+
+            // 向上跳跃限制
+            if (diff > stats.jumpHeight + 0.01f) return false; // +0.01 防止浮点误差
+            // 向下坠落限制
+            if (diff < -stats.dropHeight - 0.01f) return false;
+
+            // 4. 头顶净空检查 (Headroom)
+            // 必须保证从脚底往上 UnitHeight 的空间是空的
+            // 假设单位高度是 2 格
+            float unitHeight = 2.0f;
+            
+            // 我们需要检查哪些方块？
+            // 从 targetBase.y + 1 开始，直到覆盖 unitHeight
+            // 比如站在 y=0 (Solid, standY=1)，需要检查 y=1, y=2 是否阻挡
+            // 比如站在 y=0 (Slab, standY=0.5)，需要检查 y=1, y=2
+            
+            // 简化逻辑：检查站立面之上的所有整数格
+            int startCheckY = targetBase.y + 1; 
+            // 检查到哪里？脚底高度 + 身高
+            float headTopY = targetStandY + unitHeight;
+            int endCheckY = Mathf.CeilToInt(headTopY - 0.1f); // -0.1 防止正好蹭到天花板算碰撞
+
+            for (int y = startCheckY; y < endCheckY; y++)
             {
-                // A. 必须是可行走地面 (除非是两栖且是水)
-                if (!to.canWalk)
+                BlockType b = grid.GetBlock(targetBase.x, y, targetBase.z);
+                if (b != BlockType.Air && b != BlockType.Liquid)
                 {
-                    // 如果是两栖单位，且目标是水
-                    if (stats.moveType == MoveType.Amphibious && to.canSwim) return true;
-                    return false;
+                    return false; // 撞头了
                 }
-
-                // B. 高度差检查 (核心！)
-                // 计算高度差：目标高度 - 当前高度
-                float heightDiff = to.floorHeight - from.floorHeight;
-
-                // 向上跳：不能超过 jumpHeight
-                if (heightDiff > stats.jumpHeight) return false;
-
-                // 向下跳：不能超过 dropHeight (防止跳崖)
-                if (heightDiff < -stats.dropHeight) return false;
-
-                return true;
             }
 
-            return false;
+            return true;
         }
 
-        static List<Vector2Int> RetracePath(Node startNode, Node endNode)
+        static List<Vector3Int> RetracePath(Node startNode, Node endNode)
         {
-            List<Vector2Int> path = new List<Vector2Int>();
+            List<Vector3Int> path = new List<Vector3Int>();
             Node curr = endNode;
-            while (curr != startNode) { path.Add(new Vector2Int(curr.x, curr.z)); curr = curr.parent; }
+            while (curr != startNode) 
+            { 
+                path.Add(curr.position); 
+                curr = curr.parent; 
+            }
+            // path.Add(startNode.position); // 可选：是否包含起点
             path.Reverse();
             return path;
         }
 
-        static int GetDistance(Node a, Vector2Int b)
+        // 3D 曼哈顿距离作为启发式
+        static float GetDistance(Vector3Int a, Vector3Int b)
         {
-            return Mathf.Abs(a.x - b.x) + Mathf.Abs(a.z - b.y);
+            return Mathf.Abs(a.x - b.x) + Mathf.Abs(a.y - b.y) + Mathf.Abs(a.z - b.z);
         }
     }
 }

@@ -24,9 +24,9 @@ namespace Command
     public class MoveCommand : BaseCommand
     {
         private MapUnit _unit;
-        private List<Vector2Int> _path;
+        private List<Vector3Int> _path;
 
-        public MoveCommand(MapUnit unit, List<Vector2Int> path)
+        public MoveCommand(MapUnit unit, List<Vector3Int> path)
         {
             _unit = unit;
             _path = path;

@@ -28,10 +28,10 @@ namespace GamePlay
             public MoveType moveType = MoveType.Ground;
 
             [Tooltip("Max height difference to climb up (default 1)")]
-            public int jumpHeight = 1; 
+            public float jumpHeight = 0.6f; 
 
             [Tooltip("Max height difference to drop down (default 3)")]
-            public int dropHeight = 3;
+            public float dropHeight = 0.6f;
         }
 
         // --- Main MapUnit Class ---
@@ -42,7 +42,7 @@ namespace GamePlay
             public float moveSpeed = 5.0f;
 
             [Header("Runtime State (Read-Only)")]
-            public Vector2Int gridPosition; // Current Logical Position
+            public Vector3Int gridPosition;
             public bool isMoving => CurrentState == UnitState.Moving;
 
             [Header("FSM")]
@@ -91,13 +91,13 @@ namespace GamePlay
 
             // ================== Initialization ==================
 
-            public void Setup(CharacterInstance character, MapManager mapManager, int startX, int startZ)
+            public void Setup(CharacterInstance character, MapManager mapManager, int startX, int startY, int startZ)
             {
                 this.Character = character;
                 this._mapManager = mapManager;
 
                 // Snap to grid
-                SetGridPosition(startX, startZ);
+                SetGridPosition(startX, startY, startZ);
                 
                 // 初始化时清空旧 Buff，并强制重刷缓存
                 ActiveBuffs.Clear();
@@ -301,16 +301,87 @@ namespace GamePlay
                 StartCoroutine(HitFlashRoutine());
             }
 
-            public List<Vector2Int> GetCurrentAttackRange(Vector2Int? targetPos = null)
+            public List<Vector3Int> GetCurrentAttackRange(Vector3Int? targetPos = null)
             {
-                // 如果没有指定目标（比如只是想显示移动后的危险范围），默认向右或者上次的朝向
-                Vector2Int aimTarget = targetPos ?? (this.gridPosition + Vector2Int.right);
+                Vector3Int aimTarget = targetPos ?? (this.gridPosition + GetForwardVector()); 
                 
-                return AttackRangeSystem.GetAttackRange(
-                    this.gridPosition, 
-                    aimTarget, 
+                Vector2Int start2D = new Vector2Int(this.gridPosition.x, this.gridPosition.z);
+                Vector2Int target2D = new Vector2Int(aimTarget.x, aimTarget.z);
+
+                List<Vector2Int> range2D = AttackRangeSystem.GetAttackRange(
+                    start2D, 
+                    target2D, 
                     this.Character.characterData
                 );
+
+                // 3. 垂直延伸 (3D Extrusion)
+                List<Vector3Int> valid3DTiles = new List<Vector3Int>();
+                
+                int heightRangeUp = 2;   // 向上能打 2 格
+                int heightRangeDown = 2; // 向下能打 2 格
+
+                // 获取攻击者的“打击区间”
+                // 假设攻击者高度为 1 (或者从数据读取)，攻击判定通常基于“手部位置”或“中心位置”
+                // 这里简化逻辑：攻击范围覆盖 [MyY - Down, MyY + Height + Up]
+                int myY = this.gridPosition.y;
+
+                foreach (Vector2Int p2d in range2D)
+                {
+                    for (int yOffset = -heightRangeDown; yOffset <= heightRangeUp; yOffset++)
+                    {
+                        int targetY = myY + yOffset;
+                        
+                        Vector3Int pos3D = new Vector3Int(p2d.x, targetY, p2d.y);
+
+                        
+                        // 目前为了通用性，我们返回所有空间点，由 UI 层决定怎么画框
+                        valid3DTiles.Add(pos3D);
+                    }
+                }
+
+                return valid3DTiles;
+            }
+
+            private Vector3Int GetForwardVector()
+            {
+                //TODO 这里的逻辑可以优化，比如记录 Unit 的 transform.forward
+                return new Vector3Int(1, 0, 0); 
+            }
+
+            // 核心判定：判断我能不能打中某个怪 (Intersection Logic)
+            public bool CanAttack(MapUnit target)
+            {
+                if (target == null) return false;
+
+                // 1. 获取我的所有攻击范围格子
+                // 注意：这里传入 target.gridPosition 是为了确定“朝向”，如果是全向技能则无所谓
+                List<Vector3Int> myRange = GetCurrentAttackRange(target.gridPosition);
+
+                // 2. 获取目标的“受击体素 (Hitbox Voxels)”
+                // 假设怪物占据 [Pos, Pos+Height] 的空间
+                List<Vector3Int> targetOccupiedTiles = target.GetOccupiedTiles();
+
+                // 3. 判断交集 (Intersection)
+                // 只要攻击范围里有一个格子 = 怪物占据的格子，就算命中
+                foreach (var hitPos in myRange)
+                {
+                    if (targetOccupiedTiles.Contains(hitPos)) return true;
+                }
+
+                return false;
+            }
+
+            // 获取单位占据的所有格子 (用于判定受击)
+            public List<Vector3Int> GetOccupiedTiles()
+            {
+                List<Vector3Int> tiles = new List<Vector3Int>();
+                int height = 2; // 假设人物高度 2 格，以后读配置 TODO
+                
+                for (int i = 0; i < height; i++)
+                {
+                    tiles.Add(new Vector3Int(gridPosition.x, gridPosition.y + i, gridPosition.z));
+                }
+                return tiles;
             }
 
             private void Die()
@@ -325,74 +396,80 @@ namespace GamePlay
 
             // ================== Movement Logic ==================
 
-            public void SetGridPosition(int x, int z)
+            public void SetGridPosition(Vector3Int pos)
             {
-                Vector2Int oldPos = gridPosition;
-                gridPosition = new Vector2Int(x, z);
-
-                if (UnitManager.Instance != null)
-                {
-                    UnitManager.Instance.UpdateUnitPosition(this, oldPos);
-                }
-
-                float y = 0;
-                if (_mapManager != null && _mapManager.logicalGrid != null)
-                {
-                    var cell = _mapManager.logicalGrid.GetCell(x, z);
-                    if (cell != null) y = cell.floorHeight;
-                }
-
+                gridPosition = pos;
+                
+                // 计算世界坐标 (假设 Grid y=0 对应 World y=0，如果 Pivot 在底部)
+                // 如果你的方块 Pivot 在中心，这里可能需要偏移
                 float cellSize = _mapManager != null ? _mapManager.cellSize : 1f;
-                transform.position = new Vector3(x * cellSize, y, z * cellSize);
+                
+                // 获取该方块的“站立面”高度
+                float standY = pos.y;
+                if (_mapManager != null)
+                {
+                    var blockType = _mapManager.logicalGrid.GetBlock(pos);
+                    standY += _mapManager.logicalGrid.GetBlockHeight(blockType);
+                }
+
+                transform.position = new Vector3(pos.x * cellSize, standY, pos.z * cellSize);
             }
 
-            public void MoveAlongPath(List<Vector2Int> path)
+            public void SetGridPosition(int x, int y, int z)
+            {
+                SetGridPosition(new Vector3Int(x, y, z));
+            }
+
+            public void MoveAlongPath(List<Vector3Int> path) // 改为 List<Vector3Int>
             {
                 if (path == null || path.Count == 0) return;
+                
+                // 记录移动前的状态（这是关键，Undo 会回到这里）
                 UndoSystem.Instance.RegisterDirty(this);
                 
                 if (isMoving) StopAllCoroutines();
                 StartCoroutine(MoveRoutine(path));
             }
 
-            IEnumerator MoveRoutine(List<Vector2Int> path)
+            IEnumerator MoveRoutine(List<Vector3Int> path)
             {
-                //isMoving = true;
+                SwitchState(UnitState.Moving);
                 float cellSize = _mapManager != null ? _mapManager.cellSize : 1f;
 
                 foreach (var step in path)
                 {
-                    float targetY = 0;
-                    if (_mapManager != null && _mapManager.logicalGrid != null)
+                    // 计算目标点的世界坐标
+                    float standHeight = 0;
+                    if (_mapManager != null)
                     {
-                        var cell = _mapManager.logicalGrid.GetCell(step.x, step.y);
-                        if (cell != null) targetY = cell.floorHeight;
+                        var blockType = _mapManager.logicalGrid.GetBlock(step);
+                        standHeight = _mapManager.logicalGrid.GetBlockHeight(blockType);
                     }
 
                     Vector3 targetWorldPos = new Vector3(
                         step.x * cellSize, 
-                        targetY, 
-                        step.y * cellSize
+                        step.y * cellSize + standHeight, 
+                        step.z * cellSize
                     );
 
+                    // 动画：移动到下一个格
                     while (Vector3.Distance(transform.position, targetWorldPos) > 0.05f)
                     {
                         transform.position = Vector3.MoveTowards(transform.position, targetWorldPos, moveSpeed * Time.deltaTime);
                         yield return null; 
                     }
 
+                    // 修正最终位置
                     transform.position = targetWorldPos;
                     
-                    Vector2Int oldPos = gridPosition;
+                    // 更新逻辑坐标 (每走一步更新一次，确保 UnitManager 里的位置是新的)
                     gridPosition = step;
-
-                    if (UnitManager.Instance != null)
-                    {
-                        UnitManager.Instance.UpdateUnitPosition(this, oldPos);
-                    }
+                    
+                    // TODO: 这里需要 UnitManager.Instance.UpdateUnitPosition(this, oldPos)
+                    // 但你需要先把 UnitManager 里的 Dictionary<Vector2Int, MapUnit> 改成 Vector3Int
                 }
 
-                //isMoving = false;
+                SwitchState(UnitState.Idle);
             }
 
             //=============Level===============
@@ -451,7 +528,7 @@ namespace GamePlay
                 }
                 
                 // 1. 还原位置
-                SetGridPosition(snap.GridPosition.x, snap.GridPosition.y);
+                SetGridPosition(snap.GridPosition.x, snap.GridPosition.y, snap.GridPosition.z);
                 
                 // 2. 还原 HP
                 Character.statSystem.currentHP = snap.CurrentHP;

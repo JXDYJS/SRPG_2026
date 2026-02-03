@@ -4,6 +4,7 @@ using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
+using Global;
 
 namespace Managers
 {
@@ -107,42 +108,32 @@ public class MapManager : MonoBehaviour
 
     // ================== 加载逻辑 (Data -> 3D + Logic) ==================
 
-    [ContextMenu("Load Map")]
+[ContextMenu("Load Map")]
     public void LoadMap()
     {
-        if (!File.Exists(SavePath))
-        {
-            Debug.LogError("存档文件不存在");
-            return;
-        }
+        if (!File.Exists(SavePath)) return;
 
-        // 1. 清理现有场景
-        // 注意：在编辑器模式下要用 DestroyImmediate，运行时用 Destroy
+        // 1. 清理
         for (int i = mapRoot.childCount - 1; i >= 0; i--)
         {
-#if UNITY_EDITOR
+            #if UNITY_EDITOR
             DestroyImmediate(mapRoot.GetChild(i).gameObject);
-#else
+            #else
             Destroy(mapRoot.GetChild(i).gameObject);
-#endif
+            #endif
         }
 
-        // 2. 读取数据
+        // 2. 读取
         string json = File.ReadAllText(SavePath);
         MapData data = JsonUtility.FromJson<MapData>(json);
 
-        // 临时字典用来构建逻辑网格
-        Dictionary<Vector2Int, List<MapObject>> liveObjects = new Dictionary<Vector2Int, List<MapObject>>();
+        List<MapObject> allObjects = new List<MapObject>();
 
-        // 3. 生成 3D 物体
+        // 3. 生成
         foreach (var cellData in data.cells)
         {
-            Vector2Int coord = new Vector2Int(cellData.x, cellData.z);
-            liveObjects[coord] = new List<MapObject>();
-
             foreach (var blockData in cellData.stack)
             {
-                // 查找 Prefab
                 MapObject prefab = prefabIndex.Find(p => p.prefabId == blockData.prefabId);
                 if (prefab != null)
                 {
@@ -152,46 +143,38 @@ public class MapManager : MonoBehaviour
                     GameObject obj = Instantiate(prefab.gameObject, pos, rot, mapRoot);
                     MapObject instanceMapObj = obj.GetComponent<MapObject>();
                     
-                    // 加入列表，准备生成逻辑网格
-                    liveObjects[coord].Add(instanceMapObj);
-                }
-                else
-                {
-                    Debug.LogWarning($"找不到 ID 为 {blockData.prefabId} 的预制体");
+                    // 收集所有生成的物体
+                    allObjects.Add(instanceMapObj);
                 }
             }
         }
 
-        // 4. 构建逻辑网格 (烘焙数据)
-        logicalGrid.Build(liveObjects);
+        // 4. 构建 3D 逻辑网格 (关键修改)
+        logicalGrid.Build(allObjects);
         
-        Debug.Log("地图加载完毕，逻辑网格已构建。");
+        Debug.Log($"地图加载完毕，构建了 {logicalGrid.blockData.Count} 个逻辑方块。");
     }
     
     // 调试：在 Scene 窗口画出哪些格子能走
     void OnDrawGizmos()
     {
-        // 必须判空，防止编辑器没运行报错
-        if (logicalGrid == null || logicalGrid.cells == null) return;
+        if (logicalGrid == null || logicalGrid.blockData == null) return;
 
-        foreach (var cell in logicalGrid.cells.Values)
+        foreach (var kvp in logicalGrid.blockData)
         {
-            // 修正变量名：isWalkable -> canWalk
-            if (cell.canWalk) 
-            {
-                Gizmos.color = new Color(0, 1, 0, 0.5f); // 绿色半透明
-                
-                // 修正变量名：topHeight -> floorHeight
-                Vector3 center = new Vector3(cell.x * cellSize, cell.floorHeight, cell.z * cellSize);
-                
-                Gizmos.DrawCube(center, new Vector3(cellSize * 0.9f, 0.1f, cellSize * 0.9f));
-            }
-            else
-            {
-                Gizmos.color = Color.red; // 红色代表有障碍
-                Vector3 center = new Vector3(cell.x * cellSize, 0, cell.z * cellSize);
-                Gizmos.DrawWireCube(center, new Vector3(cellSize, 1, cellSize));
-            }
+            Vector3Int pos = kvp.Key;
+            BlockType type = kvp.Value;
+
+            if (type == BlockType.Air) continue;
+
+            // 根据类型画不同颜色
+            if (type == BlockType.Solid) Gizmos.color = new Color(0, 1, 0, 0.3f);
+            else if (type == BlockType.Slab) Gizmos.color = new Color(1, 1, 0, 0.3f);
+            else Gizmos.color = new Color(1, 0, 0, 0.3f); // 障碍
+
+            // 画在方块中心
+            Vector3 center = new Vector3(pos.x * cellSize, pos.y * cellSize, pos.z * cellSize);
+            Gizmos.DrawWireCube(center, new Vector3(cellSize * 0.9f, cellSize * 0.9f, cellSize * 0.9f));
         }
     }
 }

@@ -54,11 +54,11 @@ namespace Global
         }
         public enum BlockType
         {
-            Ground,     // 普通地面 (草、土)
-            Obstacle,   // 障碍 (墙、树干)
-            Decoration, // 装饰 (花、草丛 - 没有任何逻辑影响)
-            Liquid,     // 液体 (水、岩浆 - 只有特定单位能走)
-            Stairs      // 楼梯 (特殊的高度处理)
+            Air,        // 空气
+            Solid,      // 完整方块 (高 1.0)
+            Slab,       // 半砖 (高 0.5)
+            Stairs,     // 楼梯 (特殊处理)
+            Liquid      // 水
         }
 
         public enum FactionType

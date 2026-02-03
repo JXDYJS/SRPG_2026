@@ -4,7 +4,7 @@ using Global;
 public class MapObject : MonoBehaviour
 {
     public string prefabId;
-    public BlockType type = BlockType.Ground;
+    public BlockType type = BlockType.Solid;
     public bool isWalkable = true;
     
     // 专门为楼梯准备的属性

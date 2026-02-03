@@ -4,9 +4,12 @@ using Character.instance;
 using Character.data;
 using GamePlay.unit;
 using Managers;
-using Command; // 引用 Command 命名空间
+using Command;
+using GamePlay.Grid; // 引用 AStar
+using Global;
+using GamePlay;
 
-namespace GamePlay
+namespace DebugSystem
 {
     public class Test_ClickMove : MonoBehaviour
     {
@@ -17,7 +20,7 @@ namespace GamePlay
 
         [Header("调试开关")]
         public bool showPathGizmos = true;
-        private List<Vector2Int> currentDebugPath;
+        private List<Vector3Int> currentDebugPath; // 改为 3D 路径
 
         void Start()
         {
@@ -29,63 +32,63 @@ namespace GamePlay
         {
             if (playerUnit != null && mapManager != null)
             {
+                // 确保数据已初始化
                 CharacterData testData = ScriptableObject.CreateInstance<CharacterData>();
-                testData.CharacterName = "测试勇者";
+                testData.CharacterName = "3D勇者";
+                testData.MoveRange = 10; // 跑远点测试
                 testData.BaseMaxHP = 100;
-                testData.BaseATK = 10;
-                testData.BaseDEF = 2;
-                testData.MoveRange = 5; // 增加移动力方便测试
 
                 CharacterInstance testCharacter = new CharacterInstance(testData);
-                playerUnit.Setup(testCharacter, mapManager, 0, 0);
+                
+                // 这里的出生点 (0,0,0) 假设 (0,0,0) 有方块
+                // 如果没有，你需要手动指定一个合法的 gridPosition
+                playerUnit.Setup(testCharacter, mapManager, 0, 1,0); 
+                // 注意：Setup 内部可能还需要适配 3D 坐标的重载，或者你手动 set
+                playerUnit.SetGridPosition(new Vector3Int(0, 1, 0)); 
 
-                Debug.Log($"测试玩家已生成，HP: {playerUnit.Character.statSystem.currentHP}");
+                Debug.Log($"测试玩家就绪，位于 {playerUnit.gridPosition}");
             }
         }
 
         void Update()
         {
-            // --- 1. 左键移动 (生成 Command) ---
             if (Input.GetMouseButtonDown(0))
             {
                 HandleClick();
             }
 
-            // --- 2. Z键撤销 (测试 Undo) ---
+            // 测试 Undo
             if (Input.GetKeyDown(KeyCode.Z))
             {
-                if (playerUnit.isMoving)
+                if (!playerUnit.isMoving)
                 {
-                    Debug.LogWarning("移动中禁止撤销（防止鬼畜）！");
-                    return;
+                    Debug.Log(">>> 撤销 3D 移动...");
+                    UndoSystem.Instance.Undo();
                 }
-                
-                Debug.Log(">>> 尝试撤销上一步操作...");
-                UndoSystem.Instance.Undo();
             }
         }
 
         void HandleClick()
         {
-            if (mapManager == null || playerUnit == null) return;
-            
-            // 状态保护：移动中不能再下令
-            if (playerUnit.IsBusy) 
-            {
-                Debug.LogWarning("角色忙碌中...");
-                return;
-            }
+            if (mapManager == null || playerUnit == null || playerUnit.IsBusy) return;
 
             Ray ray = mainCam.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out RaycastHit hit, 1000f))
             {
-                Vector3 localPoint = hit.point - hit.normal * 0.01f;
-                int targetX = Mathf.RoundToInt(localPoint.x / mapManager.cellSize);
-                int targetZ = Mathf.RoundToInt(localPoint.z / mapManager.cellSize);
-                Vector2Int targetPos = new Vector2Int(targetX, targetZ);
+                // 1. 计算点击的方块坐标 (目标脚底方块)
+                Vector3 hitPoint = hit.point - hit.normal * 0.01f;
+                int tx = Mathf.RoundToInt(hitPoint.x / mapManager.cellSize);
+                int ty = (int)(hitPoint.y / mapManager.cellSize);
+                int tz = Mathf.RoundToInt(hitPoint.z / mapManager.cellSize);
+                
+                Vector3Int targetPos = new Vector3Int(tx, ty, tz);
 
-                // 寻路
-                List<Vector2Int> path = AStar.FindPath(
+                // 2. 验证目标是否有效 (是不是空气?)
+                BlockType block = mapManager.logicalGrid.GetBlock(targetPos);
+                Debug.Log($"尝试寻路到: {targetPos} (类型: {block})");
+
+                // 3. 执行 3D A* 寻路
+                List<Vector3Int> path = AStar.FindPath(
                     playerUnit.gridPosition, 
                     targetPos, 
                     mapManager.logicalGrid, 
@@ -94,18 +97,16 @@ namespace GamePlay
 
                 if (path != null && path.Count > 0)
                 {
-                    Debug.Log($"路径确认，生成移动指令...");
+                    Debug.Log($"路径找到！长度: {path.Count}");
                     currentDebugPath = path;
 
-                    // ==========================================
-                    // 【关键修改】使用 Command 模式执行
-                    // ==========================================
+                    // 4. 发送 MoveCommand (确保 MoveCommand 构造函数接受 List<Vector3Int>)
                     var moveCmd = new MoveCommand(playerUnit, path);
-                    moveCmd.Execute(); // 这会自动触发 BeginTransaction -> RegisterDirty -> Commit
+                    moveCmd.Execute();
                 }
                 else
                 {
-                    Debug.LogWarning($"无法到达 [{targetX}, {targetZ}]");
+                    Debug.LogWarning("无法到达该位置 (可能太高、被阻挡或距离过远)");
                 }
             }
         }
@@ -113,13 +114,17 @@ namespace GamePlay
         void OnDrawGizmos()
         {
             if (!showPathGizmos || currentDebugPath == null || mapManager == null) return;
-            Gizmos.color = Color.yellow; // 改成黄色醒目一点
+            Gizmos.color = Color.yellow;
+            
             for (int i = 0; i < currentDebugPath.Count - 1; i++)
             {
-                Vector2Int current = currentDebugPath[i];
-                Vector2Int next = currentDebugPath[i + 1];
-                Vector3 p1 = new Vector3(current.x, 0.5f, current.y) * mapManager.cellSize;
-                Vector3 p2 = new Vector3(next.x, 0.5f, next.y) * mapManager.cellSize;
+                Vector3Int current = currentDebugPath[i];
+                Vector3Int next = currentDebugPath[i + 1];
+                
+                // 简单的可视化，高度加个 1.5 防止被埋在土里
+                Vector3 p1 = new Vector3(current.x, current.y + 1.2f, current.z) * mapManager.cellSize;
+                Vector3 p2 = new Vector3(next.x, next.y + 1.2f, next.z) * mapManager.cellSize;
+                
                 Gizmos.DrawLine(p1, p2);
                 Gizmos.DrawSphere(p2, 0.1f);
             }

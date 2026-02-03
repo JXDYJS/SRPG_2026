@@ -116,6 +116,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefabId: 3
-  type: 0
+  type: 1
   isWalkable: 1
   heightOffset: 0.5
