@@ -2,37 +2,41 @@ using UnityEngine;
 using Character.data;
 using Character.instance;
 using GamePlay.unit;
-public class LevelingManager : MonoBehaviour
+
+namespace Managers
 {
-    [Header("设置")]
-    public GlobalLevelConfig globalLevelConfig;
-    int GlobalLevel = 0;
-    int CurrentExp = 0;
-    int UpgradePoint = 0;
-    public void AddExp(int exp)
+    public class LevelingManager : MonoBehaviour
     {
-        CurrentExp += exp;
-        CheckLevelUp();
-    }
-
-    private void CheckLevelUp()
-    {
-        if (CurrentExp >= globalLevelConfig.ExpRequirements[GlobalLevel])
+        [Header("设置")]
+        public GlobalLevelConfig globalLevelConfig;
+        int GlobalLevel = 0;
+        int CurrentExp = 0;
+        int UpgradePoint = 0;
+        public void AddExp(int exp)
         {
-            CurrentExp -= globalLevelConfig.ExpRequirements[GlobalLevel];
-            GlobalLevel++;
-            UpgradePoint+=3;
+            CurrentExp += exp;
+            CheckLevelUp();
         }
-    }
 
-    public bool TryUpgradeUnit(MapUnit unit)
-    {
-        if(UpgradePoint <= 0 && unit.Character.level >= unit.Character.maxLevel)
+        private void CheckLevelUp()
         {
-            return false;
+            if (CurrentExp >= globalLevelConfig.ExpRequirements[GlobalLevel])
+            {
+                CurrentExp -= globalLevelConfig.ExpRequirements[GlobalLevel];
+                GlobalLevel++;
+                UpgradePoint+=3;
+            }
         }
-        UpgradePoint--;
-        unit.LevelUp();
-        return true;
+
+        public bool TryUpgradeUnit(MapUnit unit)
+        {
+            if(UpgradePoint <= 0 && unit.Character.level >= unit.Character.maxLevel)
+            {
+                return false;
+            }
+            UpgradePoint--;
+            unit.LevelUp();
+            return true;
+        }
     }
 }

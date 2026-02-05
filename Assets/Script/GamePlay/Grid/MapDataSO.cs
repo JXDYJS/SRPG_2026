@@ -1,0 +1,26 @@
+using UnityEngine;
+using System.Collections.Generic;
+using Global;
+
+namespace GamePlay.Grid
+{
+    // 单个方块的存储数据
+    [System.Serializable]
+    public class MapBlockData
+    {
+        public Vector3Int position; // 直接存整数坐标
+        public string prefabId;        // 对应 MapManager 的 prefabIndex
+        public int rotationIndex;   // 0=0, 1=90, 2=180, 3=270
+    }
+
+    [CreateAssetMenu(fileName = "NewMapData", menuName = "Game/Map Data (SO)")]
+    public class MapDataSO : ScriptableObject
+    {
+        public List<MapBlockData> blocks = new List<MapBlockData>();
+        
+        // 编辑器用的配置（不打包进游戏）
+        #if UNITY_EDITOR
+        public int editorPreviewId = 0; // 当前选中的笔刷ID
+        #endif
+    }
+}

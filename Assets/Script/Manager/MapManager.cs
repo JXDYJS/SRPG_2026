@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEditor;
 #endif
 using Global;
+using GamePlay.Grid;
 
 namespace Managers
 {
@@ -16,6 +17,7 @@ public class MapManager : MonoBehaviour
     public float cellSize = 1.0f;
     [Tooltip("当前要保存或加载的地图名称（不需要加 .json）")]
     public string currentMapName = "Map_01";
+    public MapDataSO currentLevelData;
 
     [Header("资源索引 (ID -> Prefab)")]
     // 你需要在 Inspector 里手动把预制体拖进去，或者写代码自动加载 Resources
@@ -49,7 +51,7 @@ public class MapManager : MonoBehaviour
 
     void Start()
     {
-        LoadMap();
+        LoadFromSO();
     }
 
         // ================== 保存逻辑 (3D -> Data) ==================
@@ -154,6 +156,59 @@ public class MapManager : MonoBehaviour
         
         Debug.Log($"地图加载完毕，构建了 {logicalGrid.blockData.Count} 个逻辑方块。");
     }
+
+
+    [ContextMenu("Save To SO")]
+    public void SaveToSO()
+    {
+        if (currentLevelData == null) return;
+        
+        currentLevelData.blocks.Clear();
+        
+        foreach (Transform child in mapRoot)
+        {
+            MapObject mapObj = child.GetComponent<MapObject>();
+            if (mapObj != null)
+            {
+                currentLevelData.blocks.Add(new MapBlockData
+                {
+                    position = Vector3Int.RoundToInt(child.position), // 假设 cellSize=1
+                    prefabId = mapObj.prefabId,
+                    rotationIndex = Mathf.RoundToInt(child.eulerAngles.y / 90f)
+                });
+            }
+        }
+        
+        // 标记已脏，通知 Unity 保存磁盘文件
+    #if UNITY_EDITOR
+        UnityEditor.EditorUtility.SetDirty(currentLevelData);
+        UnityEditor.AssetDatabase.SaveAssets();
+    #endif
+        Debug.Log("地图已保存到 ScriptableObject!");
+    }
+
+    [ContextMenu("Load From SO")]
+    public void LoadFromSO()
+    {
+        if (currentLevelData == null) return;
+        
+        List<MapObject> allObjects = new List<MapObject>();
+        
+        foreach (var block in currentLevelData.blocks)
+        {
+            MapObject prefab = prefabIndex.Find(p => p.prefabId == block.prefabId);
+            if (prefab)
+            {
+                Vector3 pos = new Vector3(block.position.x, block.position.y, block.position.z) * cellSize;
+                Quaternion rot = Quaternion.Euler(0, block.rotationIndex * 90, 0);
+                GameObject obj = Instantiate(prefab.gameObject, pos, rot, mapRoot);
+                allObjects.Add(obj.GetComponent<MapObject>());
+            }
+        }
+        
+        // 构建逻辑网格
+        logicalGrid.Build(allObjects);
+    }
     
     // 调试：在 Scene 窗口画出哪些格子能走
     void OnDrawGizmos()
@@ -173,7 +228,7 @@ public class MapManager : MonoBehaviour
             else Gizmos.color = new Color(1, 0, 0, 0.3f); // 障碍
 
             // 画在方块中心
-            Vector3 center = new Vector3(pos.x * cellSize, pos.y * cellSize, pos.z * cellSize);
+            Vector3 center = new Vector3(pos.x * cellSize, pos.y * cellSize + 0.5f, pos.z * cellSize);
             Gizmos.DrawWireCube(center, new Vector3(cellSize * 0.9f, cellSize * 0.9f, cellSize * 0.9f));
         }
     }
