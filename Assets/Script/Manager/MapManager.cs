@@ -161,20 +161,54 @@ public class MapManager : MonoBehaviour
     [ContextMenu("Save To SO")]
     public void SaveToSO()
     {
-        if (currentLevelData == null) return;
+        if (currentLevelData == null) 
+        {
+            Debug.LogError("没有绑定 MapDataSO，无法保存！");
+            return;
+        }
         
         currentLevelData.blocks.Clear();
+        
+        // 1. 创建一个哈希集合，用于记录已占用的位置
+        HashSet<Vector3Int> recordedPositions = new HashSet<Vector3Int>();
         
         foreach (Transform child in mapRoot)
         {
             MapObject mapObj = child.GetComponent<MapObject>();
             if (mapObj != null)
             {
+                // 2. 计算网格坐标
+                // 务必除以 cellSize，否则如果 cellSize不是1，坐标会变大
+                int x = Mathf.RoundToInt(child.position.x / cellSize);
+                
+                // 针对底部Pivot的Y轴处理：
+                // 如果物体摆放时已经是整数位置（如0, 1, 2），RoundToInt 是安全的。
+                // 如果有微小误差（如0.0001），RoundToInt 也能修正。
+                int y = Mathf.RoundToInt(child.position.y / cellSize); 
+                
+                int z = Mathf.RoundToInt(child.position.z / cellSize);
+                
+                Vector3Int pos = new Vector3Int(x, y, z);
+
+                // 3. 核心去重逻辑
+                if (recordedPositions.Contains(pos))
+                {
+                    Debug.LogWarning($"⚠️ 发现重叠方块：位置 {pos} 已存在，跳过重复保存。建议清理场景。");
+                    continue; // 跳过这个重复的方块
+                }
+
+                // 4. 记录位置并保存数据
+                recordedPositions.Add(pos);
+                
                 currentLevelData.blocks.Add(new MapBlockData
                 {
-                    position = Vector3Int.RoundToInt(child.position), // 假设 cellSize=1
+                    position = pos,
                     prefabId = mapObj.prefabId,
-                    rotationIndex = Mathf.RoundToInt(child.eulerAngles.y / 90f)
+                    // 规范化旋转：保证只有 0, 1, 2, 3 四个值
+                    rotationIndex = Mathf.RoundToInt(child.eulerAngles.y / 90f) % 4,
+                    XRound = mapObj.type == BlockType.Slab ? -90 : 0,
+                    ZRound = mapObj.ZRound,
+                    YRound = mapObj.YRound,
                 });
             }
         }
@@ -184,30 +218,86 @@ public class MapManager : MonoBehaviour
         UnityEditor.EditorUtility.SetDirty(currentLevelData);
         UnityEditor.AssetDatabase.SaveAssets();
     #endif
-        Debug.Log("地图已保存到 ScriptableObject!");
+        Debug.Log($"地图保存成功！共保存 {currentLevelData.blocks.Count} 个方块 (已自动去重)。");
     }
 
     [ContextMenu("Load From SO")]
     public void LoadFromSO()
     {
-        if (currentLevelData == null) return;
+        if (currentLevelData == null) 
+        {
+            Debug.LogError("未指定 Level Data (SO)！");
+            return;
+        }
         
+        // ================== 新增：清理逻辑 ==================
+        if (mapRoot != null)
+        {
+            // 注意：删除子物体必须倒序遍历
+            for (int i = mapRoot.childCount - 1; i >= 0; i--)
+            {
+                GameObject child = mapRoot.GetChild(i).gameObject;
+                
+                // 区分编辑器模式和运行模式
+#if UNITY_EDITOR
+                if (Application.isPlaying)
+                    Destroy(child);
+                else
+                    Undo.DestroyObjectImmediate(child); // 支持撤销的删除，或者用 DestroyImmediate(child)
+#else
+                Destroy(child);
+#endif
+            }
+        }
+        // ==================================================
+
         List<MapObject> allObjects = new List<MapObject>();
         
         foreach (var block in currentLevelData.blocks)
         {
-            MapObject prefab = prefabIndex.Find(p => p.prefabId == block.prefabId);
+            // 查找 ID 对应的预制体
+            // 注意：这里用 string ID 还是 int ID 取决于你的 MapDataSO 定义，假设是 int prefabId
+            MapObject prefab = prefabIndex.Find(p => p.prefabId == block.prefabId); // 假设 MapObject 有 int prefabId 字段
+            
+            // 如果你的 MapDataSO 用的是 string prefabId，请改为 p.prefabId == block.prefabId
+            
             if (prefab)
             {
                 Vector3 pos = new Vector3(block.position.x, block.position.y, block.position.z) * cellSize;
-                Quaternion rot = Quaternion.Euler(0, block.rotationIndex * 90, 0);
-                GameObject obj = Instantiate(prefab.gameObject, pos, rot, mapRoot);
-                allObjects.Add(obj.GetComponent<MapObject>());
+
+                Quaternion rot = Quaternion.Euler(block.XRound,block.YRound,block.ZRound);
+                
+                GameObject obj;
+#if UNITY_EDITOR
+                if (!Application.isPlaying)
+                {
+                    // 编辑器下使用 PrefabUtility 可以保持预制体关联（变蓝）
+                    obj = (GameObject)UnityEditor.PrefabUtility.InstantiatePrefab(prefab.gameObject, mapRoot);
+                    obj.transform.position = pos;
+                    obj.transform.rotation = rot;
+                }
+                else
+#endif
+                {
+                    // 运行时直接生成
+                    obj = Instantiate(prefab.gameObject, pos, rot, mapRoot);
+                }
+
+                MapObject mapObj = obj.GetComponent<MapObject>();
+                // 如果需要，可以在这里把保存时的某些额外属性赋回去
+                
+                allObjects.Add(mapObj);
+            }
+            else
+            {
+                Debug.LogWarning($"找不到 ID 为 {block.prefabId} 的方块预制体！");
             }
         }
         
         // 构建逻辑网格
         logicalGrid.Build(allObjects);
+        
+        Debug.Log($"地图加载完毕，生成了 {allObjects.Count} 个方块。");
     }
     
     // 调试：在 Scene 窗口画出哪些格子能走

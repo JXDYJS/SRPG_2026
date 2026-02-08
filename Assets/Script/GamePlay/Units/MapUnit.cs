@@ -7,6 +7,7 @@ using GamePlay.buff;
 using Global;
 using Command;
 using GamePlay.Grid;
+using GamePlay.Skill;
 
 namespace GamePlay
 {
@@ -70,6 +71,11 @@ namespace GamePlay
             public FactionType Faction;
             private HashSet<MapUnit> _personalEnemies = new HashSet<MapUnit>();//个人仇恨列表
             public virtual bool HasGrudgeAgainst(MapUnit target) => _personalEnemies.Contains(target);
+            public SkillDataSO NormalAttackSkill;
+            public int actionPoints = 0;
+            public bool canAction => actionPoints > 0 ? true : false;
+            public bool hasMoved = false;
+            public bool IsActionDone => actionPoints <= 0 && hasMoved;
 
             // ================== Lifecycle ==================
 
@@ -245,56 +251,59 @@ namespace GamePlay
                 }
             }
 
-            public virtual void Attack(MapUnit target)
-            {
-                if (IsBusy) return;
-                StartCoroutine(AttackVisualRoutine(target));
-                DamageInfo info = new DamageInfo(
-                    Character.statSystem.ATK.getValue(),
-                    this,
-                    target,
-                    DamageType.Physical,
-                    DamageMethod.Normal
-                );
-                ExecuteAttackLogic(target,info);
-            }
+        public virtual void Attack(MapUnit target)
+        {
 
-            private void ExecuteAttackLogic(MapUnit target,DamageInfo info = null)
-            {
-                if (target != null && target.Character.statSystem.currentHP > 0)
-                {
-                    if(info == null)
-                    {
-                        Debug.LogError($"<color=red>⚠️ {name} 尝试攻击 {target.name}，但未提供伤害信息！</color>");
-                        return;
-                    }
+            if (target == null || target.Character.statSystem.currentHP <= 0) return;
 
-                    CombatCalculator.CalculateDamage(info);
-                    target.TakeDamage(info); 
-                }
-            }
+            DamageInfo info = new DamageInfo(
+                Character.statSystem.ATK.getValue(),
+                this,
+                target,
+                DamageType.Physical,
+                DamageMethod.Normal
+            );
 
-            IEnumerator AttackVisualRoutine(MapUnit target)
-            {
-                SwitchState(UnitState.Attacking);
-                transform.LookAt(target.transform);
+            CombatCalculator.CalculateDamage(info);
+            target.TakeDamage(info); 
+        }
 
-                // 前摇动画
-                yield return new WaitForSeconds(0.2f); 
+            // private void ExecuteAttackLogic(MapUnit target,DamageInfo info = null)
+            // {
+            //     if (target != null && target.Character.statSystem.currentHP > 0)
+            //     {
+            //         if(info == null)
+            //         {
+            //             Debug.LogError($"<color=red>⚠️ {name} 尝试攻击 {target.name}，但未提供伤害信息！</color>");
+            //             return;
+            //         }
 
-                // 【关键点】这里不再调用 TakeDamage（因为血已经扣过了）
-                // 这里只触发“视觉上的受击反馈”
-                if (target != null)
-                {
-                    Debug.Log($"<color=red>⚔️ {name} 攻击命中视觉效果！</color>");
-                    // 告诉目标：你该播放挨打动画了
-                    target.PlayHitVisual(); 
-                }
+            //         CombatCalculator.CalculateDamage(info);
+            //         target.TakeDamage(info); 
+            //     }
+            // }
 
-                // 后摇
-                yield return new WaitForSeconds(0.3f); 
-                SwitchState(UnitState.Idle);
-            }
+            // IEnumerator AttackVisualRoutine(MapUnit target)
+            // {
+            //     SwitchState(UnitState.Attacking);
+            //     transform.LookAt(target.transform);
+
+            //     // 前摇动画
+            //     yield return new WaitForSeconds(0.2f); 
+
+            //     // 【关键点】这里不再调用 TakeDamage（因为血已经扣过了）
+            //     // 这里只触发“视觉上的受击反馈”
+            //     if (target != null)
+            //     {
+            //         Debug.Log($"<color=red>⚔️ {name} 攻击命中视觉效果！</color>");
+            //         // 告诉目标：你该播放挨打动画了
+            //         target.PlayHitVisual(); 
+            //     }
+
+            //     // 后摇
+            //     yield return new WaitForSeconds(0.3f); 
+            //     SwitchState(UnitState.Idle);
+            // }
 
             public void PlayHitVisual()
             {
@@ -303,43 +312,13 @@ namespace GamePlay
 
             public List<Vector3Int> GetCurrentAttackRange(Vector3Int? targetPos = null)
             {
-                Vector3Int aimTarget = targetPos ?? (this.gridPosition + GetForwardVector()); 
-                
-                Vector2Int start2D = new Vector2Int(this.gridPosition.x, this.gridPosition.z);
-                Vector2Int target2D = new Vector2Int(aimTarget.x, aimTarget.z);
-
-                List<Vector2Int> range2D = AttackRangeSystem.GetAttackRange(
-                    start2D, 
-                    target2D, 
-                    this.Character.characterData
-                );
-
-                // 3. 垂直延伸 (3D Extrusion)
-                List<Vector3Int> valid3DTiles = new List<Vector3Int>();
-                
-                int heightRangeUp = 2;   // 向上能打 2 格
-                int heightRangeDown = 2; // 向下能打 2 格
-
-                // 获取攻击者的“打击区间”
-                // 假设攻击者高度为 1 (或者从数据读取)，攻击判定通常基于“手部位置”或“中心位置”
-                // 这里简化逻辑：攻击范围覆盖 [MyY - Down, MyY + Height + Up]
-                int myY = this.gridPosition.y;
-
-                foreach (Vector2Int p2d in range2D)
+                if (NormalAttackSkill == null)
                 {
-                    for (int yOffset = -heightRangeDown; yOffset <= heightRangeUp; yOffset++)
-                    {
-                        int targetY = myY + yOffset;
-                        
-                        Vector3Int pos3D = new Vector3Int(p2d.x, targetY, p2d.y);
-
-                        
-                        // 目前为了通用性，我们返回所有空间点，由 UI 层决定怎么画框
-                        valid3DTiles.Add(pos3D);
-                    }
+                    Debug.LogWarning($"{name} 没有配置 NormalAttackSkill，无法计算攻击范围");
+                    return new List<Vector3Int>();
                 }
 
-                return valid3DTiles;
+                return AttackRangeSystem.GetSkillRange3D(this.gridPosition, targetPos, NormalAttackSkill);
             }
 
             private Vector3Int GetForwardVector()
@@ -497,6 +476,37 @@ namespace GamePlay
                         break;
                 }
             }
+            //=============Action===============
+            public virtual void OnTurnStart()
+            {
+                hasMoved = false;
+                foreach(var mod in this.GetModifiers())
+                {
+                    mod.OnTurnStart(this);
+                }
+                actionPoints++;
+                //TODO
+            }
+
+            public virtual void OnTurnEnd()
+            {
+                actionPoints = 0;
+                foreach(var mod in this.GetModifiers())
+                {
+                    mod.OnTurnEnd(this);
+                }
+                //TODO
+            }
+
+            public virtual void OnWait()
+            {
+                foreach(var mod in this.GetModifiers())
+                {
+                    mod.OnWait(this);
+                }
+                //TODO
+            }
+
 
             IEnumerator HitFlashRoutine()
             {
@@ -557,6 +567,11 @@ namespace GamePlay
                 
                 // 4. 重置状态
                 StopAllCoroutines();
+            }
+
+            public void SetState(UnitState state)
+            {
+                SwitchState(state);
             }
         }
     }

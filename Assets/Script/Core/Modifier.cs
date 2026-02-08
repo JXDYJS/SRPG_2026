@@ -50,6 +50,9 @@ namespace Modifier
             void OnBeHurt(DamageInfo damageInfo);
             void OnKill(DamageInfo damageInfo);
             void OnDie(DamageInfo damageInfo);
+            void OnActionStart(MapUnit owner);
+            void OnActionEnd(MapUnit owner);
+            void OnWait(MapUnit owner);
         }
 
 
@@ -77,5 +80,8 @@ namespace Modifier
             public virtual void OnBeHurt(DamageInfo damageInfo) { }
             public virtual void OnKill(DamageInfo damageInfo) { }
             public virtual void OnDie(DamageInfo damageInfo) { }
+            public virtual void OnActionStart(MapUnit owner) { }
+            public virtual void OnWait(MapUnit owner) { }
+            public virtual void OnActionEnd(MapUnit owner) { }
         }
 }

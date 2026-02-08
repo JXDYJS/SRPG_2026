@@ -113,7 +113,7 @@ namespace DebugSystem
                         // 3D 攻击判定
                         if (selectedUnit.CanAttack(target))
                         {
-                            new AttackCommand(selectedUnit, target).Execute();
+                            new AttackCommand(selectedUnit, target,null).Execute();
                         }
                         else
                         {

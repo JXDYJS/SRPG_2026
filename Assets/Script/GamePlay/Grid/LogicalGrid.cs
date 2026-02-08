@@ -3,104 +3,13 @@ using UnityEngine;
 using System.Linq;
 using Global;
 
-namespace GamePlay{
-// public class LogicalCell
-// {
-//     public int x, z;
-    
-//     // 最终行走属性
-//     public bool canWalk;       // 普通人能走吗
-//     public bool canSwim;       // 这一格是水吗
-//     public float floorHeight;  // 脚底高度
-
-//     // 楼梯属性
-//     public bool isStairs;
-//     public int stairDirection; // 0, 90, 180, 270 (对应 Transform 的 Rotation Y)
-
-//     public LogicalCell(int x, int z, List<MapObject> stack)
-//     {
-//         this.x = x;
-//         this.z = z;
-//         RecalculateLogic(stack);
-//     }
-
-//     void RecalculateLogic(List<MapObject> stack)
-//     {
-//         // 初始化
-//         canWalk = false;
-//         canSwim = false;
-//         isStairs = false;
-//         floorHeight = -999f;
-
-//         if (stack == null || stack.Count == 0) return;
-
-//         // --- 1. 处理障碍物 ---
-//         // 规则：只要有一个 "Obstacle" (墙)，哪怕水底有土，这里也是墙
-//         if (stack.Any(b => b.type == BlockType.Obstacle))
-//         {
-//             return; // 也就是 canWalk = false
-//         }
-
-//         // --- 2. 处理液体 (水) ---
-//         // 规则：查找最高的液体
-//         var topLiquid = stack
-//             .Where(b => b.type == BlockType.Liquid)
-//             .OrderByDescending(b => b.transform.position.y)
-//             .FirstOrDefault();
-
-//         if (topLiquid != null)
-//         {
-//             canSwim = true; 
-//             canWalk = false; // 普通人不能走
-//             floorHeight = topLiquid.transform.position.y + 0.8f; // 水面高度
-//             return; // 既然是水，逻辑处理完毕 (除非你要做浅水区)
-//         }
-
-//         // --- 3. 处理地面与楼梯 ---
-//         // 规则：如果没有障碍和水，找最高的 "Ground" 或 "Stairs"
-//         var topStandable = stack
-//             .Where(b => b.type == BlockType.Ground || b.type == BlockType.Stairs)
-//             .OrderByDescending(b => b.transform.position.y)
-//             .FirstOrDefault();
-
-//         if (topStandable != null)
-//         {
-//             canWalk = true;
-            
-//             // 基础高度 (方块中心Y + 0.5)
-//             // 注意：这里假设方块 pivot 在中心，高 1米
-//             var col = topStandable.GetComponent<Collider>();
-//             if (col != null)
-//             {
-//                 floorHeight = col.bounds.max.y;
-//             }
-//             else
-//             {
-//                 // 如果忘了加碰撞体，就保底用中心点+0.5
-//                 floorHeight = topStandable.transform.position.y + 0.5f; 
-//             }
-
-//             // 特殊处理：如果是楼梯
-//             if (topStandable.type == BlockType.Stairs)
-//             {
-//                 isStairs = true;
-//                 // 记录楼梯朝向 (0=North, 90=East...)
-//                 stairDirection = Mathf.RoundToInt(topStandable.transform.eulerAngles.y);
-                
-//                 // 楼梯的高度逻辑可能需要微调，比如它是从 y 到 y+1 的过渡
-//                 // 这里我们暂且记录它的底部高度，具体爬坡逻辑交给 Pathfinding
-//             }
-//         }
-//     }
-// }
-}
-
 namespace GamePlay
 {
     public class LogicalGrid
     {
         // 存储所有的逻辑格子：Key是坐标(x,z)，Value是单个格子的数据
         public Dictionary<Vector3Int, BlockType> blockData = new Dictionary<Vector3Int, BlockType>();
+        public Dictionary<Vector3Int, float> blockYSizes = new Dictionary<Vector3Int, float>();// 存储每个格子的Y轴高度
 
         public BlockType GetBlock(int x, int y, int z)
         {
@@ -130,7 +39,14 @@ namespace GamePlay
             {
                 Vector3Int pos = Vector3Int.RoundToInt(obj.transform.position);
                 blockData[pos] = obj.type; 
+                blockYSizes[pos] = obj.YCellSize;
             }
+        }
+
+        public float GetBlockYSize(Vector3Int pos)
+        {
+            if (blockYSizes.TryGetValue(pos, out float size)) return size;
+            return 0f;
         }
 
         // /// <summary>

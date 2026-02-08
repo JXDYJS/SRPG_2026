@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Character.data;
 using Global;
+using GamePlay.Skill;
 
 namespace GamePlay.Grid
 {
@@ -164,6 +165,38 @@ namespace GamePlay.Grid
             {
                 return dy > 0 ? Vector2Int.up : Vector2Int.down;
             }
+        }
+
+        public static List<Vector3Int> GetSkillRange3D(Vector3Int casterPos, Vector3Int? targetPos, SkillDataSO skill)
+        {
+            List<Vector3Int> result3D = new List<Vector3Int>();
+
+            // 1. 准备 2D 参数
+            Vector2Int start2D = new Vector2Int(casterPos.x, casterPos.z);
+            Vector2Int aim2D = targetPos.HasValue 
+                ? new Vector2Int(targetPos.Value.x, targetPos.Value.z) 
+                : start2D + Vector2Int.right; // 默认朝右
+
+            // 2. 获取平面范围 (复用你现有的逻辑)
+            List<Vector2Int> range2D = GetGrids(start2D, aim2D, skill.AttackPattern, skill.MinRange, skill.MaxRange);
+
+            // 3. 垂直延伸 (3D Extrusion) - 核心逻辑移到这里
+            // 从 skill 数据中读取高度限制
+            int heightUp = skill.VerticalRange;
+            int heightDown = skill.VerticalRange;
+
+            foreach (Vector2Int p2d in range2D)
+            {
+                // 遍历该平面点对应的所有高度
+                // 范围是 [CasterY - Down, CasterY + Up]
+                for (int yOffset = -heightDown; yOffset <= heightUp; yOffset++)
+                {
+                    int targetY = casterPos.y + yOffset;
+                    result3D.Add(new Vector3Int(p2d.x, targetY, p2d.y));
+                }
+            }
+
+            return result3D;
         }
     }
 }

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Global;
 
 namespace Managers
 {
@@ -71,6 +72,19 @@ namespace Managers
                 return unit;
             }
             return null;
+        }
+
+        public List<MapUnit> GetUnitsByFaction(FactionType faction)
+        {
+            List<MapUnit> units = new List<MapUnit>();
+            foreach(var unit in allUnits)
+            {
+                if(unit.Character.characterData.DefaultFaction == faction)
+                {
+                    units.Add(unit);
+                }
+            }
+            return units;
         }
     }
 }

@@ -11,6 +11,9 @@ namespace GamePlay.Grid
         public Vector3Int position; // 直接存整数坐标
         public string prefabId;        // 对应 MapManager 的 prefabIndex
         public int rotationIndex;   // 0=0, 1=90, 2=180, 3=270
+        public int XRound = 0;
+        public int ZRound = 0;
+        public int YRound = 0;
     }
 
     [CreateAssetMenu(fileName = "NewMapData", menuName = "Game/Map Data (SO)")]

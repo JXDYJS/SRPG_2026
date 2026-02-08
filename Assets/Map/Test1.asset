@@ -16,280 +16,529 @@ MonoBehaviour:
   - position: {x: 0, y: 0, z: 0}
     prefabId: 1
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 1, y: 0, z: 0}
     prefabId: 1
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 2, y: 0, z: 0}
     prefabId: 1
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 3, y: 0, z: 0}
     prefabId: 1
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 4, y: 0, z: 0}
     prefabId: 1
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 5, y: 0, z: 0}
     prefabId: 1
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 6, y: 0, z: 0}
     prefabId: 1
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 7, y: 0, z: 0}
     prefabId: 1
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 0, y: 0, z: 6}
     prefabId: 1
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 1, y: 0, z: 6}
     prefabId: 1
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 2, y: 0, z: 6}
     prefabId: 1
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 3, y: 0, z: 6}
     prefabId: 1
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 4, y: 0, z: 6}
     prefabId: 1
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 5, y: 0, z: 6}
     prefabId: 1
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 6, y: 0, z: 6}
     prefabId: 1
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 7, y: 0, z: 6}
     prefabId: 1
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 0, y: 0, z: 5}
     prefabId: 1
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 1, y: 0, z: 5}
     prefabId: 1
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 2, y: 0, z: 5}
     prefabId: 1
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 3, y: 0, z: 5}
     prefabId: 1
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 4, y: 0, z: 5}
     prefabId: 1
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 5, y: 0, z: 5}
     prefabId: 1
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 6, y: 0, z: 5}
     prefabId: 1
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 7, y: 0, z: 5}
     prefabId: 1
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 0, y: 0, z: 4}
     prefabId: 1
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 1, y: 0, z: 4}
     prefabId: 1
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 2, y: 0, z: 4}
     prefabId: 1
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 3, y: 0, z: 4}
     prefabId: 1
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 4, y: 0, z: 4}
     prefabId: 1
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 5, y: 0, z: 4}
     prefabId: 1
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 6, y: 0, z: 4}
     prefabId: 1
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 7, y: 0, z: 4}
     prefabId: 1
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 0, y: 0, z: 3}
     prefabId: 1
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 1, y: 0, z: 3}
     prefabId: 1
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 2, y: 0, z: 3}
     prefabId: 1
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 3, y: 0, z: 3}
     prefabId: 1
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 4, y: 0, z: 3}
     prefabId: 1
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 5, y: 0, z: 3}
     prefabId: 1
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 6, y: 0, z: 3}
     prefabId: 1
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 7, y: 0, z: 3}
     prefabId: 1
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 0, y: 0, z: 2}
     prefabId: 1
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 1, y: 0, z: 2}
     prefabId: 1
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 2, y: 0, z: 2}
     prefabId: 1
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 3, y: 0, z: 2}
     prefabId: 1
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 4, y: 0, z: 2}
     prefabId: 1
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 5, y: 0, z: 2}
     prefabId: 1
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 6, y: 0, z: 2}
     prefabId: 1
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 7, y: 0, z: 2}
     prefabId: 1
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 0, y: 0, z: 1}
     prefabId: 1
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 1, y: 0, z: 1}
     prefabId: 1
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 2, y: 0, z: 1}
     prefabId: 1
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 3, y: 0, z: 1}
     prefabId: 1
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 4, y: 0, z: 1}
     prefabId: 1
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 5, y: 0, z: 1}
     prefabId: 1
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 6, y: 0, z: 1}
     prefabId: 1
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 7, y: 0, z: 1}
     prefabId: 1
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 2, y: 1, z: 2}
     prefabId: 3
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 1, y: 1, z: 2}
     prefabId: 3
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 0, y: 1, z: 2}
     prefabId: 3
     rotationIndex: 0
-  - position: {x: 2, y: 1, z: 2}
-    prefabId: 3
-    rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 2, y: 1, z: 3}
     prefabId: 3
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 4, y: 1, z: 2}
     prefabId: 3
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 4, y: 1, z: 3}
     prefabId: 3
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 5, y: 1, z: 2}
     prefabId: 3
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 6, y: 1, z: 2}
     prefabId: 3
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 7, y: 1, z: 2}
     prefabId: 3
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 4, y: 2, z: 2}
     prefabId: 3
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 5, y: 2, z: 2}
     prefabId: 3
     rotationIndex: 0
-  - position: {x: 6, y: 2, z: 2}
-    prefabId: 3
-    rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 2, y: 2, z: 2}
     prefabId: 3
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 2, y: 4, z: 2}
     prefabId: 3
     rotationIndex: 0
-  - position: {x: 2, y: 4, z: 2}
-    prefabId: 3
-    rotationIndex: 0
-  - position: {x: 2, y: 4, z: 2}
-    prefabId: 3
-    rotationIndex: 0
-  - position: {x: 2, y: 4, z: 2}
-    prefabId: 3
-    rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 2, y: 3, z: 2}
     prefabId: 3
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 3, y: 4, z: 2}
     prefabId: 3
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 4, y: 4, z: 2}
     prefabId: 3
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 4, y: 3, z: 2}
     prefabId: 3
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 1, y: 2, z: 2}
     prefabId: 3
     rotationIndex: 0
-  - position: {x: 0, y: 2, z: 2}
-    prefabId: 3
-    rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 7, y: 2, z: 2}
     prefabId: 3
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 2, y: 1, z: 4}
     prefabId: 3
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 2, y: 1, z: 5}
     prefabId: 3
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 1, y: 1, z: 5}
     prefabId: 3
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 4, y: 1, z: 4}
     prefabId: 3
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 4, y: 1, z: 6}
     prefabId: 3
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 5, y: 1, z: 6}
     prefabId: 3
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 6, y: 1, z: 6}
     prefabId: 3
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 5, y: 1, z: 4}
     prefabId: 3
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 7, y: 1, z: 5}
     prefabId: 3
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 7, y: 1, z: 6}
     prefabId: 3
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 7, y: 1, z: 3}
     prefabId: 3
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
   - position: {x: 7, y: 1, z: 4}
     prefabId: 3
     rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
+  - position: {x: 6, y: 1, z: 1}
+    prefabId: 4
+    rotationIndex: 0
+    XRound: -90
+    ZRound: 0
+    YRound: 0
   editorPreviewId: 0

@@ -68,4 +68,5 @@ namespace Global
             Neutral,    // 中立（如猪人、商人）
             Guard       // 守卫（攻击怪物，但不攻击玩家，除非被惹怒）
         }
+        public enum TransitType { None, Projectile, Teleport }
 }
