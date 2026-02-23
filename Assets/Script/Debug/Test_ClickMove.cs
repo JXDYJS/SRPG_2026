@@ -37,6 +37,7 @@ namespace DebugSystem
                 testData.CharacterName = "3D勇者";
                 testData.MoveRange = 10; // 跑远点测试
                 testData.BaseMaxHP = 100;
+                testData.Height = 2;
 
                 CharacterInstance testCharacter = new CharacterInstance(testData);
                 

@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe202a631b15d92408ac5c92665ab130, type: 3}
+  m_Name: Skill_NormalAttack
+  m_EditorClassIdentifier: 
+  SkillName: 
+  Description: 
+  Icon: {fileID: 0}
+  AttackPattern: 0
+  MaxRange: 1
+  MinRange: 1
+  VerticalRange: 1
+  RequireLineOfSight: 1
+  VisualConfig:
+    CastAnimTrigger: Attack
+    CastEffect: {fileID: 0}
+    CastDelay: 0.5
+    Transit: 0
+    ProjectilePrefab: {fileID: 0}
+    ProjectileSpeed: 10
+    HitEffect: {fileID: 0}
+    HitDelay: 0.2
+  TargetEnemy: 1
+  TargetAlly: 0
+  TargetSelf: 0

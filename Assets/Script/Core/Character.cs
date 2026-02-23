@@ -45,6 +45,8 @@ namespace Character
             public int BaseDEF;
             public int BaseRES;
             public int MoveRange;       // 移动力 (例如 3 格)
+            public int Height;          // 高度 (例如 1 格)
+            public int Speed;           //行动速度
 
             [Header("战斗配置")]
             // 定义攻击范围模式 (例如：十字形、前方2格、周围1圈)

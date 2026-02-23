@@ -1,3 +1,4 @@
+//CREATE BY GEMINI
 using System.Collections.Generic;
 using UnityEngine;
 using Character.instance;
@@ -6,9 +7,8 @@ using GamePlay.unit;
 using Managers;
 using Command;
 using Global;
+using GamePlay.Skill;
 using GamePlay;
-using GamePlay.Grid;
-using Core.System;
 
 namespace DebugSystem
 {
@@ -18,13 +18,22 @@ namespace DebugSystem
         public MapManager mapManager;
         public Camera mainCam;
 
-        // 单位容器 (自动生成)
+        [Header("预制体与数据 (在 Inspector 拖拽)")]
+        [Tooltip("玩家的预制体 (必须带有 Animator)")]
+        public GameObject playerPrefab;
+        [Tooltip("敌人的预制体 (必须带有 Animator)")]
+        public GameObject enemyPrefab;
+        [Tooltip("默认的普通攻击技能数据 (SkillDataSO)")]
+        public SkillDataSO defaultAttackSkill;
+
+        // 单位容器
         public MapUnit playerUnit;
         public MapUnit enemyUnit;
 
         // 3D 范围缓存
         private List<Vector3Int> moveRangeTiles = new List<Vector3Int>();
         private List<Vector3Int> attackRangeTiles = new List<Vector3Int>();
+        private List<Vector3Int> currentDebugPath;
 
         private MapUnit selectedUnit;
 
@@ -36,44 +45,57 @@ namespace DebugSystem
 
         void InitBattleField()
         {
-            if (mapManager == null) return;
+            if (mapManager == null || playerPrefab == null || enemyPrefab == null)
+            {
+                Debug.LogError("Test_Battle: 请在 Inspector 中分配 MapManager 和 预制体！");
+                return;
+            }
 
-            // 1. 生成玩家 (站在 0,0,0)
-            playerUnit = SpawnDummyUnit("Player", 0, 1, 0, Color.blue, FactionType.Player);
-            // 攻击范围：十字 (Line)，长度 3
-            playerUnit.Character.characterData.Pattern = AttackPatternType.Line;
-            playerUnit.Character.characterData.MaxRange = 3;
+            // 1. 生成玩家 (站在 0,1,0)
+            playerUnit = SpawnUnit(playerPrefab, "Player_Steve", 0, 1, 0, FactionType.Player);
 
-            // 2. 生成敌人 (站在 3,1,0) -> 这是一个高台上的敌人！
-            // 假设你的地图在 (3,0) 处有个 1格高的方块，所以敌人站在 y=1
-            enemyUnit = SpawnDummyUnit("Enemy", 3, 1, 0, Color.red, FactionType.Enemy);
+            // 2. 生成敌人 (站在 3,1,0)
+            enemyUnit = SpawnUnit(enemyPrefab, "Enemy_Zombie", 3, 1, 0, FactionType.Enemy);
             
             Debug.Log("战斗测试场景初始化完毕！");
         }
 
-        MapUnit SpawnDummyUnit(string name, int x, int y, int z, Color color, FactionType faction)
+        MapUnit SpawnUnit(GameObject prefab, string name, int x, int y, int z, FactionType faction)
         {
-            // 简化的生成逻辑
+            // 1. 实例化真实的预制体
+            GameObject go = Instantiate(prefab);
+            go.name = name;
+            
+            // 2. 获取或添加 MapUnit 组件
+            MapUnit unit = go.GetComponent<MapUnit>();
+            if (unit == null) unit = go.AddComponent<MapUnit>();
+
+            // 3. 构建灵魂数据
             CharacterData data = ScriptableObject.CreateInstance<CharacterData>();
             data.CharacterName = name;
             data.BaseMaxHP = 100;
             data.BaseATK = 10;
             data.MoveRange = 4;
             data.DefaultFaction = faction;
-
-            GameObject go = GameObject.CreatePrimitive(PrimitiveType.Capsule);
-            go.name = name;
-            go.GetComponent<Renderer>().material.color = color;
+            // 因为现在用 SkillDataSO 判定范围，CharacterData 里的 Pattern 其实可以废弃了
             
-            MapUnit unit = go.AddComponent<MapUnit>();
             CharacterInstance soul = new CharacterInstance(data);
-            unit.Setup(soul, mapManager, x, y,z); // Setup 可能只接受 x,z，下面手动修正
             
-            // 关键：设置 3D 坐标
-            unit.SetGridPosition(new Vector3Int(x, y, z));
+            // 4. 初始化单位
+            unit.Setup(soul, mapManager, x, y, z);
             unit.Faction = faction;
+            
+            // 5. 【关键】注入普攻技能数据
+            if (defaultAttackSkill != null)
+            {
+                unit.NormalAttackSkill = defaultAttackSkill;
+            }
+            else
+            {
+                Debug.LogWarning("Test_Battle: 未分配 defaultAttackSkill，单位将无法攻击！");
+            }
 
-            // 注册 (确保 UnitManager 已改为 3D)
+            // 6. 注册到管理器
             UnitManager.Instance.RegisterUnit(unit);
 
             return unit;
@@ -101,39 +123,74 @@ namespace DebugSystem
                 }
             }
 
-            // 右键攻击
+            // 右键交互 (攻击 或 移动)
             if (Input.GetMouseButtonDown(1) && selectedUnit != null)
             {
                 Ray ray = mainCam.ScreenPointToRay(Input.mousePosition);
                 if (Physics.Raycast(ray, out RaycastHit hit))
                 {
-                    MapUnit target = hit.collider.GetComponent<MapUnit>();
-                    if (target != null && target != selectedUnit)
+                    // 1. 先判断是不是点到了其他单位 (尝试攻击)
+                    MapUnit targetUnit = hit.collider.GetComponent<MapUnit>();
+                    if (targetUnit != null && targetUnit != selectedUnit)
                     {
-                        // 3D 攻击判定
-                        if (selectedUnit.CanAttack(target))
+                        if (selectedUnit.CanAttack(targetUnit))
                         {
-                            new AttackCommand(selectedUnit, target,null).Execute();
+                            // 【注意】这里传入的是 targetUnit，如果你的 AttackCommand 改成了传坐标，就改成 targetUnit.gridPosition
+                            new AttackCommand(selectedUnit, targetUnit, selectedUnit.NormalAttackSkill).Execute();
+                            
+                            // 攻击完通常结束回合，取消选中
+                            selectedUnit = null; 
                         }
                         else
                         {
                             Debug.LogWarning("打不到！(可能在范围外或高度差太大)");
                         }
+                        return; // 已经处理了攻击，直接返回
                     }
+                Vector3 hitPoint = hit.point - hit.normal * 0.01f;
+                int tx = Mathf.RoundToInt(hitPoint.x / mapManager.cellSize);
+                int ty = (int)(hitPoint.y / mapManager.cellSize);
+                int tz = Mathf.RoundToInt(hitPoint.z / mapManager.cellSize);
+                
+                Vector3Int targetPos = new Vector3Int(tx, ty, tz);
+                                // 2. 验证目标是否有效 (是不是空气?)
+                BlockType block = mapManager.logicalGrid.GetBlock(targetPos);
+                Debug.Log($"尝试寻路到: {targetPos} (类型: {block})");
+
+                // 3. 执行 3D A* 寻路
+                List<Vector3Int> path = AStar.FindPath(
+                    playerUnit.gridPosition, 
+                    targetPos, 
+                    mapManager.logicalGrid, 
+                    playerUnit.moveStats
+                );
+
+                if (path != null && path.Count > 0)
+                {
+                    Debug.Log($"路径找到！长度: {path.Count}");
+                    currentDebugPath = path;
+
+                    // 4. 发送 MoveCommand (确保 MoveCommand 构造函数接受 List<Vector3Int>)
+                    var moveCmd = new MoveCommand(playerUnit, path);
+                    moveCmd.Execute();
+                }
+                else
+                {
+                    Debug.LogWarning("无法到达该位置 (可能太高、被阻挡或距离过远)");
+                }
                 }
             }
             
-            // Undo
+            // Undo (撤销测试)
             if (Input.GetKeyDown(KeyCode.Z)) UndoSystem.Instance.Undo();
         }
-
         void CalculateRanges(MapUnit unit)
         {
             attackRangeTiles.Clear();
-
-            // 1. 获取 3D 攻击范围 (包含高度延伸)
-            // 假设鼠标指向 (0,0,0) 方向
-            attackRangeTiles = unit.GetCurrentAttackRange(null); 
+            if (unit.NormalAttackSkill != null)
+            {
+                attackRangeTiles = unit.GetCurrentAttackRange(null); 
+            }
         }
 
         void OnDrawGizmos()
@@ -144,8 +201,6 @@ namespace DebugSystem
             Gizmos.color = new Color(1, 0, 0, 0.3f);
             foreach (var pos in attackRangeTiles)
             {
-                // 只画出存在的方块，或者是空气 (取决于你想怎么显示)
-                // 这里我们画出格子位置
                 Vector3 center = new Vector3(pos.x, pos.y + 0.5f, pos.z) * mapManager.cellSize;
                 Gizmos.DrawCube(center, Vector3.one * 0.9f * mapManager.cellSize);
             }

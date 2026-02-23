@@ -1,83 +1,93 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using GamePlay.unit;
+using GamePlay.Grid;
+using Managers;
 using Global;
+using Anim;
 
 namespace GamePlay.Skill
 {
     public static class SkillPerformer
     {
-        public static IEnumerator Perform(MapUnit attacker, MapUnit target, SkillVisualData config)
+        public static IEnumerator Perform(MapUnit attacker, Vector3Int targetGrid, SkillDataSO skillData)
         {
-            // --- 阶段 1: 起手 (Cast) ---
-            // 播放动作
+            var config = skillData.VisualConfig;
+            var linker = attacker.GetComponentInChildren<AnimationEventLinker>();
+            
+            bool hasHit = false;
+            bool isAnimFinished = false;
+
+            if (linker != null) 
+            {
+                linker.OnHitPoint += () => { hasHit = true; };
+                linker.OnCompleted += () => { isAnimFinished = true; };
+            }
+
+            //  起手：播放动画
             if (!string.IsNullOrEmpty(config.CastAnimTrigger))
             {
-                //TODO: 播放动作
-                Debug.Log($"{attacker.name} 播放动作: {config.CastAnimTrigger}");
+                attacker.GetComponent<Animator>().SetTrigger(config.CastAnimTrigger);
             }
-            // 播放施法特效
-            if (config.CastEffect != null)
+
+            // 3. 等待打击点
+            if (linker != null) 
             {
-                if(config.CastEffect != null){
-                    GameObject.Instantiate(config.CastEffect, attacker.transform.position, Quaternion.identity);
-                }
+                yield return new WaitUntil(() => hasHit);
             }
-            
-            yield return new WaitForSeconds(config.CastDelay);
+            else 
+            {
+                yield return new WaitForSeconds(config.CastDelay);
+            }
 
-
-            // --- 阶段 2: 传导 (Transit) ---
             if (config.Transit == TransitType.Projectile && config.ProjectilePrefab != null)
             {
-                // === 生成飞弹 ===
-                var bullet = GameObject.Instantiate(config.ProjectilePrefab, attacker.transform.position, Quaternion.identity);
-                bullet.transform.LookAt(target.transform); // 面向目标
+                // === 远程 ===
+                Vector3 targetWorldPos = MapManager.Instance.GetWorldPosition(targetGrid) + Vector3.up;
+                var bullet = GameObject.Instantiate(config.ProjectilePrefab, attacker.transform.position + Vector3.up, Quaternion.identity);
+                bullet.transform.LookAt(targetWorldPos); // 面向目标
 
-                // 简单的飞弹追踪逻辑
-                while (bullet != null && target != null)
+                while (bullet != null && Vector3.Distance(bullet.transform.position, targetWorldPos) > 0.1f)
                 {
-                    // 飞向目标中心点（假设高度+1）
-                    Vector3 targetPos = target.transform.position + Vector3.up; 
-                    
-                    // 移动
-                    bullet.transform.position = Vector3.MoveTowards(bullet.transform.position, targetPos, config.ProjectileSpeed * Time.deltaTime);
-
-                    // 撞到了吗？
-                    if (Vector3.Distance(bullet.transform.position, targetPos) < 0.2f)
-                    {
-                        GameObject.Destroy(bullet); // 销毁飞弹
-                        break;
-                    }
-                    yield return null; // 等待下一帧
-                }
-            }
-            else if (config.Transit == TransitType.Teleport)
-            {
-                // === 瞬移逻辑 ===
-                attacker.transform.position = target.transform.position - attacker.transform.forward;
-                yield return new WaitForSeconds(0.2f);
-            }
-            // 如果是 None (近战)，这里直接跳过
-
-
-            // --- 阶段 3: 命中 (Impact) ---
-            if (target != null)
-            {
-                // 播放受击特效
-                if (config.HitEffect != null)
-                {
-                    GameObject.Instantiate(config.HitEffect, target.transform.position + Vector3.up, Quaternion.identity);
+                    bullet.transform.position = Vector3.MoveTowards(bullet.transform.position, targetWorldPos, config.ProjectileSpeed * Time.deltaTime);
+                    yield return null;
                 }
                 
-                // 播放受击反馈 (变红/后仰)
-                target.PlayHitVisual(); 
-                
-                // TODO: 在这里弹出伤害数字 (ShowDamageText)
+                if (bullet != null) GameObject.Destroy(bullet);
+                yield return new WaitForSeconds(0.15f); // 爽感停顿
             }
 
-            // 等待后摇
-            yield return new WaitForSeconds(config.HitDelay);
+            // 【统一结算伤害和表现】
+            List<Vector3Int> affectedTiles = AttackRangeSystem.GetSkillRange3D(attacker.gridPosition, targetGrid, skillData);
+            foreach (Vector3Int pos in affectedTiles) 
+            {
+                MapUnit target = UnitManager.Instance.GetUnitAt(pos);
+                if (target != null && target != attacker) 
+                {
+                    attacker.Attack(target);
+                    if (!target.gameObject.activeInHierarchy) continue;
+                    target.PlayHitVisual();
+                    if (config.HitEffect != null)
+                        GameObject.Instantiate(config.HitEffect, target.transform.position + Vector3.up, Quaternion.identity);
+                }
+            }
+
+            if (linker != null) 
+            {
+                yield return new WaitUntil(() => isAnimFinished);
+            }
+            else 
+            {
+                yield return new WaitForSeconds(config.HitDelay);
+            }
+            
+            // 6. 清理
+            if (linker != null) 
+            {
+                linker.OnHitPoint = null;
+                linker.OnCompleted = null;
+            }
         }
     }
 }

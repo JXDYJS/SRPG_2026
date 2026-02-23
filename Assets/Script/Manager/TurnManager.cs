@@ -4,126 +4,88 @@ using System.Collections.Generic;
 using GamePlay.unit;
 using Global;
 
-namespace Managers
+public class TurnManager : MonoBehaviour
 {
-    public enum BattlePhase
+    public static TurnManager Instance;
+    
+    // 记录目前是谁在行动
+    public MapUnit ActiveUnit { get; private set; }
+
+    // 所有在场单位的列表
+    private List<MapUnit> _allBattleUnits = new List<MapUnit>();
+
+    public void StartBattle()
     {
-        PlayerTurn,
-        EnemyTurn,
-        GameEnd
+        // 获取场上所有人
+        _allBattleUnits = new List<MapUnit>(FindObjectsOfType<MapUnit>());//TODO 这是简单逻辑，之后要从runManager获取
+        
+        // 所有人就位，计算起跑时间
+        foreach(var unit in _allBattleUnits)
+        {
+            unit.ResetActionValue();
+        }
+
+        // 开始跑时间轴
+        CalculateNextAction();
     }
 
-    public class TurnManager : MonoBehaviour
+    // --- 核心机制：计算下一个行动者 ---
+    public void CalculateNextAction()
     {
-        public static TurnManager Instance;
+        // 1. 清理死人
+        _allBattleUnits.RemoveAll(u => u == null || u.Character.statSystem.currentHP <= 0);//todo 这里也是简单逻辑
+        if (_allBattleUnits.Count == 0) return;
+
+        // 2. 找到 AV 最小的单位 (谁最先跑到终点)
+        MapUnit nextUnit = _allBattleUnits[0];
+        foreach(var unit in _allBattleUnits)
+        {
+            if (unit.CurrentActionValue < nextUnit.CurrentActionValue)
+            {
+                nextUnit = unit;
+            }
+        }
+
+        // 3. 时间流逝！让这个人的 AV 变成 0，其他人的 AV 也减去同样的时间
+        float timeElapsed = nextUnit.CurrentActionValue;
+        foreach(var unit in _allBattleUnits)
+        {
+            unit.CurrentActionValue -= timeElapsed;
+        }
+
+        // 4. 正式让这个人开始行动
+        ActiveUnit = nextUnit;
+        StartUnitTurn(ActiveUnit);
+    }
+
+    private void StartUnitTurn(MapUnit unit)
+    {
+        Debug.Log($"---> 轮到 {unit.name} 行动了！");
+        unit.OnTurnStart();
+
+        if (unit.Faction == Global.FactionType.Player)
+        {
+            // 等待玩家用 BattleInputController 下达指令
+        }
+        else
+        {
+            // 敌方单位，触发 AI 协程
+            //StartCoroutine(EnemyAILogic(unit));
+        }
+    }
+
+    // 当玩家按了空格，或者攻击结束/走完路且没有行动点时调用
+    public void EndCurrentUnitTurn()
+    {
+        if (ActiveUnit == null) return;
         
-        public BattlePhase CurrentPhase = BattlePhase.PlayerTurn;
-        public int RoundCount = 1;
-
-        private void Awake()
-        {
-            Instance = this;
-        }
-
-        private void Start()
-        {
-            StartCoroutine(StartPlayerPhase());
-        }
-
-        // ================== 玩家回合 ==================
+        ActiveUnit.OnTurnEnd();
         
-        public void EndPlayerTurn()
-        {
-            if (CurrentPhase != BattlePhase.PlayerTurn) return;
-            
-            StartCoroutine(SwitchTurnRoutine());
-        }
+        // 让他重新回到起点
+        ActiveUnit.ResetActionValue();
+        ActiveUnit = null;
 
-        IEnumerator StartPlayerPhase()
-        {
-            Debug.Log($"=== 第 {RoundCount} 回合：玩家行动 ===");
-            CurrentPhase = BattlePhase.PlayerTurn;
-
-            // 1. 重置所有玩家单位状态
-            // 假设 UnitManager 有个方法 GetUnitsByFaction
-            var playerUnits = UnitManager.Instance.GetUnitsByFaction(FactionType.Player);
-            foreach (var unit in playerUnits)
-            {
-                unit.OnTurnStart();
-            }
-
-            // 2. 弹出 UI 提示 "Player Turn"
-            yield return new WaitForSeconds(1f); 
-        }
-
-        IEnumerator EndPlayerPhase()
-        {
-            Debug.Log("=== 玩家回合结束 ===");
-            CurrentPhase = BattlePhase.PlayerTurn;
-            var playerUnits = UnitManager.Instance.GetUnitsByFaction(FactionType.Player);
-            // 1. 通知所有玩家单位回合结束
-            foreach (var unit in playerUnits)
-            {
-                unit.OnTurnEnd();
-            }
-            yield return new WaitForSeconds(1f);
-        }
-
-        IEnumerator SwitchTurnRoutine()
-        {
-            //TODO 有些时候需要锁住输入等防止玩家在回合结束时还在操作
-            yield return StartCoroutine(EndPlayerPhase());
-
-            yield return StartCoroutine(StartEnemyPhase());
-        }
-
-        // ================== 敌方回合 ==================
-
-        IEnumerator StartEnemyPhase()
-        {
-            Debug.Log("=== 敌方行动 ===");
-            CurrentPhase = BattlePhase.EnemyTurn;
-
-            // 1. 重置所有敌人状态
-            var enemyUnits = UnitManager.Instance.GetUnitsByFaction(FactionType.Enemy);
-            foreach (var unit in enemyUnits)
-            {
-                unit.OnTurnStart();
-            }
-
-            // 2. 简单的 AI 循环：一个接一个动
-            foreach (var enemy in enemyUnits)
-            {
-                if (enemy.Character.statSystem.currentHP <= 0) continue;
-
-                // 镜头聚焦到敌人身上
-                // CameraController.Instance.LookAt(enemy.transform.position);
-                
-                // 执行 AI 逻辑 (移动 + 攻击)
-                yield return StartCoroutine(ProcessSingleEnemyAI(enemy));
-                
-                // 稍微停顿，别动太快看不清
-                yield return new WaitForSeconds(0.5f);
-            }
-
-            // 3. 敌人全部动完，回到玩家回合
-            RoundCount++;
-            StartCoroutine(StartPlayerPhase());
-        }
-
-        // 简单的 AI 行为单元
-        IEnumerator ProcessSingleEnemyAI(MapUnit enemy)
-        {
-            // 这里以后可以接更复杂的 AI 脚本 TODO
-            // 简单逻辑：找最近的玩家 -> 走到攻击范围 -> 打一下
-            
-            // 模拟 AI 思考
-            yield return new WaitForSeconds(0.5f); 
-            
-            // 假设 enemy.AI_AutoAction() 会返回一个 Command 或者是直接执行
-            // 这里仅做演示：让它原地待机
-            Debug.Log($"敌人 {enemy.name} 思考完毕，但这只猪决定休息。");
-            enemy.OnWait();
-        }
+        // 寻找下一个人
+        CalculateNextAction();
     }
 }

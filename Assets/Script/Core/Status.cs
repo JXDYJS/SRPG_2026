@@ -98,14 +98,16 @@ namespace Status
             public Stat ATK;
             public Stat DEF;
             public Stat RES;
+            public Stat Speed;
             public int currentHP;
 
-            public StatSystem(int maxHP, int ATK, int DEF, int RES)
+            public StatSystem(int maxHP, int ATK, int DEF, int RES,int SPD)
             {
                 this.maxHP = new Stat(maxHP);
                 this.ATK = new Stat(ATK);
                 this.DEF = new Stat(DEF);
                 this.RES = new Stat(RES);
+                this.Speed = new Stat(SPD);
                 currentHP = maxHP;
             }
             public StatSystem(CharacterData characterData)
@@ -114,6 +116,7 @@ namespace Status
                 ATK = new Stat(characterData.BaseATK);
                 DEF = new Stat(characterData.BaseDEF);
                 RES = new Stat(characterData.BaseRES);
+                Speed = new Stat(characterData.Speed);
                 currentHP = characterData.BaseMaxHP;
             }
             

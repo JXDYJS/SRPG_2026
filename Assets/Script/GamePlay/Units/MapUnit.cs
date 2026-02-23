@@ -41,6 +41,8 @@ namespace GamePlay
             [Header("Movement Config")]
             public UnitMoveStats moveStats = new UnitMoveStats(); 
             public float moveSpeed = 5.0f;
+            public const float BASE_ACTION_DISTANCE = 10000f;
+            public float CurrentActionValue; //行动倒计时
 
             [Header("Runtime State (Read-Only)")]
             public Vector3Int gridPosition;
@@ -73,8 +75,8 @@ namespace GamePlay
             public virtual bool HasGrudgeAgainst(MapUnit target) => _personalEnemies.Contains(target);
             public SkillDataSO NormalAttackSkill;
             public int actionPoints = 0;
-            public bool canAction => actionPoints > 0 ? true : false;
-            public bool hasMoved = false;
+            public bool canAction => actionPoints > 0 ? true : false;//暂时弃用
+            public bool hasMoved = false;//暂时弃用
             public bool IsActionDone => actionPoints <= 0 && hasMoved;
 
             // ================== Lifecycle ==================
@@ -212,7 +214,7 @@ namespace GamePlay
                 }
                 //=======TODO 受击效果==========
 
-                StartCoroutine(HitFlashRoutine());
+                //StartCoroutine(HitFlashRoutine());
 
                 //=======TODO 受击效果==========
 
@@ -377,21 +379,33 @@ namespace GamePlay
 
             public void SetGridPosition(Vector3Int pos)
             {
-                gridPosition = pos;
+                // gridPosition = pos;
                 
-                // 计算世界坐标 (假设 Grid y=0 对应 World y=0，如果 Pivot 在底部)
-                // 如果你的方块 Pivot 在中心，这里可能需要偏移
-                float cellSize = _mapManager != null ? _mapManager.cellSize : 1f;
+                // // 计算世界坐标 (假设 Grid y=0 对应 World y=0，如果 Pivot 在底部)
+                // // 如果你的方块 Pivot 在中心，这里可能需要偏移
+                // float cellSize = _mapManager != null ? _mapManager.cellSize : 1f;
                 
-                // 获取该方块的“站立面”高度
-                float standY = pos.y;
-                if (_mapManager != null)
-                {
-                    var blockType = _mapManager.logicalGrid.GetBlock(pos);
-                    standY += _mapManager.logicalGrid.GetBlockHeight(blockType);
-                }
+                // // 获取该方块的“站立面”高度
+                // float standY = pos.y;
+                // if (_mapManager != null)
+                // {
+                //     var blockType = _mapManager.logicalGrid.GetBlock(pos);
+                //     standY += _mapManager.logicalGrid.GetBlockHeight(blockType);
+                // }
 
-                transform.position = new Vector3(pos.x * cellSize, standY, pos.z * cellSize);
+                // transform.position = new Vector3(pos.x * cellSize, standY, pos.z * cellSize);
+                SetGridPositionDirectly(pos);
+                if (MapManager.Instance != null)
+                {
+                    transform.position = MapManager.Instance.GetWorldPosition(pos);
+                }
+            }
+
+            public void ResetActionValue()
+            {
+                float spd = Character.statSystem.Speed.getValue();
+                // 速度越快，所需的 AV 越小
+                CurrentActionValue = BASE_ACTION_DISTANCE / Mathf.Max(1, spd); 
             }
 
             public void SetGridPosition(int x, int y, int z)
@@ -399,7 +413,7 @@ namespace GamePlay
                 SetGridPosition(new Vector3Int(x, y, z));
             }
 
-            public void MoveAlongPath(List<Vector3Int> path) // 改为 List<Vector3Int>
+            public void MoveAlongPath(List<Vector3Int> path)
             {
                 if (path == null || path.Count == 0) return;
                 
@@ -442,11 +456,11 @@ namespace GamePlay
                     transform.position = targetWorldPos;
                     
                     // 更新逻辑坐标 (每走一步更新一次，确保 UnitManager 里的位置是新的)
+                    Vector3Int oldPos = gridPosition;
                     gridPosition = step;
-                    
-                    // TODO: 这里需要 UnitManager.Instance.UpdateUnitPosition(this, oldPos)
-                    // 但你需要先把 UnitManager 里的 Dictionary<Vector2Int, MapUnit> 改成 Vector3Int
+                    UnitManager.Instance.UpdateUnitPosition(this, oldPos);
                 }
+                UnitManager.Instance.UpdateUnitPosition(this, gridPosition);
 
                 SwitchState(UnitState.Idle);
             }
@@ -457,7 +471,7 @@ namespace GamePlay
                 Character.LevelUp();
             }
 
-            private void SwitchState(UnitState newState)
+            public void SwitchState(UnitState newState)
             {
                 if (currentState == UnitState.Dead) return; // 死人不能复生
                 
@@ -572,6 +586,32 @@ namespace GamePlay
             public void SetState(UnitState state)
             {
                 SwitchState(state);
+            }
+            //========Tools===========
+            public Vector3 GetWorldPositionFromGrid(Vector3Int gridPos)
+            {
+                float cellSize = _mapManager != null ? _mapManager.cellSize : 1f;
+                
+                float blockBottomY = gridPos.y * cellSize;
+                
+                float blockHeight = 0f;
+                if (_mapManager != null)
+                {
+                    blockHeight = _mapManager.logicalGrid.GetBlockYSize(gridPos) * cellSize;
+                }
+                float standY = blockBottomY + blockHeight;
+
+                return new Vector3(
+                    gridPos.x * cellSize, 
+                    standY, 
+                    gridPos.z * cellSize
+                );
+            }
+
+            public void SetGridPositionDirectly(Vector3Int pos)
+            {
+                UndoSystem.Instance.RegisterDirty(this);
+                gridPosition = pos;
             }
         }
     }

@@ -28,7 +28,14 @@ public class MapManager : MonoBehaviour
 
     // 路径
     string SavePath => Path.Combine(Application.streamingAssetsPath, currentMapName + ".json");
-
+    public static MapManager Instance { get; private set; } = null;
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+    }
     [ContextMenu("List All Maps (列出所有存档)")]
     public void ListAllMaps()
     {
@@ -298,6 +305,27 @@ public class MapManager : MonoBehaviour
         logicalGrid.Build(allObjects);
         
         Debug.Log($"地图加载完毕，生成了 {allObjects.Count} 个方块。");
+    }
+
+    public Vector3 GetWorldPosition(Vector3Int gridPos)
+    {
+        // 1. 基础平面坐标
+        float x = gridPos.x * cellSize;
+        float z = gridPos.z * cellSize;
+
+        // 2. 计算高度 (Y)
+        // 基础高度 (层级 * 格子大小)
+        float floorHeight = gridPos.y * cellSize;
+        
+        // 叠加方块厚度 (从 LogicalGrid 查数据)
+        if (logicalGrid != null)
+        {
+            float blockHeight = logicalGrid.GetBlockYSize(gridPos);
+            floorHeight += blockHeight * cellSize;
+        }
+
+        // 返回结果 (Pivot 在脚底，所以这就是最终地面高度)
+        return new Vector3(x, floorHeight, z);
     }
     
     // 调试：在 Scene 窗口画出哪些格子能走
