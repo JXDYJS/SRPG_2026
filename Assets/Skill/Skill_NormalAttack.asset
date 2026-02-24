@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe202a631b15d92408ac5c92665ab130, type: 3}
   m_Name: Skill_NormalAttack
   m_EditorClassIdentifier: 
-  SkillName: 
+  SkillName: "\u53F2\u8482\u592B\u7684\u653B\u51FB"
   Description: 
   Icon: {fileID: 0}
   AttackPattern: 0
@@ -23,7 +23,7 @@ MonoBehaviour:
   VisualConfig:
     CastAnimTrigger: Attack
     CastEffect: {fileID: 0}
-    CastDelay: 0.5
+    CastDelay: 0.3
     Transit: 0
     ProjectilePrefab: {fileID: 0}
     ProjectileSpeed: 10

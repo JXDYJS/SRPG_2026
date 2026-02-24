@@ -1830,7 +1830,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 348045437}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ced1d51781a009b46bbf2e764ef16270, type: 3}
   m_Name: 
@@ -1896,13 +1896,18 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 348045437}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 76f3a634af7b0484b8db29b123d8a526, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   mapManager: {fileID: 348045439}
   mainCam: {fileID: 330585545}
+  playerPrefab: {fileID: 2344841380481262805, guid: 2cc86365782c2c5419aab6c31d2593b7,
+    type: 3}
+  enemyPrefab: {fileID: 2344841380481262805, guid: 2cc86365782c2c5419aab6c31d2593b7,
+    type: 3}
+  defaultAttackSkill: {fileID: 11400000, guid: 31f1ac8c14e3542478363a0ec53dfe02, type: 2}
   playerUnit: {fileID: 0}
   enemyUnit: {fileID: 0}
 --- !u!1001 &348343480
