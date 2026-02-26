@@ -1,3 +1,4 @@
+using UnityEngine;
 namespace Global
 {
         public enum AttackRangeType
@@ -69,4 +70,18 @@ namespace Global
             Guard       // 守卫（攻击怪物，但不攻击玩家，除非被惹怒）
         }
         public enum TransitType { None, Projectile, Teleport }
+
+        public static class MathTool{
+            public static Vector3Int SP_RoundToInt(Vector3 vector3)
+            {
+                // 截断y
+                return new Vector3Int(Mathf.RoundToInt(vector3.x), (int)vector3.y, Mathf.RoundToInt(vector3.z));
+            }
+            public static Vector3Int HitPosToGridPos(Vector3 hitPos,Vector3 normal)
+            {
+                //由于坐标轴中所有物体的pos在其底部，所以y值要直接截断
+                hitPos -= normal * 0.02f;
+                return SP_RoundToInt(hitPos);
+            }
+        }
 }

@@ -71,12 +71,14 @@ namespace GamePlay
             private MapManager _mapManager; 
             [Header("阵营")]
             public FactionType Faction;
-            private HashSet<MapUnit> _personalEnemies = new HashSet<MapUnit>();//个人仇恨列表
+            public HashSet<MapUnit> _personalEnemies = new HashSet<MapUnit>();//个人仇恨列表
             public virtual bool HasGrudgeAgainst(MapUnit target) => _personalEnemies.Contains(target);
             public SkillDataSO NormalAttackSkill;
-            public int actionPoints = 0;
-            public bool canAction => actionPoints > 0 ? true : false;//暂时弃用
-            public bool hasMoved = false;//暂时弃用
+            public int actionPoints = 1;
+            public bool hasMoved = false;
+            
+            public bool CanMove => !hasMoved && actionPoints > 0;
+            public bool CanAction => actionPoints > 0;
             public bool IsActionDone => actionPoints <= 0 && hasMoved;
 
             // ================== Lifecycle ==================
@@ -551,15 +553,20 @@ namespace GamePlay
                     UnitManager.Instance.RegisterUnit(this); 
                 }
                 
-                // 1. 还原位置
+                //1. 还原位置
                 SetGridPosition(snap.GridPosition.x, snap.GridPosition.y, snap.GridPosition.z);
                 
-                // 2. 还原 HP
+                // 更新 UnitManager 中的位置记录
+                if (UnitManager.Instance != null)
+                {
+                    UnitManager.Instance.UpdateUnitPosition(this, snap.GridPosition);
+                }
+                
+                //2. 还原 HP
                 Character.statSystem.currentHP = snap.CurrentHP;
                 // 如果有血条UI，这里记得调用 UpdateHealthUI();
 
-                // 3. 还原 Buff (最复杂的部分)
-                // A. 删除多余的 (现在的有，快照里没的)
+                //3. 还原 Buff 
                 for (int i = ActiveBuffs.Count - 1; i >= 0; i--)
                 {
                     if (!snap.ActiveBuffs.Contains(ActiveBuffs[i]))
@@ -567,7 +574,7 @@ namespace GamePlay
                         RemoveBuff(ActiveBuffs[i]); // 触发 OnRemove，移除属性修正
                     }
                 }
-                // B. 补回缺失的 (快照里有，现在的没的)
+                //补回缺失的 (快照里有，现在的没的)
                 foreach (var buff in snap.ActiveBuffs)
                 {
                     if (!ActiveBuffs.Contains(buff))
@@ -579,13 +586,38 @@ namespace GamePlay
 
                 currentState = snap.State;
                 
-                // 4. 重置状态
+                //4. 还原行动状态
+                actionPoints = snap.ActionPoints;
+                hasMoved = snap.HasMoved;
+                
+                //5. 还原个人仇恨列表
+                _personalEnemies = new HashSet<MapUnit>(snap.PersonalEnemies);
+                
+                //6. 重置状态
                 StopAllCoroutines();
             }
 
             public void SetState(UnitState state)
             {
                 SwitchState(state);
+            }
+            //========Turn==========
+            public void MarkAsMoved()
+            {
+                UndoSystem.Instance.RegisterDirty(this);
+                hasMoved = true;
+                Debug.Log($"{name} 已移动");
+            }
+            public void MarkAsActionDone()
+            {
+                UndoSystem.Instance.RegisterDirty(this);
+                actionPoints = 0;
+                Debug.Log($"{name} 已行动完毕");
+            }
+            public void ResetTurnState()
+            {
+                hasMoved = false;
+                actionPoints = 1;
             }
             //========Tools===========
             public Vector3 GetWorldPositionFromGrid(Vector3Int gridPos)

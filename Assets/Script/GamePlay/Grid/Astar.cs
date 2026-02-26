@@ -84,14 +84,52 @@ namespace GamePlay
             return null; // 没找到路径
         }
 
+        public static HashSet<Vector3Int> GetReachableTiles(Vector3Int start, int moveRange, LogicalGrid grid, UnitMoveStats stats)
+        {
+            HashSet<Vector3Int> reachable = new HashSet<Vector3Int>();
+            Dictionary<Vector3Int, float> costSoFar = new Dictionary<Vector3Int, float>();
+            List<Node> openSet = new List<Node>();
+
+            Node startNode = new Node(start) { gCost = 0 };
+            openSet.Add(startNode);
+            costSoFar[start] = 0;
+
+            while (openSet.Count > 0)
+            {
+                Node currentNode = openSet.OrderBy(n => n.gCost).First();
+                openSet.Remove(currentNode);
+
+                reachable.Add(currentNode.position);
+
+                foreach (Vector3Int neighborPos in GetValidNeighbors(currentNode, grid, stats))
+                {
+                    float distCost = 1.0f; 
+                    
+                    float currentStandY = currentNode.position.y + grid.GetBlockYSize(currentNode.position);
+                    float targetStandY = neighborPos.y + grid.GetBlockYSize(neighborPos);
+                    float heightCost = Mathf.Abs(targetStandY - currentStandY); 
+                    
+                    float newCost = currentNode.gCost + distCost + heightCost;
+
+                    if (newCost > moveRange) continue;
+
+                    if (!costSoFar.ContainsKey(neighborPos) || newCost < costSoFar[neighborPos])
+                    {
+                        costSoFar[neighborPos] = newCost;
+                        openSet.Add(new Node(neighborPos) { gCost = newCost });
+                    }
+                }
+            }
+
+            return reachable;
+        }
+
         // === 核心逻辑：垂直扫描寻找邻居 ===
         static List<Vector3Int> GetValidNeighbors(Node currentNode, LogicalGrid grid, UnitMoveStats stats)
         {
             List<Vector3Int> validNeighbors = new List<Vector3Int>();
             
-            // 四个平面方向
             Vector2Int[] dirs = { Vector2Int.up, Vector2Int.down, Vector2Int.left, Vector2Int.right };
-
             Vector3Int currentPos = currentNode.position;
 
             foreach (var dir in dirs)
@@ -99,27 +137,25 @@ namespace GamePlay
                 int nx = currentPos.x + dir.x;
                 int nz = currentPos.z + dir.y;
 
-                // --- 垂直扫描 (Vertical Scan) ---
-                // 目标不仅仅是 (nx, current.y, nz)，还要看上下
-                // 扫描范围：从脚下 dropHeight 到 头顶 jumpHeight
-                
                 int scanMinY = currentPos.y - Mathf.CeilToInt(stats.dropHeight);
                 int scanMaxY = currentPos.y + Mathf.CeilToInt(stats.jumpHeight);
 
-                // 优化：从高往低找，或者从当前高度向两边找。
-                // 这里简单地从上往下扫，找到合法的落脚点
                 for (int ny = scanMaxY; ny >= scanMinY; ny--)
                 {
                     Vector3Int targetBlockPos = new Vector3Int(nx, ny, nz);
 
-                    // 判定是否能站立
                     if (CanStandAt(grid, targetBlockPos, currentPos, stats))
                     {
-                        validNeighbors.Add(targetBlockPos);
+                        // 检查该位置是否有单位占用
+                        MapUnit unitAtPos = Managers.UnitManager.Instance?.GetUnitAt(targetBlockPos);
+                        if (unitAtPos != null)
+                        {
+                            // 有单位，不能走
+                            break;
+                        }
                         
-                        // 找到一个落脚点后，为了防止穿模（比如桥上能走，桥下也能走），
-                        // 且为了符合重力逻辑，通常只取最上方的一个可行点。
-                        break; 
+                        validNeighbors.Add(targetBlockPos);
+                        break;
                     }
                 }
             }

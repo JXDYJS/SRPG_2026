@@ -21,8 +21,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Shader Graphs_SG_HologramTile
-  m_Shader: {fileID: -6465566751694194690, guid: bf19191c81953794798b98da6bebb3f2,
-    type: 3}
+  m_Shader: {fileID: 4800000, guid: e7780b81b675db740b3cf54584927af4, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -51,7 +50,13 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _Distortion: 0.2
+    - _EdgeWidth: 0.1
+    - _NoiseScale: 5
     - _QueueControl: 0
     - _QueueOffset: 0
-    m_Colors: []
+    - _WaveFrequency: 15
+    - _WaveSpeed: 3
+    m_Colors:
+    - _BaseColor: {r: 0, g: 0.8, b: 1, a: 1}
   m_BuildTextureStacks: []

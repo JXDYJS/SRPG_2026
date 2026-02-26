@@ -67,6 +67,8 @@ namespace Managers
         // 获取某格子的单位 (用于 A* 判断是否被敌方阻挡)
         public MapUnit GetUnitAt(Vector3Int pos)
         {
+            //TODO 目前所有角色都位于自己所占格子之上一格，所以采用简单的y+1查询  如果未来有变这一步可能会出问题
+            pos.y++;
             if (unitPositions.TryGetValue(pos, out MapUnit unit))
             {
                 return unit;
