@@ -205,6 +205,9 @@ namespace GamePlay
                 UndoSystem.Instance.RegisterDirty(this);
                 Character.statSystem.currentHP -= (int)info.damage;
                 Debug.Log($"{name} 受到 {info.damage} 点伤害 ({info.damageType})");
+                //todo 这是非常简单的临时方案
+                Vector3 textPos = transform.position + Vector3.up * 1.5f; 
+                Managers.DamageUIManager.Instance.ShowDamage(textPos, (int)info.damage, info.damageType);
                 //处理仇恨
                 if(info.sourceUnit != null && info.sourceUnit != this)
                 {

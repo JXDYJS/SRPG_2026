@@ -125,7 +125,7 @@ namespace Command
 
         protected override void OnExecute()
         {
-            _attacker.Attack(_target);
+            //_attacker.Attack(_target);
             
             // 标记单位已行动（攻击后不能再行动）
             _attacker.MarkAsActionDone();
