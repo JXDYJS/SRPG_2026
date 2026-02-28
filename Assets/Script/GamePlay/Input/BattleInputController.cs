@@ -9,6 +9,7 @@ using Command;
 using Global;
 using GamePlay.Grid;
 using GamePlay.Visual; 
+using GamePlay.Skill;
 using System.Collections;
 
 namespace GamePlay.Control
@@ -74,23 +75,21 @@ namespace GamePlay.Control
                 HandleLeftClick(hoverPos);
             }
 
-            // 【真实调用替换 1】右键取消逻辑
             if (Input.GetMouseButtonDown(1))
             {
                 if (currentState == InputState.TargetingMove || currentState == InputState.TargetingAttack)
                 {
                     ChangeState(InputState.MenuOpen);
-                    // 呼叫 UI 弹出菜单
                     BattleUIManager.Instance.ShowActionMenu(activeUnit);
                 }
                 else if (currentState == InputState.MenuOpen)
                 {
                     ChangeState(InputState.Idle);
-                    // 呼叫 UI 隐藏菜单
                     BattleUIManager.Instance.HideActionMenu();
                 }
             }
         }
+
         private IEnumerator ExecuteCommandAndWait(BaseCommand cmd)
         {
             ChangeState(InputState.Locked);
@@ -181,7 +180,6 @@ namespace GamePlay.Control
                     if (clickedUnit != null && clickedUnit == activeUnit)
                     {
                         ChangeState(InputState.MenuOpen);
-                        // 【真实调用替换 2】点中自己，呼出菜单
                         BattleUIManager.Instance.ShowActionMenu(activeUnit);
                     }
                     break;
@@ -208,8 +206,19 @@ namespace GamePlay.Control
                         if (targetEnemy != null)
                         {
                             ChangeState(InputState.Locked);
-            
-                            AttackCommand cmd = new AttackCommand(activeUnit, targetEnemy, activeUnit.NormalAttackSkill);
+
+                            SkillTargetContext context = new SkillTargetContext(
+                                targetEnemy.gridPosition,
+                                new List<MapUnit> { targetEnemy },
+                                DamageType.Physical
+                            );
+
+                            SkillCommand cmd = new SkillCommand(
+                                activeUnit, 
+                                activeUnit.NormalAttackSkill, 
+                                context
+                            );
+
                             StartCoroutine(Tool.ExecuteCommandWithCallback(
                                 cmd,
                                 () => TurnManager.Instance.EndCurrentUnitTurn()

@@ -1,5 +1,10 @@
 using UnityEngine;
-using Global; // 引用 AttackPatternType 等
+using Global;
+using GamePlay.unit;
+using GamePlay.Grid;
+using Managers;
+using Status.damage;
+using System.Collections.Generic;
 
 namespace GamePlay.Skill
 {
@@ -26,12 +31,8 @@ namespace GamePlay.Skill
 
         [Tooltip("是否需要视野 (目前还没做，先留坑)")]
         public bool RequireLineOfSight = true;
-        [Tooltip("技能演出")]
-        public SkillVisualData VisualConfig;
 
-        [Header("目标类型")]
-        public bool TargetEnemy = true;
-        public bool TargetAlly = false;
-        public bool TargetSelf = false;
+        [Header("技能阶段配置")]
+        public List<SkillPhase> Phases = new List<SkillPhase>();
     }
 }

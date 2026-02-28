@@ -86,54 +86,6 @@ public class TurnManager : MonoBehaviour
         }
     }
 
-    // --- 极简 AI 协程 ---
-    private IEnumerator EnemyAILogic(MapUnit enemyUnit)
-    {
-        //这是一个用来早期测试用的ai
-        Debug.Log($"[AI] {enemyUnit.name} 正在思考...");
-        
-        // 1. 稍微停顿一下（为了游戏节奏感，否则 AI 瞬间打完玩家反应不过来）
-        yield return new WaitForSeconds(0.5f);
-
-        // 2. 获取所有活着的玩家单位
-        List<MapUnit> playerUnits = UnitManager.Instance.GetUnitsByFaction(FactionType.Player);
-        MapUnit targetToAttack = null;
-
-        // 3. 寻找目标：遍历玩家，看看谁在我的攻击范围内
-        foreach (var player in playerUnits)
-        {
-            if (player.Character.statSystem.currentHP > 0 && enemyUnit.CanAttack(player))
-            {
-                targetToAttack = player;
-                break; // 极简逻辑：找到第一个能打到的就直接打，不考虑谁血少
-            }
-        }
-
-        // 4. 执行决策
-        if (targetToAttack != null)
-        {
-            Debug.Log($"[AI] {enemyUnit.name} 决定攻击 {targetToAttack.name}！");
-            
-            // 下达攻击指令
-            AttackCommand attackCmd = new AttackCommand(enemyUnit, targetToAttack, enemyUnit.NormalAttackSkill);
-            
-            // 等待攻击的演出动画（特效、飞弹等）完全结束
-            yield return Tool.WaitUntilCommandFinish(attackCmd);
-            
-            // 攻击结束后再留一点视觉缓冲时间
-            yield return new WaitForSeconds(0.5f);
-        }
-        else
-        {
-            Debug.Log($"[AI] {enemyUnit.name} 攻击范围内没有目标，原地待机。");
-            // 即使是待机发呆，也停顿 0.5 秒，告诉玩家“这个怪物行动过了”
-            yield return new WaitForSeconds(0.5f); 
-        }
-
-        // 5. 决策执行完毕，结束回合
-        EndCurrentUnitTurn();
-    }
-
     public void EndCurrentUnitTurn()
     {
         if (ActiveUnit == null) return;

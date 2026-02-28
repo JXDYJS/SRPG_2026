@@ -69,6 +69,23 @@ namespace Global
             Neutral,    // 中立（如猪人、商人）
             Guard       // 守卫（攻击怪物，但不攻击玩家，除非被惹怒）
         }
+
+        public enum DamageType
+        {
+            Physical,
+            Magic,
+            Fire,
+            Poison,
+            Ice,
+            True,
+            Heal,
+        }
+        public enum DamageMethod
+        {
+            Normal,
+            Skill,
+            Environment,
+        }
         public enum TransitType { None, Projectile, Teleport }
 
         public static class MathTool{

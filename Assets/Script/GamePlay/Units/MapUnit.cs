@@ -63,6 +63,10 @@ namespace GamePlay
             // 不在 Inspector 显示，防止误改引用
             public List<BuffBase> ActiveBuffs = new List<BuffBase>();
 
+            // --- 3. View Reference (New!) ---
+            // 视觉表现层引用
+            public View.UnitView View { get { return GetComponent<View.UnitView>(); } }
+
             // --- 3. Cache Optimization for Modifiers ---
             private List<CombatModifier> _cachedModifiers = new List<CombatModifier>();
             private bool _isModifiersDirty = true; // Default dirty to ensure first build
@@ -205,10 +209,8 @@ namespace GamePlay
                 UndoSystem.Instance.RegisterDirty(this);
                 Character.statSystem.currentHP -= (int)info.damage;
                 Debug.Log($"{name} 受到 {info.damage} 点伤害 ({info.damageType})");
-                //todo 这是非常简单的临时方案
-                Vector3 textPos = transform.position + Vector3.up * 1.5f; 
-                Managers.DamageUIManager.Instance.ShowDamage(textPos, (int)info.damage, info.damageType);
-                //处理仇恨
+                
+                // 处理仇恨
                 if(info.sourceUnit != null && info.sourceUnit != this)
                 {
                     if(!_personalEnemies.Contains(info.sourceUnit))
@@ -217,15 +219,9 @@ namespace GamePlay
                         Debug.Log($"{name} 被激怒了！将 {info.sourceUnit.name} 视为敌人！");
                     }
                 }
-                //=======TODO 受击效果==========
-
-                //StartCoroutine(HitFlashRoutine());
-
-                //=======TODO 受击效果==========
 
                 if (info.sourceUnit != null)
                 {
-                    // 遍历攻击者身上的所有 Buff 和 藏品
                     foreach (var mod in info.sourceUnit.GetModifiers())
                     {
                         mod.OnHit(info);
@@ -239,7 +235,6 @@ namespace GamePlay
 
                 if (Character.statSystem.currentHP <= 0)
                 {
-                    // A. 触发攻击者的 OnKill
                     if (info.sourceUnit != null)
                     {
                         foreach (var mod in info.sourceUnit.GetModifiers())
@@ -248,7 +243,6 @@ namespace GamePlay
                         }
                     }
                     
-                    // B. 触发自己的 OnDie
                     foreach (var mod in this.GetModifiers())
                     {
                         mod.OnDie(info);
@@ -311,11 +305,6 @@ namespace GamePlay
             //     yield return new WaitForSeconds(0.3f); 
             //     SwitchState(UnitState.Idle);
             // }
-
-            public void PlayHitVisual()
-            {
-                StartCoroutine(HitFlashRoutine());
-            }
 
             public List<Vector3Int> GetCurrentAttackRange(Vector3Int? targetPos = null)
             {
@@ -527,24 +516,6 @@ namespace GamePlay
             }
 
 
-            IEnumerator HitFlashRoutine()
-            {
-                Renderer renderer = GetComponentInChildren<Renderer>();
-
-                if (renderer != null)
-                {
-                    Color originalColor = renderer.material.color;
-
-                    renderer.material.color = Color.red;
-
-                    yield return new WaitForSeconds(0.1f);
-
-                    if (renderer != null)
-                    {
-                        renderer.material.color = originalColor;
-                    }
-                }
-            }
             public object CaptureState() => new UnitSnapshot(this);
             public void RestoreState(object state)
             {

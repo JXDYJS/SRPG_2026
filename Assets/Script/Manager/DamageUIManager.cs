@@ -1,6 +1,8 @@
 using UnityEngine;
 using TMPro;
 using Status.damage;
+using Global;
+
 namespace Managers
 {
 public class DamageUIManager : MonoBehaviour

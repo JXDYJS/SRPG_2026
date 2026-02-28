@@ -6,6 +6,8 @@ using GamePlay.Skill;
 using System.Collections;
 using Managers;
 using System;
+using Cysharp.Threading.Tasks;
+
 namespace Command
 {
     public static class Tool
@@ -26,6 +28,7 @@ namespace Command
             onComplete?.Invoke();
         }
     }
+
     public abstract class BaseCommand : ICommand
     {
         public bool IsFinished { get; protected set; }
@@ -71,7 +74,6 @@ namespace Command
             Vector3Int endPos = _path[_path.Count - 1];
             _unit.SetGridPositionDirectly(endPos);
 
-            // 标记单位已移动
             _unit.MarkAsMoved();
 
             IsFinished = false;
@@ -110,41 +112,51 @@ namespace Command
         }
     }
 
-    public class AttackCommand : BaseCommand
+    public class SkillCommand : BaseCommand
     {
-        private MapUnit _attacker;
-        private MapUnit _target;
+        private MapUnit _caster;
         private SkillDataSO _skillData;
+        private SkillTargetContext _targetContext;
 
-        public AttackCommand(MapUnit attacker, MapUnit target, SkillDataSO skill)
+        public SkillCommand(MapUnit caster, SkillDataSO skillData, SkillTargetContext targetContext)
         {
-            _attacker = attacker;
-            _target = target;
-            _skillData = skill;
+            _caster = caster;
+            _skillData = skillData;
+            _targetContext = targetContext;
         }
 
         protected override void OnExecute()
         {
-            //_attacker.Attack(_target);
-            
-            // 标记单位已行动（攻击后不能再行动）
-            _attacker.MarkAsActionDone();
+            _caster.MarkAsActionDone();
 
             IsFinished = false;
-            _attacker.StartCoroutine(ExecuteRoutine());
+            ExecuteAsync().Forget();
         }
 
-        private IEnumerator ExecuteRoutine()
+        private async UniTaskVoid ExecuteAsync()
         {
-            if(_skillData == null)
+            if (_skillData == null)
             {
-                Debug.LogError("AttackCommand: SkillData is null");
-                yield break;
+                Debug.LogError("SkillCommand: SkillData is null");
+                IsFinished = true;
+                return;
             }
-            _attacker.SetState(UnitState.Attacking);
-            yield return SkillPerformer.Perform(_attacker, _target.gridPosition, _skillData);
+
+            if (_targetContext == null)
+            {
+                Debug.LogError("SkillCommand: TargetContext is null");
+                IsFinished = true;
+                return;
+            }
+
+            _caster.SetState(UnitState.Attacking);
+
+            SkillSequenceResult result = SkillExecutor.ExecuteSequence(_caster, _targetContext, _skillData);
+
+            await SkillPerformer.PerformSkillSequence(_skillData, result);
+
             IsFinished = true;
-            _attacker.SetState(UnitState.Idle);
+            _caster.SetState(UnitState.Idle);
         }
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Global;
 
 namespace Status
 {
@@ -129,22 +130,6 @@ namespace Status
         using GamePlay.unit;
         using Modifier;
         using GamePlay.relics;
-
-        public enum DamageType
-        {
-            Physical,
-            Magic,
-            Fire,
-            Poison,
-            Ice,
-            True,
-        }
-        public enum DamageMethod
-        {
-            Normal,
-            Skill,
-            Environment,
-        }
         public class DamageInfo
         {
             public float damage;

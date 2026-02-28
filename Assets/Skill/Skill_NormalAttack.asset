@@ -20,15 +20,16 @@ MonoBehaviour:
   MinRange: 1
   VerticalRange: 1
   RequireLineOfSight: 1
-  VisualConfig:
-    CastAnimTrigger: Attack
-    CastEffect: {fileID: 0}
-    CastDelay: 0.3
-    Transit: 0
-    ProjectilePrefab: {fileID: 0}
-    ProjectileSpeed: 10
-    HitEffect: {fileID: 0}
-    HitDelay: 0.2
-  TargetEnemy: 1
-  TargetAlly: 0
-  TargetSelf: 0
+  Phases:
+  - PhaseName: attack
+    TargetType: 0
+    Effects: []
+    VisualData:
+      CastAnimTrigger: Attack
+      CastEffect: {fileID: 0}
+      CastDelay: 0
+      Transit: 0
+      ProjectilePrefab: {fileID: 0}
+      ProjectileSpeed: 0
+      HitEffect: {fileID: 0}
+      HitDelay: 0
