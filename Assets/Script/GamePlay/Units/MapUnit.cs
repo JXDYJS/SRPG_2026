@@ -75,15 +75,26 @@ namespace GamePlay
             private MapManager _mapManager; 
             [Header("阵营")]
             public FactionType Faction;
-            public HashSet<MapUnit> _personalEnemies = new HashSet<MapUnit>();//个人仇恨列表
+            public HashSet<MapUnit> _personalEnemies = new HashSet<MapUnit>();
             public virtual bool HasGrudgeAgainst(MapUnit target) => _personalEnemies.Contains(target);
-            public SkillDataSO NormalAttackSkill;
             public int actionPoints = 1;
             public bool hasMoved = false;
-            
+
+            public SkillDataSO NormalAttackSkill => Character?.SkillInventory?.GetSkill(SkillSlotType.NormalAttack);
+
             public bool CanMove => !hasMoved && actionPoints > 0;
             public bool CanAction => actionPoints > 0;
             public bool IsActionDone => actionPoints <= 0 && hasMoved;
+
+            public List<SkillDataSO> GetAvailableSkills()
+            {
+                return Character?.SkillInventory?.GetAllAvailableSkills() ?? new List<SkillDataSO>();
+            }
+
+            public List<SkillDataSO> GetActiveSkills()
+            {
+                return Character?.SkillInventory?.GetActiveSkills() ?? new List<SkillDataSO>();
+            }
 
             // ================== Lifecycle ==================
 
@@ -389,6 +400,7 @@ namespace GamePlay
 
                 // transform.position = new Vector3(pos.x * cellSize, standY, pos.z * cellSize);
                 SetGridPositionDirectly(pos);
+                UnitManager.Instance.UpdateUnitPosition(this,pos);
                 if (MapManager.Instance != null)
                 {
                     transform.position = MapManager.Instance.GetWorldPosition(pos);

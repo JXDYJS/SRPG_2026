@@ -5,6 +5,8 @@ using GamePlay.View;
 using Managers;
 using Global;
 using Cysharp.Threading.Tasks;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace GamePlay.Skill
 {
@@ -53,33 +55,36 @@ namespace GamePlay.Skill
         private static async UniTask PerformSinglePhase(MapUnit caster, PhaseResult phaseResult, SkillPhase phaseData)
         {
             var casterView = caster.View;
-            var config = phaseData.VisualData;
+            var visual = phaseData.VisualData;
 
-            if (casterView == null || config == null)
+            if (casterView == null || visual == null)
             {
                 return;
             }
 
-            if (!string.IsNullOrEmpty(config.CastAnimTrigger))
+            if (!string.IsNullOrEmpty(visual.CastAnimTrigger))
             {
-                casterView.PlayAnim(config.CastAnimTrigger);
+                casterView.PlayAnim(visual.CastAnimTrigger);
             }
 
-            if (config.CastEffect != null)
+            if (visual.CastEffect != null && visual.CastEffect.RuntimeKeyIsValid())
             {
-                GameObject.Instantiate(config.CastEffect, caster.transform.position, Quaternion.identity);
+                await Addressables.InstantiateAsync(visual.CastEffect, caster.transform.position, Quaternion.identity);
             }
 
-            await UniTask.Delay((int)(config.CastDelay * 1000));
+            if (!string.IsNullOrEmpty(visual.HitEventName))
+            {
+                await casterView.WaitForAnimationEvent(visual.HitEventName);
+            }
 
             if (phaseResult.CasterMoved)
             {
                 await PerformCasterMovement(caster, phaseResult.CasterEndPosition);
             }
 
-            if (config.Transit == TransitType.Projectile && config.ProjectilePrefab != null)
+            if (visual.Transit == TransitType.Projectile && visual.ProjectilePrefab != null && visual.ProjectilePrefab.RuntimeKeyIsValid())
             {
-                await PerformProjectileTransit(caster, phaseResult.TargetPosition, config);
+                await PerformProjectileTransit(caster, phaseResult.TargetPosition, visual);
             }
 
             List<UniTask> hitTasks = new List<UniTask>();
@@ -96,7 +101,10 @@ namespace GamePlay.Skill
                 await UniTask.WhenAll(hitTasks);
             }
 
-            await UniTask.Delay((int)(config.HitDelay * 1000));
+            if (!string.IsNullOrEmpty(visual.EndEventName))
+            {
+                await casterView.WaitForAnimationEvent(visual.EndEventName);
+            }
         }
 
         private static async UniTask PerformCasterMovement(MapUnit caster, Vector3Int endPosition)
@@ -119,24 +127,32 @@ namespace GamePlay.Skill
             caster.transform.position = targetWorldPos;
         }
 
-        private static async UniTask PerformProjectileTransit(MapUnit caster, Vector3Int targetPosition, SkillVisualData config)
+        private static async UniTask PerformProjectileTransit(MapUnit caster, Vector3Int targetPosition, SkillVisualData visual)
         {
             Vector3 targetWorldPos = MapManager.Instance.GetWorldPosition(targetPosition) + Vector3.up;
-            var bullet = GameObject.Instantiate(config.ProjectilePrefab, caster.transform.position + Vector3.up, Quaternion.identity);
+            
+            var handle = Addressables.InstantiateAsync(visual.ProjectilePrefab, caster.transform.position + Vector3.up, Quaternion.identity);
+            await handle.Task;
+            
+            if (handle.Status != AsyncOperationStatus.Succeeded)
+            {
+                Debug.LogError("Failed to instantiate projectile prefab");
+                return;
+            }
+            
+            GameObject bullet = handle.Result;
             bullet.transform.LookAt(targetWorldPos);
 
             while (bullet != null && Vector3.Distance(bullet.transform.position, targetWorldPos) > 0.1f)
             {
-                bullet.transform.position = Vector3.MoveTowards(bullet.transform.position, targetWorldPos, config.ProjectileSpeed * Time.deltaTime);
+                bullet.transform.position = Vector3.MoveTowards(bullet.transform.position, targetWorldPos, visual.ProjectileSpeed * Time.deltaTime);
                 await UniTask.Yield();
             }
 
             if (bullet != null)
             {
-                GameObject.Destroy(bullet);
+                Addressables.ReleaseInstance(bullet);
             }
-
-            await UniTask.Delay(150);
         }
 
         private static async UniTask PerformSingleTargetHit(TargetResult tResult)

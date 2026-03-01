@@ -1,6 +1,7 @@
-using System.Collections;
+using System;
 using UnityEngine;
 using Global;
+using Cysharp.Threading.Tasks;
 
 namespace GamePlay.View
 {
@@ -9,10 +10,38 @@ namespace GamePlay.View
         private Animator _animator;
         private Renderer[] _renderers;
 
+        public event Action<string> OnAnimationEventTriggered;
+
         void Awake()
         {
             _animator = GetComponent<Animator>();
             _renderers = GetComponentsInChildren<Renderer>();
+        }
+
+        public void TriggerAnimationEvent(string eventName)
+        {
+            OnAnimationEventTriggered?.Invoke(eventName);
+        }
+
+        public async UniTask WaitForAnimationEvent(string targetEventName, float timeoutSeconds = 5f)
+        {
+            var tcs = new UniTaskCompletionSource();
+            Action<string> onEventReceived = null;
+
+            onEventReceived = (eventName) =>
+            {
+                if (eventName == targetEventName)
+                {
+                    OnAnimationEventTriggered -= onEventReceived;
+                    tcs.TrySetResult();
+                }
+            };
+
+            OnAnimationEventTriggered += onEventReceived;
+
+            await UniTask.WhenAny(tcs.Task, UniTask.Delay(TimeSpan.FromSeconds(timeoutSeconds)));
+
+            OnAnimationEventTriggered -= onEventReceived;
         }
 
         public void PlayAnim(string animName)
@@ -34,12 +63,12 @@ namespace GamePlay.View
 
         public void PlayHitVisual()
         {
-            StartCoroutine(HitFlashRoutine());
+            HitFlashAsync().Forget();
         }
 
-        private IEnumerator HitFlashRoutine()
+        private async UniTaskVoid HitFlashAsync()
         {
-            if (_renderers == null || _renderers.Length == 0) yield break;
+            if (_renderers == null || _renderers.Length == 0) return;
 
             Color[] originalColors = new Color[_renderers.Length];
             for (int i = 0; i < _renderers.Length; i++)
@@ -51,7 +80,7 @@ namespace GamePlay.View
                 }
             }
 
-            yield return new WaitForSeconds(0.1f);
+            await UniTask.Delay(100);
 
             for (int i = 0; i < _renderers.Length; i++)
             {

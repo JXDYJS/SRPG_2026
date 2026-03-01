@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe202a631b15d92408ac5c92665ab130, type: 3}
-  m_Name: Skill_NormalAttack
+  m_Name: NormalAttack
   m_EditorClassIdentifier: 
   SkillName: "\u53F2\u8482\u592B\u7684\u653B\u51FB"
   Description: 

@@ -284,16 +284,18 @@ AnimationClip:
   m_HasMotionFloatCurves: 0
   m_Events:
   - time: 0.75
-    functionName: TriggerHit
-    data: 
-    objectReferenceParameter: {fileID: 0}
+    functionName: TriggerAnimationEvent
+    data: Hit
+    objectReferenceParameter: {fileID: 919132149155446097, guid: 9c26cd131064d544ca48a8f01d08fbe5,
+      type: 3}
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
   - time: 1
-    functionName: TriggerComplete
-    data: 
-    objectReferenceParameter: {fileID: 0}
+    functionName: TriggerAnimationEvent
+    data: End
+    objectReferenceParameter: {fileID: 2344841380481262805, guid: 2cc86365782c2c5419aab6c31d2593b7,
+      type: 3}
     floatParameter: 0
     intParameter: 0
     messageOptions: 0

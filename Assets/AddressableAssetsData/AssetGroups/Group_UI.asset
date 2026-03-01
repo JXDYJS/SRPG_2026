@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Group_UI
+  m_EditorClassIdentifier: 
+  m_GroupName: Group_UI
+  m_Data:
+    m_SerializedData: []
+  m_GUID: b07f89c5d2b157b4096f9659323bad5a
+  m_SerializeEntries:
+  - m_GUID: 0b3fd872f413ca64f8471ce512ae4c61
+    m_Address: SelectHighLight
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4494d36db42ce24428046b39d4facd5f
+    m_Address: Mat_CursorHighlight
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 732ac50125401824498fa9fc0491fa33
+    m_Address: Button
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d63f8b7ba506f4542bd5136112a5b1aa
+    m_Address: DamageUI
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d9e88bb0d73d2e545b596fca2872fd4a
+    m_Address: BattleActionMenu
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dda72fa6f849a6e41b6431e4220a50e4
+    m_Address: Highlight
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 1f6ca7d155b268c408ed984de8fdd20b, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 020137b999394f64fb9afebef7863ce2, type: 2}
+    - {fileID: 11400000, guid: 5b4a365697c37244f94031cc37fe672c, type: 2}

@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using Status.state;
 using Global;
+using UnityEngine.AddressableAssets;
+using GamePlay.Skill;
+using Cysharp.Threading.Tasks;
 
 namespace Character
 {
     namespace data{
 
-        // 单个奖励的数据包
         [System.Serializable]
         public class LevelReward
         {
@@ -21,7 +23,6 @@ namespace Character
             public int Value;
         }
 
-        // 每一级的配置
         [System.Serializable]
         public class LevelUpEntry
         {
@@ -32,29 +33,23 @@ namespace Character
         public class CharacterData : ScriptableObject
         {
             [Header("基本信息")]
-            public string ID;           // 唯一ID，用于存档 (例如 "Hero_Arthur")
-            public string CharacterName;// 显示名称 (例如 "亚瑟")
+            public string ID;
+            public string CharacterName;
             [TextArea] 
-            public string Description;  // 描述
-            public Sprite Icon;         // 头像 (UI用)
-            public GameObject Prefab;   // 对应的 3D 模型/预制体
+            public string Description;
+            public Sprite Icon;
+            public AssetReferenceGameObject Prefab;
 
             [Header("基础属性 (出厂设置)")]
             public int BaseMaxHP;
             public int BaseATK;
             public int BaseDEF;
             public int BaseRES;
-            public int MoveRange;       // 移动力 (例如 3 格)
-            public int Height;          // 高度 (例如 1 格)
-            public int Speed;           //行动速度
+            public int MoveRange;
+            public int Height;
+            public int Speed;
 
             [Header("战斗配置")]
-            // 定义攻击范围模式 (例如：十字形、前方2格、周围1圈)
-            // 我们可以用一个 List<Vector2Int> 来表示相对于自己的攻击坐标
-            // (0, 1) 表示前方一格，(0, 2) 表示前方两格
-            //public List<Vector2Int> AttackPattern; 
-            
-            // 先用枚举定义范围类型
             public AttackRangeType RangeType;
             public AttackPatternType Pattern;
             public int MinRange = 1;
@@ -73,7 +68,7 @@ namespace Character
 
         public class GlobalLevelConfig : ScriptableObject
         {
-            public List<int> ExpRequirements;// 升级所需经验 
+            public List<int> ExpRequirements;
         }
     }
     namespace instance{
@@ -83,12 +78,20 @@ namespace Character
         {
             public CharacterData characterData;
             public StatSystem statSystem;
+            public SkillInventory SkillInventory { get; private set; }
             public int level = 1;
             public int maxLevel = 5;
+
             public CharacterInstance(CharacterData characterData)
             {
                 this.characterData = characterData;
                 statSystem = new StatSystem(characterData);
+                SkillInventory = new SkillInventory();
+            }
+
+            public async UniTask InitializeSkillsAsync(CharacterSkillConfig skillConfig, int currentLevel)
+            {
+                await SkillInventory.InitializeAsync(skillConfig, currentLevel);
             }
 
             public void LevelUp(List<LevelReward> rewards)
@@ -96,12 +99,13 @@ namespace Character
                 level++;
                 Debug.Log($"{characterData.CharacterName} 升级到了 Lv.{level}！");
 
-                // 1. 应用奖励
                 foreach (var reward in rewards)
                 {
                     ApplyReward(reward);
                 }
                 statSystem.currentHP = (int)statSystem.maxHP.getValue();
+                
+                SkillInventory.RefreshSkillsAsync(level).Forget();
             }
 
             private void ApplyReward(LevelReward reward)
@@ -113,20 +117,17 @@ namespace Character
                         break;
                     
                     case LevelRewardType.UnlockSkill:
-                        // 预留位置：SkillManager.Unlock(this, reward.TargetID);
-                        Debug.Log($"[TODO] 解锁技能: {reward.TargetID}");
+                        Debug.Log($"[SkillInventory] 技能解锁由 SkillInventory 自动处理: {reward.TargetID}");
                         break;
                         
                     case LevelRewardType.UpgradeSkill:
-                        // 预留位置：SkillManager.Upgrade(this, reward.TargetID);
-                        Debug.Log($"[TODO] 升级技能: {reward.TargetID}");
+                        Debug.Log($"[SkillInventory] 技能升级由 SkillInventory 自动处理: {reward.TargetID}");
                         break;
                 }
             }
 
             private void ApplyStatGrowth(string statName, int value)
             {
-                // 使用 Modifier 模式，来源标记为 "LevelUp"
                 StatModifier mod = new StatModifier(value, StatModType.Flat, "LevelUp");
 
                 switch (statName)
