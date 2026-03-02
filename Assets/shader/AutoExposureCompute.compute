@@ -1,10 +1,6 @@
 //////////////  CREATE BY Gemini///////////////
 #pragma kernel CSMain
 
-// --- 注意 ---
-// 我们不再需要 #pragma use_dxc，也不需要 wave 函数
-// 这段代码兼容所有主流显卡和图形 API (DX11/Vulkan/OpenGL)
-
 // 输入输出
 Texture2D<float4> _SourceTexture;
 RWTexture2D<float2> _OutputTexture;

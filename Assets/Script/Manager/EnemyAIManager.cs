@@ -45,8 +45,7 @@ namespace GamePlay.AI
 
                 SkillTargetContext context = new SkillTargetContext(
                     targetToAttack.gridPosition,
-                    new List<MapUnit> { targetToAttack },
-                    DamageType.Physical
+                    new List<MapUnit> { targetToAttack }
                 );
 
                 SkillCommand skillCmd = new SkillCommand(

@@ -8,7 +8,7 @@ using GamePlay.unit;
 using Command;
 using Global;
 using GamePlay.Grid;
-using GamePlay.Visual; 
+using GamePlay.Visual;
 using GamePlay.Skill;
 using System.Collections;
 
@@ -16,11 +16,12 @@ namespace GamePlay.Control
 {
     public enum InputState
     {
-        Locked,         
-        Idle,           
-        MenuOpen,       
-        TargetingMove,  
-        TargetingAttack 
+        Locked,
+        Idle,
+        MenuOpen,
+        TargetingMove,
+        TargetingAttack,
+        TargetingSkill
     }
 
     public class BattleInputController : MonoBehaviour
@@ -35,7 +36,10 @@ namespace GamePlay.Control
         public InputState currentState = InputState.Locked;
         private MapUnit activeUnit => TurnManager.Instance.ActiveUnit;
 
-        private HashSet<Vector3Int> _validTargetTiles = new HashSet<Vector3Int>(); 
+        private HashSet<Vector3Int> _validTargetTiles = new HashSet<Vector3Int>();
+        private SkillDataSO _selectedSkill;
+
+        public SkillDataSO SelectedSkill => _selectedSkill;
 
         void Awake()
         {
@@ -59,7 +63,7 @@ namespace GamePlay.Control
             if (currentState == InputState.Locked) ChangeState(InputState.Idle);
 
             Vector3Int hoverPos = GetMouseGridPosition();
-            
+
             if (EventSystem.current.IsPointerOverGameObject() || currentState == InputState.MenuOpen)
             {
                 GridVisualManager.Instance.HideCursor();
@@ -71,14 +75,17 @@ namespace GamePlay.Control
 
             if (Input.GetMouseButtonDown(0))
             {
-                if (EventSystem.current.IsPointerOverGameObject()) return; 
+                if (EventSystem.current.IsPointerOverGameObject()) return;
                 HandleLeftClick(hoverPos);
             }
 
             if (Input.GetMouseButtonDown(1))
             {
-                if (currentState == InputState.TargetingMove || currentState == InputState.TargetingAttack)
+                if (currentState == InputState.TargetingMove || 
+                    currentState == InputState.TargetingAttack ||
+                    currentState == InputState.TargetingSkill)
                 {
+                    _selectedSkill = null;
                     ChangeState(InputState.MenuOpen);
                     BattleUIManager.Instance.ShowActionMenu(activeUnit);
                 }
@@ -93,16 +100,16 @@ namespace GamePlay.Control
         private IEnumerator ExecuteCommandAndWait(BaseCommand cmd)
         {
             ChangeState(InputState.Locked);
-            
+
             yield return Tool.WaitUntilCommandFinish(cmd);
-            
+
             ChangeState(InputState.Idle);
         }
 
         public void ChangeState(InputState newState)
         {
             currentState = newState;
-            
+
             GridVisualManager.Instance.ClearHighlights();
             _validTargetTiles.Clear();
 
@@ -114,30 +121,39 @@ namespace GamePlay.Control
                 case InputState.TargetingAttack:
                     CalculateAndShowAttackRange();
                     break;
+                case InputState.TargetingSkill:
+                    CalculateAndShowSkillRange();
+                    break;
             }
+        }
+
+        public void StartSkillTargeting(SkillDataSO skill)
+        {
+            _selectedSkill = skill;
+            ChangeState(InputState.TargetingSkill);
         }
 
         private void CalculateAndShowMoveRange()
         {
             int range = activeUnit.Character.characterData.MoveRange;
-            
+
             HashSet<Vector3Int> reachableTiles = AStar.GetReachableTiles(
-                activeUnit.gridPosition, 
-                range, 
-                mapManager.logicalGrid, 
+                activeUnit.gridPosition,
+                range,
+                mapManager.logicalGrid,
                 activeUnit.moveStats
             );
 
             foreach (Vector3Int pos in reachableTiles)
             {
                 MapUnit occupiedUnit = UnitManager.Instance.GetUnitAt(pos);
-                
+
                 if (occupiedUnit == null || occupiedUnit == activeUnit)
                 {
                     _validTargetTiles.Add(pos);
                 }
             }
-            
+
             GridVisualManager.Instance.ShowTilesHighlight(_validTargetTiles, Color.cyan);
         }
 
@@ -154,6 +170,24 @@ namespace GamePlay.Control
                 }
             }
             GridVisualManager.Instance.ShowTilesHighlight(_validTargetTiles, Color.red);
+        }
+
+        private void CalculateAndShowSkillRange()
+        {
+            if (_selectedSkill == null || activeUnit == null)
+            {
+                Debug.LogWarning("CalculateAndShowSkillRange: 技能或单位为空");
+                return;
+            }
+
+            List<Vector3Int> allPossibleRange = activeUnit.GetSkillAllPossibleRange(_selectedSkill);
+
+            foreach (Vector3Int pos in allPossibleRange)
+            {
+                _validTargetTiles.Add(pos);
+            }
+
+            GridVisualManager.Instance.ShowTilesHighlight(_validTargetTiles, new Color(1f, 0.5f, 0f));
         }
 
         private Vector3Int GetMouseGridPosition()
@@ -209,13 +243,12 @@ namespace GamePlay.Control
 
                             SkillTargetContext context = new SkillTargetContext(
                                 targetEnemy.gridPosition,
-                                new List<MapUnit> { targetEnemy },
-                                DamageType.Physical
+                                new List<MapUnit> { targetEnemy }
                             );
 
                             SkillCommand cmd = new SkillCommand(
-                                activeUnit, 
-                                activeUnit.NormalAttackSkill, 
+                                activeUnit,
+                                activeUnit.NormalAttackSkill,
                                 context
                             );
 
@@ -226,7 +259,50 @@ namespace GamePlay.Control
                         }
                     }
                     break;
+
+                case InputState.TargetingSkill:
+                    if (_validTargetTiles.Contains(clickPos))
+                    {
+                        ExecuteSkillAtPosition(clickPos);
+                    }
+                    break;
             }
+        }
+
+        private void ExecuteSkillAtPosition(Vector3Int targetPos)
+        {
+            if (_selectedSkill == null || activeUnit == null) return;
+
+            ChangeState(InputState.Locked);
+
+            List<MapUnit> targets = new List<MapUnit>();
+
+            if (_selectedSkill.TargetType == TargetType.Enemy ||
+                _selectedSkill.TargetType == TargetType.Ally ||
+                _selectedSkill.TargetType == TargetType.AnyUnit)
+            {
+                MapUnit targetUnit = UnitManager.Instance.GetUnitAt(targetPos);
+                if (targetUnit != null)
+                {
+                    targets.Add(targetUnit);
+                }
+            }
+
+            SkillTargetContext context = new SkillTargetContext(
+                targetPos,
+                targets
+            );
+
+            SkillCommand cmd = new SkillCommand(activeUnit, _selectedSkill, context);
+
+            StartCoroutine(Tool.ExecuteCommandWithCallback(
+                cmd,
+                () =>
+                {
+                    _selectedSkill = null;
+                    TurnManager.Instance.EndCurrentUnitTurn();
+                }
+            ));
         }
     }
 }

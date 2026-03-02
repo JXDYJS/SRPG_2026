@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79a2e9171b9b9db489bd6f61796a188d, type: 3}
+  m_Name: Zombie
+  m_EditorClassIdentifier: 
+  CharacterID: 2
+  SkillSlots:
+  - SlotType: 0
+    SlotDisplayName: Attack
+    EvolutionChain:
+    - RequiredLevel: 0
+      SkillData:
+        m_AssetGUID: 6fb59d90faeb4ec4bafc349e12ac6c46
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_EditorAssetChanged: 0

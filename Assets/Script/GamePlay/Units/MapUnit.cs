@@ -328,6 +328,64 @@ namespace GamePlay
                 return AttackRangeSystem.GetSkillRange3D(this.gridPosition, targetPos, NormalAttackSkill);
             }
 
+            public List<Vector3Int> GetSkillRange(SkillDataSO skill, Vector3Int? targetPos = null)
+            {
+                if (skill == null)
+                {
+                    Debug.LogWarning($"{name} 技能为空，无法计算范围");
+                    return new List<Vector3Int>();
+                }
+
+                return AttackRangeSystem.GetSkillRange3D(this.gridPosition, targetPos, skill);
+            }
+
+            public List<Vector3Int> GetSkillAllPossibleRange(SkillDataSO skill)
+            {
+                if (skill == null)
+                {
+                    Debug.LogWarning($"{name} 技能为空，无法计算范围");
+                    return new List<Vector3Int>();
+                }
+
+                List<Vector3Int> allRange = new List<Vector3Int>();
+                HashSet<Vector3Int> uniquePositions = new HashSet<Vector3Int>();
+
+                if (skill.AttackPattern == AttackPatternType.Line || skill.AttackPattern == AttackPatternType.Cone)
+                {
+                    Vector2Int[] directions = new Vector2Int[]
+                    {
+                        Vector2Int.up,
+                        Vector2Int.down,
+                        Vector2Int.left,
+                        Vector2Int.right
+                    };
+
+                    foreach (var dir in directions)
+                    {
+                        Vector3Int fakeTarget = new Vector3Int(
+                            gridPosition.x + dir.x,
+                            gridPosition.y,
+                            gridPosition.z + dir.y
+                        );
+
+                        List<Vector3Int> rangeInDir = AttackRangeSystem.GetSkillRange3D(gridPosition, fakeTarget, skill);
+                        foreach (var pos in rangeInDir)
+                        {
+                            if (uniquePositions.Add(pos))
+                            {
+                                allRange.Add(pos);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    allRange = AttackRangeSystem.GetSkillRange3D(gridPosition, null, skill);
+                }
+
+                return allRange;
+            }
+
             private Vector3Int GetForwardVector()
             {
                 //TODO 这里的逻辑可以优化，比如记录 Unit 的 transform.forward

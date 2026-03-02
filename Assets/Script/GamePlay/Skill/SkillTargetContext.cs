@@ -9,13 +9,11 @@ namespace GamePlay.Skill
     {
         public Vector3Int TargetPosition;
         public List<MapUnit> UnitsInRange;
-        public DamageType DamageType;
 
-        public SkillTargetContext(Vector3Int targetPosition, List<MapUnit> unitsInRange, DamageType damageType = DamageType.Physical)
+        public SkillTargetContext(Vector3Int targetPosition, List<MapUnit> unitsInRange)
         {
             this.TargetPosition = targetPosition;
             this.UnitsInRange = unitsInRange ?? new List<MapUnit>();
-            this.DamageType = damageType;
         }
     }
 }

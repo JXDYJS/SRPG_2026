@@ -16,7 +16,12 @@ MonoBehaviour:
   m_Data:
     m_SerializedData: []
   m_GUID: f98965fa04444ca45ae9c9174dbcebc1
-  m_SerializeEntries: []
+  m_SerializeEntries:
+  - m_GUID: 3e77cd9c4a93c2145b7c637ade3db7f1
+    m_Address: Assets/Data/Skill/Fireball.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 1f6ca7d155b268c408ed984de8fdd20b, type: 2}
   m_SchemaSet:

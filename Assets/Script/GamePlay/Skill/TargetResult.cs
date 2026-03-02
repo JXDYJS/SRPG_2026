@@ -13,10 +13,10 @@ namespace GamePlay.Skill
         public List<string> AppliedBuffs;
         public DamageType DamageType;
 
-        public TargetResult(MapUnit target, DamageType damageType = DamageType.Physical)
+        public TargetResult(MapUnit target)
         {
             this.Target = target;
-            this.DamageType = damageType;
+            this.DamageType = DamageType.Physical;
             this.AppliedBuffs = new List<string>();
         }
     }

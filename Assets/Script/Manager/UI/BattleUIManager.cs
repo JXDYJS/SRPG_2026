@@ -1,7 +1,9 @@
 //CREATE BY GEMINI
 using UnityEngine;
 using GamePlay.unit;
-using UnityEngine.UI;
+using GamePlay.Skill;
+using UI.Panel;
+using Cysharp.Threading.Tasks;
 
 namespace Managers
 {
@@ -9,59 +11,112 @@ namespace Managers
     {
         public static BattleUIManager Instance;
 
-        [Header("UI 引用")]
-        public GameObject actionMenuPanel; // 你的战斗菜单预制件实例
+        [Header("面板引用")]
+        [SerializeField] private ActionMenuPanel _actionMenuPanel;
+        [SerializeField] private SkillMenuPanel _skillMenuPanel;
 
-        // 引用按钮
-        public Button moveButton;
-        public Button attackButton;
-        public Button waitButton;
-        //public Button cancelButton;
-        
-        // 当前正在操作的单位
+        [Header("旧版兼容引用（可删除）")]
+        [SerializeField] private GameObject actionMenuPanel;
+        [SerializeField] private UnityEngine.UI.Button moveButton;
+        [SerializeField] private UnityEngine.UI.Button attackButton;
+        [SerializeField] private UnityEngine.UI.Button waitButton;
+
+        private UIStack _uiStack;
         private MapUnit _currentUnit;
+        private SkillDataSO _selectedSkill;
+
+        public SkillDataSO SelectedSkill => _selectedSkill;
+        public MapUnit CurrentUnit => _currentUnit;
 
         void Awake()
         {
             Instance = this;
-            // 游戏开始时先隐藏菜单
-            if (actionMenuPanel != null) actionMenuPanel.SetActive(false);
-            UpdateButtonStates();
+            _uiStack = new UIStack();
+
+            if (actionMenuPanel != null)
+                actionMenuPanel.SetActive(false);
+
+            if (_actionMenuPanel != null)
+                _actionMenuPanel.PanelObject.SetActive(false);
+
+            if (_skillMenuPanel != null)
+                _skillMenuPanel.PanelObject.SetActive(false);
         }
 
-        // --- 供 InputController 调用：显示菜单 ---
         public void ShowActionMenu(MapUnit unit)
         {
             _currentUnit = unit;
-            UpdateButtonStates();
-            actionMenuPanel.SetActive(true);
-            // （位置由 Unity UGUI 锚点控制，这里不再需要代码干预）
+            _selectedSkill = null;
+
+            if (_actionMenuPanel != null)
+            {
+                _actionMenuPanel.Initialize(unit);
+                _uiStack.Push(_actionMenuPanel).Forget();
+            }
+            else
+            {
+                if (actionMenuPanel != null)
+                {
+                    UpdateButtonStates();
+                    actionMenuPanel.SetActive(true);
+                }
+            }
         }
 
         public void HideActionMenu()
         {
-            actionMenuPanel.SetActive(false);
-            _currentUnit = null;
+            _uiStack.Clear();
+
+            if (actionMenuPanel != null)
+                actionMenuPanel.SetActive(false);
+        }
+
+        public void ShowSkillMenu(MapUnit unit)
+        {
+            if (_skillMenuPanel == null)
+            {
+                Debug.LogError("BattleUIManager: SkillMenuPanel 未配置");
+                return;
+            }
+
+            _skillMenuPanel.Initialize(unit);
+            _uiStack.Push(_skillMenuPanel).Forget();
+        }
+
+        public async void PopPanel()
+        {
+            await _uiStack.Pop();
+        }
+
+        public void OnSkillSelected(SkillDataSO skill)
+        {
+            _selectedSkill = skill;
+            _uiStack.Clear();
+
+            if (_actionMenuPanel != null)
+                _actionMenuPanel.PanelObject.SetActive(false);
+            if (_skillMenuPanel != null)
+                _skillMenuPanel.PanelObject.SetActive(false);
+
+            GamePlay.Control.BattleInputController.Instance.StartSkillTargeting(skill);
         }
 
         private void UpdateButtonStates()
         {
             if (_currentUnit == null) return;
 
-            // 移动按钮：只有未移动且还有行动点时可用
-            moveButton.interactable = _currentUnit.CanMove;
+            if (moveButton != null)
+                moveButton.interactable = _currentUnit.CanMove;
 
-            // 攻击按钮：还有行动点时可用
-            attackButton.interactable = _currentUnit.CanAction;
+            if (attackButton != null)
+                attackButton.interactable = _currentUnit.CanAction;
 
-            // 待机按钮：始终可用
-            waitButton.interactable = true;
-
-            // 取消按钮：始终可用
-            //cancelButton.interactable = true;
+            if (waitButton != null)
+                waitButton.interactable = true;
         }
 
-        // --- 供 UI Button 的 OnClick() 绑定 ---
+        #region 旧版按钮回调（兼容）
+
         public void OnMoveButtonClicked()
         {
             HideActionMenu();
@@ -77,7 +132,6 @@ namespace Managers
         public void OnWaitButtonClicked()
         {
             HideActionMenu();
-            // 直接下达待机指令
             TurnManager.Instance.EndCurrentUnitTurn();
         }
 
@@ -86,5 +140,7 @@ namespace Managers
             HideActionMenu();
             GamePlay.Control.BattleInputController.Instance.ChangeState(GamePlay.Control.InputState.Idle);
         }
+
+        #endregion
     }
 }

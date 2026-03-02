@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe202a631b15d92408ac5c92665ab130, type: 3}
+  m_Name: EnemyAttack
+  m_EditorClassIdentifier: 
+  SkillName: "\u53F2\u8482\u592B\u7684\u653B\u51FB"
+  Description: 
+  Icon: {fileID: 0}
+  TargetType: 0
+  AttackPattern: 0
+  MaxRange: 1
+  MinRange: 1
+  VerticalRange: 1
+  RequireLineOfSight: 1
+  Cost: 0
+  Phases:
+  - PhaseName: attack
+    TargetType: 5
+    Effects:
+    - EffectType: 0
+      FlatBonus: 0
+      Multiplier: 1
+      Constant: 0
+      DamageType: 0
+      BuffID: 
+    VisualData:
+      CastAnimTrigger: Attack
+      CastEffect:
+        m_AssetGUID: 
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_EditorAssetChanged: 0
+      Transit: 0
+      ProjectilePrefab:
+        m_AssetGUID: 
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_EditorAssetChanged: 0
+      ProjectileSpeed: 0
+      HitEventName: Hit
+      EndEventName: End

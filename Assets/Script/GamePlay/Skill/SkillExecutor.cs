@@ -33,11 +33,11 @@ namespace GamePlay.Skill
                         continue;
                     }
 
-                    TargetResult targetResult = new TargetResult(target, context.DamageType);
+                    TargetResult targetResult = new TargetResult(target);
 
                     foreach (SkillEffect effect in phase.Effects)
                     {
-                        ApplyEffect(caster, target, effect, targetResult, context);
+                        ApplyEffect(caster, target, effect, targetResult);
                     }
 
                     phaseResult.TargetResults.Add(targetResult);
@@ -100,17 +100,30 @@ namespace GamePlay.Skill
 
                 case TargetType.Position:
                     break;
+                case TargetType.Player:
+                    if (context.UnitsInRange != null)
+                    {
+                        foreach (MapUnit unit in context.UnitsInRange)
+                        {
+                            if (unit.Faction == FactionType.Player)
+                            {
+                                targets.Add(unit);
+                            }
+                        }
+                    }
+                    break;
+                
             }
 
             return targets;
         }
 
-        private static void ApplyEffect(MapUnit caster, MapUnit target, SkillEffect effect, TargetResult targetResult, SkillTargetContext context)
+        private static void ApplyEffect(MapUnit caster, MapUnit target, SkillEffect effect, TargetResult targetResult)
         {
             switch (effect.EffectType)
             {
                 case EffectType.Damage:
-                    ApplyDamage(caster, target, effect, targetResult, context);
+                    ApplyDamage(caster, target, effect, targetResult);
                     break;
 
                 case EffectType.Heal:
@@ -127,15 +140,18 @@ namespace GamePlay.Skill
             }
         }
 
-        private static void ApplyDamage(MapUnit caster, MapUnit target, SkillEffect effect, TargetResult targetResult, SkillTargetContext context)
+        private static void ApplyDamage(MapUnit caster, MapUnit target, SkillEffect effect, TargetResult targetResult)
         {
             UndoSystem.Instance.RegisterDirty(target);
 
+            int baseATK = (int)caster.Character.statSystem.ATK.getValue();
+            int calculatedDamage = effect.CalculateValue(baseATK);
+
             DamageInfo info = new DamageInfo(
-                effect.Value > 0 ? effect.Value : caster.Character.statSystem.ATK.getValue(),
+                calculatedDamage,
                 caster,
                 target,
-                context.DamageType,
+                effect.DamageType,
                 DamageMethod.Skill
             );
 
@@ -144,6 +160,7 @@ namespace GamePlay.Skill
             target.TakeDamage(info);
 
             targetResult.ActualDamage = (int)info.damage;
+            targetResult.DamageType = effect.DamageType;
             targetResult.IsDead = target.Character.statSystem.currentHP <= 0;
         }
 
@@ -151,7 +168,9 @@ namespace GamePlay.Skill
         {
             UndoSystem.Instance.RegisterDirty(target);
 
-            int healAmount = effect.Value;
+            int baseATK = (int)target.Character.statSystem.ATK.getValue();
+            int healAmount = effect.CalculateValue(baseATK);
+            
             target.Character.statSystem.currentHP += healAmount;
 
             int maxHP = (int)target.Character.statSystem.maxHP.getValue();
