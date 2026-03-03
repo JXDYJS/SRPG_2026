@@ -2,6 +2,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using Managers;
+using Global;
 
 namespace GamePlay.Visual
 {
@@ -57,12 +58,9 @@ namespace GamePlay.Visual
 
             foreach (var pos in tiles)
             {
+                if(!CanPutOnGrid(pos)) continue;
                 GameObject quad = GetHighlightFromPool();
                 quad.transform.position = MapManager.Instance.GetWorldPosition(pos) + Vector3.up * 0.02f;
-                
-                // 如果材质球支持改色（比如 _BaseColor），可以在这里修改
-                // quad.GetComponent<Renderer>().material.SetColor("_BaseColor", color);
-                
                 _activeHighlights.Add(quad);
             }
         }
@@ -90,6 +88,28 @@ namespace GamePlay.Visual
             GameObject newObj = Instantiate(rangeHighlightPrefab, transform);
             _highlightPool.Add(newObj);
             return newObj;
+        }
+
+        public static List<Vector3Int> FilterValidPositions(
+        IEnumerable<Vector3Int> positions)
+        {
+            List<Vector3Int> valid = new List<Vector3Int>();
+            foreach (var pos in positions)
+            {
+                // 下方是实体方块，当前格是空气
+                if (MapManager.Instance.logicalGrid.GetBlock(pos) == BlockType.Air &&
+                    MapManager.Instance.logicalGrid.GetBlock(pos + Vector3Int.down) != BlockType.Air)
+                {
+                    valid.Add(pos);
+                }
+            }
+            return valid;
+        }
+
+        public static bool CanPutOnGrid(Vector3Int pos)
+        {
+            return MapManager.Instance.logicalGrid.GetBlock(pos) != BlockType.Air &&
+                MapManager.Instance.logicalGrid.GetBlock(pos + Vector3Int.up) == BlockType.Air;
         }
     }
 }

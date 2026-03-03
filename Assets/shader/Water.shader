@@ -2,7 +2,6 @@
 //
 //SOURCE:https://zhuanlan.zhihu.com/p/2010582216581862517
 //
-
 Shader "Custom/PhysicsWater_Final_Strict_Fixed"
 {
     Properties
@@ -12,6 +11,7 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
         _PhaseG("Phase G (Mie)", Range(-1, 1)) = 0.8
         _ScatterColor("Scatter (uS)", Color) = (0.15, 0.20, 0.25, 1.0)
         _AbsorptionColor("Absorption (uA)", Color) = (0.35, 0.05, 0.02, 1.0)
+        _Smoothness("Smoothness", Range(0, 1)) = 0.15
 
         [Header(Volumetrics)]
         _ExpFactor("EXP_FACTOR", Float) = 15.0
@@ -31,6 +31,7 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
         _SSSBoost("SSS Boost", Float) = 2.0
         _SSSPathScale("SSS Path Scale", Float) = 20.0
         _BacklitPathScale("Backlit Path Scale", Float) = 15.0
+        
     }
 
     SubShader
@@ -39,6 +40,7 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
 
         Pass
         {
+            Tags { "LightMode" = "UniversalForward" }
             ZWrite Off
             Blend SrcAlpha OneMinusSrcAlpha
 
@@ -46,11 +48,15 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
             #pragma vertex vert
             #pragma fragment frag
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE
+            //#pragma multi_compile _ _ENVIRONMENTREFLECTIONS_OFF
+            #pragma multi_compile_fragment _ _REFLECTION_PROBE_BLENDING
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareOpaqueTexture.hlsl"
+            #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/ImageBasedLighting.hlsl"
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/GlobalIllumination.hlsl"
 
             #define WATER_SAMPLE_COUNT 6
 
@@ -71,9 +77,15 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
                 float _SSSBoost;
                 float _SSSPathScale;
                 float _BacklitPathScale;
+                float _Smoothness;
             CBUFFER_END
 
             TEXTURE2D(_NoiseTex); SAMPLER(sampler_NoiseTex);
+            TEXTURE2D(_SSPR_ReflectionTexture);
+            SAMPLER(sampler_SSPR_ReflectionTexture);
+            //TEXTURECUBE(_GlossyEnvironmentCubeMap);
+            //SAMPLER(sampler_GlossyEnvironmentCubeMap);
+            //half4 _GlossyEnvironmentCubeMap_HDR;
 
             struct Attributes { float4 positionOS : POSITION; float2 uv : TEXCOORD0; };
             struct Varyings { float4 positionCS : SV_POSITION; float3 positionWS : TEXCOORD0; float2 uv : TEXCOORD1; };
@@ -120,7 +132,6 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
             Varyings vert(Attributes input) {
                 Varyings output;
                 output.positionWS = TransformObjectToWorld(input.positionOS.xyz);
-                // 修正点：补全了 To 
                 output.positionCS = TransformWorldToHClip(output.positionWS);
                 output.uv = input.uv;
                 return output;
@@ -137,11 +148,17 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
                 float thickness = saturate(totalRayLength / _MaxRayLength);
 
                 float step_size = 0.1;
-                float w0 = get_water_height(input.uv, _Time.y);
-                float w1 = get_water_height(input.uv + float2(step_size, 0), _Time.y);
-                float w2 = get_water_height(input.uv + float2(0, step_size), _Time.y);
+                float2 worldUV = input.positionWS.xz;
+                float w0 = get_water_height(worldUV, _Time.y);
+                float w1 = get_water_height(worldUV + float2(step_size, 0), _Time.y);
+                float w2 = get_water_height(worldUV + float2(0, step_size), _Time.y);
                 float3 N = normalize(float3((w0 - w1) * _NormalInfluence, (w0 - w2) * _NormalInfluence, step_size));
-                N = normalize(TransformTangentToWorld(N, half3x3(1,0,0, 0,1,0, 0,0,1)));
+                float3 worldTangent = float3(1, 0, 0);
+                float3 worldBitangent = float3(0, 0, 1);
+                float3 worldNormal = float3(0, 1, 0);
+                float3x3 TBN = float3x3(worldTangent, worldBitangent, worldNormal);
+                N = normalize(TransformTangentToWorld(N, TBN));
+                N.xz *= smoothstep(0.0,_NormalInfluence,abs(dot(float3(0.0,1.0,0.0),-V)));
 
                 Light mainLight = GetMainLight(TransformWorldToShadowCoord(input.positionWS));
                 float3 L = mainLight.direction;
@@ -196,11 +213,44 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
                 float3 T_exit = 1.0 - F_Schlick(_Fresnel0, saturate(dot(N, V)));
                 float3 sceneColor = SampleSceneColor(screenUV);
                 float3 sceneInScattering = sceneColor * accumTransmittance * uS * totalRayLength * Luminance(mainLight.color);
+
+                float3 H = SafeNormalize(L + V);
+                float NoH = saturate(dot(N, H));
+                float LoH = saturate(dot(L, H));
+
+                float perceptualRoughness = 1.0 - _Smoothness;
+                float roughness = perceptualRoughness * perceptualRoughness;
+                float roughness2 = max(roughness * roughness, 0.0078125); // 对应代码中的 alpha^2
+
+                // D 项: GGX Distribution
+                float d_denom = NoH * NoH * (roughness2 - 1.0) + 1.00001;
+                float D = roughness2 / (d_denom * d_denom);
+
+                // V * F 项: ARM Approximation (Optimizing PBR for Mobile)
+                // 公式: V * F = 1.0 / ( LoH^2 * (roughness + 0.5) * 4.0 )
+                float specularTerm = D / (max(0.1, LoH * LoH) * (roughness * 4.0 + 2.0));
+
+                specularTerm = clamp(specularTerm, 0.0, 1000.0);
+
+                float3 directSpecular = specularTerm * mainLight.color * _Fresnel0;
+
+                //Indirect Specular
+                float3 R = reflect(-V, N);
+                float2 distortedUV = screenUV + N.xz * 0.02;
+                float4 ssprData = SAMPLE_TEXTURE2D(_SSPR_ReflectionTexture, sampler_SSPR_ReflectionTexture, distortedUV);
+                float mip = PerceptualRoughnessToMipmapLevel(perceptualRoughness);
+                float4 rawSkyData = SAMPLE_TEXTURECUBE_LOD(_GlossyEnvironmentCubeMap, sampler_GlossyEnvironmentCubeMap, R, mip);
+                float3 envReflection = DecodeHDREnvironment(rawSkyData, _GlossyEnvironmentCubeMap_HDR);
+                float3 finalReflection;
+                float reflectionMask = saturate(ssprData.a);
+                finalReflection = lerp(envReflection, ssprData.rgb, reflectionMask);
+
+                float F = F_Schlick(_Fresnel0, saturate(dot(N, V)));
                 
                 float3 finalColor = (G_entry * T_entry * scatteredLight + thinLayerSSS + backlitTrans) * T_exit 
-                                  + (sceneColor * accumTransmittance) + sceneInScattering;
+                                  + (sceneColor * accumTransmittance) * T_exit + finalReflection * (1.0 - T_exit) + sceneInScattering + directSpecular;
 
-                return half4(finalColor, 1.0);
+                return half4(finalColor,1.0);
             }
             ENDHLSL
         }

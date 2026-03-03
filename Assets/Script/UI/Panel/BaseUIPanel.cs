@@ -9,6 +9,16 @@ namespace UI.Panel
         [Header("动画配置")]
         [SerializeField] protected float _animationDuration = 0.25f;
         [SerializeField] protected float _slideDistance = 300f;
+        [SerializeField] protected AnimationDirection _enterDirection = AnimationDirection.Left;
+        [SerializeField] protected AnimationDirection _exitDirection = AnimationDirection.Right;
+
+        public enum AnimationDirection
+        {
+            Left,
+            Right,
+            Up,
+            Down
+        }
 
         protected RectTransform _rectTransform;
         protected CanvasGroup _canvasGroup;
@@ -25,7 +35,7 @@ namespace UI.Panel
 
         public virtual async UniTask PlayEnterAnimation()
         {
-            Vector2 startPos = _originalPosition + Vector2.right * _slideDistance;
+            Vector2 startPos = _originalPosition + GetDirectionVector(_enterDirection) * _slideDistance;
             _rectTransform.anchoredPosition = startPos;
 
             float elapsed = 0f;
@@ -43,7 +53,7 @@ namespace UI.Panel
 
         public virtual async UniTask PlayExitAnimation()
         {
-            Vector2 endPos = _originalPosition + Vector2.left * _slideDistance;
+            Vector2 endPos = _originalPosition + GetDirectionVector(_exitDirection) * _slideDistance;
             Vector2 startPos = _rectTransform.anchoredPosition;
 
             float elapsed = 0f;
@@ -57,6 +67,23 @@ namespace UI.Panel
             }
 
             _rectTransform.anchoredPosition = endPos;
+        }
+
+        private Vector2 GetDirectionVector(AnimationDirection direction)
+        {
+            switch (direction)
+            {
+                case AnimationDirection.Left:
+                    return Vector2.left;
+                case AnimationDirection.Right:
+                    return Vector2.right;
+                case AnimationDirection.Up:
+                    return Vector2.up;
+                case AnimationDirection.Down:
+                    return Vector2.down;
+                default:
+                    return Vector2.right;
+            }
         }
 
         public virtual void SetInteractable(bool interactable)

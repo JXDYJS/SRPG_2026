@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 using GamePlay.Skill;
 using UnityEngine.Events;
 namespace UI.Component
@@ -7,8 +8,8 @@ namespace UI.Component
     public class SkillButton : MonoBehaviour
     {
         [Header("UI组件引用")]
-        [SerializeField] private Text _skillNameText;
-        [SerializeField] private Text _costText;
+        [SerializeField] private TMP_Text _skillNameText;
+        [SerializeField] private TMP_Text _costText;
         [SerializeField] private Image _iconImage;
         [SerializeField] private Image _backgroundImage;
         [SerializeField] private Button _button;
@@ -78,7 +79,7 @@ namespace UI.Component
             }
         }
 
-        private void OnButtonClicked()
+        public void OnButtonClicked()
         {
             _onClicked?.Invoke(_skillData);
         }

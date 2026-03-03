@@ -254,14 +254,14 @@ namespace GamePlay.Control
 
                             StartCoroutine(Tool.ExecuteCommandWithCallback(
                                 cmd,
-                                () => TurnManager.Instance.EndCurrentUnitTurn()
+                                () => TurnManager.Instance.TryEndCurrentUnitTurn()
                             ));
                         }
                     }
                     break;
 
                 case InputState.TargetingSkill:
-                    if (_validTargetTiles.Contains(clickPos))
+                    if (_validTargetTiles.Contains(clickPos + Vector3Int.up))//todo向上一个格子找到人，这是简单逻辑
                     {
                         ExecuteSkillAtPosition(clickPos);
                     }
@@ -300,7 +300,7 @@ namespace GamePlay.Control
                 () =>
                 {
                     _selectedSkill = null;
-                    TurnManager.Instance.EndCurrentUnitTurn();
+                    TurnManager.Instance.TryEndCurrentUnitTurn();
                 }
             ));
         }

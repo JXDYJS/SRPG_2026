@@ -165,7 +165,7 @@ namespace GamePlay
         // === 核心判定：能不能站在这个方块上 ===
         // targetBase: 目标脚下的方块坐标
         // currentBase: 当前脚下的方块坐标
-        static bool CanStandAt(LogicalGrid grid, Vector3Int targetBase, Vector3Int currentBase, UnitMoveStats stats)
+        static public bool CanStandAt(LogicalGrid grid, Vector3Int targetBase, Vector3Int currentBase, UnitMoveStats stats)
         {
             // 1. 脚踏实地检查 (Footing)
             BlockType floor = grid.GetBlock(targetBase);

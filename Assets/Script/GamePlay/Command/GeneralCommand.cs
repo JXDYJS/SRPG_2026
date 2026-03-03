@@ -105,8 +105,7 @@ namespace Command
                 }
                 _unit.transform.position = targetWorldPos;
             }
-            _unit.gridPosition = Vector3Int.RoundToInt(_unit.transform.position);
-            UnitManager.Instance.UpdateUnitPosition(_unit, _unit.gridPosition);
+            _unit.SetGridPosition(Vector3Int.RoundToInt(_unit.transform.position));
             _unit.SwitchState(UnitState.Idle);
             IsFinished = true;
         }

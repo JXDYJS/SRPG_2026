@@ -52,24 +52,24 @@ namespace UI.Panel
             _waitButton.interactable = true;
         }
 
-        private void OnMoveClicked()
+        public void OnMoveClicked()
         {
             BattleUIManager.Instance.HideActionMenu();
             GamePlay.Control.BattleInputController.Instance.ChangeState(GamePlay.Control.InputState.TargetingMove);
         }
 
-        private void OnAttackClicked()
+        public void OnAttackClicked()
         {
             BattleUIManager.Instance.HideActionMenu();
             GamePlay.Control.BattleInputController.Instance.ChangeState(GamePlay.Control.InputState.TargetingAttack);
         }
 
-        private void OnSkillClicked()
+        public void OnSkillClicked()
         {
             BattleUIManager.Instance.ShowSkillMenu(_currentUnit);
         }
 
-        private void OnWaitClicked()
+        public void OnWaitClicked()
         {
             BattleUIManager.Instance.HideActionMenu();
             TurnManager.Instance.EndCurrentUnitTurn();

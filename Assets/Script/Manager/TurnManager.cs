@@ -99,4 +99,23 @@ public class TurnManager : MonoBehaviour
         // 寻找下一个人
         CalculateNextAction();
     }
+
+    public void TryEndCurrentUnitTurn()
+    {
+        if (ActiveUnit == null) return;
+        
+        // 检查单位是否还有行动点
+        if (ActiveUnit.actionPoints <= 0 || ActiveUnit.IsActionDone)
+        {
+            EndCurrentUnitTurn();
+        }
+        else
+        {
+            // 单位还有行动点，返回Idle状态
+            if (ActiveUnit.Faction == FactionType.Player)
+            {
+                GamePlay.Control.BattleInputController.Instance.ChangeState(GamePlay.Control.InputState.Idle);
+            }
+        }
+    }
 }

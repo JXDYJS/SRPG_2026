@@ -77,7 +77,8 @@ MonoBehaviour:
   - {fileID: -1878332245247344467}
   - {fileID: -1558598540239434210}
   - {fileID: 1085916960507657859}
-  m_RendererFeatureMap: adc0de57c6d2eee51e0e96ade2be5eea837ea1deb8f3110f
+  - {fileID: 3367451691278569946}
+  m_RendererFeatureMap: adc0de57c6d2eee51e0e96ade2be5eea837ea1deb8f3110fda91f2c07897bb2e
   m_UseNativeRenderPass: 0
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}
@@ -115,7 +116,7 @@ MonoBehaviour:
     failOperation: 0
     zFailOperation: 0
   m_ShadowTransparentReceive: 1
-  m_RenderingMode: 0
+  m_RenderingMode: 2
   m_DepthPrimingMode: 0
   m_CopyDepthMode: 0
   m_AccurateGbufferNormals: 0
@@ -135,3 +136,22 @@ MonoBehaviour:
   m_Active: 1
   settings:
     shader: {fileID: 4800000, guid: 636b742eace3bde499d542b318fc5c6d, type: 3}
+--- !u!114 &3367451691278569946
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d02665f361244240a5db11daae1ed8f, type: 3}
+  m_Name: SSPRFeature
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  settings:
+    ssprCompute: {fileID: 7200000, guid: 88a03f77821ff4347a1f5dc1bb77712a, type: 3}
+    waterHeight: 0.5
+    stretchIntensity: 1
+    stretchThreshold: 0.5
+    edgeFadeOut: 0.1

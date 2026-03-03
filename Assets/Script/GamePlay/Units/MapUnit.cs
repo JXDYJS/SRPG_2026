@@ -442,23 +442,9 @@ namespace GamePlay
 
             public void SetGridPosition(Vector3Int pos)
             {
-                // gridPosition = pos;
-                
-                // // 计算世界坐标 (假设 Grid y=0 对应 World y=0，如果 Pivot 在底部)
-                // // 如果你的方块 Pivot 在中心，这里可能需要偏移
-                // float cellSize = _mapManager != null ? _mapManager.cellSize : 1f;
-                
-                // // 获取该方块的“站立面”高度
-                // float standY = pos.y;
-                // if (_mapManager != null)
-                // {
-                //     var blockType = _mapManager.logicalGrid.GetBlock(pos);
-                //     standY += _mapManager.logicalGrid.GetBlockHeight(blockType);
-                // }
-
-                // transform.position = new Vector3(pos.x * cellSize, standY, pos.z * cellSize);
+                Vector3Int oldPos = gridPosition;
                 SetGridPositionDirectly(pos);
-                UnitManager.Instance.UpdateUnitPosition(this,pos);
+                UnitManager.Instance.UpdateUnitPosition(this,oldPos);
                 if (MapManager.Instance != null)
                 {
                     transform.position = MapManager.Instance.GetWorldPosition(pos);
@@ -490,6 +476,7 @@ namespace GamePlay
 
             IEnumerator MoveRoutine(List<Vector3Int> path)
             {
+                //弃用
                 SwitchState(UnitState.Moving);
                 float cellSize = _mapManager != null ? _mapManager.cellSize : 1f;
 
@@ -601,10 +588,10 @@ namespace GamePlay
                 SetGridPosition(snap.GridPosition.x, snap.GridPosition.y, snap.GridPosition.z);
                 
                 // 更新 UnitManager 中的位置记录
-                if (UnitManager.Instance != null)
-                {
-                    UnitManager.Instance.UpdateUnitPosition(this, snap.GridPosition);
-                }
+                // if (UnitManager.Instance != null)
+                // {
+                //     UnitManager.Instance.UpdateUnitPosition(this, snap.GridPosition);
+                // }
                 
                 //2. 还原 HP
                 Character.statSystem.currentHP = snap.CurrentHP;

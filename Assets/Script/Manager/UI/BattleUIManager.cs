@@ -51,7 +51,11 @@ namespace Managers
             if (_actionMenuPanel != null)
             {
                 _actionMenuPanel.Initialize(unit);
-                _uiStack.Push(_actionMenuPanel).Forget();
+                // 检查栈顶是否已经是ActionMenu，如果是则不重复推入
+                if (_uiStack.Count == 0 || _uiStack.Current.GetType() != typeof(ActionMenuPanel))
+                {
+                    _uiStack.Push(_actionMenuPanel).Forget();
+                }
             }
             else
             {
@@ -80,12 +84,18 @@ namespace Managers
             }
 
             _skillMenuPanel.Initialize(unit);
-            _uiStack.Push(_skillMenuPanel).Forget();
+            // 检查栈顶是否已经是SkillMenu，如果是则不重复推入
+            if (_uiStack.Count == 0 || _uiStack.Current.GetType() != typeof(SkillMenuPanel))
+            {
+                _uiStack.Push(_skillMenuPanel).Forget();
+            }
         }
 
         public async void PopPanel()
         {
+            Debug.Log($"BattleUIManager: PopPanel called, stack count: {_uiStack.Count}");
             await _uiStack.Pop();
+            Debug.Log($"BattleUIManager: PopPanel completed, stack count: {_uiStack.Count}");
         }
 
         public void OnSkillSelected(SkillDataSO skill)

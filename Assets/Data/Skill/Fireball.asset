@@ -45,6 +45,6 @@ MonoBehaviour:
         m_SubObjectName: 
         m_SubObjectType: 
         m_EditorAssetChanged: 0
-      ProjectileSpeed: 0
+      ProjectileSpeed: 1
       HitEventName: 
       EndEventName: 
