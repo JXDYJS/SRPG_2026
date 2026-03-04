@@ -20,14 +20,29 @@ namespace GamePlay.Skill
                 return;
             }
 
-            var casterView = sequenceResult.Caster.View;
+            var caster = sequenceResult.Caster;
+            var casterView = caster.View;
 
             if (casterView == null)
             {
-                Debug.LogError($"SkillPerformer: {sequenceResult.Caster.name} 没有 UnitView 组件");
+                Debug.LogError($"SkillPerformer: {caster.name} 没有 UnitView 组件");
                 return;
             }
 
+            // 第一步：记录当前朝向（用于技能结束后恢复）
+            caster.RecordCurrentFacing();
+
+            // 第二步：如果技能有目标位置，让施法者朝向目标
+            if (sequenceResult.Context != null && sequenceResult.Context.TargetPosition != caster.gridPosition)
+            {
+                // 计算从施法者到目标位置的方向
+                caster.FaceToPosition(sequenceResult.Context.TargetPosition);
+                
+                // 等待一小段时间让旋转完成（如果需要平滑旋转的话）
+                await UniTask.Yield();
+            }
+
+            // 第三步：执行技能的所有阶段
             for (int i = 0; i < sequenceResult.PhaseResults.Count; i++)
             {
                 PhaseResult phaseResult = sequenceResult.PhaseResults[i];
@@ -38,8 +53,11 @@ namespace GamePlay.Skill
                     continue;
                 }
 
-                await PerformSinglePhase(sequenceResult.Caster, phaseResult, phaseData);
+                await PerformSinglePhase(caster, phaseResult, phaseData);
             }
+
+            // 第四步：技能执行结束后，恢复到记录的朝向
+            caster.RestoreRecordedFacing();
         }
 
         private static SkillPhase GetPhaseData(SkillDataSO skillData, int phaseIndex)
@@ -129,7 +147,9 @@ namespace GamePlay.Skill
 
         private static async UniTask PerformProjectileTransit(MapUnit caster, Vector3Int targetPosition, SkillVisualData visual)
         {
-            Vector3 targetWorldPos = MapManager.Instance.GetWorldPosition(targetPosition) + Vector3.up;
+            // 重要：targetPosition已经是脚底方块坐标
+            // MapManager.GetWorldPosition会自动加上方块高度，不需要额外加Vector3.up
+            Vector3 targetWorldPos = MapManager.Instance.GetWorldPosition(targetPosition);
             
             var handle = Addressables.InstantiateAsync(visual.ProjectilePrefab, caster.transform.position + Vector3.up, Quaternion.identity);
             await handle.Task;

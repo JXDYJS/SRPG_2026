@@ -15,16 +15,20 @@ MonoBehaviour:
   SkillName: "\u53F2\u8482\u592B\u7684\u653B\u51FB"
   Description: 
   Icon: {fileID: 0}
-  TargetType: 0
-  AttackPattern: 0
-  MaxRange: 1
-  MinRange: 1
-  VerticalRange: 1
+  TargetType: 7
+  CastPattern: 0
+  CastMaxRange: 1
+  CastMinRange: 1
+  CastVerticalRange: 1
   RequireLineOfSight: 1
+  StopsAtFirstHit: 1
   Cost: 0
   Phases:
   - PhaseName: attack
     TargetType: 5
+    AoEPattern: 0
+    AoERadius: 0
+    AoEVerticalRange: 0
     Effects:
     - EffectType: 0
       FlatBonus: 0

@@ -48,6 +48,12 @@ namespace GamePlay
             public Vector3Int gridPosition;
             public bool isMoving => CurrentState == UnitState.Moving;
 
+            [Header("朝向系统")]
+            [SerializeField] // 方便 Inspector 调试看状态
+            private UnitFacing currentFacing = UnitFacing.North;
+            public UnitFacing CurrentFacing => currentFacing;
+            private UnitFacing previousFacing = UnitFacing.North; // 用于记录技能前的朝向
+
             [Header("FSM")]
             [SerializeField] // 方便 Inspector 调试看状态
             private UnitState currentState = UnitState.Idle;
@@ -121,8 +127,38 @@ namespace GamePlay
                 this.Character = character;
                 this._mapManager = mapManager;
 
+                // 重要：确保初始位置是有效的脚底方块坐标
+                Vector3Int startPos = new Vector3Int(startX, startY, startZ);
+                
+                // 验证并修正起始位置
+                if (!GridPositionTool.IsValidFloorPosition(startPos))
+                {
+                    Debug.LogWarning($"单位 {name} 的起始位置 {startPos} 不是有效的脚底方块，尝试向下修正");
+                    for (int y = startPos.y; y >= 0; y--)
+                    {
+                        Vector3Int checkPos = new Vector3Int(startPos.x, y, startPos.z);
+                        if (GridPositionTool.IsValidFloorPosition(checkPos))
+                        {
+                            startPos = checkPos;
+                            break;
+                        }
+                    }
+                }
+                
                 // Snap to grid
-                SetGridPosition(startX, startY, startZ);
+                SetGridPosition(startPos.x, startPos.y, startPos.z);
+                
+                // 重要：确保transform.position与gridPosition同步
+                // 如果transform.position与gridPosition对应的世界位置不一致，强制同步
+                if (MapManager.Instance != null)
+                {
+                    Vector3 expectedWorldPos = MapManager.Instance.GetWorldPosition(startPos);
+                    if (Vector3.Distance(transform.position, expectedWorldPos) > 0.1f)
+                    {
+                        transform.position = expectedWorldPos;
+                        Debug.Log($"单位 {name} 的transform.position已同步到gridPosition: {startPos}");
+                    }
+                }
                 
                 // 初始化时清空旧 Buff，并强制重刷缓存
                 ActiveBuffs.Clear();
@@ -350,7 +386,8 @@ namespace GamePlay
                 List<Vector3Int> allRange = new List<Vector3Int>();
                 HashSet<Vector3Int> uniquePositions = new HashSet<Vector3Int>();
 
-                if (skill.AttackPattern == AttackPatternType.Line || skill.AttackPattern == AttackPatternType.Cone)
+                // 使用新的CastPattern字段
+                if (skill.CastPattern == CastPatternType.Line)
                 {
                     Vector2Int[] directions = new Vector2Int[]
                     {
@@ -368,19 +405,39 @@ namespace GamePlay
                             gridPosition.z + dir.y
                         );
 
-                        List<Vector3Int> rangeInDir = AttackRangeSystem.GetSkillRange3D(gridPosition, fakeTarget, skill);
+                        // 使用新的GetCastRange3D方法
+                        List<Vector3Int> rangeInDir = AttackRangeSystem.GetCastRange3D(gridPosition, skill);
                         foreach (var pos in rangeInDir)
                         {
-                            if (uniquePositions.Add(pos))
+                            // 只添加当前方向上的格子
+                            Vector3Int posDir = pos - gridPosition;
+                            posDir.y = 0;
+                            Vector3Int normalizedPosDir = new Vector3Int(
+                                posDir.x != 0 ? (int)Mathf.Sign(posDir.x) : 0,
+                                0,
+                                posDir.z != 0 ? (int)Mathf.Sign(posDir.z) : 0
+                            );
+                            
+                            Vector3Int normalizedTargetDir = new Vector3Int(
+                                dir.x != 0 ? (int)Mathf.Sign(dir.x) : 0,
+                                0,
+                                dir.y != 0 ? (int)Mathf.Sign(dir.y) : 0
+                            );
+
+                            if (normalizedPosDir == normalizedTargetDir)
                             {
-                                allRange.Add(pos);
+                                if (uniquePositions.Add(pos))
+                                {
+                                    allRange.Add(pos);
+                                }
                             }
                         }
                     }
                 }
                 else
                 {
-                    allRange = AttackRangeSystem.GetSkillRange3D(gridPosition, null, skill);
+                    // 对于非直线模式，直接获取施法范围
+                    allRange = AttackRangeSystem.GetCastRange3D(gridPosition, skill);
                 }
 
                 return allRange;
@@ -388,8 +445,15 @@ namespace GamePlay
 
             private Vector3Int GetForwardVector()
             {
-                //TODO 这里的逻辑可以优化，比如记录 Unit 的 transform.forward
-                return new Vector3Int(1, 0, 0); 
+                // 使用当前朝向返回方向向量
+                return Global.FacingTool.FacingToDirection(currentFacing);
+            }
+
+            public Vector3Int GetStandPos()
+            {
+                // 重要：根据新的坐标规则，gridPosition已经是脚底方块坐标
+                // 所以直接返回gridPosition，不需要减1
+                return gridPosition;
             }
 
             // 核心判定：判断我能不能打中某个怪 (Intersection Logic)
@@ -442,12 +506,43 @@ namespace GamePlay
 
             public void SetGridPosition(Vector3Int pos)
             {
-                Vector3Int oldPos = gridPosition;
-                SetGridPositionDirectly(pos);
-                UnitManager.Instance.UpdateUnitPosition(this,oldPos);
-                if (MapManager.Instance != null)
+                // 重要：确保pos是脚底方块坐标
+                // 验证目标位置是否是有效的脚底方块
+                if (!GridPositionTool.IsValidFloorPosition(pos))
                 {
-                    transform.position = MapManager.Instance.GetWorldPosition(pos);
+                    Debug.LogWarning($"尝试设置无效的脚底方块坐标: {pos}，单位: {name}");
+                    // 尝试向下查找有效的脚底方块
+                    for (int y = pos.y; y >= 0; y--)
+                    {
+                        Vector3Int checkPos = new Vector3Int(pos.x, y, pos.z);
+                        if (GridPositionTool.IsValidFloorPosition(checkPos))
+                        {
+                            pos = checkPos;
+                            break;
+                        }
+                    }
+                }
+                
+                // 如果传入的位置与当前脚底位置不同，才进行移动
+                if (gridPosition != pos)
+                {
+                    Vector3Int oldPos = gridPosition;
+                    SetGridPositionDirectly(pos);
+                    UnitManager.Instance.UpdateUnitPosition(this, oldPos);
+                    
+                    if (MapManager.Instance != null)
+                    {
+                        // 使用MapManager的GetWorldPosition，它已经考虑了方块高度
+                        Vector3 targetWorldPos = MapManager.Instance.GetWorldPosition(pos);
+                        transform.position = targetWorldPos;
+                        
+                        // 重要：确保transform.position与gridPosition完全同步
+                        // 如果还有偏差，强制修正
+                        if (Vector3.Distance(transform.position, targetWorldPos) > 0.01f)
+                        {
+                            transform.position = targetWorldPos;
+                        }
+                    }
                 }
             }
 
@@ -675,6 +770,203 @@ namespace GamePlay
             {
                 UndoSystem.Instance.RegisterDirty(this);
                 gridPosition = pos;
+            }
+
+            // ================= 朝向系统方法 =================
+
+            /// <summary>
+            /// 设置单位朝向（立即生效）
+            /// </summary>
+            public void SetFacing(UnitFacing facing)
+            {
+                if (currentFacing == facing) return;
+                
+                // 停止可能正在进行的旋转协程
+                if (_rotationCoroutine != null)
+                {
+                    StopCoroutine(_rotationCoroutine);
+                    _rotationCoroutine = null;
+                }
+                
+                UndoSystem.Instance.RegisterDirty(this);
+                currentFacing = facing;
+                
+                // 更新transform的旋转
+                UpdateTransformRotation();
+            }
+
+            /// <summary>
+            /// 设置单位朝向到指定方向向量
+            /// </summary>
+            public void SetFacingToDirection(Vector3Int direction)
+            {
+                UnitFacing facing = Global.FacingTool.DirectionToFacing(direction);
+                SetFacing(facing);
+            }
+
+            /// <summary>
+            /// 设置单位朝向到目标位置
+            /// </summary>
+            public void FaceToPosition(Vector3Int targetPos, bool smoothRotation = true, float duration = 0.3f)
+            {
+                Vector3Int direction = Global.FacingTool.CalculateDirection(gridPosition, targetPos);
+                
+                if (smoothRotation)
+                {
+                    // 计算世界方向向量用于平滑旋转
+                    Vector3 worldDirection = new Vector3(direction.x, 0, direction.z);
+                    RotateToDirectionSmoothly(worldDirection, duration);
+                }
+                else
+                {
+                    SetFacingToDirection(direction);
+                }
+            }
+
+            /// <summary>
+            /// 设置单位朝向到目标单位
+            /// </summary>
+            public void FaceToUnit(MapUnit targetUnit)
+            {
+                if (targetUnit == null) return;
+                FaceToPosition(targetUnit.gridPosition);
+            }
+
+            /// <summary>
+            /// 记录当前朝向（用于技能释放前）
+            /// </summary>
+            public void RecordCurrentFacing()
+            {
+                previousFacing = currentFacing;
+            }
+
+            /// <summary>
+            /// 恢复到记录的朝向（用于技能释放后）
+            /// 重要：恢复到当前旋转角度对应的最近四个基本朝向
+            /// </summary>
+            public void RestoreRecordedFacing()
+            {
+                // 获取当前transform的Y轴旋转角度
+                float currentRotationY = transform.rotation.eulerAngles.y;
+                
+                // 找到最近的四个基本朝向
+                UnitFacing nearestFacing = Global.FacingTool.RotationYToFacing(currentRotationY);
+                
+                // 恢复到这个最近的朝向
+                SetFacing(nearestFacing);
+            }
+
+            /// <summary>
+            /// 平滑旋转到目标朝向（用于动画）
+            /// </summary>
+            public void RotateToFacingSmoothly(UnitFacing targetFacing, float duration = 0.3f)
+            {
+                if (currentFacing == targetFacing) return;
+                
+                // 停止可能正在进行的旋转协程
+                if (_rotationCoroutine != null)
+                {
+                    StopCoroutine(_rotationCoroutine);
+                }
+                
+                // 开始新的平滑旋转
+                _rotationCoroutine = StartCoroutine(RotateToFacingCoroutine(targetFacing, duration));
+            }
+
+            private Coroutine _rotationCoroutine;
+
+            /// <summary>
+            /// 平滑旋转到目标朝向的协程
+            /// </summary>
+            private IEnumerator RotateToFacingCoroutine(UnitFacing targetFacing, float duration)
+            {
+                float startRotationY = Global.FacingTool.FacingToRotationY(currentFacing);
+                float targetRotationY = Global.FacingTool.FacingToRotationY(targetFacing);
+                
+                // 处理跨越360度边界的情况（例如从350度旋转到10度）
+                if (Mathf.Abs(targetRotationY - startRotationY) > 180f)
+                {
+                    if (targetRotationY > startRotationY)
+                    {
+                        startRotationY += 360f;
+                    }
+                    else
+                    {
+                        targetRotationY += 360f;
+                    }
+                }
+                
+                float elapsedTime = 0f;
+                
+                while (elapsedTime < duration)
+                {
+                    elapsedTime += Time.deltaTime;
+                    float t = Mathf.Clamp01(elapsedTime / duration);
+                    
+                    // 使用平滑的插值函数
+                    float smoothedT = Mathf.SmoothStep(0f, 1f, t);
+                    float currentRotationY = Mathf.Lerp(startRotationY, targetRotationY, smoothedT);
+                    
+                    // 规范化角度到0-360度
+                    currentRotationY = ((currentRotationY % 360) + 360) % 360;
+                    
+                    // 更新transform的旋转
+                    transform.rotation = Quaternion.Euler(0, currentRotationY, 0);
+                    
+                    yield return null;
+                }
+                
+                // 确保最终角度准确
+                transform.rotation = Quaternion.Euler(0, targetRotationY, 0);
+                
+                // 更新当前朝向
+                currentFacing = targetFacing;
+                
+                _rotationCoroutine = null;
+            }
+
+            /// <summary>
+            /// 平滑旋转到目标方向（用于动画）
+            /// </summary>
+            public void RotateToDirectionSmoothly(Vector3 direction, float duration = 0.3f)
+            {
+                UnitFacing targetFacing = Global.FacingTool.GetNearestCardinalFacing(direction);
+                RotateToFacingSmoothly(targetFacing, duration);
+            }
+
+            /// <summary>
+            /// 更新transform的旋转以匹配当前朝向
+            /// </summary>
+            private void UpdateTransformRotation()
+            {
+                float rotationY = Global.FacingTool.FacingToRotationY(currentFacing);
+                transform.rotation = Quaternion.Euler(0, rotationY, 0);
+            }
+
+            /// <summary>
+            /// 从transform的旋转更新当前朝向
+            /// </summary>
+            public void UpdateFacingFromTransform()
+            {
+                float currentRotationY = transform.rotation.eulerAngles.y;
+                currentFacing = Global.FacingTool.RotationYToFacing(currentRotationY);
+            }
+
+            /// <summary>
+            /// 获取当前朝向的方向向量
+            /// </summary>
+            public Vector3Int GetFacingDirection()
+            {
+                return Global.FacingTool.FacingToDirection(currentFacing);
+            }
+
+            /// <summary>
+            /// 获取当前朝向的世界方向向量
+            /// </summary>
+            public Vector3 GetFacingWorldDirection()
+            {
+                Vector3Int dir = GetFacingDirection();
+                return new Vector3(dir.x, 0, dir.z);
             }
         }
     }

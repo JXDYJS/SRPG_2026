@@ -2146,6 +2146,8 @@ MonoBehaviour:
     type: 3}
   rangeHighlightPrefab: {fileID: 1629676622052135958, guid: dda72fa6f849a6e41b6431e4220a50e4,
     type: 3}
+  lowlightPrefab: {fileID: 1629676622052135958, guid: 40cb635345aad7e42833062c339c8d26,
+    type: 3}
 --- !u!114 &348045450
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2426,13 +2428,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 410087039}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.22944476, y: -0.92006195, z: 0.24982333, w: -0.1960343}
+  m_LocalRotation: {x: -0.22904405, y: -0.9201618, z: 0.24973801, w: -0.1961432}
   m_LocalPosition: {x: 0, y: 3.699, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 33.344, y: 162.868, z: -337.16}
+  m_LocalEulerAnglesHint: {x: 33.329, y: 162.836, z: -337.217}
 --- !u!114 &410087042
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3854,12 +3856,12 @@ PrefabInstance:
     - target: {fileID: 7818132896997547977, guid: d9e88bb0d73d2e545b596fca2872fd4a,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 298.8
+      value: 300
       objectReference: {fileID: 0}
     - target: {fileID: 7818132896997547977, guid: d9e88bb0d73d2e545b596fca2872fd4a,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 99.5
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 7818132896997547977, guid: d9e88bb0d73d2e545b596fca2872fd4a,
         type: 3}
@@ -6823,7 +6825,7 @@ MeshCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 5
   m_Convex: 0
   m_CookingOptions: 30

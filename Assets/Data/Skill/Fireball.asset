@@ -16,15 +16,19 @@ MonoBehaviour:
   Description: 
   Icon: {fileID: 0}
   TargetType: 0
-  AttackPattern: 2
-  MaxRange: 5
-  MinRange: 1
-  VerticalRange: 1
+  CastPattern: 2
+  CastMaxRange: 5
+  CastMinRange: 1
+  CastVerticalRange: 0
   RequireLineOfSight: 1
+  StopsAtFirstHit: 1
   Cost: 0
   Phases:
   - PhaseName: "\u706B\u7403"
     TargetType: 0
+    AoEPattern: 0
+    AoERadius: 0
+    AoEVerticalRange: 0
     Effects:
     - EffectType: 0
       FlatBonus: 0
@@ -45,6 +49,6 @@ MonoBehaviour:
         m_SubObjectName: 
         m_SubObjectType: 
         m_EditorAssetChanged: 0
-      ProjectileSpeed: 1
+      ProjectileSpeed: 3
       HitEventName: 
       EndEventName: 

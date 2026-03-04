@@ -72,7 +72,7 @@ namespace Command
             }
 
             Vector3Int endPos = _path[_path.Count - 1];
-            _unit.SetGridPositionDirectly(endPos);
+            //_unit.SetGridPositionDirectly(endPos);
 
             _unit.MarkAsMoved();
 
@@ -86,15 +86,20 @@ namespace Command
 
             foreach (var step in _path)
             {
+                // 重要：step已经是脚底方块坐标
+                // MapManager.GetWorldPosition会自动加上方块高度
                 Vector3 targetWorldPos = MapManager.Instance.GetWorldPosition(step);
 
+                // 计算移动方向并更新单位朝向
                 Vector3 direction = (targetWorldPos - _unit.transform.position);
                 direction.y = 0;
                 if (direction != Vector3.zero)
                 {
+                    // 移动时使用立即旋转，不需要动画
                     _unit.transform.rotation = Quaternion.LookRotation(direction);
                 }
-                while (Vector3.Distance(_unit.transform.position, targetWorldPos) > 0.05f)
+                
+                while (Vector3.Distance(_unit.transform.position, targetWorldPos) >0.05f)
                 {
                     _unit.transform.position = Vector3.MoveTowards(
                         _unit.transform.position, 
@@ -105,7 +110,12 @@ namespace Command
                 }
                 _unit.transform.position = targetWorldPos;
             }
-            _unit.SetGridPosition(Vector3Int.RoundToInt(_unit.transform.position));
+            
+            // 重要：使用路径中的最后一个位置（已经是脚底方块坐标）
+            // 而不是从transform.position转换（因为transform包含高度偏移）
+            Vector3Int finalPos = _path[_path.Count - 1];
+            _unit.SetGridPosition(finalPos);
+            
             _unit.SwitchState(UnitState.Idle);
             IsFinished = true;
         }

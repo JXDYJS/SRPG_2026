@@ -22,11 +22,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 4494d36db42ce24428046b39d4facd5f
-    m_Address: Mat_CursorHighlight
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 732ac50125401824498fa9fc0491fa33
     m_Address: Button
     m_ReadOnly: 0

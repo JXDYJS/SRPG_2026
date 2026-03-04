@@ -20,11 +20,51 @@ namespace GamePlay.Skill
                 return sequenceResult;
             }
 
+            // 核心重构 - 弹道拦截系统
+            // 检查条件：直线技能且碰到第一个目标时停止
+            if (skillData.CastPattern == CastPatternType.Line && skillData.StopsAtFirstHit)
+            {
+                // 获取从施法者到目标位置的轨迹
+                List<Vector3Int> trajectory = Grid.AttackRangeSystem.GetLinePath(caster.gridPosition, context.TargetPosition);
+
+                // 遍历轨迹，检查地形和单位阻挡
+                foreach (Vector3Int pos in trajectory)
+                {
+                    // 检查地形阻挡：如果格子是Solid且高度高于当前地面
+                    if (MapManager.Instance.logicalGrid.GetBlock(pos + Vector3Int.up) != BlockType.Air)
+                    {
+                        // 弹道被地形阻挡，修改目标位置为墙壁坐标
+                        context.TargetPosition = pos;
+                        Debug.Log($"弹道被地形阻挡，目标位置修正为：{pos}");
+                        break;
+                    }
+
+                    // 检查单位阻挡：如果格子上有人（不分敌我）
+                    MapUnit blockingUnit = UnitManager.Instance.GetUnitAt(pos);
+                    if (blockingUnit != null)
+                    {
+                        // 弹道被单位阻挡，修改目标位置为单位坐标
+                        context.TargetPosition = pos;
+                        Debug.Log($"弹道被单位阻挡，目标位置修正为：{pos}");
+                        break;
+                    }
+                }
+
+                // 重要补充：经过拦截修改TargetPosition后，必须再次校验新目标点
+                bool isValidTarget = Grid.AttackRangeSystem.IsValidTargetForCast(context.TargetPosition, skillData, caster.Faction);
+                if (!isValidTarget)
+                {
+                    // 拦截后目标无效，拒绝施法
+                    Debug.LogWarning("弹道拦截后目标无效，拒绝施法");
+                    return sequenceResult;
+                }
+            }
+
             foreach (SkillPhase phase in skillData.Phases)
             {
                 PhaseResult phaseResult = new PhaseResult(caster, context.TargetPosition);
 
-                List<MapUnit> phaseTargets = GetPhaseTargets(caster, context, phase);
+                List<MapUnit> phaseTargets = GetPhaseTargets(caster, context, phase, skillData);
 
                 foreach (MapUnit target in phaseTargets)
                 {
@@ -62,57 +102,20 @@ namespace GamePlay.Skill
             return sequenceResult;
         }
 
-        private static List<MapUnit> GetPhaseTargets(MapUnit caster, SkillTargetContext context, SkillPhase phase)
+        private static List<MapUnit> GetPhaseTargets(MapUnit caster, SkillTargetContext context, SkillPhase phase, SkillDataSO skillData)
         {
             List<MapUnit> targets = new List<MapUnit>();
 
-            switch (phase.TargetType)
+            // 使用新的AoE范围计算逻辑
+            List<Vector3Int> aoeRange = Grid.AttackRangeSystem.GetAoERange3D(caster.gridPosition, context.TargetPosition, phase);
+
+            foreach (Vector3Int pos in aoeRange)
             {
-                case TargetType.Enemy:
-                    if (context.UnitsInRange != null)
-                    {
-                        foreach (MapUnit unit in context.UnitsInRange)
-                        {
-                            if (unit.Faction == FactionType.Enemy)
-                            {
-                                targets.Add(unit);
-                            }
-                        }
-                    }
-                    break;
-
-                case TargetType.Ally:
-                    if (context.UnitsInRange != null)
-                    {
-                        foreach (MapUnit unit in context.UnitsInRange)
-                        {
-                            if (unit.Faction == caster.Faction)
-                            {
-                                targets.Add(unit);
-                            }
-                        }
-                    }
-                    break;
-
-                case TargetType.Self:
-                    targets.Add(caster);
-                    break;
-
-                case TargetType.Position:
-                    break;
-                case TargetType.Player:
-                    if (context.UnitsInRange != null)
-                    {
-                        foreach (MapUnit unit in context.UnitsInRange)
-                        {
-                            if (unit.Faction == FactionType.Player)
-                            {
-                                targets.Add(unit);
-                            }
-                        }
-                    }
-                    break;
-                
+                MapUnit unit = UnitManager.Instance.GetUnitAt(pos);
+                if (unit != null && Grid.AttackRangeSystem.IsTargetValidForPhase(unit, phase, caster.Faction))
+                {
+                    targets.Add(unit);
+                }
             }
 
             return targets;

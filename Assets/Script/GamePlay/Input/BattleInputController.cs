@@ -37,6 +37,7 @@ namespace GamePlay.Control
         private MapUnit activeUnit => TurnManager.Instance.ActiveUnit;
 
         private HashSet<Vector3Int> _validTargetTiles = new HashSet<Vector3Int>();
+        private HashSet<Vector3Int> _highlightTiles = new HashSet<Vector3Int>();
         private SkillDataSO _selectedSkill;
 
         public SkillDataSO SelectedSkill => _selectedSkill;
@@ -180,14 +181,26 @@ namespace GamePlay.Control
                 return;
             }
 
-            List<Vector3Int> allPossibleRange = activeUnit.GetSkillAllPossibleRange(_selectedSkill);
+            Vector3Int hoverPos = GetMouseGridPosition();
 
-            foreach (Vector3Int pos in allPossibleRange)
-            {
-                _validTargetTiles.Add(pos);
-            }
+            // 使用新的双层范围系统
+            var (castTiles, aoeTiles) = AttackRangeSystem.GetSkillRangesForUI(
+                activeUnit.gridPosition,
+                hoverPos,
+                _selectedSkill
+            );
 
-            GridVisualManager.Instance.ShowTilesHighlight(_validTargetTiles, new Color(1f, 0.5f, 0f));
+            _highlightTiles = new HashSet<Vector3Int>(castTiles);
+            _validTargetTiles = new HashSet<Vector3Int>(castTiles);
+
+            // 显示施法范围（蓝色）和AoE范围（红色）
+            GridVisualManager.Instance.ShowTilesHighlight(_highlightTiles, Color.blue);
+            
+            // 如果有AoE范围，用红色显示
+            // if (aoeTiles.Count > 0)
+            // {
+            //     GridVisualManager.Instance.ShowTilesHighlight(aoeTiles, Color.red);
+            // }
         }
 
         private Vector3Int GetMouseGridPosition()
@@ -195,12 +208,10 @@ namespace GamePlay.Control
             Ray ray = mainCam.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out RaycastHit hit))
             {
-                Vector3 hitPoint = hit.point - hit.normal * 0.01f;
-                return new Vector3Int(
-                    Mathf.RoundToInt(hitPoint.x / mapManager.cellSize),
-                    (int)(hitPoint.y / mapManager.cellSize),
-                    Mathf.RoundToInt(hitPoint.z / mapManager.cellSize)
-                );
+                // 重要：使用GridPositionTool确保返回脚底方块坐标
+                // 而不是角色身体所在的空气方块坐标
+                Vector3 worldPos = hit.point - hit.normal * 0.01f;
+                return GridPositionTool.WorldToLogicPosition(worldPos);
             }
             return Vector3Int.zero;
         }
@@ -261,9 +272,30 @@ namespace GamePlay.Control
                     break;
 
                 case InputState.TargetingSkill:
-                    if (_validTargetTiles.Contains(clickPos + Vector3Int.up))//todo向上一个格子找到人，这是简单逻辑
+                    // 重要：检查点击位置是否在有效施法范围内
+                    if (_validTargetTiles.Contains(clickPos))
                     {
-                        ExecuteSkillAtPosition(clickPos);
+                        // 重要：施法前目标合法性校验（防止空放）
+                        bool isValidTarget = AttackRangeSystem.IsValidTargetForCast(clickPos, _selectedSkill, activeUnit.Faction);
+                        if (!isValidTarget)
+                        {
+                            // 目标无效，拒绝施法
+                            Debug.Log("施法被拒绝：目标无效");
+                            return;
+                        }
+                        
+                        // 如果点击位置有单位，确保使用该单位的脚底坐标
+                        MapUnit targetUnit = UnitManager.Instance.GetUnitAt(clickPos);
+                        if (targetUnit != null)
+                        {
+                            // 使用单位的gridPosition（已经是脚底坐标）
+                            ExecuteSkillAtPosition(targetUnit.gridPosition);
+                        }
+                        else
+                        {
+                            // 点击的是空地，直接使用点击位置
+                            ExecuteSkillAtPosition(clickPos);
+                        }
                     }
                     break;
             }
@@ -277,14 +309,19 @@ namespace GamePlay.Control
 
             List<MapUnit> targets = new List<MapUnit>();
 
-            if (_selectedSkill.TargetType == TargetType.Enemy ||
-                _selectedSkill.TargetType == TargetType.Ally ||
-                _selectedSkill.TargetType == TargetType.AnyUnit)
+            // 使用新的AoE范围计算
+            if (_selectedSkill.Phases.Count > 0)
             {
-                MapUnit targetUnit = UnitManager.Instance.GetUnitAt(targetPos);
-                if (targetUnit != null)
+                SkillPhase firstPhase = _selectedSkill.Phases[0];
+                List<Vector3Int> aoeRange = AttackRangeSystem.GetAoERange3D(activeUnit.gridPosition, targetPos, firstPhase);
+
+                foreach (Vector3Int pos in aoeRange)
                 {
-                    targets.Add(targetUnit);
+                    MapUnit unit = UnitManager.Instance.GetUnitAt(pos);
+                    if (unit != null && AttackRangeSystem.IsTargetValidForPhase(unit, firstPhase, activeUnit.Faction))
+                    {
+                        targets.Add(unit);
+                    }
                 }
             }
 

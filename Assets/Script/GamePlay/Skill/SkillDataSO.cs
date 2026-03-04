@@ -20,21 +20,25 @@ namespace GamePlay.Skill
         [Tooltip("技能目标类型")]
         public TargetType TargetType = TargetType.Enemy;
 
-        [Header("范围配置 (Range)")]
-        [Tooltip("攻击形状：菱形、方形、直线...")]
-        public AttackPatternType AttackPattern = AttackPatternType.Diamond;
+        [Header("施法范围配置 (Cast Range)")]
+        [Tooltip("施法形状：决定玩家可以选取哪些格子")]
+        public CastPatternType CastPattern = CastPatternType.Diamond;
 
-        [Tooltip("最大射程 (对于直线/扇形则是长度)")]
-        public int MaxRange = 1;
+        [Tooltip("施法最大距离")]
+        public int CastMaxRange = 1;
 
-        [Tooltip("最小射程 (0或1，大于1则形成环形盲区)")]
-        public int MinRange = 1;
+        [Tooltip("施法最小距离 (0或1，大于1则形成环形盲区)")]
+        public int CastMinRange = 1;
 
-        [Tooltip("垂直高度容忍度 (例如 2 表示可以打高2格或低2格的目标)")]
-        public int VerticalRange = 1; 
+        [Tooltip("施法垂直高度容忍度")]
+        public int CastVerticalRange = 1; 
 
-        [Tooltip("是否需要视野 (目前还没做，先留坑)")]
-        public bool RequireLineOfSight = true;
+        [Tooltip("弹道轨迹类型 - 决定技能如何穿越空间到达目标")]
+        public TrajectoryType Trajectory = TrajectoryType.LineOfSight;
+
+        [Header("弹道配置 (Projectile Configuration)")]
+        [Tooltip("弹道是否在碰到第一个目标时停止")]
+        public bool StopsAtFirstHit = true;
 
         [Header("消耗配置")]
         [Tooltip("技能消耗（如MP/TP等）")]

@@ -13,11 +13,14 @@ namespace GamePlay.Visual
         [Header("高亮预制体")]
         public GameObject selectHighlightPrefab; // 鼠标当前悬停的光圈
         public GameObject rangeHighlightPrefab;  // 范围光圈 (蓝/红)
+        public GameObject lowlightPrefab; // 低亮光圈 (不可点击)
 
         // 运行时实例
         private GameObject _cursorHighlightObj;
         private List<GameObject> _highlightPool = new List<GameObject>();
-        private List<GameObject> _activeHighlights = new List<GameObject>();//TODO这里可以不使用gameObj
+        private List<GameObject> _lowlightPool = new List<GameObject>();
+        private List<GameObject> _activeHighlights = new List<GameObject>();
+        private List<GameObject> _activeLowlights = new List<GameObject>();
 
         void Awake()
         {
@@ -72,6 +75,48 @@ namespace GamePlay.Visual
                 obj.SetActive(false); // 放回池子
             }
             _activeHighlights.Clear();
+
+            foreach (var obj in _activeLowlights)
+            {
+                obj.SetActive(false);
+            }
+            _activeLowlights.Clear();
+        }
+
+        public void ShowTilesHighlightWithFilter(IEnumerable<Vector3Int> highlightTiles, IEnumerable<Vector3Int> lowlightTiles, Color highlightColor)
+        {
+            ClearHighlights();
+
+            foreach (var pos in highlightTiles)
+            {
+                if (!CanPutOnGrid(pos)) continue;
+                GameObject quad = GetHighlightFromPool();
+                quad.transform.position = MapManager.Instance.GetWorldPosition(pos) + Vector3.up * 0.02f;
+                _activeHighlights.Add(quad);
+            }
+
+            foreach (var pos in lowlightTiles)
+            {
+                if (!CanPutOnGrid(pos)) continue;
+                GameObject quad = GetLowlightFromPool();
+                quad.transform.position = MapManager.Instance.GetWorldPosition(pos) + Vector3.up * 0.02f;
+                _activeLowlights.Add(quad);
+            }
+        }
+
+        private GameObject GetLowlightFromPool()
+        {
+            foreach (var obj in _lowlightPool)
+            {
+                if (!obj.activeSelf)
+                {
+                    obj.SetActive(true);
+                    return obj;
+                }
+            }
+            GameObject newObj = Instantiate(lowlightPrefab, transform);
+            _lowlightPool.Add(newObj);
+            return newObj;
         }
 
         private GameObject GetHighlightFromPool()

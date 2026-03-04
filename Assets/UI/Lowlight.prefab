@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4054742396590385152}
   - component: {fileID: 1256581149108087602}
   m_Layer: 0
-  m_Name: Highlight
+  m_Name: Lowlight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -61,7 +61,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 00b30b03549153a4c8d1f5d364076963, type: 2}
+  - {fileID: 2100000, guid: 4494d36db42ce24428046b39d4facd5f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

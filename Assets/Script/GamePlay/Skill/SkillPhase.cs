@@ -9,6 +9,17 @@ namespace GamePlay.Skill
     {
         public string PhaseName;
         public TargetType TargetType;
+        
+        [Header("AoE范围配置")]
+        [Tooltip("影响范围形状")]
+        public AoEPatternType AoEPattern = AoEPatternType.SingleTarget;
+        
+        [Tooltip("影响范围半径 (0表示单体)")]
+        public int AoERadius = 0;
+        
+        [Tooltip("影响范围垂直高度容忍度")]
+        public int AoEVerticalRange = 1;
+        
         public List<SkillEffect> Effects;
         public SkillVisualData VisualData;
 
@@ -61,5 +72,7 @@ namespace GamePlay.Skill
         Position,
         AnyUnit,
         Player,
+        Teammates,
+        ExceptTeammates,
     }
 }
