@@ -52,27 +52,27 @@ public class ApplyExposureRenderFeature : ScriptableRendererFeature
             CommandBuffer cmd = CommandBufferPool.Get(m_ProfilerTag);
             RTHandle source = renderingData.cameraData.renderer.cameraColorTargetHandle;
 
-            // ================== C# 强力调试日志 ==================
-            if (Time.time - lastDebugTime > 1.0f)
-            {
-                lastDebugTime = Time.time;
-                Debug.Log("--- [ApplyExposure] 开始每秒体检 ---");
+            // ================== C#调试日志 ==================
+            // if (Time.time - lastDebugTime > 1.0f)
+            // {
+            //     lastDebugTime = Time.time;
+            //     Debug.Log("--- [ApplyExposure] 开始每秒体检 ---");
 
-                // 检查 1: 屏幕源是否有效
-                if (source == null || source.rt == null)
-                    Debug.LogError("❌ 错误: Camera Color Target (Source) 为空！URP 可能没把画面传过来。");
-                else
-                    Debug.Log($"✅ 屏幕源状态: ID={source.nameID}, Size={source.rt.width}x{source.rt.height}");
+            //     // 检查 1: 屏幕源是否有效
+            //     if (source == null || source.rt == null)
+            //         Debug.LogError("❌ 错误: Camera Color Target (Source) 为空！URP 可能没把画面传过来。");
+            //     else
+            //         Debug.Log($"✅ 屏幕源状态: ID={source.nameID}, Size={source.rt.width}x{source.rt.height}");
 
-                // 检查 2: 曝光纹理是否有效
-                var realExpTex = AutoExposureRenderFeature.CurrentExposureTexture;
-                if (realExpTex == null)
-                    Debug.LogError("❌ 错误: AutoExposure 的 CurrentExposureTexture 是 NULL！(计算Pass可能没跑)");
-                else if (!realExpTex.IsCreated())
-                    Debug.LogError("❌ 错误: 曝光纹理 Object 存在，但 GPU 显存未创建 (IsCreated = false)！");
-                else
-                    Debug.Log($"✅ 曝光纹理状态: OK, Size={realExpTex.width}x{realExpTex.height}, Format={realExpTex.format}");
-            }
+            //     // 检查 2: 曝光纹理是否有效
+            //     var realExpTex = AutoExposureRenderFeature.CurrentExposureTexture;
+            //     if (realExpTex == null)
+            //         Debug.LogError("❌ 错误: AutoExposure 的 CurrentExposureTexture 是 NULL！(计算Pass可能没跑)");
+            //     else if (!realExpTex.IsCreated())
+            //         Debug.LogError("❌ 错误: 曝光纹理 Object 存在，但 GPU 显存未创建 (IsCreated = false)！");
+            //     else
+            //         Debug.Log($"✅ 曝光纹理状态: OK, Size={realExpTex.width}x{realExpTex.height}, Format={realExpTex.format}");
+            // }
             // ===================================================
 
             // 2. 准备纹理 (如果拿不到真的，就用绿色的调试图)

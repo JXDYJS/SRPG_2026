@@ -420,6 +420,7 @@ MonoBehaviour:
   moveSpeed: 5
   CurrentActionValue: 0
   gridPosition: {x: 0, y: 0, z: 0}
+  currentFacing: 0
   currentState: 0
   ActiveBuffs: []
   Faction: 0
@@ -438,7 +439,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 0}
-  mapUnit: {fileID: 0}
+  mapUnit: {fileID: 8880787098705928297}
   dampTime: 0.1
   currentSpeed: 0
 --- !u!114 &4400046039782869804

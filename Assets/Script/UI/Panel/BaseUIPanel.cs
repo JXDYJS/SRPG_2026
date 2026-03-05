@@ -1,5 +1,6 @@
 using UnityEngine;
 using Cysharp.Threading.Tasks;
+using DG.Tweening;
 
 namespace UI.Panel
 {
@@ -33,40 +34,64 @@ namespace UI.Panel
             _originalPosition = _rectTransform.anchoredPosition;
         }
 
+        // public virtual async UniTask PlayEnterAnimation()
+        // {
+        //     Vector2 startPos = _originalPosition + GetDirectionVector(_enterDirection) * _slideDistance;
+        //     _rectTransform.anchoredPosition = startPos;
+
+        //     float elapsed = 0f;
+        //     while (elapsed < _animationDuration)
+        //     {
+        //         elapsed += Time.deltaTime;
+        //         float t = Mathf.Clamp01(elapsed / _animationDuration);
+        //         float eased = 1f - Mathf.Pow(1f - t, 3);
+        //         _rectTransform.anchoredPosition = Vector2.Lerp(startPos, _originalPosition, eased);
+        //         await UniTask.Yield();
+        //     }
+
+        //     _rectTransform.anchoredPosition = _originalPosition;
+        // }
+
+        // public virtual async UniTask PlayExitAnimation()
+        // {
+        //     Vector2 endPos = _originalPosition + GetDirectionVector(_exitDirection) * _slideDistance;
+        //     Vector2 startPos = _rectTransform.anchoredPosition;
+
+        //     float elapsed = 0f;
+        //     while (elapsed < _animationDuration)
+        //     {
+        //         elapsed += Time.deltaTime;
+        //         float t = Mathf.Clamp01(elapsed / _animationDuration);
+        //         float eased = 1f - Mathf.Pow(1f - t, 3);
+        //         _rectTransform.anchoredPosition = Vector2.Lerp(startPos, endPos, eased);
+        //         await UniTask.Yield();
+        //     }
+
+        //     _rectTransform.anchoredPosition = endPos;
+        // }
+
         public virtual async UniTask PlayEnterAnimation()
         {
             Vector2 startPos = _originalPosition + GetDirectionVector(_enterDirection) * _slideDistance;
             _rectTransform.anchoredPosition = startPos;
 
-            float elapsed = 0f;
-            while (elapsed < _animationDuration)
-            {
-                elapsed += Time.deltaTime;
-                float t = Mathf.Clamp01(elapsed / _animationDuration);
-                float eased = 1f - Mathf.Pow(1f - t, 3);
-                _rectTransform.anchoredPosition = Vector2.Lerp(startPos, _originalPosition, eased);
-                await UniTask.Yield();
-            }
+            _rectTransform.DOKill(); 
 
-            _rectTransform.anchoredPosition = _originalPosition;
+            // 一行代码搞定移动和缓动曲线，并 await 等待完成
+            await _rectTransform.DOAnchorPos(_originalPosition, _animationDuration)
+                                .SetEase(Ease.OutCubic) 
+                                .AsyncWaitForCompletion();
         }
 
         public virtual async UniTask PlayExitAnimation()
         {
             Vector2 endPos = _originalPosition + GetDirectionVector(_exitDirection) * _slideDistance;
-            Vector2 startPos = _rectTransform.anchoredPosition;
 
-            float elapsed = 0f;
-            while (elapsed < _animationDuration)
-            {
-                elapsed += Time.deltaTime;
-                float t = Mathf.Clamp01(elapsed / _animationDuration);
-                float eased = 1f - Mathf.Pow(1f - t, 3);
-                _rectTransform.anchoredPosition = Vector2.Lerp(startPos, endPos, eased);
-                await UniTask.Yield();
-            }
+            _rectTransform.DOKill();
 
-            _rectTransform.anchoredPosition = endPos;
+            await _rectTransform.DOAnchorPos(endPos, _animationDuration)
+                                .SetEase(Ease.OutCubic)
+                                .AsyncWaitForCompletion();
         }
 
         private Vector2 GetDirectionVector(AnimationDirection direction)
@@ -97,6 +122,7 @@ namespace UI.Panel
 
         public virtual void ResetPosition()
         {
+            _rectTransform.DOKill();
             _rectTransform.anchoredPosition = _originalPosition;
         }
     }

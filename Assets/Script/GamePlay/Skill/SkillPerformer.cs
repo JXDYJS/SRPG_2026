@@ -29,20 +29,27 @@ namespace GamePlay.Skill
                 return;
             }
 
-            // 第一步：记录当前朝向（用于技能结束后恢复）
+            // 记录当前朝向
             caster.RecordCurrentFacing();
 
-            // 第二步：如果技能有目标位置，让施法者朝向目标
+            // 如果技能有目标位置，让施法者平滑旋转朝向目标
             if (sequenceResult.Context != null && sequenceResult.Context.TargetPosition != caster.gridPosition)
             {
-                // 计算从施法者到目标位置的方向
-                caster.FaceToPosition(sequenceResult.Context.TargetPosition);
+                // 计算目标的世界位置（脚底方块坐标+1得到角色身体高度）
+                Vector3 targetWorldPos = MapManager.Instance.GetWorldPosition(sequenceResult.Context.TargetPosition) + Vector3.up;
                 
-                // 等待一小段时间让旋转完成（如果需要平滑旋转的话）
-                await UniTask.Yield();
+                // 使用新的平滑旋转方法，等待旋转完成
+                await UniTask.Create(() => {
+                    var tcs = new UniTaskCompletionSource();
+                    
+                    caster.RotateTowardsTargetSmoothly(targetWorldPos, () => {
+                        tcs.TrySetResult();
+                    });
+                    
+                    return tcs.Task;
+                });
             }
 
-            // 第三步：执行技能的所有阶段
             for (int i = 0; i < sequenceResult.PhaseResults.Count; i++)
             {
                 PhaseResult phaseResult = sequenceResult.PhaseResults[i];
@@ -56,7 +63,7 @@ namespace GamePlay.Skill
                 await PerformSinglePhase(caster, phaseResult, phaseData);
             }
 
-            // 第四步：技能执行结束后，恢复到记录的朝向
+            // 恢复到最近的四个基本朝向
             caster.RestoreRecordedFacing();
         }
 
@@ -147,11 +154,17 @@ namespace GamePlay.Skill
 
         private static async UniTask PerformProjectileTransit(MapUnit caster, Vector3Int targetPosition, SkillVisualData visual)
         {
-            // 重要：targetPosition已经是脚底方块坐标
-            // MapManager.GetWorldPosition会自动加上方块高度，不需要额外加Vector3.up
-            Vector3 targetWorldPos = MapManager.Instance.GetWorldPosition(targetPosition);
+            // 重要：targetPosition已经是脚底方块坐标 但要+1才是角色身体的角度
+            Vector3 targetWorldPos = MapManager.Instance.GetWorldPosition(targetPosition) + Vector3.up;
             
-            var handle = Addressables.InstantiateAsync(visual.ProjectilePrefab, caster.transform.position + Vector3.up, Quaternion.identity);
+            // 计算发射方向
+            Vector3 launchDirection = targetWorldPos - (caster.transform.position + Vector3.up);
+            launchDirection.Normalize();
+            
+            // 计算旋转，使Z轴对齐发射方向
+            Quaternion launchRotation = Quaternion.LookRotation(launchDirection);
+            
+            var handle = Addressables.InstantiateAsync(visual.ProjectilePrefab, caster.transform.position + Vector3.up, launchRotation);
             await handle.Task;
             
             if (handle.Status != AsyncOperationStatus.Succeeded)
@@ -161,7 +174,8 @@ namespace GamePlay.Skill
             }
             
             GameObject bullet = handle.Result;
-            bullet.transform.LookAt(targetWorldPos);
+            // 确保Z轴对齐发射方向
+            bullet.transform.rotation = launchRotation;
 
             while (bullet != null && Vector3.Distance(bullet.transform.position, targetWorldPos) > 0.1f)
             {

@@ -120,6 +120,18 @@ namespace Status
                 Speed = new Stat(characterData.Speed);
                 currentHP = characterData.BaseMaxHP;
             }
+
+            /// <summary>
+            /// 重新计算所有属性值，确保缓存值正确
+            /// </summary>
+            public void RecalculateAll()
+            {
+                maxHP.getValue();
+                ATK.getValue();
+                DEF.getValue();
+                RES.getValue();
+                Speed.getValue();
+            }
             
         }
     }

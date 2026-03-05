@@ -327,28 +327,59 @@ public class MapManager : MonoBehaviour
         // 返回结果 (Pivot 在脚底，所以这就是最终地面高度)
         return new Vector3(x, floorHeight, z);
     }
+
+    public void ClearMap()
+    {
+        // 清理地图根节点下的所有子物体
+        if (mapRoot != null)
+        {
+            // 注意：删除子物体必须倒序遍历
+            for (int i = mapRoot.childCount - 1; i >= 0; i--)
+            {
+                GameObject child = mapRoot.GetChild(i).gameObject;
+                
+                // 区分编辑器模式和运行模式
+#if UNITY_EDITOR
+                if (Application.isPlaying)
+                    Destroy(child);
+                else
+                    DestroyImmediate(child);
+#else
+                Destroy(child);
+#endif
+            }
+        }
+        
+        // 清理逻辑网格
+        if (logicalGrid != null)
+        {
+            logicalGrid.Clear();
+        }
+        
+        Debug.Log("地图已清理");
+    }
     
     // 调试：在 Scene 窗口画出哪些格子能走
-    void OnDrawGizmos()
-    {
-        if (logicalGrid == null || logicalGrid.blockData == null) return;
+    // void OnDrawGizmos()
+    // {
+    //     if (logicalGrid == null || logicalGrid.blockData == null) return;
 
-        foreach (var kvp in logicalGrid.blockData)
-        {
-            Vector3Int pos = kvp.Key;
-            BlockType type = kvp.Value;
+    //     foreach (var kvp in logicalGrid.blockData)
+    //     {
+    //         Vector3Int pos = kvp.Key;
+    //         BlockType type = kvp.Value;
 
-            if (type == BlockType.Air) continue;
+    //         if (type == BlockType.Air) continue;
 
-            // 根据类型画不同颜色
-            if (type == BlockType.Solid) Gizmos.color = new Color(0, 1, 0, 0.3f);
-            else if (type == BlockType.Slab) Gizmos.color = new Color(1, 1, 0, 0.3f);
-            else Gizmos.color = new Color(1, 0, 0, 0.3f); // 障碍
+    //         // 根据类型画不同颜色
+    //         if (type == BlockType.Solid) Gizmos.color = new Color(0, 1, 0, 0.3f);
+    //         else if (type == BlockType.Slab) Gizmos.color = new Color(1, 1, 0, 0.3f);
+    //         else Gizmos.color = new Color(1, 0, 0, 0.3f); // 障碍
 
-            // 画在方块中心
-            Vector3 center = new Vector3(pos.x * cellSize, pos.y * cellSize + 0.5f, pos.z * cellSize);
-            Gizmos.DrawWireCube(center, new Vector3(cellSize * 0.9f, cellSize * 0.9f, cellSize * 0.9f));
-        }
-    }
+    //         // 画在方块中心
+    //         Vector3 center = new Vector3(pos.x * cellSize, pos.y * cellSize + 0.5f, pos.z * cellSize);
+    //         Gizmos.DrawWireCube(center, new Vector3(cellSize * 0.9f, cellSize * 0.9f, cellSize * 0.9f));
+    //     }
+    // }
 }
 }

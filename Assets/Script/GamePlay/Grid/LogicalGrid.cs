@@ -35,12 +35,19 @@ namespace GamePlay
         public void Build(List<MapObject> allObjects)
         {
             blockData.Clear();
+            blockYSizes.Clear();
             foreach(var obj in allObjects)
             {
                 Vector3Int pos = Vector3Int.RoundToInt(obj.transform.position);
                 blockData[pos] = obj.type; 
                 blockYSizes[pos] = obj.YCellSize;
             }
+        }
+
+        public void Clear()
+        {
+            blockData.Clear();
+            blockYSizes.Clear();
         }
 
         public float GetBlockYSize(Vector3Int pos)

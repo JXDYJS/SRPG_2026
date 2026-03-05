@@ -58,7 +58,7 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
             #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/ImageBasedLighting.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/GlobalIllumination.hlsl"
 
-            #define WATER_SAMPLE_COUNT 6
+            #define WATER_SAMPLE_COUNT 16
 
             CBUFFER_START(UnityPerMaterial)
                 float4 _ScatterColor;

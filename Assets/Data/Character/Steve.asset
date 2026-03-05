@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: 8efc81e1bd6ebcd46966edd3f36a3c2a, type: 3}
   m_Name: Steve
   m_EditorClassIdentifier: Assembly-CSharp:Character.data:CharacterData
   ID: 1
@@ -26,8 +26,8 @@ MonoBehaviour:
   BaseDEF: 0
   BaseRES: 0
   MoveRange: 5
-  Height: 2
-  Speed: 100
+  Height: 0
+  Speed: 0
   RangeType: 0
   Pattern: 0
   MinRange: 1

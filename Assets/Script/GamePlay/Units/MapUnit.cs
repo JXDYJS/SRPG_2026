@@ -8,6 +8,7 @@ using Global;
 using Command;
 using GamePlay.Grid;
 using GamePlay.Skill;
+using DG.Tweening;
 
 namespace GamePlay
 {
@@ -781,12 +782,8 @@ namespace GamePlay
             {
                 if (currentFacing == facing) return;
                 
-                // 停止可能正在进行的旋转协程
-                if (_rotationCoroutine != null)
-                {
-                    StopCoroutine(_rotationCoroutine);
-                    _rotationCoroutine = null;
-                }
+                // 停止可能正在进行的DOTween旋转
+                transform.DOKill();
                 
                 UndoSystem.Instance.RegisterDirty(this);
                 currentFacing = facing;
@@ -813,9 +810,11 @@ namespace GamePlay
                 
                 if (smoothRotation)
                 {
-                    // 计算世界方向向量用于平滑旋转
-                    Vector3 worldDirection = new Vector3(direction.x, 0, direction.z);
-                    RotateToDirectionSmoothly(worldDirection, duration);
+                    // 计算目标的世界位置（脚底方块坐标+1得到角色身体高度）
+                    Vector3 targetWorldPos = MapManager.Instance.GetWorldPosition(targetPos) + Vector3.up;
+                    
+                    // 使用新的平滑旋转方法
+                    RotateTowardsTargetSmoothly(targetWorldPos);
                 }
                 else
                 {
@@ -857,81 +856,72 @@ namespace GamePlay
             }
 
             /// <summary>
-            /// 平滑旋转到目标朝向（用于动画）
+            /// 平滑旋转到目标朝向（用于动画）- DOTween定速旋转版本
             /// </summary>
             public void RotateToFacingSmoothly(UnitFacing targetFacing, float duration = 0.3f)
             {
-                if (currentFacing == targetFacing) return;
-                
-                // 停止可能正在进行的旋转协程
-                if (_rotationCoroutine != null)
-                {
-                    StopCoroutine(_rotationCoroutine);
-                }
-                
-                // 开始新的平滑旋转
-                _rotationCoroutine = StartCoroutine(RotateToFacingCoroutine(targetFacing, duration));
+                RotateToFacingSmoothly(targetFacing);
             }
 
-            private Coroutine _rotationCoroutine;
+
 
             /// <summary>
-            /// 平滑旋转到目标朝向的协程
+            /// 平滑旋转到目标朝向（用于动画）- DOTween定速旋转版本
             /// </summary>
-            private IEnumerator RotateToFacingCoroutine(UnitFacing targetFacing, float duration)
+            public void RotateTowardsTargetSmoothly(Vector3 targetPosition, System.Action onComplete = null)
             {
-                float startRotationY = Global.FacingTool.FacingToRotationY(currentFacing);
+                // 1. 杀掉旧动画
+                transform.DOKill();
+
+                // 2. 计算从自己指向敌人的方向向量
+                Vector3 direction = targetPosition - transform.position;
+                direction.y = 0; // 忽略高度差，保证角色只在水平面（Y轴）旋转，不会低头/仰头
+                
+                if (direction.sqrMagnitude < 0.001f) return; // 防止目标和自己重合报错
+
+                // 3. 将方向向量转换为精确的 Y 轴欧拉角
+                float targetRotationY = Quaternion.LookRotation(direction).eulerAngles.y;
+
+                // 4. 开始定速旋转（180度/秒）
+                transform.DORotate(new Vector3(0, targetRotationY, 0), 180f, RotateMode.Fast)
+                    .SetSpeedBased(true)
+                    .SetEase(Ease.Linear)
+                    .OnComplete(() => {
+                        // 确保旋转精确到位
+                        transform.rotation = Quaternion.Euler(0, targetRotationY, 0);
+                        
+                        // 【核心技巧】：通过回调函数通知外部“我已经转好身了，可以播放攻击动画了”
+                        onComplete?.Invoke(); 
+                    });
+            }
+
+            public void RotateToFacingSmoothly(UnitFacing targetFacing)
+            {
+                // 记录你要恢复到的网格方向
+                currentFacing = targetFacing; 
+                
+                transform.DOKill();
+                
+                // 获取标准的网格角度 (0, 90, 180, 270 等)
                 float targetRotationY = Global.FacingTool.FacingToRotationY(targetFacing);
                 
-                // 处理跨越360度边界的情况（例如从350度旋转到10度）
-                if (Mathf.Abs(targetRotationY - startRotationY) > 180f)
-                {
-                    if (targetRotationY > startRotationY)
-                    {
-                        startRotationY += 360f;
-                    }
-                    else
-                    {
-                        targetRotationY += 360f;
-                    }
-                }
-                
-                float elapsedTime = 0f;
-                
-                while (elapsedTime < duration)
-                {
-                    elapsedTime += Time.deltaTime;
-                    float t = Mathf.Clamp01(elapsedTime / duration);
-                    
-                    // 使用平滑的插值函数
-                    float smoothedT = Mathf.SmoothStep(0f, 1f, t);
-                    float currentRotationY = Mathf.Lerp(startRotationY, targetRotationY, smoothedT);
-                    
-                    // 规范化角度到0-360度
-                    currentRotationY = ((currentRotationY % 360) + 360) % 360;
-                    
-                    // 更新transform的旋转
-                    transform.rotation = Quaternion.Euler(0, currentRotationY, 0);
-                    
-                    yield return null;
-                }
-                
-                // 确保最终角度准确
-                transform.rotation = Quaternion.Euler(0, targetRotationY, 0);
-                
-                // 更新当前朝向
-                currentFacing = targetFacing;
-                
-                _rotationCoroutine = null;
+                transform.DORotate(new Vector3(0, targetRotationY, 0), 180f, RotateMode.Fast)
+                    .SetSpeedBased(true)
+                    .SetEase(Ease.Linear)
+                    .OnComplete(() => {
+                        transform.rotation = Quaternion.Euler(0, targetRotationY, 0);
+                    });
             }
 
             /// <summary>
-            /// 平滑旋转到目标方向（用于动画）
+            /// 平滑旋转到目标方向（用于动画）- DOTween定速旋转版本
+            /// 保留此方法用于兼容性
             /// </summary>
             public void RotateToDirectionSmoothly(Vector3 direction, float duration = 0.3f)
             {
-                UnitFacing targetFacing = Global.FacingTool.GetNearestCardinalFacing(direction);
-                RotateToFacingSmoothly(targetFacing, duration);
+                // 计算目标位置（当前位置+方向向量）
+                Vector3 targetWorldPos = transform.position + direction.normalized;
+                RotateTowardsTargetSmoothly(targetWorldPos);
             }
 
             /// <summary>

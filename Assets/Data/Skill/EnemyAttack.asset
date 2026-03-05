@@ -20,7 +20,7 @@ MonoBehaviour:
   CastMaxRange: 1
   CastMinRange: 1
   CastVerticalRange: 1
-  RequireLineOfSight: 1
+  Trajectory: 0
   StopsAtFirstHit: 1
   Cost: 0
   Phases:
@@ -50,5 +50,5 @@ MonoBehaviour:
         m_SubObjectType: 
         m_EditorAssetChanged: 0
       ProjectileSpeed: 0
-      HitEventName: Hit
+      HitEventName: 
       EndEventName: End

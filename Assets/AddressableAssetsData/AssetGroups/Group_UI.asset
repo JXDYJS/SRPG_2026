@@ -27,6 +27,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cf407dcfa0e8b534b959d4d473e55b10
+    m_Address: Assets/textures/gui/sprites/hud/experience_bar_background.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d63f8b7ba506f4542bd5136112a5b1aa
     m_Address: DamageUI
     m_ReadOnly: 0

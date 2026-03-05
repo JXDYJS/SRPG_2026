@@ -8,6 +8,7 @@ using Managers;
 using Command;
 using Global;
 using GamePlay.Skill;
+using GamePlay.Battle;
 using UnityEngine.AddressableAssets;
 using Cysharp.Threading.Tasks;
 using UnityEngine.ResourceManagement.AsyncOperations;
@@ -18,16 +19,6 @@ namespace DebugSystem
     {
         [Header("核心引用")]
         public MapManager mapManager;
-
-        [Header("预制体与数据 (Addressables 软引用)")]
-        [Tooltip("玩家的预制体 (必须带有 Animator)")]
-        public AssetReferenceGameObject playerPrefab;
-        [Tooltip("敌人的预制体 (必须带有 Animator)")]
-        public AssetReferenceGameObject enemyPrefab;
-        [Tooltip("玩家的技能配置")]
-        public CharacterSkillConfig playerSkillConfig;
-        [Tooltip("敌人的技能配置")]
-        public CharacterSkillConfig enemySkillConfig;
 
         public MapUnit playerUnit;
         public MapUnit enemyUnit;
@@ -41,67 +32,29 @@ namespace DebugSystem
         {
             await UniTask.Delay(200);
 
-            if (mapManager == null || playerPrefab == null || enemyPrefab == null)
+            if (mapManager == null)
             {
-                Debug.LogError("Test_Battle: 请在 Inspector 中分配 MapManager 和 Addressables 引用！");
+                Debug.LogError("Test_Battle: 请在 Inspector 中分配 MapManager！");
                 return;
             }
 
-            playerUnit = await SpawnUnitAsync(playerPrefab, "Player_Steve", 0, 1, 0, FactionType.Player, playerSkillConfig);
-            enemyUnit = await SpawnUnitAsync(enemyPrefab, "Enemy_Zombie", 3, 1, 0, FactionType.Enemy, enemySkillConfig);
-            
+            // 检查BattleFlowManager是否存在
+            if (BattleFlowManager.Instance == null)
+            {
+                Debug.LogError("Test_Battle: 场景中找不到 BattleFlowManager！请确保它被挂载在了场景中。");
+                return;
+            }
+
             Debug.Log("战斗测试场景初始化完毕，正在移交指挥权...");
 
             if (TurnManager.Instance != null)
             {
-                TurnManager.Instance.StartBattle();
+                //TurnManager.Instance.StartBattle();
             }
             else
             {
                 Debug.LogError("场景中找不到 TurnManager！请确保它被挂载在了场景中。");
             }
-        }
-
-        private async UniTask<MapUnit> SpawnUnitAsync(AssetReferenceGameObject prefabRef, string name, int x, int y, int z, FactionType faction, CharacterSkillConfig skillConfig)
-        {
-            var handle = Addressables.InstantiateAsync(prefabRef);
-            await handle.Task;
-
-            if (handle.Status != AsyncOperationStatus.Succeeded)
-            {
-                Debug.LogError($"Test_Battle: 无法实例化预制体 {name}");
-                return null;
-            }
-
-            GameObject go = handle.Result;
-            go.name = name;
-            
-            MapUnit unit = go.GetComponent<MapUnit>();
-            if (unit == null) unit = go.AddComponent<MapUnit>();
-
-            CharacterData data = ScriptableObject.CreateInstance<CharacterData>();
-            data.CharacterName = name;
-            data.BaseMaxHP = 100;
-            data.BaseATK = 10;
-            data.MoveRange = 4;
-            data.DefaultFaction = faction;
-            data.Speed = 1000;
-            
-            CharacterInstance soul = new CharacterInstance(data);
-            
-            unit.Setup(soul, mapManager, x, y, z);
-            unit.Faction = faction;
-
-            if (skillConfig != null)
-            {
-                await soul.InitializeSkillsAsync(skillConfig, 1);
-            }
-            else
-            {
-                Debug.LogWarning($"Test_Battle: 未配置 skillConfig，单位 {name} 将无法使用技能！");
-            }
-
-            return unit;
         }
 
         void Update()

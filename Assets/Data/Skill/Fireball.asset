@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe202a631b15d92408ac5c92665ab130, type: 3}
   m_Name: Fireball
   m_EditorClassIdentifier: 
-  SkillName: "\u706B\u7403"
+  SkillName: Fireball
   Description: 
   Icon: {fileID: 0}
   TargetType: 0
@@ -20,7 +20,7 @@ MonoBehaviour:
   CastMaxRange: 5
   CastMinRange: 1
   CastVerticalRange: 0
-  RequireLineOfSight: 1
+  Trajectory: 0
   StopsAtFirstHit: 1
   Cost: 0
   Phases:
