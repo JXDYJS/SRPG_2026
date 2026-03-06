@@ -8,6 +8,7 @@ using Cysharp.Threading.Tasks;
 using UnityEngine.AddressableAssets;
 using System.Threading.Tasks;
 using Global;
+using GamePlay.UI;
 
 namespace GamePlay.Battle
 {
@@ -108,7 +109,12 @@ namespace GamePlay.Battle
                 }
             }
 
-            // 4. 自动确认部署并进入战斗阶段
+            if (Managers.TimelineUIManager.Instance != null)
+            {
+                Managers.TimelineUIManager.Instance.InitTimeline(_spawnedUnits);
+            }
+
+            // 5. 自动确认部署并进入战斗阶段
             ConfirmDeployment();
         }
 

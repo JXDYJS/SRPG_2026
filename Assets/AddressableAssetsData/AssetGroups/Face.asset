@@ -12,11 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
   m_Name: Face
   m_EditorClassIdentifier: 
-  m_GroupName: Packed Assets
+  m_GroupName: Face
   m_Data:
     m_SerializedData: []
   m_GUID: c090ee3f14e96c144869b9f4b868fed2
-  m_SerializeEntries: []
+  m_SerializeEntries:
+  - m_GUID: 5f80e2c2d03857241b04e6e243d5425a
+    m_Address: Assets/textures/Head/SteveFace.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 1f6ca7d155b268c408ed984de8fdd20b, type: 2}
   m_SchemaSet:

@@ -7,6 +7,7 @@ using Global;
 using Managers;
 using Command;
 using GamePlay.AI;
+using GamePlay.UI;
 
 public class TurnManager : MonoBehaviour
 {
@@ -17,6 +18,9 @@ public class TurnManager : MonoBehaviour
 
     // 所有在场单位的列表
     private List<MapUnit> _allBattleUnits = new List<MapUnit>();
+    
+    // 公开的、实时排序的行动队列
+    public List<MapUnit> ActionQueue { get; private set; } = new List<MapUnit>();
 
     void Awake()
     {
@@ -25,13 +29,20 @@ public class TurnManager : MonoBehaviour
 
     public void StartBattle()
     {
-        // 获取场上所有人
-        _allBattleUnits = new List<MapUnit>(FindObjectsOfType<MapUnit>());
+        // 获取UnitManager中注册的所有单位
+        _allBattleUnits = UnitManager.Instance.GetAllUnits();
         
         // 所有人就位，计算起跑时间
         foreach(var unit in _allBattleUnits)
         {
             unit.ResetActionValue();
+        }
+
+        // 注意：时间条UI已经在BattleFlowManager中初始化
+        // 这里只需要确保头像位置更新到初始状态
+        if (TimelineUIManager.Instance != null)
+        {
+            TimelineUIManager.Instance.UpdateAllIconsPosition(0f);
         }
 
         // 开始跑时间轴
@@ -45,21 +56,33 @@ public class TurnManager : MonoBehaviour
         _allBattleUnits.RemoveAll(u => u == null || u.Character.statSystem.currentHP <= 0);
         if (_allBattleUnits.Count == 0) return;
 
-        // 2. 找到 AV 最小的单位 (谁最先跑到终点)
-        MapUnit nextUnit = _allBattleUnits[0];
-        foreach(var unit in _allBattleUnits)
-        {
-            if (unit.CurrentActionValue < nextUnit.CurrentActionValue)
-            {
-                nextUnit = unit;
-            }
-        }
+        // 2.1 更新行动队列：按照 CurrentActionValue 升序排列，如果 AV 相同，则按照 Speed 降序排列
+        ActionQueue = new List<MapUnit>(_allBattleUnits);
+        ActionQueue.Sort((a, b) => {
+            // 首先按 AV 升序排列（AV 越小越先行动）
+            int avCompare = a.CurrentActionValue.CompareTo(b.CurrentActionValue);
+            if (avCompare != 0) return avCompare;
+            
+            // AV 相同，按 Speed 降序排列（速度越快越先行动）
+            float speedA = a.Character.statSystem.Speed.getValue();
+            float speedB = b.Character.statSystem.Speed.getValue();
+            return speedB.CompareTo(speedA);
+        });
+
+        // 2.2 获取下一个行动的单位（队列第一个）
+        MapUnit nextUnit = ActionQueue[0];
 
         // 3. 时间流逝！让这个人的 AV 变成 0，其他人的 AV 也减去同样的时间
         float timeElapsed = nextUnit.CurrentActionValue;
         foreach(var unit in _allBattleUnits)
         {
             unit.CurrentActionValue -= timeElapsed;
+        }
+
+        // 3.5 更新时间条UI，让所有头像向左移动
+        if (TimelineUIManager.Instance != null)
+        {
+            TimelineUIManager.Instance.UpdateAllIconsPosition(0.5f);
         }
 
         // 4. 正式让这个人开始行动
@@ -94,6 +117,13 @@ public class TurnManager : MonoBehaviour
         
         // 让他重新回到起点
         ActiveUnit.ResetActionValue();
+        
+        // 更新时间条UI，让行动完的头像飞回右侧起跑线
+        if (TimelineUIManager.Instance != null)
+        {
+            TimelineUIManager.Instance.UpdateAllIconsPosition(0.5f);
+        }
+        
         ActiveUnit = null;
 
         // 寻找下一个人

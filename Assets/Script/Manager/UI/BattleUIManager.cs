@@ -14,6 +14,7 @@ namespace Managers
         [Header("面板引用")]
         [SerializeField] private ActionMenuPanel _actionMenuPanel;
         [SerializeField] private SkillMenuPanel _skillMenuPanel;
+        [SerializeField] private AttributePanel _attributePanel;
 
         [Header("旧版兼容引用（可删除）")]
         [SerializeField] private GameObject actionMenuPanel;
@@ -41,6 +42,9 @@ namespace Managers
 
             if (_skillMenuPanel != null)
                 _skillMenuPanel.PanelObject.SetActive(false);
+
+            if (_attributePanel != null)
+                _attributePanel.PanelObject.SetActive(false);
         }
 
         public void ShowActionMenu(MapUnit unit)
@@ -96,6 +100,22 @@ namespace Managers
             Debug.Log($"BattleUIManager: PopPanel called, stack count: {_uiStack.Count}");
             await _uiStack.Pop();
             Debug.Log($"BattleUIManager: PopPanel completed, stack count: {_uiStack.Count}");
+        }
+
+        public void ShowAttributePanel(MapUnit unit)
+        {
+            if (_attributePanel != null)
+            {
+                _attributePanel.Show(unit);
+            }
+        }
+
+        public void HideAttributePanel()
+        {
+            if (_attributePanel != null)
+            {
+                _attributePanel.Hide();
+            }
         }
 
         public void OnSkillSelected(SkillDataSO skill)

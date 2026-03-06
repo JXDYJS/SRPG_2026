@@ -9,6 +9,7 @@ using Command;
 using GamePlay.Grid;
 using GamePlay.Skill;
 using DG.Tweening;
+using GamePlay.UI;
 
 namespace GamePlay
 {
@@ -498,6 +499,13 @@ namespace GamePlay
                 Debug.Log($"{name} has died.");
                 UndoSystem.Instance.RegisterDirty(this);
                 UnitManager.Instance.UnregisterUnit(this);
+                
+                // 从时间条移除头像
+                if (Managers.TimelineUIManager.Instance != null)
+                {
+                    Managers.TimelineUIManager.Instance.RemoveUnit(this);
+                }
+                
                 // Destroy(gameObject);
                 gameObject.SetActive(false);
                 SwitchState(UnitState.Dead);

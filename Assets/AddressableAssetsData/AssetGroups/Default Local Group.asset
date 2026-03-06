@@ -22,6 +22,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 37c5aabe3030cfc4f9c983a988319135
+    m_Address: Assets/textures/gui/book.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3e77cd9c4a93c2145b7c637ade3db7f1
     m_Address: Assets/Data/Skill/Fireball.prefab
     m_ReadOnly: 0
@@ -32,11 +37,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 468f9f140986f9c4b949001647145db2
-    m_Address: Assets/Perfob/mob/skeleton.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 48519a9b14a1ba74b810c09f72c6ba9e
     m_Address: Assets/Data/Character/Skeleton.asset
     m_ReadOnly: 0
@@ -44,11 +44,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4f2f2d43fc7d2fe4ea7a00cf22e95ca2
     m_Address: Assets/Mob/arrow.fbx
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 5f80e2c2d03857241b04e6e243d5425a
-    m_Address: Assets/textures/Head/SteveFace.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

@@ -87,7 +87,7 @@ namespace GamePlay.Skill
                 
                 if (entry.SkillData != null && entry.SkillData.RuntimeKeyIsValid())
                 {
-                    var handle = entry.SkillData.LoadAssetAsync();
+                    var handle = Addressables.LoadAssetAsync<SkillDataSO>(entry.SkillData);
                     await handle.Task;
 
                     if (handle.Status == AsyncOperationStatus.Succeeded)

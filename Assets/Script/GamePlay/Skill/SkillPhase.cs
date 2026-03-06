@@ -4,6 +4,12 @@ using UnityEngine;
 
 namespace GamePlay.Skill
 {
+    public enum AoEOriginType
+    {
+        TargetPosition,
+        CasterPosition
+    }
+
     [System.Serializable]
     public class SkillPhase
     {
@@ -19,6 +25,9 @@ namespace GamePlay.Skill
         
         [Tooltip("影响范围垂直高度容忍度")]
         public int AoEVerticalRange = 1;
+        
+        [Tooltip("AoE形状的生成中心：TargetPosition=以目标点为中心，CasterPosition=以施法者为中心")]
+        public AoEOriginType OriginType = AoEOriginType.TargetPosition;
         
         public List<SkillEffect> Effects;
         public SkillVisualData VisualData;

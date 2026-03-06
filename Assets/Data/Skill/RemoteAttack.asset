@@ -19,7 +19,7 @@ MonoBehaviour:
   CastPattern: 0
   CastMaxRange: 5
   CastMinRange: 1
-  CastVerticalRange: 1
+  CastVerticalRange: 5
   Trajectory: 0
   StopsAtFirstHit: 1
   Cost: 0

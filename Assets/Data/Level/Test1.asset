@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: Test1
   m_EditorClassIdentifier: 
   MapData: {fileID: 11400000, guid: 077a316a2b1da224eb5b3286d6415711, type: 2}
-  PrePlacedUnits:
+  InitialUnits:
   - CharacterTemplate: {fileID: 11400000, guid: 248fc52950ed1c5419e75da3f27f6f10,
       type: 2}
+    SkillConfig: {fileID: 11400000, guid: a0d6d26ff0047474991ab44e753b9c57, type: 2}
     SpawnPosition: {x: 6, y: 1, z: 3}
     InitialFacing: 0
     Faction: 1
@@ -26,7 +27,19 @@ MonoBehaviour:
     RESBonusPercent: 0
   - CharacterTemplate: {fileID: 11400000, guid: 48519a9b14a1ba74b810c09f72c6ba9e,
       type: 2}
-    SpawnPosition: {x: 1, y: 3, z: 2}
+    SkillConfig: {fileID: 11400000, guid: b1147081a80afe640baf627c77e8961f, type: 2}
+    SpawnPosition: {x: 1, y: 3, z: 3}
+    InitialFacing: 0
+    Faction: 1
+    InitialLevel: 0
+    HPBonusPercent: 2
+    ATKBonusPercent: 0
+    DEFBonusPercent: 0
+    RESBonusPercent: 0
+  - CharacterTemplate: {fileID: 11400000, guid: 248fc52950ed1c5419e75da3f27f6f10,
+      type: 2}
+    SkillConfig: {fileID: 11400000, guid: a0d6d26ff0047474991ab44e753b9c57, type: 2}
+    SpawnPosition: {x: 6, y: 1, z: 4}
     InitialFacing: 0
     Faction: 1
     InitialLevel: 0

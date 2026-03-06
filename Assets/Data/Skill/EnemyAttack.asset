@@ -51,4 +51,4 @@ MonoBehaviour:
         m_EditorAssetChanged: 0
       ProjectileSpeed: 0
       HitEventName: 
-      EndEventName: End
+      EndEventName: 

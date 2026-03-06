@@ -21,7 +21,8 @@ namespace GamePlay.Control
         MenuOpen,
         TargetingMove,
         TargetingAttack,
-        TargetingSkill
+        TargetingSkill,
+        ShowingAttribute
     }
 
     public class BattleInputController : MonoBehaviour
@@ -54,6 +55,16 @@ namespace GamePlay.Control
 
         void Update()
         {
+            if (currentState == InputState.ShowingAttribute)
+            {
+                if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1))
+                {
+                    BattleUIManager.Instance.HideAttributePanel();
+                    ChangeState(InputState.Idle);
+                    return;
+                }
+            }
+
             if (activeUnit == null || activeUnit.Faction != FactionType.Player || activeUnit.IsBusy)
             {
                 if (currentState != InputState.Locked) ChangeState(InputState.Locked);
@@ -94,6 +105,15 @@ namespace GamePlay.Control
                 {
                     ChangeState(InputState.Idle);
                     BattleUIManager.Instance.HideActionMenu();
+                }
+                else if (currentState == InputState.Idle)
+                {
+                    MapUnit clickedUnit = UnitManager.Instance.GetUnitAt(hoverPos);
+                    if (clickedUnit != null)
+                    {
+                        BattleUIManager.Instance.ShowAttributePanel(clickedUnit);
+                        ChangeState(InputState.ShowingAttribute);
+                    }
                 }
             }
         }

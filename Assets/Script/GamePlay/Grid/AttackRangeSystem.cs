@@ -5,6 +5,7 @@ using Global;
 using GamePlay.Skill;
 using GamePlay.unit;
 using Managers;
+using Command;
 
 namespace GamePlay.Grid
 {
@@ -47,7 +48,12 @@ namespace GamePlay.Grid
                     }
 
                     // 新增：根据弹道轨迹类型检查目标点是否可达
-                    bool isReachable = CheckTrajectoryReachable(casterPos, targetPos3D, skill);
+                    
+                    // 计算正确的位置，考虑格子高度
+                    Vector3 casterWorldPos = MapManager.Instance.GetWorldPosition(casterPos);
+                    Vector3 targetWorldPos = MapManager.Instance.GetWorldPosition(targetPos3D);
+                    
+                    bool isReachable = CheckTrajectoryReachable(casterWorldPos, targetWorldPos, skill);
                     if (!isReachable)
                     {
                         continue;
@@ -68,10 +74,12 @@ namespace GamePlay.Grid
         {
             List<Vector3Int> result3D = new List<Vector3Int>();
 
-            Vector2Int start2D = new Vector2Int(casterPos.x, casterPos.z);
+            Vector3Int origin3D = phase.OriginType == AoEOriginType.CasterPosition ? casterPos : targetPos;
+            Vector2Int origin2D = new Vector2Int(origin3D.x, origin3D.z);
+            Vector2Int caster2D = new Vector2Int(casterPos.x, casterPos.z);
             Vector2Int target2D = new Vector2Int(targetPos.x, targetPos.z);
 
-            List<Vector2Int> range2D = GetAoEGrids(start2D, target2D, phase.AoEPattern, phase.AoERadius);
+            List<Vector2Int> range2D = GetAoEGrids(origin2D, caster2D, target2D, phase.AoEPattern, phase.AoERadius);
 
             int heightUp = phase.AoEVerticalRange;
             int heightDown = phase.AoEVerticalRange;
@@ -80,11 +88,9 @@ namespace GamePlay.Grid
             {
                 for (int yOffset = -heightDown; yOffset <= heightUp; yOffset++)
                 {
-                    int targetY = targetPos.y + yOffset;
+                    int targetY = origin3D.y + yOffset;
                     Vector3Int pos3D = new Vector3Int(p2d.x, targetY, p2d.y);
                     
-                    // 重要：只添加有效的脚底方块坐标
-                    // CanPlaceSkillOnTile已经检查了"固体方块+上方空气"的条件
                     if (CanPlaceSkillOnTile(pos3D))
                     {
                         result3D.Add(pos3D);
@@ -125,32 +131,32 @@ namespace GamePlay.Grid
 
         // ================= AoE范围形状算法 =================
 
-        private static List<Vector2Int> GetAoEGrids(Vector2Int center, Vector2Int target, AoEPatternType type, int radius)
+        private static List<Vector2Int> GetAoEGrids(Vector2Int origin, Vector2Int caster, Vector2Int target, AoEPatternType type, int radius)
         {
             List<Vector2Int> result = new List<Vector2Int>();
 
             switch (type)
             {
                 case AoEPatternType.SingleTarget:
-                    result = GetSingleTargetShape(center, target);
+                    result = GetSingleTargetShape(origin);
                     break;
                 case AoEPatternType.Cross:
-                    result = GetCrossShape(center, target, radius);
+                    result = GetCrossShape(origin, radius);
                     break;
                 case AoEPatternType.Diamond:
-                    result = GetDiamondShape(center, 0, radius);
+                    result = GetDiamondShape(origin, 0, radius);
                     break;
                 case AoEPatternType.Square:
-                    result = GetSquareShape(center, 0, radius);
+                    result = GetSquareShape(origin, 0, radius);
                     break;
                 case AoEPatternType.Cone:
-                    result = GetConeShape(center, target, radius);
+                    result = GetConeShape(origin, caster, target, radius);
                     break;
                 case AoEPatternType.LinePiercing:
-                    result = GetLinePiercingShape(center, target, radius);
+                    result = GetLinePiercingShape(origin, caster, target, radius);
                     break;
                 case AoEPatternType.Ring:
-                    result = GetRingShape(center, 1, radius);
+                    result = GetRingShape(origin, 1, radius);
                     break;
             }
 
@@ -200,7 +206,6 @@ namespace GamePlay.Grid
         {
             List<Vector2Int> tiles = new List<Vector2Int>();
             
-            // 四个方向：上、下、左、右
             Vector2Int[] directions = new Vector2Int[]
             {
                 Vector2Int.up,
@@ -220,44 +225,41 @@ namespace GamePlay.Grid
         }
 
         // 4. 单体目标
-        private static List<Vector2Int> GetSingleTargetShape(Vector2Int center, Vector2Int target)
+        private static List<Vector2Int> GetSingleTargetShape(Vector2Int origin)
         {
-            return new List<Vector2Int> { target };
+            return new List<Vector2Int> { origin };
         }
 
         // 5. 十字形
-        private static List<Vector2Int> GetCrossShape(Vector2Int center, Vector2Int target, int radius)
+        private static List<Vector2Int> GetCrossShape(Vector2Int center, int radius)
         {
             List<Vector2Int> tiles = new List<Vector2Int>();
             
-            // 以目标点为中心
             for (int i = -radius; i <= radius; i++)
             {
                 if (i == 0) continue;
-                tiles.Add(new Vector2Int(target.x + i, target.y)); // 水平
-                tiles.Add(new Vector2Int(target.x, target.y + i)); // 垂直
+                tiles.Add(new Vector2Int(center.x + i, center.y));
+                tiles.Add(new Vector2Int(center.x, center.y + i));
             }
-            tiles.Add(target); // 中心点
+            tiles.Add(center);
             
             return tiles;
         }
 
         // 6. 扇形/锥形 (需要方向)
-        private static List<Vector2Int> GetConeShape(Vector2Int start, Vector2Int target, int length)
+        private static List<Vector2Int> GetConeShape(Vector2Int start, Vector2Int caster, Vector2Int target, int length)
         {
             List<Vector2Int> tiles = new List<Vector2Int>();
-            Vector2Int dir = GetDirection(start, target);
+            Vector2Int dir = GetDirection(caster, target);
             if (dir == Vector2Int.zero) dir = Vector2Int.right;
 
-            // 遍历长度
             for (int i = 1; i <= length; i++)
             {
                 Vector2Int forwardPos = start + dir * i;
                 tiles.Add(forwardPos);
 
-                // 随着距离增加，向两侧扩展宽度
-                int sideWidth = i - 1; // 越远越宽
-                Vector2Int perpDir = new Vector2Int(dir.y, dir.x); // 垂直旋转
+                int sideWidth = i - 1;
+                Vector2Int perpDir = new Vector2Int(dir.y, dir.x);
 
                 for (int w = 1; w <= sideWidth; w++)
                 {
@@ -269,10 +271,10 @@ namespace GamePlay.Grid
         }
 
         // 7. 穿透直线 (会穿透多个目标)
-        private static List<Vector2Int> GetLinePiercingShape(Vector2Int start, Vector2Int target, int length)
+        private static List<Vector2Int> GetLinePiercingShape(Vector2Int start, Vector2Int caster, Vector2Int target, int length)
         {
             List<Vector2Int> tiles = new List<Vector2Int>();
-            Vector2Int dir = GetDirection(start, target);
+            Vector2Int dir = GetDirection(caster, target);
             if (dir == Vector2Int.zero) dir = Vector2Int.right;
 
             for (int i = 1; i <= length; i++)
@@ -291,10 +293,8 @@ namespace GamePlay.Grid
         // 9. 全局范围（简化实现）
         private static List<Vector2Int> GetAllReachableTiles(Vector2Int center)
         {
-            // 这里需要地图管理器提供所有可到达的格子
-            // 简化实现：返回一个大的方形区域
             List<Vector2Int> tiles = new List<Vector2Int>();
-            int mapSize = 20; // 假设地图大小为20x20
+            int mapSize = 20;
             
             for (int x = -mapSize; x <= mapSize; x++)
             {
@@ -515,7 +515,7 @@ namespace GamePlay.Grid
         /// 直接生效弹道 - 无视任何地形阻挡
         /// 用于诅咒、传送等直接生效技能
         /// </summary>
-        public static bool CheckDirect(Vector3Int start, Vector3Int end)
+        public static bool CheckDirect(Vector3 start, Vector3 end)
         {
             // Direct 类型无视任何地形阻挡，直接返回 true
             return true;
@@ -526,14 +526,18 @@ namespace GamePlay.Grid
         /// 用于火枪、激光等直射技能
         /// 算法：从起点的胸口（y+1）到终点的胸口（y+1）步进发射射线
         /// </summary>
-        public static bool CheckLineOfSight(Vector3Int start, Vector3Int end)
+        public static bool CheckLineOfSight(Vector3 start, Vector3 end)
         {
             // 计算起点和终点的"眼睛"高度（胸口位置，y+1）
-            Vector3Int eyeStart = new Vector3Int(start.x, start.y + 1, start.z);
-            Vector3Int eyeEnd = new Vector3Int(end.x, end.y + 1, end.z);
+            Vector3 eyeStart = new Vector3(start.x, start.y + 1, start.z);
+            Vector3 eyeEnd = new Vector3(end.x, end.y + 1, end.z);
+
+            // 转换为网格坐标
+            Vector3Int gridStart = new Vector3Int(Mathf.RoundToInt(eyeStart.x), Mathf.RoundToInt(eyeStart.y), Mathf.RoundToInt(eyeStart.z));
+            Vector3Int gridEnd = new Vector3Int(Mathf.RoundToInt(eyeEnd.x), Mathf.RoundToInt(eyeEnd.y), Mathf.RoundToInt(eyeEnd.z));
 
             // 获取从起点到终点的直线路径
-            List<Vector3Int> path = GetLinePath(eyeStart, eyeEnd);
+            List<Vector3Int> path = GetLinePath(gridStart, gridEnd);
 
             // 检查路径上的每个格子
             foreach (Vector3Int pos in path)
@@ -553,10 +557,13 @@ namespace GamePlay.Grid
         /// 用于天雷、陨石等从天而降的技能
         /// 算法：从目标点头顶开始向上检查，直到地图最高限
         /// </summary>
-        public static bool CheckSkyDrop(Vector3Int target)
+        public static bool CheckSkyDrop(Vector3 target)
         {
+            // 转换为网格坐标
+            Vector3Int gridTarget = new Vector3Int(Mathf.RoundToInt(target.x), Mathf.RoundToInt(target.y), Mathf.RoundToInt(target.z));
+            
             // 从目标点的头顶开始检查（y+1）
-            int startY = target.y + 1;
+            int startY = gridTarget.y + 1;
             
             // 假设地图最高高度为 255（可根据项目配置调整）
             int maxMapHeight = 255;
@@ -564,7 +571,7 @@ namespace GamePlay.Grid
             // 从目标点头顶向上检查
             for (int y = startY; y <= maxMapHeight; y++)
             {
-                Vector3Int checkPos = new Vector3Int(target.x, y, target.z);
+                Vector3Int checkPos = new Vector3Int(gridTarget.x, y, gridTarget.z);
                 
                 // 如果遇到固体方块，说明有屋顶遮挡
                 if (MapManager.Instance.logicalGrid.GetBlock(checkPos) == BlockType.Solid)
@@ -582,7 +589,7 @@ namespace GamePlay.Grid
         /// 算法：参数化抛物线采样，沿数学轨迹进行体素步进检测
         /// 数学原理：允许"越过矮墙"但"阻挡于高墙"，通过计算抛物线高度来判断
         /// </summary>
-        public static bool CheckParabola(Vector3Int start, Vector3Int end, float arcHeightFactor = 0.5f)
+        public static bool CheckParabola(Vector3 start, Vector3 end, float arcHeightFactor = 0.5f)
         {
             // 计算起点和终点的"眼睛"高度（胸口位置，y+1）
             Vector3 eyeStart = new Vector3(start.x, start.y + 1, start.z);
@@ -643,7 +650,7 @@ namespace GamePlay.Grid
         /// 检查目标点是否根据技能弹道类型可达
         /// 统一调用四种弹道检查方法
         /// </summary>
-        private static bool CheckTrajectoryReachable(Vector3Int casterPos, Vector3Int targetPos, SkillDataSO skill)
+        private static bool CheckTrajectoryReachable(Vector3 casterPos, Vector3 targetPos, SkillDataSO skill)
         {
             // 根据技能弹道类型调用相应的检查方法
             switch (skill.Trajectory)

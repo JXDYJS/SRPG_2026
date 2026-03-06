@@ -86,5 +86,11 @@ namespace Managers
             }
             return units;
         }
+
+        // 获取所有注册的单位
+        public List<MapUnit> GetAllUnits()
+        {
+            return new List<MapUnit>(allUnits);
+        }
     }
 }

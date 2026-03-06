@@ -15,7 +15,7 @@ MonoBehaviour:
   ID: 1
   CharacterName: Steve
   Description: 
-  Icon: {fileID: 0}
+  Icon: {fileID: 21300000, guid: 5f80e2c2d03857241b04e6e243d5425a, type: 3}
   Prefab:
     m_AssetGUID: 2cc86365782c2c5419aab6c31d2593b7
     m_SubObjectName: 
