@@ -330,15 +330,12 @@ public class MapManager : MonoBehaviour
 
     public void ClearMap()
     {
-        // 清理地图根节点下的所有子物体
         if (mapRoot != null)
         {
-            // 注意：删除子物体必须倒序遍历
             for (int i = mapRoot.childCount - 1; i >= 0; i--)
             {
                 GameObject child = mapRoot.GetChild(i).gameObject;
                 
-                // 区分编辑器模式和运行模式
 #if UNITY_EDITOR
                 if (Application.isPlaying)
                     Destroy(child);
@@ -350,13 +347,37 @@ public class MapManager : MonoBehaviour
             }
         }
         
-        // 清理逻辑网格
         if (logicalGrid != null)
         {
             logicalGrid.Clear();
         }
         
         Debug.Log("地图已清理");
+    }
+
+    public void GetMapBounds(out Vector2 minBounds, out Vector2 maxBounds)
+    {
+        minBounds = new Vector2(float.MaxValue, float.MaxValue);
+        maxBounds = new Vector2(float.MinValue, float.MinValue);
+        
+        if (logicalGrid != null && logicalGrid.blockData != null && logicalGrid.blockData.Count > 0)
+        {
+            foreach (var kvp in logicalGrid.blockData)
+            {
+                Vector3Int pos = kvp.Key;
+                
+                minBounds.x = Mathf.Min(minBounds.x, pos.x);
+                minBounds.y = Mathf.Min(minBounds.y, pos.z);
+                
+                maxBounds.x = Mathf.Max(maxBounds.x, pos.x);
+                maxBounds.y = Mathf.Max(maxBounds.y, pos.z);
+            }
+        }
+        else
+        {
+            minBounds = Vector2.zero;
+            maxBounds = Vector2.zero;
+        }
     }
     
     // 调试：在 Scene 窗口画出哪些格子能走

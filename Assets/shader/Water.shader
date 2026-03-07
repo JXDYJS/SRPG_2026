@@ -58,7 +58,7 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
             #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/ImageBasedLighting.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/GlobalIllumination.hlsl"
 
-            #define WATER_SAMPLE_COUNT 16
+            #define WATER_SAMPLE_COUNT 32
 
             CBUFFER_START(UnityPerMaterial)
                 float4 _ScatterColor;
@@ -89,6 +89,18 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
 
             struct Attributes { float4 positionOS : POSITION; float2 uv : TEXCOORD0; };
             struct Varyings { float4 positionCS : SV_POSITION; float3 positionWS : TEXCOORD0; float2 uv : TEXCOORD1; };
+
+            float get_spherical_fog(float view_dist, float start, float density) {
+                return exp2(-density * max(view_dist - start, 0.0));
+            }
+
+            float get_border_fog(float view_dist, float max_distance) {
+            float fog_ratio = clamp(view_dist / max_distance, 0.0, 1.0);
+            float pow8 = fog_ratio * fog_ratio;
+            pow8 *= pow8;                       
+            pow8 *= pow8;
+            return exp2(-8.0 * pow8);
+        }
 
             float gerstner_wave(float2 coord, float2 wave_dir, float t, float noise) {
                 float k = 6.283185; 
@@ -249,6 +261,12 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
                 
                 float3 finalColor = (G_entry * T_entry * scatteredLight + thinLayerSSS + backlitTrans) * T_exit 
                                   + (sceneColor * accumTransmittance) * T_exit + finalReflection * (1.0 - T_exit) + sceneInScattering + directSpecular;
+                //Add fog
+                float view_dist = length(GetCameraPositionWS() - input.positionWS);
+                float transmittance = get_border_fog(view_dist, 150.0);
+                float4 viewSkyColor = SAMPLE_TEXTURECUBE_LOD(_GlossyEnvironmentCubeMap, sampler_GlossyEnvironmentCubeMap, -V, mip);
+                float3 fogColor = DecodeHDREnvironment(viewSkyColor, _GlossyEnvironmentCubeMap_HDR);
+                finalColor = lerp(fogColor, finalColor, transmittance);
 
                 return half4(finalColor,1.0);
             }

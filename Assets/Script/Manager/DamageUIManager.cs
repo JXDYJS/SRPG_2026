@@ -38,12 +38,20 @@ namespace Managers
             TextMeshPro textMesh = textObj.GetComponentInChildren<TextMeshPro>();
             if (textMesh != null)
             {
-                textMesh.text = $"-{damage}";
-                
-                switch(type)
+                if (type == DamageType.Heal)
                 {
-                    case DamageType.Physical: textMesh.color = Color.white; break;
-                    case DamageType.Magic: textMesh.color = new Color(0.8f, 0.2f, 1f); break;
+                    textMesh.text = $"+{damage}";
+                    textMesh.color = Color.green;
+                }
+                else
+                {
+                    textMesh.text = $"-{damage}";
+                    
+                    switch(type)
+                    {
+                        case DamageType.Physical: textMesh.color = Color.white; break;
+                        case DamageType.Magic: textMesh.color = new Color(0.8f, 0.2f, 1f); break;
+                    }
                 }
             }
         }

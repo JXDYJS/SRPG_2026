@@ -248,6 +248,46 @@ Shader "Skybox/PhysicsBased_Final"
 
                 float3 color = rayleighSum + mieSum;
 
+                // ====================  Photon ====================
+                // https://github.com/sixthsurge/photon
+                float sun_angular_radius = 0.026; 
+                float nu_sun_angle = acos(clamp(nu_sun, -1.0, 1.0));
+
+                // 
+                float dist_from_sun_center = max(nu_sun_angle - sun_angular_radius, 0.0);
+
+                float sun_core = smoothstep(0.0, sun_angular_radius * 0.2, max(sun_angular_radius - nu_sun_angle, 0.0)); 
+
+                // 极强光晕与耀斑 (模仿 Photon 代码中的 energy = 9000.1 高能散射)
+                float sun_glow = exp(-150.0 * dist_from_sun_center);   
+                float sun_flare = exp(-800.0 * dist_from_sun_center);  
+
+                float sun_energy = (sun_core * 8.0) + (sun_glow * 2.0) + (sun_flare * 6.0);
+
+                float3 cam_t_sun = SampleTransmittance(r, sunDir.y);
+                float sunVisAtCam = GetShadow(r, sunDir.y);
+
+                float3 sunDiskColor = cam_t_sun * SOLAR_IRRADIANCE * _SunIntensity * _SunColor * sun_energy;
+                color += sunDiskColor * sunVisAtCam;
+
+                float moon_angular_radius = 0.026; 
+                float nu_moon_angle = acos(clamp(nu_moon, -1.0, 1.0));
+
+                if (nu_moon_angle < moon_angular_radius)
+                {
+                    float dist = clamp((nu_moon_angle) / moon_angular_radius, 0.0, 1.0);
+                    float edge_glow = pow(dist, 8.0); 
+                    
+                    float moon_energy = 2.0 * (1.0 + 2.0 * edge_glow);
+                    
+                    float3 cam_t_moon = SampleTransmittance(r, moonDir.y);
+                    float moonVisAtCam = GetShadow(r, moonDir.y);
+                    
+                    float3 moonDiskColor = cam_t_moon * SOLAR_IRRADIANCE * _MoonIntensity * _MoonColor * moon_energy;
+                    
+                    color += moonDiskColor * moonVisAtCam;
+                }
+
                 // === 地面反射 ===
                 if (hitGround) {
                     float3 groundPos = float3(0, r, 0) + viewDir * dist;

@@ -116,6 +116,7 @@ Material:
     - _GroundIndirectIntensity: 0.1
     - _Metallic: 0
     - _MieG: 0.8
+    - _MoonIntensity: 0.05
     - _OcclusionStrength: 1
     - _Parallax: 0.005
     - _QueueOffset: 0
@@ -138,7 +139,8 @@ Material:
     - _GroundAlbedo: {r: 0.09999997, g: 0.09999997, b: 0.09999997, a: 1}
     - _LMS_Row1: {r: 1.75, g: -0.1, b: -0.2, a: 0}
     - _LMS_Row2: {r: -0.05, g: 1.1, b: -0.05, a: 0}
-    - _LMS_Row3: {r: -0.03, g: -0.07, b: 1.15, a: 0}
+    - _LMS_Row3: {r: -0.05, g: -0.08, b: 1, a: 0}
+    - _MoonColor: {r: 0.6, g: 0.7, b: 0.8, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _SunColor: {r: 1.68, g: 1.8500001, b: 1.91, a: 1}
   m_BuildTextureStacks: []
