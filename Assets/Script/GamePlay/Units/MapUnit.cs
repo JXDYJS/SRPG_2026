@@ -301,6 +301,34 @@ namespace GamePlay
                 }
             }
 
+            public virtual void TakeHeal(DamageInfo info)
+            {
+                UndoSystem.Instance.RegisterDirty(this);
+                
+                if (info.sourceUnit != null)
+                {
+                    foreach (var mod in info.sourceUnit.GetModifiers())
+                    {
+                        mod.OnHeal(info);
+                    }
+                }
+
+                foreach (var mod in this.GetModifiers())
+                {
+                    mod.OnBeHealed(info);
+                }
+
+                Character.statSystem.currentHP += (int)info.damage;
+                
+                int maxHP = (int)Character.statSystem.maxHP.getValue();
+                if (Character.statSystem.currentHP > maxHP)
+                {
+                    Character.statSystem.currentHP = maxHP;
+                }
+                
+                Debug.Log($"{name} 受到 {info.damage} 点治疗");
+            }
+
         public virtual void Attack(MapUnit target)
         {
 

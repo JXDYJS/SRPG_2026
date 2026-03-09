@@ -53,6 +53,8 @@ namespace Modifier
             void OnActionStart(MapUnit owner);
             void OnActionEnd(MapUnit owner);
             void OnWait(MapUnit owner);
+            void OnHeal(DamageInfo healInfo);
+            void OnBeHealed(DamageInfo healInfo);
         }
 
 
@@ -83,5 +85,7 @@ namespace Modifier
             public virtual void OnActionStart(MapUnit owner) { }
             public virtual void OnWait(MapUnit owner) { }
             public virtual void OnActionEnd(MapUnit owner) { }
+            public virtual void OnHeal(DamageInfo healInfo) { }
+            public virtual void OnBeHealed(DamageInfo healInfo) { }
         }
 }

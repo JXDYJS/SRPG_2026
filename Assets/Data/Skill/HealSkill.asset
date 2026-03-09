@@ -12,15 +12,73 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe202a631b15d92408ac5c92665ab130, type: 3}
   m_Name: HealSkill
   m_EditorClassIdentifier: 
-  SkillName: 
+  SkillName: Heal
   Description: 
   Icon: {fileID: 0}
-  TargetType: 0
-  CastPattern: 0
+  TargetType: 6
+  CastPattern: 3
   CastMaxRange: 1
   CastMinRange: 1
   CastVerticalRange: 1
-  Trajectory: 0
-  StopsAtFirstHit: 1
+  Trajectory: 3
+  StopsAtFirstHit: 0
   Cost: 0
-  Phases: []
+  Phases:
+  - PhaseName: 1
+    TargetType: 6
+    AoEPattern: 0
+    AoERadius: 0
+    AoEVerticalRange: 0
+    OriginType: 0
+    Effects:
+    - EffectType: 1
+      FlatBonus: 0
+      Multiplier: 1
+      Constant: 0
+      DamageType: 6
+      BuffID: 
+    VisualData:
+      CastAnimTrigger: 
+      CastEffect:
+        m_AssetGUID: 
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_EditorAssetChanged: 0
+      Transit: 0
+      ProjectilePrefab:
+        m_AssetGUID: 
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_EditorAssetChanged: 0
+      ProjectileSpeed: 0
+      HitEventName: 
+      EndEventName: 
+  - PhaseName: 2
+    TargetType: 2
+    AoEPattern: 0
+    AoERadius: 0
+    AoEVerticalRange: 0
+    OriginType: 1
+    Effects:
+    - EffectType: 1
+      FlatBonus: 0
+      Multiplier: 1
+      Constant: 0
+      DamageType: 6
+      BuffID: 
+    VisualData:
+      CastAnimTrigger: 
+      CastEffect:
+        m_AssetGUID: 
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_EditorAssetChanged: 0
+      Transit: 0
+      ProjectilePrefab:
+        m_AssetGUID: 
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_EditorAssetChanged: 0
+      ProjectileSpeed: 0
+      HitEventName: 
+      EndEventName: 

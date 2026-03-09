@@ -20,7 +20,6 @@ namespace GamePlay.Skill
                 return sequenceResult;
             }
 
-            // 核心重构 - 弹道拦截系统
             // 检查条件：直线技能且碰到第一个目标时停止
             if (skillData.CastPattern == CastPatternType.Line && skillData.StopsAtFirstHit)
             {
@@ -50,7 +49,7 @@ namespace GamePlay.Skill
                     }
                 }
 
-                // 重要补充：经过拦截修改TargetPosition后，必须再次校验新目标点
+                //经过拦截修改TargetPosition后，必须再次校验新目标点
                 bool isValidTarget = Grid.AttackRangeSystem.IsValidTargetForCast(context.TargetPosition, skillData, caster.Faction);
                 if (!isValidTarget)
                 {
@@ -130,7 +129,7 @@ namespace GamePlay.Skill
                     break;
 
                 case EffectType.Heal:
-                    ApplyHeal(target, effect, targetResult);
+                    ApplyHeal(caster, target, effect, targetResult);
                     break;
 
                 case EffectType.AddBuff:
@@ -167,22 +166,21 @@ namespace GamePlay.Skill
             targetResult.IsDead = target.Character.statSystem.currentHP <= 0;
         }
 
-        private static void ApplyHeal(MapUnit target, SkillEffect effect, TargetResult targetResult)
+        private static void ApplyHeal(MapUnit caster, MapUnit target, SkillEffect effect, TargetResult targetResult)
         {
-            UndoSystem.Instance.RegisterDirty(target);
-
-            int baseATK = (int)target.Character.statSystem.ATK.getValue();
-            int healAmount = effect.CalculateValue(baseATK);
+            int baseATK = (int)caster.Character.statSystem.ATK.getValue();
+            int baseHealAmount = effect.CalculateValue(baseATK);
             
-            target.Character.statSystem.currentHP += healAmount;
+            DamageInfo healInfo = new DamageInfo(
+                baseHealAmount,
+                caster,
+                target,
+                DamageType.Heal,
+                DamageMethod.Skill
+            );
 
-            int maxHP = (int)target.Character.statSystem.maxHP.getValue();
-            if (target.Character.statSystem.currentHP > maxHP)
-            {
-                target.Character.statSystem.currentHP = maxHP;
-            }
-
-            targetResult.ActualDamage = -healAmount;
+            target.TakeHeal(healInfo);
+            targetResult.ActualDamage = -(int)healInfo.damage;
         }
 
         private static void ApplyCasterMovement(MapUnit caster, Vector3Int targetPosition, PhaseResult phaseResult)
