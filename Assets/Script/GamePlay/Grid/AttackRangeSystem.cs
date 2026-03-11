@@ -387,21 +387,30 @@ namespace GamePlay.Grid
         /// <summary>
         /// 检查目标是否对技能阶段有效
         /// </summary>
-        public static bool IsTargetValidForPhase(MapUnit unit, SkillPhase phase, FactionType casterFaction)
+        public static bool IsTargetValidForPhase(MapUnit unit, SkillPhase phase, FactionType casterFaction,MapUnit caster = null)
         {
             switch (phase.TargetType)
             {
                 case TargetType.Enemy:
                     return unit.Faction == FactionType.Enemy;
                 case TargetType.Ally:
+                    return unit.Faction == casterFaction;
+                case TargetType.Self:
+                    if(caster != null)
+                    {
+                        return unit == caster;
+                    }
+                    return unit.Faction == casterFaction;//todo
+                case TargetType.Position:
+                    return true;
+                case TargetType.AnyUnit:
+                    return true;
+                case TargetType.Player:
+                    return unit.Faction == FactionType.Player;
                 case TargetType.Teammates:
                     return unit.Faction == casterFaction;
                 case TargetType.ExceptTeammates:
                     return unit.Faction != casterFaction;
-                case TargetType.Player:
-                    return unit.Faction == FactionType.Player;
-                case TargetType.AnyUnit:
-                    return true;
                 default:
                     return false;
             }

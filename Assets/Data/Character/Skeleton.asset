@@ -22,12 +22,12 @@ MonoBehaviour:
     m_SubObjectType: 
     m_EditorAssetChanged: 0
   BaseMaxHP: 20
-  BaseATK: 0
+  BaseATK: 2
   BaseDEF: 0
   BaseRES: 0
   MoveRange: 5
   Height: 2
-  Speed: 0
+  Speed: 100
   RangeType: 0
   Pattern: 0
   MinRange: 1

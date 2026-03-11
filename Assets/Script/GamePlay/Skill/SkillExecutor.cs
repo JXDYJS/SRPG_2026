@@ -111,7 +111,7 @@ namespace GamePlay.Skill
             foreach (Vector3Int pos in aoeRange)
             {
                 MapUnit unit = UnitManager.Instance.GetUnitAt(pos);
-                if (unit != null && Grid.AttackRangeSystem.IsTargetValidForPhase(unit, phase, caster.Faction))
+                if (unit != null && Grid.AttackRangeSystem.IsTargetValidForPhase(unit, phase, caster.Faction,caster))
                 {
                     targets.Add(unit);
                 }
