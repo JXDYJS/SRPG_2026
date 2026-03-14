@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1.5
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 2100000, guid: d66000398b7821244964fc687e98ae72, type: 2}
+  m_SkyboxMaterial: {fileID: 2100000, guid: 3c29fac2a5dcae8479ede076c0994151, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -2173,7 +2173,7 @@ GameObject:
   - component: {fileID: 410087041}
   - component: {fileID: 410087040}
   - component: {fileID: 410087042}
-  - component: {fileID: 410087043}
+  - component: {fileID: 410087044}
   m_Layer: 0
   m_Name: Directional Light
   m_TagString: Untagged
@@ -2192,8 +2192,8 @@ Light:
   serializedVersion: 10
   m_Type: 1
   m_Shape: 0
-  m_Color: {r: 1, g: 0.88943815, b: 0.8358929, a: 1}
-  m_Intensity: 3.0368638
+  m_Color: {r: 1, g: 0.7056566, b: 0.46884006, a: 1}
+  m_Intensity: 2.9640276
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -2251,7 +2251,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 410087039}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.64105135, y: 0.19360435, z: -0.17176919, w: 0.7225413}
+  m_LocalRotation: {x: 0.2984875, y: 0.24615154, z: -0.07997949, w: 0.9186501}
   m_LocalPosition: {x: 0, y: 3.699, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -2281,7 +2281,7 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 1
---- !u!114 &410087043
+--- !u!114 &410087044
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2290,13 +2290,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 410087039}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3d0438577dfa61f40a08f73fde3b2ab5, type: 3}
+  m_Script: {fileID: 11500000, guid: 3638aea9c7dcb4144b2722c06b721795, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sunAngle: 0.231
+  sunAngle: 0.1
   sunDeclination: 30
-  skyboxMaterial: {fileID: 2100000, guid: d66000398b7821244964fc687e98ae72, type: 2}
-  transmittanceLUT: {fileID: 2800000, guid: 8cb042bf2564cb84ab622fb10b870eaf, type: 3}
+  skyboxMaterial: {fileID: 2100000, guid: 3c29fac2a5dcae8479ede076c0994151, type: 2}
+  dynamicSkyMap: {fileID: 1733779945}
 --- !u!1001 &410641319
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8324,6 +8324,44 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 348122e827ab26a4589e778262c39785, type: 3}
+--- !u!84 &1733779945
+RenderTexture:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: DynamicSkyMap_256x128
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_ForcedFallbackFormat: 4
+  m_DownscaleFallback: 0
+  m_IsAlphaChannelOptional: 0
+  serializedVersion: 5
+  m_Width: 256
+  m_Height: 128
+  m_AntiAliasing: 1
+  m_MipCount: -1
+  m_DepthStencilFormat: 0
+  m_ColorFormat: 48
+  m_MipMap: 0
+  m_GenerateMips: 1
+  m_SRGB: 0
+  m_UseDynamicScale: 0
+  m_BindMS: 0
+  m_EnableCompatibleFormat: 1
+  m_EnableRandomWrite: 0
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 1
+    m_Aniso: 1
+    m_MipBias: 0
+    m_WrapU: 0
+    m_WrapV: 0
+    m_WrapW: 0
+  m_Dimension: 2
+  m_VolumeDepth: 1
+  m_ShadowSamplingMode: 2
 --- !u!1001 &1754425682
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -17,7 +17,7 @@ MonoBehaviour:
   Icon: {fileID: 0}
   TargetType: 2
   CastPattern: 0
-  CastMaxRange: 0
+  CastMaxRange: 1
   CastMinRange: 0
   CastVerticalRange: 1
   Trajectory: 3
@@ -37,7 +37,7 @@ MonoBehaviour:
       Constant: 0
       DamageType: 0
       BuffID: strength
-      BuffStacks: 1
+      BuffStacks: 3
       RemoveMode: 0
     VisualData:
       CastAnimTrigger: 

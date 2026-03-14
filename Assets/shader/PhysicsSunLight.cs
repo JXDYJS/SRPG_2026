@@ -87,6 +87,7 @@ public class PhysicsSunLight : MonoBehaviour
                 r3.x * finalColor.x + r3.y * finalColor.y + r3.z * finalColor.z
             );
         }
+        //finalColor = max(finalColor, 0.0f);
 
         // ==========================================
         // 4. 将算出的物理颜色赋给 Unity 平行光

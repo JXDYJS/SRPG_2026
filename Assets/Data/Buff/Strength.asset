@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb8f75a3f839dca48a6a74ed31ca0166, type: 3}
   m_Name: Strength
   m_EditorClassIdentifier: 
-  ID: Strength
+  ID: strength
   Name: "\u529B\u91CF\u589E\u76CA"
   Icon: {fileID: 0}
   Description: "\u589E\u52A0\u653B\u51FB\u529B"

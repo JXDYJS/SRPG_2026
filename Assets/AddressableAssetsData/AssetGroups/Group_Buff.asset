@@ -18,7 +18,7 @@ MonoBehaviour:
   m_GUID: 88b67a776c61873468e3efaeb860ea32
   m_SerializeEntries:
   - m_GUID: 6636fa8d8a674ab40851b4cc28e82ecb
-    m_Address: Strength
+    m_Address: strength
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

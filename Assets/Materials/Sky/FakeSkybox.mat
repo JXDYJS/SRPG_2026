@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Skybox
-  m_Shader: {fileID: 4800000, guid: ea6da9e3c544fff4ea2986ed4598615f, type: 3}
+  m_Name: FakeSkybox
+  m_Shader: {fileID: 4800000, guid: ce61013a78f168b4f803dc8966a2a0e2, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -48,20 +48,12 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _IrradianceLUT:
-        m_Texture: {fileID: 2800000, guid: 503d0494f20966440ab9887dbf760807, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
         m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MultiScatLUT:
-        m_Texture: {fileID: 2800000, guid: ed13929e769c98f48b25f4ca42b8398c, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
@@ -74,10 +66,6 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _SpecGlossMap:
         m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _TransmittanceLUT:
-        m_Texture: {fileID: 2800000, guid: 8cb042bf2564cb84ab622fb10b870eaf, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
@@ -99,7 +87,6 @@ Material:
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
     - _BumpScale: 1
-    - _CamHeight: 0.01
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _Cull: 2
@@ -109,26 +96,26 @@ Material:
     - _DstBlend: 0
     - _DstBlendAlpha: 0
     - _EnvironmentReflections: 1
+    - _Exposure: 0.5
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
-    - _GroundDirectIntensity: 0.08
-    - _GroundIndirectIntensity: 0.1
     - _Metallic: 0
-    - _MieG: 0.8
-    - _MoonIntensity: 0.05
     - _OcclusionStrength: 1
     - _Parallax: 0.005
     - _QueueOffset: 0
+    - _RayleighBlue: 1
+    - _RayleighGreen: 0.5
+    - _RayleighRed: 0.27
     - _ReceiveShadows: 1
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
-    - _Steps: 16
-    - _SunIntensity: 1
+    - _SunIntensity: 3
     - _Surface: 0
+    - _UseCustomTonemap: 0
     - _UseLMS: 1
     - _WorkflowMode: 1
     - _ZWrite: 1
@@ -136,15 +123,14 @@ Material:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _GroundAlbedo: {r: 0.09999997, g: 0.09999997, b: 0.09999997, a: 1}
-    - _LMS_Row1: {r: 1.75, g: -0.1, b: -0.2, a: 0}
-    - _LMS_Row2: {r: -0.05, g: 1.1, b: -0.05, a: 0}
-    - _LMS_Row3: {r: -0.05, g: -0.08, b: 1, a: 0}
-    - _MoonColor: {r: 0.6, g: 0.7, b: 0.8, a: 1}
+    - _GroundAlbedo: {r: 0.079999976, g: 0.079999976, b: 0.079999976, a: 1}
+    - _LMS_Row1: {r: 1.6, g: -0.4624, b: -0.0069, a: 0}
+    - _LMS_Row2: {r: -0.0374, g: 1.0598, b: -0.0742, a: 0}
+    - _LMS_Row3: {r: -0.0283, g: -0.1119, b: 1.0491, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
-    - _SunColor: {r: 1.317647, g: 1.4509805, b: 1.4980392, a: 1}
+    - _SunColor: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
---- !u!114 &4024516834261088280
+--- !u!114 &7818159068901802296
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}

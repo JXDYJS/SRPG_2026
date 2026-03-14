@@ -31,7 +31,6 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
         _SSSBoost("SSS Boost", Float) = 2.0
         _SSSPathScale("SSS Path Scale", Float) = 20.0
         _BacklitPathScale("Backlit Path Scale", Float) = 15.0
-        
     }
 
     SubShader
@@ -48,7 +47,6 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
             #pragma vertex vert
             #pragma fragment frag
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE
-            //#pragma multi_compile _ _ENVIRONMENTREFLECTIONS_OFF
             #pragma multi_compile_fragment _ _REFLECTION_PROBE_BLENDING
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
@@ -81,26 +79,35 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
             CBUFFER_END
 
             TEXTURE2D(_NoiseTex); SAMPLER(sampler_NoiseTex);
-            TEXTURE2D(_SSPR_ReflectionTexture);
-            SAMPLER(sampler_SSPR_ReflectionTexture);
-            //TEXTURECUBE(_GlossyEnvironmentCubeMap);
-            //SAMPLER(sampler_GlossyEnvironmentCubeMap);
-            //half4 _GlossyEnvironmentCubeMap_HDR;
+            TEXTURE2D(_SSPR_ReflectionTexture); SAMPLER(sampler_SSPR_ReflectionTexture);
+            
+            // === 替换原有的 CubeMap，引入全局动态天空贴图 ===
+            TEXTURE2D(_DynamicSkyMap); 
+            SAMPLER(sampler_DynamicSkyMap);
 
             struct Attributes { float4 positionOS : POSITION; float2 uv : TEXCOORD0; };
             struct Varyings { float4 positionCS : SV_POSITION; float3 positionWS : TEXCOORD0; float2 uv : TEXCOORD1; };
+
+            // === 新增：将 3D 方向向量转换为 2D 全景图 UV 的核心函数 ===
+            float2 DirToEquirectangularUV(float3 dir) {
+                // atan2 算出经度 (Phi) [-PI, PI]，asin 算出纬度 (Theta) [-PI/2, PI/2]
+                float phi = atan2(dir.x, dir.z);
+                float theta = asin(clamp(dir.y, -1.0, 1.0));
+                // 映射到 [0, 1] UV 空间
+                return float2(phi * 0.15915494309 + 0.5, theta * 0.31830988618 + 0.5); 
+            }
 
             float get_spherical_fog(float view_dist, float start, float density) {
                 return exp2(-density * max(view_dist - start, 0.0));
             }
 
             float get_border_fog(float view_dist, float max_distance) {
-            float fog_ratio = clamp(view_dist / max_distance, 0.0, 1.0);
-            float pow8 = fog_ratio * fog_ratio;
-            pow8 *= pow8;                       
-            pow8 *= pow8;
-            return exp2(-8.0 * pow8);
-        }
+                float fog_ratio = clamp(view_dist / max_distance, 0.0, 1.0);
+                float pow8 = fog_ratio * fog_ratio;
+                pow8 *= pow8;                       
+                pow8 *= pow8;
+                return exp2(-8.0 * pow8);
+            }
 
             float gerstner_wave(float2 coord, float2 wave_dir, float t, float noise) {
                 float k = 6.283185; 
@@ -232,27 +239,25 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
 
                 float perceptualRoughness = 1.0 - _Smoothness;
                 float roughness = perceptualRoughness * perceptualRoughness;
-                float roughness2 = max(roughness * roughness, 0.0078125); // 对应代码中的 alpha^2
+                float roughness2 = max(roughness * roughness, 0.0078125); 
 
-                // D 项: GGX Distribution
                 float d_denom = NoH * NoH * (roughness2 - 1.0) + 1.00001;
                 float D = roughness2 / (d_denom * d_denom);
-
-                // V * F 项: ARM Approximation (Optimizing PBR for Mobile)
-                // 公式: V * F = 1.0 / ( LoH^2 * (roughness + 0.5) * 4.0 )
                 float specularTerm = D / (max(0.1, LoH * LoH) * (roughness * 4.0 + 2.0));
-
                 specularTerm = clamp(specularTerm, 0.0, 1000.0);
-
                 float3 directSpecular = specularTerm * mainLight.color * _Fresnel0;
 
-                //Indirect Specular
+                // === 间接高光 (Indirect Specular) 采样动态天空图 ===
                 float3 R = reflect(-V, N);
                 float2 distortedUV = screenUV + N.xz * 0.02;
                 float4 ssprData = SAMPLE_TEXTURE2D(_SSPR_ReflectionTexture, sampler_SSPR_ReflectionTexture, distortedUV);
+                
                 float mip = PerceptualRoughnessToMipmapLevel(perceptualRoughness);
-                float4 rawSkyData = SAMPLE_TEXTURECUBE_LOD(_GlossyEnvironmentCubeMap, sampler_GlossyEnvironmentCubeMap, R, mip);
-                float3 envReflection = DecodeHDREnvironment(rawSkyData, _GlossyEnvironmentCubeMap_HDR);
+                // 转换 3D 反射向量到 2D 贴图 UV
+                float2 envUV = DirToEquirectangularUV(R);
+                // 采样我们的动态天空图 (因为我们烘焙时本身就是 HDR/Half，所以不需要再 DecodeHDR)
+                float3 envReflection = SAMPLE_TEXTURE2D_LOD(_DynamicSkyMap, sampler_DynamicSkyMap, envUV, mip).rgb;
+                
                 float3 finalReflection;
                 float reflectionMask = saturate(ssprData.a);
                 finalReflection = lerp(envReflection, ssprData.rgb, reflectionMask);
@@ -261,11 +266,14 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
                 
                 float3 finalColor = (G_entry * T_entry * scatteredLight + thinLayerSSS + backlitTrans) * T_exit 
                                   + (sceneColor * accumTransmittance) * T_exit + finalReflection * (1.0 - T_exit) + sceneInScattering + directSpecular;
-                //Add fog
+                
+                // === 远景雾 (Fog) 采样动态天空图 ===
                 float view_dist = length(GetCameraPositionWS() - input.positionWS);
                 float transmittance = get_border_fog(view_dist, 150.0);
-                float4 viewSkyColor = SAMPLE_TEXTURECUBE_LOD(_GlossyEnvironmentCubeMap, sampler_GlossyEnvironmentCubeMap, -V, mip);
-                float3 fogColor = DecodeHDREnvironment(viewSkyColor, _GlossyEnvironmentCubeMap_HDR);
+                // 同样转换视线反方向到 UV (这里通常不需要模糊，所以 mip 直接设为 0)
+                float2 fogUV = DirToEquirectangularUV(-V);
+                float3 fogColor = SAMPLE_TEXTURE2D_LOD(_DynamicSkyMap, sampler_DynamicSkyMap, fogUV, 0).rgb;
+                
                 finalColor = lerp(fogColor, finalColor, transmittance);
 
                 return half4(finalColor,1.0);

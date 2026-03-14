@@ -180,21 +180,35 @@ namespace GamePlay
             public void AddBuff(BuffBase buff)
             {
                 UndoSystem.Instance.RegisterDirty(this);
-                if (buff != null)
+                
+                if (buff == null)
                 {
-                    if(ActiveBuffs.Contains(buff))
-                    {
-                        buff.OnRepeatedlyObtain();
-                        return;
-                    }
-                    ActiveBuffs.Add(buff);
-                    buff.OnApply(this);
-                    SetModifiersDirty();
-                    Debug.Log($"{name} 获得了 Buff: {buff.name}");
+                    Debug.LogError($"尝试添加无效 Buff 为 Null");
+                    return;
+                }
+
+                // 使用 ID 查重，而不是对象引用
+                var existingBuff = ActiveBuffs.Find(b => b.ID == buff.ID);
+
+                if (existingBuff != null)
+                {
+                    // 叠加分支：已有同 ID 的 Buff
+                    existingBuff.OnRepeatedlyObtain(buff.Stacks);
+                    
+                    // 销毁传入的新克隆体（它只是个携带数据的临时空壳）
+                    UnityEngine.Object.Destroy(buff);
+                    
+                    Debug.Log($"{name} 叠加了 Buff: {buff.ID}, 增加层数: {buff.Stacks}");
                 }
                 else
                 {
-                    Debug.LogError($"尝试添加无效 Buff为Null: {buff.name}");
+                    // 全新挂载分支
+                    buff.Initialize(this);
+                    ActiveBuffs.Add(buff);
+                    buff.OnApply(this);
+                    SetModifiersDirty();
+                    
+                    Debug.Log($"{name} 获得了新 Buff: {buff.ID}, 初始层数: {buff.Stacks}");
                 }
             }
 

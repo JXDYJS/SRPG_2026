@@ -497,6 +497,18 @@ namespace GamePlay.Grid
                         }
                         break;
 
+                    case TargetType.Self:
+                        if (targetUnit.Faction != casterFaction)
+                        {
+                            Debug.LogWarning($"施法被拒绝：技能 {skill.SkillName} 只能对自己施法，但点击了 {targetUnit.Faction} 阵营单位");
+                            return false;
+                        }
+                        break;
+
+                    case TargetType.AnyUnit:
+                        // 可以对任何单位施法，无需校验阵营
+                        break;
+
                     case TargetType.ExceptTeammates:
                         if (targetUnit.Faction == casterFaction)
                         {

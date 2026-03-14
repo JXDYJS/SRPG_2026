@@ -53,6 +53,7 @@ Shader "Skybox/PhysicsBased_Final"
             static const float Hr = 8.0;
             static const float Hm = 1.2;
             static const float3 betaR = float3(0.0058, 0.0135, 0.0331);
+            //static const float3 betaR = float3(0.27, 0.5, 1.0) * 1e-2;
             static const float3 betaM = float3(0.004, 0.004, 0.004);
             static const float PI = 3.14159265359;
 
