@@ -19,14 +19,14 @@ namespace GamePlay.buff{
             isInit = true;
         }
         
-        // 是否在回合结束自动掉层
-        public bool DecayAtTurnEnd = true; 
+        // 是否在回合开始自动掉层（自己的回合开始时）
+        public bool DecayAtTurnStart = true; 
 
-        public override void OnTurnEnd(MapUnit owner)
+        public override void OnTurnStart(MapUnit owner)
         {
-            base.OnTurnEnd(owner);
+            base.OnTurnStart(owner);
 
-            if (DecayAtTurnEnd)
+            if (DecayAtTurnStart)
             {
                 RemoveStacks(1); // 自动掉 1 层
                 Debug.Log($"{Name} 持续时间减少，剩余: {Stacks}");
@@ -51,7 +51,7 @@ namespace GamePlay.buff{
             AddStacks(1);
         }
         
-        public void RemoveStacks(int amount)
+        public virtual void RemoveStacks(int amount)
         {
             Stacks -= amount;
             if (Stacks <= 0)

@@ -91,6 +91,12 @@ namespace Status
                     isDirty = true;
                     OnValueChanged?.Invoke();
             }
+
+            public void MarkDirty()
+            {
+                isDirty = true;
+                OnValueChanged?.Invoke();
+            }
         }
 
         public class StatSystem

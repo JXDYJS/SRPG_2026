@@ -491,16 +491,9 @@ namespace GamePlay
             {
                 if (target == null) return false;
 
-                // 1. 获取我的所有攻击范围格子
-                // 注意：这里传入 target.gridPosition 是为了确定“朝向”，如果是全向技能则无所谓
                 List<Vector3Int> myRange = GetCurrentAttackRange(target.gridPosition);
 
-                // 2. 获取目标的“受击体素 (Hitbox Voxels)”
-                // 假设怪物占据 [Pos, Pos+Height] 的空间
                 List<Vector3Int> targetOccupiedTiles = target.GetOccupiedTiles();
-
-                // 3. 判断交集 (Intersection)
-                // 只要攻击范围里有一个格子 = 怪物占据的格子，就算命中
                 foreach (var hitPos in myRange)
                 {
                     if (targetOccupiedTiles.Contains(hitPos)) return true;
@@ -716,47 +709,52 @@ namespace GamePlay
                     UnitManager.Instance.RegisterUnit(this); 
                 }
                 
-                //1. 还原位置
+                // 1. 还原位置
                 SetGridPosition(snap.GridPosition.x, snap.GridPosition.y, snap.GridPosition.z);
                 
-                // 更新 UnitManager 中的位置记录
-                // if (UnitManager.Instance != null)
-                // {
-                //     UnitManager.Instance.UpdateUnitPosition(this, snap.GridPosition);
-                // }
-                
-                //2. 还原 HP
+                // 2. 还原 HP
                 Character.statSystem.currentHP = snap.CurrentHP;
                 // 如果有血条UI，这里记得调用 UpdateHealthUI();
 
-                //3. 还原 Buff 
+                // 3. 还原 Buff (核心修改部分)
+                // 【清理阶段】彻底移除当前身上的所有Buff，触发 OnRemove 清理旧的属性修饰器
                 for (int i = ActiveBuffs.Count - 1; i >= 0; i--)
                 {
-                    if (!snap.ActiveBuffs.Contains(ActiveBuffs[i]))
-                    {
-                        RemoveBuff(ActiveBuffs[i]); // 触发 OnRemove，移除属性修正
-                    }
+                    BuffBase buff = ActiveBuffs[i];
+                    buff.OnRemove(this); 
                 }
-                //补回缺失的 (快照里有，现在的没的)
-                foreach (var buff in snap.ActiveBuffs)
+                ActiveBuffs.Clear();
+
+                // 【重建阶段】根据详细的快照数据，精确恢复 Buff 和层数
+                if (snap.BuffSnapshots != null)
                 {
-                    if (!ActiveBuffs.Contains(buff))
+                    foreach (var buffSnap in snap.BuffSnapshots)
                     {
+                        BuffBase buff = buffSnap.buff;
+                        
+                        // 恢复准确的层数 (关键点：一定要在 OnApply 前设置好层数)
+                        buff.Stacks = buffSnap.stacks; 
+                        
                         ActiveBuffs.Add(buff);
-                        buff.OnApply(this); // 重新触发 OnApply，挂载属性修正
+                        
+                        // 重新触发 OnApply，让 Buff 内部根据当前恢复的 Stacks 挂载正确的 StatModifier
+                        buff.OnApply(this); 
                     }
                 }
+                
+                // 强制刷新一下战斗修饰器缓存 (对应 MapUnit 里的 _isModifiersDirty = true)
+                SetModifiersDirty();
 
                 currentState = snap.State;
                 
-                //4. 还原行动状态
+                // 4. 还原行动状态
                 actionPoints = snap.ActionPoints;
                 hasMoved = snap.HasMoved;
                 
-                //5. 还原个人仇恨列表
+                // 5. 还原个人仇恨列表
                 _personalEnemies = new HashSet<MapUnit>(snap.PersonalEnemies);
                 
-                //6. 重置状态
+                // 6. 重置状态
                 StopAllCoroutines();
             }
 

@@ -133,11 +133,21 @@ namespace GamePlay.Skill
                     break;
 
                 case EffectType.AddBuff:
-                    targetResult.AppliedBuffs.Add(effect.BuffID);
+                    targetResult.AppliedBuffs.Add(new BuffApplyInfo(effect.BuffID, effect.BuffStacks));
                     break;
 
                 case EffectType.RemoveBuff:
-                    targetResult.AppliedBuffs.Remove(effect.BuffID);
+                    // 根据移除模式处理 Buff 移除
+                    if (effect.RemoveMode == BuffRemoveMode.RemoveSpecificStacks && effect.BuffStacks > 0)
+                    {
+                        // 移除指定层数
+                        targetResult.AppliedBuffs.Add(new BuffApplyInfo(effect.BuffID, -effect.BuffStacks));
+                    }
+                    else
+                    {
+                        // 移除全部
+                        targetResult.AppliedBuffs.RemoveAll(info => info.BuffID == effect.BuffID);
+                    }
                     break;
             }
         }

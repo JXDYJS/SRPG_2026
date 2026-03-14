@@ -2,16 +2,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using GamePlay.unit;
 using GamePlay.View;
+using GamePlay.buff;
 using Managers;
 using Global;
 using Cysharp.Threading.Tasks;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using System;
 
 namespace GamePlay.Skill
 {
     public static class SkillPerformer
     {
+        private const float TIMEOUT_PROTECTION_SECONDS = 10f;
+
         public static async UniTask PerformSkillSequence(SkillDataSO skillData, SkillSequenceResult sequenceResult)
         {
             if (sequenceResult == null || skillData == null)
@@ -29,16 +33,12 @@ namespace GamePlay.Skill
                 return;
             }
 
-            // 记录当前朝向
             caster.RecordCurrentFacing();
 
-            // 如果技能有目标位置，让施法者平滑旋转朝向目标
             if (sequenceResult.Context != null && sequenceResult.Context.TargetPosition != caster.gridPosition)
             {
-                // 计算目标的世界位置（脚底方块坐标+1得到角色身体高度）
                 Vector3 targetWorldPos = MapManager.Instance.GetWorldPosition(sequenceResult.Context.TargetPosition) + Vector3.up;
                 
-                // 使用新的平滑旋转方法，等待旋转完成
                 await UniTask.Create(() => {
                     var tcs = new UniTaskCompletionSource();
                     
@@ -63,7 +63,6 @@ namespace GamePlay.Skill
                 await PerformSinglePhase(caster, phaseResult, phaseData);
             }
 
-            // 恢复到最近的四个基本朝向
             caster.RestoreRecordedFacing();
         }
 
@@ -75,6 +74,33 @@ namespace GamePlay.Skill
             }
 
             return skillData.Phases[phaseIndex];
+        }
+
+        private static async UniTask WaitWithTimingMode(MapUnit unit, TimingMode mode, string eventName, float delayTime)
+        {
+            if (mode == TimingMode.Instant)
+            {
+                await UniTask.Yield();
+                return;
+            }
+
+            if (mode == TimingMode.AnimationEvent)
+            {
+                if (unit.View != null && !string.IsNullOrEmpty(eventName))
+                {
+                    await UniTask.WhenAny(
+                        unit.View.WaitForAnimationEvent(eventName, TIMEOUT_PROTECTION_SECONDS),
+                        UniTask.Delay(TimeSpan.FromSeconds(TIMEOUT_PROTECTION_SECONDS))
+                    );
+                }
+                return;
+            }
+
+            if (mode == TimingMode.FixedTime)
+            {
+                await UniTask.Delay(TimeSpan.FromSeconds(delayTime), delayTiming: PlayerLoopTiming.Update, ignoreTimeScale: false);
+                return;
+            }
         }
 
         private static async UniTask PerformSinglePhase(MapUnit caster, PhaseResult phaseResult, SkillPhase phaseData)
@@ -97,19 +123,18 @@ namespace GamePlay.Skill
                 await Addressables.InstantiateAsync(visual.CastEffect, caster.transform.position, Quaternion.identity);
             }
 
-            if (!string.IsNullOrEmpty(visual.HitEventName))
+            if (visual.Transit == TransitType.Projectile && visual.ProjectilePrefab != null && visual.ProjectilePrefab.RuntimeKeyIsValid())
             {
-                await casterView.WaitForAnimationEvent(visual.HitEventName);
+                await PerformProjectileTransit(caster, phaseResult.TargetPosition, visual);
+            }
+            else
+            {
+                await WaitWithTimingMode(caster, visual.HitTimingMode, visual.HitEventName, visual.HitDelayTime);
             }
 
             if (phaseResult.CasterMoved)
             {
                 await PerformCasterMovement(caster, phaseResult.CasterEndPosition);
-            }
-
-            if (visual.Transit == TransitType.Projectile && visual.ProjectilePrefab != null && visual.ProjectilePrefab.RuntimeKeyIsValid())
-            {
-                await PerformProjectileTransit(caster, phaseResult.TargetPosition, visual);
             }
 
             List<UniTask> hitTasks = new List<UniTask>();
@@ -126,10 +151,7 @@ namespace GamePlay.Skill
                 await UniTask.WhenAll(hitTasks);
             }
 
-            if (!string.IsNullOrEmpty(visual.EndEventName))
-            {
-                await casterView.WaitForAnimationEvent(visual.EndEventName);
-            }
+            await WaitWithTimingMode(caster, visual.EndTimingMode, visual.EndEventName, visual.EndDelayTime);
         }
 
         private static async UniTask PerformCasterMovement(MapUnit caster, Vector3Int endPosition)
@@ -154,14 +176,11 @@ namespace GamePlay.Skill
 
         private static async UniTask PerformProjectileTransit(MapUnit caster, Vector3Int targetPosition, SkillVisualData visual)
         {
-            // 重要：targetPosition已经是脚底方块坐标 但要+1才是角色身体的角度
             Vector3 targetWorldPos = MapManager.Instance.GetWorldPosition(targetPosition) + Vector3.up;
             
-            // 计算发射方向
             Vector3 launchDirection = targetWorldPos - (caster.transform.position + Vector3.up);
             launchDirection.Normalize();
             
-            // 计算旋转，使Z轴对齐发射方向
             Quaternion launchRotation = Quaternion.LookRotation(launchDirection);
             
             var handle = Addressables.InstantiateAsync(visual.ProjectilePrefab, caster.transform.position + Vector3.up, launchRotation);
@@ -174,7 +193,6 @@ namespace GamePlay.Skill
             }
             
             GameObject bullet = handle.Result;
-            // 确保Z轴对齐发射方向
             bullet.transform.rotation = launchRotation;
 
             while (bullet != null && Vector3.Distance(bullet.transform.position, targetWorldPos) > 0.1f)
@@ -209,12 +227,35 @@ namespace GamePlay.Skill
                 targetView.ShowDamageFloatingText(-tResult.ActualDamage, false, DamageType.Heal);
             }
 
+            // 处理 Buff 结算
+            ApplyBuffEffects(tResult);
+
             if (tResult.IsDead)
             {
                 targetView.PlayDeathAnimation();
             }
 
             await UniTask.Yield();
+        }
+
+        private static void ApplyBuffEffects(TargetResult tResult)
+        {
+            if (tResult.AppliedBuffs == null || tResult.AppliedBuffs.Count == 0)
+            {
+                return;
+            }
+
+            foreach (var buffInfo in tResult.AppliedBuffs)
+            {
+                if (string.IsNullOrEmpty(buffInfo.BuffID))
+                {
+                    Debug.LogWarning("BuffID 为空，跳过 Buff 应用");
+                    continue;
+                }
+
+                // 使用 BuffManager 应用 Buff
+                BuffManager.ApplyBuffToUnit(tResult.Target, buffInfo.BuffID, buffInfo.Stacks);
+            }
         }
     }
 }

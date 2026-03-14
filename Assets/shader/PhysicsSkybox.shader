@@ -9,7 +9,7 @@ Shader "Skybox/PhysicsBased_Final"
         
         [Header(Sun Settings)]
         _SunIntensity ("Sun Intensity", Float) = 1.0
-        _SunColor ("Sun Color", Color) = (1.68, 1.85, 1.91, 1)
+        [HDR]_SunColor ("Sun Color", Color) = (1,1,1, 1)
         
         [Header(Moon Settings)]
         _MoonIntensity ("Moon Intensity", Float) = 0.05

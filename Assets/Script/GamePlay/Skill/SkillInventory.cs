@@ -138,7 +138,7 @@ namespace GamePlay.Skill
         {
             List<SkillDataSO> result = new List<SkillDataSO>();
 
-            var activeSlots = new[] { SkillSlotType.NormalAttack, SkillSlotType.Skill1, SkillSlotType.Skill2, SkillSlotType.Ultimate };
+            var activeSlots = new[] { SkillSlotType.NormalAttack, SkillSlotType.Skill1, SkillSlotType.Skill2, SkillSlotType.Skill3, SkillSlotType.Ultimate };
 
             foreach (var slotType in activeSlots)
             {

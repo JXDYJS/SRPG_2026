@@ -9,6 +9,8 @@ namespace GamePlay.View
     {
         private Animator _animator;
         private Renderer[] _renderers;
+        private int _hitCount = 0;
+        private Color[] _originalColors;
 
         public event Action<string> OnAnimationEventTriggered;
 
@@ -70,23 +72,31 @@ namespace GamePlay.View
         {
             if (_renderers == null || _renderers.Length == 0) return;
 
-            Color[] originalColors = new Color[_renderers.Length];
+            _hitCount++;
+            
+            if (_hitCount == 1)
+            {
+                _originalColors = new Color[_renderers.Length];
+                for (int i = 0; i < _renderers.Length; i++)
+                {
+                    if (_renderers[i] != null) _originalColors[i] = _renderers[i].material.color;
+                }
+            }
+
             for (int i = 0; i < _renderers.Length; i++)
             {
-                if (_renderers[i] != null)
-                {
-                    originalColors[i] = _renderers[i].material.color;
-                    _renderers[i].material.color = Color.red;
-                }
+                if (_renderers[i] != null) _renderers[i].material.color = Color.red;
             }
 
             await UniTask.Delay(100);
 
-            for (int i = 0; i < _renderers.Length; i++)
+            _hitCount--;
+            if (_hitCount <= 0)
             {
-                if (_renderers[i] != null)
+                _hitCount = 0;
+                for (int i = 0; i < _renderers.Length; i++)
                 {
-                    _renderers[i].material.color = originalColors[i];
+                    if (_renderers[i] != null) _renderers[i].material.color = _originalColors[i];
                 }
             }
         }

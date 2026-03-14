@@ -33,11 +33,20 @@ MonoBehaviour:
         m_SubObjectType: 
         m_EditorAssetChanged: 0
   - SlotType: 2
-    SlotDisplayName: Heal
+    SlotDisplayName: Dash
     EvolutionChain:
     - RequiredLevel: 0
       SkillData:
-        m_AssetGUID: 69b5f56813a9a9942a6ce66245f89694
+        m_AssetGUID: 56a10c32a8c6c0c418ffd4b1908af481
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_EditorAssetChanged: 0
+  - SlotType: 3
+    SlotDisplayName: Strength
+    EvolutionChain:
+    - RequiredLevel: 0
+      SkillData:
+        m_AssetGUID: 743fc0c9fe194494abafe987598b4c2e
         m_SubObjectName: 
         m_SubObjectType: 
         m_EditorAssetChanged: 0

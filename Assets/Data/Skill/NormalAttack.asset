@@ -20,7 +20,7 @@ MonoBehaviour:
   CastMaxRange: 1
   CastMinRange: 1
   CastVerticalRange: 1
-  RequireLineOfSight: 1
+  Trajectory: 0
   StopsAtFirstHit: 1
   Cost: 0
   Phases:
@@ -29,6 +29,7 @@ MonoBehaviour:
     AoEPattern: 0
     AoERadius: 0
     AoEVerticalRange: 0
+    OriginType: 0
     Effects:
     - EffectType: 0
       FlatBonus: 0
@@ -50,5 +51,9 @@ MonoBehaviour:
         m_SubObjectType: 
         m_EditorAssetChanged: 0
       ProjectileSpeed: 0
+      HitTimingMode: 1
       HitEventName: Hit
+      HitDelayTime: 0.3
+      EndTimingMode: 1
       EndEventName: End
+      EndDelayTime: 0.3

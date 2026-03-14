@@ -57,11 +57,24 @@ namespace GamePlay.Skill
         
         public DamageType DamageType = DamageType.Physical;
         public string BuffID;
+        
+        [Header("Buff 配置")]
+        [Tooltip("要添加的 Buff 层数")]
+        public int BuffStacks = 1;
+        
+        [Tooltip("移除 Buff 的模式 (仅对 RemoveBuff 有效)")]
+        public BuffRemoveMode RemoveMode = BuffRemoveMode.RemoveAll;
 
         public int CalculateValue(int baseATK)
         {
             return (int)((baseATK + FlatBonus) * Multiplier) + Constant;
         }
+    }
+
+    public enum BuffRemoveMode
+    {
+        RemoveAll,
+        RemoveSpecificStacks
     }
 
     public enum EffectType

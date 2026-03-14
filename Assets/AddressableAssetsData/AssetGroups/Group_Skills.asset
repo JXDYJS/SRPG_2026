@@ -27,6 +27,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 56a10c32a8c6c0c418ffd4b1908af481
+    m_Address: Assets/Data/Skill/DashAttack.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 69b5f56813a9a9942a6ce66245f89694
     m_Address: Assets/Data/Skill/HealSkill.asset
     m_ReadOnly: 0
@@ -34,6 +39,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 6fb59d90faeb4ec4bafc349e12ac6c46
     m_Address: EnemyAttack
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 743fc0c9fe194494abafe987598b4c2e
+    m_Address: Assets/Data/Skill/SteveAddBuff.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

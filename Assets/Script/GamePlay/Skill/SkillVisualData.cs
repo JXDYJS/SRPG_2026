@@ -4,20 +4,33 @@ using UnityEngine.AddressableAssets;
 
 namespace GamePlay.Skill
 {
+    public enum TimingMode
+    {
+        Instant,
+        AnimationEvent,
+        FixedTime
+    }
+
     [System.Serializable]
     public class SkillVisualData
     {
         [Header("1. 起手阶段 (Pre-Cast)")]
         public string CastAnimTrigger = "Attack"; 
-        public AssetReferenceGameObject CastEffect;             
+        public AssetReferenceGameObject CastEffect;              
 
         [Header("2. 过程阶段 (Transit)")]
         public TransitType Transit = TransitType.None;
         public AssetReferenceGameObject ProjectilePrefab;       
         public float ProjectileSpeed = 10f;       
 
-        [Header("3. 动画信号监听")]
-        public string HitEventName = "Hit";  
-        public string EndEventName = "End";  
+        [Header("3. 命中触发 (Hit)")]
+        public TimingMode HitTimingMode = TimingMode.Instant;
+        public string HitEventName = "Hit";
+        public float HitDelayTime = 0.3f;
+
+        [Header("4. 结束触发 (End)")]
+        public TimingMode EndTimingMode = TimingMode.Instant;
+        public string EndEventName = "End";
+        public float EndDelayTime = 0.3f;
     }
 }
