@@ -139,6 +139,60 @@
 - Risk: Units stuck, incorrect path calculation
 - Priority: Medium
 
+## Namespace Issues
+
+### 1. Namespace Not Matching Folder Structure
+
+| File Location | Namespace | Issue |
+|---------------|-----------|-------|
+| `Assets/Script/GamePlay/Units/MapUnit.cs` | `GamePlay` | Should be `GamePlay.Units` or file in root GamePlay |
+| `Assets/Script/GamePlay/Units/UnitAnimation.cs` | `GamePlay.unit` | Should match folder: `GamePlay.Units` |
+| `Assets/Script/GamePlay/Grid/MapInteraction.cs` | `MapSystem` | Completely different namespace - file in GamePlay/Grid |
+| `Assets/Script/GamePlay/Grid/Astar.cs` | `GamePlay` | Should be `GamePlay.Grid` |
+| `Assets/Script/GamePlay/Grid/LogicalGrid.cs` | `GamePlay` | Should be `GamePlay.Grid` |
+| `Assets/Script/Manager/` (all files) | `Managers` | Namespace uses plural, folder singular |
+| `Assets/Script/Core/Command.cs` | `Command` | Should be `Core.Command` or file in root Core |
+| `Assets/Script/Core/CommandInvoker.cs` | `Command` | Should be `Core.Command` |
+| `Assets/Script/Core/UndoSystem.cs` | `Command` | Should be `Core.Command` |
+| `Assets/Script/Core/UnitSnapshot.cs` | `Command` | Should be `Core` |
+| `Assets/Script/Core/Status.cs` | `Status` | Should be `Core.Status` |
+| `Assets/Script/Core/Modifier.cs` | `Modifier` | Should be `Core.Modifier` |
+| `Assets/Script/Core/Character.cs` | `Character` | Should be `Core.Character` |
+| `Assets/Script/Core/CharacterData.cs` | `Character` | Should be `Core.Character` |
+| `Assets/Script/Core/Global.cs` | `Global` | Should be `Core.Global` |
+| `Assets/Script/Core/FactionSystem.cs` | `Core.System` | Unique nested namespace under Core |
+| `Assets/Script/UI/TimelineIconUI.cs` | `GamePlay.UI` | Should be `UI.Timeline` or similar |
+| `Assets/Script/UI/TimelineUIManager.cs` | `Managers` | Should be `UI.Timeline` |
+| `Assets/Script/Debug/` (all files) | `DebugSystem` | Namespace differs from folder name |
+| `Assets/Script/Manager/EnemyAIManager.cs` | `GamePlay.AI` | Namespace under GamePlay, folder under Manager |
+| `Assets/Script/Manager/GridVisualManager.cs` | `GamePlay.Visual` | Namespace under GamePlay, folder under Manager |
+
+### 2. Case Inconsistency
+
+| Namespace | Issue |
+|-----------|-------|
+| `GamePlay.buff` | Lowercase 'b' - inconsistent with PascalCase siblings |
+| `GamePlay.relics` | Lowercase 'r' - inconsistent with PascalCase siblings |
+| `GamePlay.unit` | Lowercase 'u' - inconsistent with PascalCase siblings |
+
+Other GamePlay sub-namespaces use PascalCase: `Skill`, `Battle`, `Grid`, `View`, `AI`, `Visual`, `Control`, `VirtualCamera`
+
+### 3. Mismatched Namespace Hierarchies
+
+Multiple different top-level namespaces create fragmentation:
+- `GamePlay.*` (14 files)
+- `Managers` (6 files)
+- `UI.*` (8 files)
+- `Command` (4 files)
+- `Core.*` (1 file - `Core.System`)
+- `Character` (2 files)
+- `Status`, `Modifier`, `Global`, `MapSystem`, `DebugSystem` (1 file each)
+
+### 4. Deep Nesting (>3 levels)
+
+**No true deep nesting found.** Most namespaces are 1-2 levels:
+- Max depth: `GamePlay.AI`, `GamePlay.Visual`, `GamePlay.Control`, `GamePlay.VirtualCamera`, `Core.System` (2 levels)
+
 ---
 
 *Concerns audit: 2026-03-18*
