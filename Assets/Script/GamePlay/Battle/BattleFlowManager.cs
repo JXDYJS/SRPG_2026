@@ -1,6 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
-using GamePlay.unit;
+using GamePlay.Unit;
 using Managers;
 using GamePlay.Battle;
 using GamePlay.Visual;

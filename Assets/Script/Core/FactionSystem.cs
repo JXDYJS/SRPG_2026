@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using Character.data;
-using GamePlay.unit;
+using GamePlay.Unit;
 using Global;
 
 namespace Core.System

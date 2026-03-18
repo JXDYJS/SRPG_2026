@@ -18,7 +18,7 @@ namespace GamePlay
         using Character.instance;
         using Status.damage;
         using Modifier;
-        using GamePlay.Relics;
+        using GamePlay.relics;
         using Command;
         using Unity.VisualScripting;
         using UnityEditor;

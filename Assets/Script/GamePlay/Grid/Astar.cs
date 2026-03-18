@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using Global;
-using GamePlay.unit; // 确保引用了 UnitMoveStats
+using GamePlay.Unit; // 确保引用了 UnitMoveStats
 
 namespace GamePlay
 {

@@ -1,5 +1,5 @@
 using UnityEngine;
-using GamePlay.unit;
+using GamePlay.Unit;
 using Character.instance;
 using Status.state;
 using Managers;

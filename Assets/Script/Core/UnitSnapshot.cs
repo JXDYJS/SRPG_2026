@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
-using GamePlay.unit;
-using GamePlay.buff;
+using GamePlay.Unit;
+using GamePlay.Buff;
 using Global;
 
 namespace Command

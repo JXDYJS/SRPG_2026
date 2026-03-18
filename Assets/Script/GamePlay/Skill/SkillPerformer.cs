@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
-using GamePlay.unit;
+using GamePlay.Unit;
 using GamePlay.View;
-using GamePlay.buff;
+using GamePlay.Buff;
 using Managers;
 using Global;
 using Cysharp.Threading.Tasks;

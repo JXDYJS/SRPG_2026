@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
-using GamePlay.unit;
+using GamePlay.Unit;
 using Global;
 
 namespace GamePlay.Skill

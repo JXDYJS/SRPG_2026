@@ -1,8 +1,8 @@
 using UnityEngine;
-using GamePlay.unit;
+using GamePlay.Unit;
 using Status.state;
 
-namespace GamePlay.buff
+namespace GamePlay.Buff
 {
     [CreateAssetMenu(fileName = "BuffStrength", menuName = "力量 Buff")]
     public class BuffStrength : BuffBase

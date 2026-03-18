@@ -1,6 +1,6 @@
 using TMPro;
 using UnityEngine;
-using GamePlay.unit;
+using GamePlay.Unit;
 
 namespace UI.Panel
 {

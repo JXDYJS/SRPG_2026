@@ -1,6 +1,6 @@
 using UnityEngine;
 using Status.damage;
-using GamePlay.unit;
+using GamePlay.Unit;
 
 namespace Modifier
 {

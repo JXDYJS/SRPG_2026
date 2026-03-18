@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using GamePlay.unit;
+using GamePlay.Unit;
 using Global;
 using Command;
 using Managers;

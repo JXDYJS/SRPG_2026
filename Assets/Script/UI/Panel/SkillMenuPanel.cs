@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using GamePlay.unit;
+using GamePlay.Unit;
 using GamePlay.Skill;
 using Managers;
 using UI.Component;

@@ -2,9 +2,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
-using GamePlay.unit;
+using GamePlay.Unit;
+using GamePlay.Buff;
 
-namespace GamePlay.buff
+namespace GamePlay.Buff
 {
     public static class BuffManager
     {

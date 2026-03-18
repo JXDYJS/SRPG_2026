@@ -145,7 +145,7 @@ namespace Status
     {
         using Character.instance;
         using UnityEngine.Rendering;
-        using GamePlay.unit;
+        using GamePlay.Unit;
         using Modifier;
         using GamePlay.relics;
         public class DamageInfo

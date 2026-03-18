@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Character.instance;
 using Character.data;
-using GamePlay.unit;
+using GamePlay.Unit;
 using Managers;
 using Command;
 using Global;

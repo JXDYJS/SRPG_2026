@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
-using GamePlay.unit;
+using GamePlay.Unit;
 using DG.Tweening;
 
 namespace GamePlay.UI

@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using Managers;
-using GamePlay.unit;
+using GamePlay.Unit;
 
 namespace UI.Panel
 {
