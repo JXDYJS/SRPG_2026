@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Managers;
 using Modifier;
-using GamePlay.buff;
+using GamePlay.Buff;
 using Global;
 using Command;
 using GamePlay.Grid;
@@ -13,12 +13,12 @@ using GamePlay.UI;
 
 namespace GamePlay
 {
-    namespace unit
+    namespace Unit
     {
         using Character.instance;
         using Status.damage;
         using Modifier;
-        using GamePlay.relics;
+        using GamePlay.Relics;
         using Command;
         using Unity.VisualScripting;
         using UnityEditor;

@@ -1,8 +1,8 @@
 
 using UnityEngine;
-using GamePlay.unit;
+using GamePlay.Unit;
 using Modifier;
-namespace GamePlay.buff{
+namespace GamePlay.Buff{
     public abstract class BuffBase : CombatModifier
     {
         [Header("Buff 特有属性")]
