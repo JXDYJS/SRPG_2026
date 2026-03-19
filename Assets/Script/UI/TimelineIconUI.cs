@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using GamePlay.Units;
 using DG.Tweening;
 
-namespace GamePlay.UI
+namespace UI
 {
     public class TimelineIconUI : MonoBehaviour
     {

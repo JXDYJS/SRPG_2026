@@ -9,7 +9,7 @@ using Command;
 using GamePlay.Grid;
 using GamePlay.Skill;
 using DG.Tweening;
-using GamePlay.UI;
+using UI;
 
 namespace GamePlay.Units
 {

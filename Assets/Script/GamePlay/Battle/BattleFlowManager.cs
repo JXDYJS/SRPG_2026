@@ -8,7 +8,7 @@ using Cysharp.Threading.Tasks;
 using UnityEngine.AddressableAssets;
 using System.Threading.Tasks;
 using Global;
-using GamePlay.UI;
+using UI;
 
 namespace GamePlay.Battle
 {

@@ -7,7 +7,7 @@ using Global;
 using Managers;
 using Command;
 using GamePlay.AI;
-using GamePlay.UI;
+using UI;
 
 public class TurnManager : MonoBehaviour
 {
