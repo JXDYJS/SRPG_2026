@@ -189,7 +189,7 @@ namespace Global
             /// 获取单位的脚底方块坐标（逻辑坐标）
             /// 重要：根据新的坐标规则，unit.gridPosition已经是脚底方块坐标
             /// </summary>
-            public static Vector3Int GetUnitFloorPosition(GamePlay.Unit.MapUnit unit)
+            public static Vector3Int GetUnitFloorPosition(GamePlay.Units.MapUnit unit)
             {
                 if (unit == null) return Vector3Int.zero;
                 
