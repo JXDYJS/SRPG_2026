@@ -6,7 +6,7 @@ using System.Linq;
 using Global;
 using GamePlay.Unit; // 确保引用了 UnitMoveStats
 
-namespace GamePlay
+namespace GamePlay.Grid
 {
     public class AStar
     {

@@ -1,9 +1,9 @@
 using UnityEngine;
 using Managers;
 using GamePlay;
-using GamePlay.Grid; // 确保引用了 BlockType
 using Global;
-namespace MapSystem
+
+namespace GamePlay.Grid
 {
     public class MapInteraction : MonoBehaviour
     {

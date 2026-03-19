@@ -3,7 +3,7 @@ using UnityEngine;
 using System.Linq;
 using Global;
 
-namespace GamePlay
+namespace GamePlay.Grid
 {
     public class LogicalGrid
     {
