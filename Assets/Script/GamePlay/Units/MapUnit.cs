@@ -534,9 +534,9 @@ namespace GamePlay.Units
                 UnitManager.Instance.UnregisterUnit(this);
                 
                 // 从时间条移除头像
-                if (Managers.TimelineUIManager.Instance != null)
+                if (TimelineUIManager.Instance != null)
                 {
-                    Managers.TimelineUIManager.Instance.RemoveUnit(this);
+                    TimelineUIManager.Instance.RemoveUnit(this);
                 }
                 
                 // Destroy(gameObject);
