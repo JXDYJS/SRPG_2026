@@ -147,7 +147,7 @@ namespace Status
         using UnityEngine.Rendering;
         using GamePlay.Unit;
         using Modifier;
-        using GamePlay.relics;
+        using GamePlay.Relics;
         public class DamageInfo
         {
             public float damage;

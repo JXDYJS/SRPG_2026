@@ -1,6 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
-using GamePlay.relics;   // 引用藏品
+using GamePlay.Relics;   // 引用藏品
 using Character.instance; // 引用角色
 
 namespace Managers
