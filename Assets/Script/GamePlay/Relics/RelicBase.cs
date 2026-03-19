@@ -2,7 +2,7 @@ using UnityEngine;
 using Status.damage; // 引用接口
 using Modifier;
 using Global;
-namespace GamePlay.relics
+namespace GamePlay.Relics
 {
     public abstract class RelicBase : CombatModifier
     {
