@@ -2,10 +2,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using GamePlay.Units;
-using GamePlay.UI;
-using DG.Tweening;
 
-namespace Managers
+namespace UI
 {
     public class TimelineUIManager : MonoBehaviour
     {
