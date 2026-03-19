@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using Global;
+using GamePlay.Units;
 
 namespace GamePlay.Grid
 {

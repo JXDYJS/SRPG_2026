@@ -1,7 +1,7 @@
 using UnityEngine;
 using Character.data;
 using Character.instance;
-using GamePlay.Unit;
+using GamePlay.Units;
 
 namespace Managers
 {

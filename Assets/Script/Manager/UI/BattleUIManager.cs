@@ -1,6 +1,6 @@
 //CREATE BY GEMINI
 using UnityEngine;
-using GamePlay.Unit;
+using GamePlay.Units;
 using GamePlay.Skill;
 using UI.Panel;
 using Cysharp.Threading.Tasks;

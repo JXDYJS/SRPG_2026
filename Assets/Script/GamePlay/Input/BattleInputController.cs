@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
 using Managers;
-using GamePlay.Unit;
+using GamePlay.Units;
 using Command;
 using Global;
 using GamePlay.Grid;

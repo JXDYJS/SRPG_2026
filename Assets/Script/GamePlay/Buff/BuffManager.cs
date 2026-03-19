@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
-using GamePlay.Unit;
+using GamePlay.Units;
 using GamePlay.Buff;
 
 namespace GamePlay.Buff

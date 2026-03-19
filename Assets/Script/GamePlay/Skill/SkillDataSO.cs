@@ -1,6 +1,6 @@
 using UnityEngine;
 using Global;
-using GamePlay.Unit;
+using GamePlay.Units;
 using GamePlay.Grid;
 using Managers;
 using Status.damage;

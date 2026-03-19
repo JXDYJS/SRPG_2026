@@ -10,6 +10,7 @@ using GamePlay.Grid;
 namespace Managers
 {
     using GamePlay;
+    using GamePlay.Units;
 public class MapManager : MonoBehaviour
 {
     [Header("设置")]

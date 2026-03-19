@@ -4,7 +4,7 @@ using Global;
 
 namespace Managers
 {
-    using GamePlay.Unit;
+    using GamePlay.Units;
     public class UnitManager : MonoBehaviour
     {
         public static UnitManager Instance { get; private set; }

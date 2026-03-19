@@ -11,34 +11,32 @@ using GamePlay.Skill;
 using DG.Tweening;
 using GamePlay.UI;
 
-namespace GamePlay
+namespace GamePlay.Units
 {
-    namespace Unit
+    using Character.instance;
+    using Status.damage;
+    using Modifier;
+    using GamePlay.Relics;
+    using Command;
+    using Unity.VisualScripting;
+    using UnityEditor;
+
+    // --- Auxiliary Class for Movement Definition ---
+
+    public class UnitMoveStats
     {
-        using Character.instance;
-        using Status.damage;
-        using Modifier;
-        using GamePlay.Relics;
-        using Command;
-        using Unity.VisualScripting;
-        using UnityEditor;
+        [Header("Movement Capabilities")]
+        public MoveType moveType = MoveType.Ground;
 
-        // --- Auxiliary Class for Movement Definition ---
+        [Tooltip("Max height difference to climb up (default 1)")]
+        public float jumpHeight = 0.6f;
 
-        public class UnitMoveStats
-        {
-            [Header("Movement Capabilities")]
-            public MoveType moveType = MoveType.Ground;
+        [Tooltip("Max height difference to drop down (default 3)")]
+        public float dropHeight = 0.6f;
+    }
 
-            [Tooltip("Max height difference to climb up (default 1)")]
-            public float jumpHeight = 0.6f; 
-
-            [Tooltip("Max height difference to drop down (default 3)")]
-            public float dropHeight = 0.6f;
-        }
-
-        // --- Main MapUnit Class ---
-        public class MapUnit : MonoBehaviour,ITrackable
+    // --- Main MapUnit Class ---
+    public class MapUnit : MonoBehaviour,ITrackable
         {
             [Header("Movement Config")]
             public UnitMoveStats moveStats = new UnitMoveStats(); 
@@ -1007,5 +1005,4 @@ namespace GamePlay
                 return new Vector3(dir.x, 0, dir.z);
             }
         }
-    }
 }

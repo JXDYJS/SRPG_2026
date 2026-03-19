@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using Global;
-using GamePlay.Unit;
+using GamePlay.Units;
 using Managers;
 using Cysharp.Threading.Tasks;
 using UnityEngine.AddressableAssets;

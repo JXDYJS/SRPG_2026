@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using GamePlay.Unit;
+using GamePlay.Units;
 using Managers;
 using Status.damage;
 using Global;

@@ -1,6 +1,6 @@
 
 using UnityEngine;
-using GamePlay.Unit;
+using GamePlay.Units;
 using Modifier;
 namespace GamePlay.Buff{
     public abstract class BuffBase : CombatModifier

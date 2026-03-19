@@ -1,5 +1,5 @@
 using UnityEngine;
-using GamePlay.Unit;
+using GamePlay.Units;
 using Status.state;
 
 namespace GamePlay.Buff

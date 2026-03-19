@@ -1,5 +1,5 @@
 using Global;
-using GamePlay.Unit;
+using GamePlay.Units;
 using System.Collections.Generic;
 using UnityEngine;
 using GamePlay.Skill;

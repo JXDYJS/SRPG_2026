@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Character.instance;
 using Character.data;
-using GamePlay.Unit;
+using GamePlay.Units;
 using Managers;
 using Command;
 using GamePlay.Grid; // 引用 AStar

@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using GamePlay.Unit;
+using GamePlay.Units;
 
 namespace GamePlay.Skill
 {
