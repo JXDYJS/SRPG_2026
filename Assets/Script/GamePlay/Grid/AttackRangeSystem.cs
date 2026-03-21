@@ -733,5 +733,55 @@ namespace GamePlay.Grid
 
             return path;
         }
+
+        /// <summary>
+        /// 专门针对从天而降技能的范围计算：每个格子只取最顶层的目标
+        /// </summary>
+        public static List<Vector3Int> GetSkyDropAoERange(Vector3Int targetPos, SkillPhase phase)
+        {
+            List<Vector3Int> result3D = new List<Vector3Int>();
+            Vector2Int center2D = new Vector2Int(targetPos.x, targetPos.z);
+
+            // 1. 获取 2D 覆盖的所有格子
+            List<Vector2Int> range2D = GetAoEGrids(center2D, center2D, center2D, phase.AoEPattern, phase.AoERadius);
+
+            foreach (Vector2Int p2d in range2D)
+            {
+                // 2. 对每个格子，从地图最高处向下探测
+                // 这里的探测应该找到该坐标轴上“暴露在天空下”的第一个有效脚底格子
+                Vector3Int? topTile = GetTopVisibleTile(p2d.x, p2d.y);
+                
+                if (topTile.HasValue)
+                {
+                    // 3. 垂直高度差校验：如果目标点比中心点高太多或低太多（比如隔着一座大山），可能不符合箭雨逻辑
+                    // 这一步可选，根据你的技能设计决定
+                    if (Mathf.Abs(topTile.Value.y - targetPos.y) <= phase.AoEVerticalRange)
+                    {
+                        result3D.Add(topTile.Value);
+                    }
+                }
+            }
+            return result3D;
+        }
+
+        // 辅助方法：找到某个 (x,z) 坐标最顶层的“地面”格子
+        private static Vector3Int? GetTopVisibleTile(int x, int z)
+        {
+            // 从地图上限向下扫描
+            for (int y = 255; y >= 0; y--)
+            {
+                Vector3Int checkPos = new Vector3Int(x, y, z);
+                // 如果这个位置是空气，且下方是固体，那么这就是“顶层地面”
+                if (MapManager.Instance.logicalGrid.GetBlock(checkPos) == BlockType.Air)
+                {
+                    Vector3Int groundPos = checkPos + Vector3Int.down;
+                    if (y > 0 && MapManager.Instance.logicalGrid.GetBlock(groundPos) != BlockType.Air)
+                    {
+                        return groundPos; // 返回脚底方块坐标
+                    }
+                }
+            }
+            return null;
+        }
     }
 }

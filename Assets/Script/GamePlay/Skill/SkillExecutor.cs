@@ -105,8 +105,17 @@ namespace GamePlay.Skill
         {
             List<MapUnit> targets = new List<MapUnit>();
 
-            // 使用新的AoE范围计算逻辑
-            List<Vector3Int> aoeRange = Grid.AttackRangeSystem.GetAoERange3D(caster.gridPosition, context.TargetPosition, phase);
+            List<Vector3Int> aoeRange;
+            if (skillData.Trajectory == TrajectoryType.SkyDrop)
+            {
+                // 使用“垂直下落”扫描逻辑，确保每个 (x,z) 只打到最高层的人
+                aoeRange = Grid.AttackRangeSystem.GetSkyDropAoERange(context.TargetPosition, phase);
+            }
+            else
+            {
+                // 使用原有的 3D 柱状/球形判定
+                aoeRange = Grid.AttackRangeSystem.GetAoERange3D(caster.gridPosition, context.TargetPosition, phase);
+            }
 
             foreach (Vector3Int pos in aoeRange)
             {

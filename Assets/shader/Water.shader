@@ -1,4 +1,3 @@
-//CREATE BY GEMINI
 //
 //SOURCE:https://zhuanlan.zhihu.com/p/2010582216581862517
 //
@@ -229,8 +228,9 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
                 float P_backlit = HenyeyPhase(dot(V, -L), 0.998);
                 float3 backlitTrans = mainLight.color * G_backlit * T_backlit * P_backlit * lastShadow;
 
+                float2 distortedUV = screenUV + N.xz * 0.02;
                 float3 T_exit = 1.0 - F_Schlick(_Fresnel0, saturate(dot(N, V)));
-                float3 sceneColor = SampleSceneColor(screenUV);
+                float3 sceneColor = SampleSceneColor(distortedUV);
                 float3 sceneInScattering = sceneColor * accumTransmittance * uS * totalRayLength * Luminance(mainLight.color);
 
                 float3 H = SafeNormalize(L + V);
@@ -249,7 +249,6 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
 
                 // === 间接高光 (Indirect Specular) 采样动态天空图 ===
                 float3 R = reflect(-V, N);
-                float2 distortedUV = screenUV + N.xz * 0.02;
                 float4 ssprData = SAMPLE_TEXTURE2D(_SSPR_ReflectionTexture, sampler_SSPR_ReflectionTexture, distortedUV);
                 
                 float mip = PerceptualRoughnessToMipmapLevel(perceptualRoughness);
