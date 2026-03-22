@@ -32,5 +32,10 @@ namespace GamePlay.Skill
         public TimingMode EndTimingMode = TimingMode.Instant;
         public string EndEventName = "End";
         public float EndDelayTime = 0.3f;
+
+        [Header("5. 区域特效 (Area Effect)")]
+        public AssetReferenceGameObject TargetAreaEffect;
+        public Vector3 TargetAreaOffset = new Vector3(0, 8, 0);
+        public Vector3 TargetAreaRotation = new Vector3(90, 0, 0);
     }
 }

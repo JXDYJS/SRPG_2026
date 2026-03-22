@@ -23,3 +23,12 @@ MonoBehaviour:
         m_SubObjectName: 
         m_SubObjectType: 
         m_EditorAssetChanged: 0
+  - SlotType: 2
+    SlotDisplayName: ArrowRain
+    EvolutionChain:
+    - RequiredLevel: 0
+      SkillData:
+        m_AssetGUID: 5edf37868f4bccf40962f0af0a49905a
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_EditorAssetChanged: 0

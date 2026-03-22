@@ -123,6 +123,13 @@ namespace GamePlay.Skill
                 await Addressables.InstantiateAsync(visual.CastEffect, caster.transform.position, Quaternion.identity);
             }
 
+            if (visual.TargetAreaEffect != null && visual.TargetAreaEffect.RuntimeKeyIsValid())
+            {
+                Vector3 targetWorldPos = MapManager.Instance.GetWorldPosition(phaseResult.TargetPosition) + visual.TargetAreaOffset;
+                Quaternion targetRotation = Quaternion.Euler(visual.TargetAreaRotation);
+                _ =Addressables.InstantiateAsync(visual.TargetAreaEffect, targetWorldPos, targetRotation);
+            }
+
             if (visual.Transit == TransitType.Projectile && visual.ProjectilePrefab != null && visual.ProjectilePrefab.RuntimeKeyIsValid())
             {
                 await PerformProjectileTransit(caster, phaseResult.TargetPosition, visual);

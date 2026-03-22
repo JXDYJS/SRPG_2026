@@ -32,6 +32,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5edf37868f4bccf40962f0af0a49905a
+    m_Address: Assets/Data/Skill/ArrowRain.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 69b5f56813a9a9942a6ce66245f89694
     m_Address: Assets/Data/Skill/HealSkill.asset
     m_ReadOnly: 0
@@ -39,6 +44,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 6fb59d90faeb4ec4bafc349e12ac6c46
     m_Address: EnemyAttack
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7277cf5a3f3ec9943bbdc2c7722265b7
+    m_Address: Assets/Data/VFX/VFX_ArrowRain.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

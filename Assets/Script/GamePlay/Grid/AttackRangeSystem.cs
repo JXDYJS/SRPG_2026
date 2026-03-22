@@ -101,6 +101,51 @@ namespace GamePlay.Grid
             return result3D;
         }
 
+        /// <summary>
+        /// 箭雨（SkyDrop）技能的 AoE 范围计算
+        /// 垂直下落逻辑：每个 (x,z) 格子只命中暴露在天空下的最顶层目标
+        /// </summary>
+        public static List<Vector3Int> GetSkyDropAoERange(Vector3Int targetPos, SkillPhase phase)
+        {
+            List<Vector3Int> result = new List<Vector3Int>();
+
+            Vector2Int origin2D = new Vector2Int(targetPos.x, targetPos.z);
+            Vector2Int caster2D = new Vector2Int(targetPos.x, targetPos.z);
+            Vector2Int target2D = new Vector2Int(targetPos.x, targetPos.z);
+
+            List<Vector2Int> aoe2D = GetAoEGrids(origin2D, caster2D, target2D, phase.AoEPattern, phase.AoERadius);
+
+            foreach (Vector2Int pos2D in aoe2D)
+            {
+                Vector3Int topSolidPos = Vector3Int.zero;
+                bool foundTop = false;
+
+                for (int y = 255; y >= 0; y--)
+                {
+                    Vector3Int checkPos = new Vector3Int(pos2D.x, y, pos2D.y);
+                    BlockType blockType = MapManager.Instance.logicalGrid.GetBlock(checkPos);
+
+                    if (blockType != BlockType.Air)
+                    {
+                        topSolidPos = checkPos;
+                        foundTop = true;
+                        break;
+                    }
+                }
+
+                if (foundTop)
+                {
+                    Vector3Int unitPos = topSolidPos;
+                    if (UnitManager.Instance.GetUnitAt(unitPos) != null)
+                    {
+                        result.Add(unitPos);
+                    }
+                }
+            }
+
+            return result;
+        }
+
         // ================= 施法范围形状算法 =================
 
         private static List<Vector2Int> GetCastGrids(Vector2Int center, CastPatternType type, int minRange, int maxRange)
@@ -737,32 +782,32 @@ namespace GamePlay.Grid
         /// <summary>
         /// 专门针对从天而降技能的范围计算：每个格子只取最顶层的目标
         /// </summary>
-        public static List<Vector3Int> GetSkyDropAoERange(Vector3Int targetPos, SkillPhase phase)
-        {
-            List<Vector3Int> result3D = new List<Vector3Int>();
-            Vector2Int center2D = new Vector2Int(targetPos.x, targetPos.z);
+        // public static List<Vector3Int> GetSkyDropAoERange(Vector3Int targetPos, SkillPhase phase)
+        // {
+        //     List<Vector3Int> result3D = new List<Vector3Int>();
+        //     Vector2Int center2D = new Vector2Int(targetPos.x, targetPos.z);
 
-            // 1. 获取 2D 覆盖的所有格子
-            List<Vector2Int> range2D = GetAoEGrids(center2D, center2D, center2D, phase.AoEPattern, phase.AoERadius);
+        //     // 1. 获取 2D 覆盖的所有格子
+        //     List<Vector2Int> range2D = GetAoEGrids(center2D, center2D, center2D, phase.AoEPattern, phase.AoERadius);
 
-            foreach (Vector2Int p2d in range2D)
-            {
-                // 2. 对每个格子，从地图最高处向下探测
-                // 这里的探测应该找到该坐标轴上“暴露在天空下”的第一个有效脚底格子
-                Vector3Int? topTile = GetTopVisibleTile(p2d.x, p2d.y);
+        //     foreach (Vector2Int p2d in range2D)
+        //     {
+        //         // 2. 对每个格子，从地图最高处向下探测
+        //         // 这里的探测应该找到该坐标轴上“暴露在天空下”的第一个有效脚底格子
+        //         Vector3Int? topTile = GetTopVisibleTile(p2d.x, p2d.y);
                 
-                if (topTile.HasValue)
-                {
-                    // 3. 垂直高度差校验：如果目标点比中心点高太多或低太多（比如隔着一座大山），可能不符合箭雨逻辑
-                    // 这一步可选，根据你的技能设计决定
-                    if (Mathf.Abs(topTile.Value.y - targetPos.y) <= phase.AoEVerticalRange)
-                    {
-                        result3D.Add(topTile.Value);
-                    }
-                }
-            }
-            return result3D;
-        }
+        //         if (topTile.HasValue)
+        //         {
+        //             // 3. 垂直高度差校验：如果目标点比中心点高太多或低太多（比如隔着一座大山），可能不符合箭雨逻辑
+        //             // 这一步可选，根据你的技能设计决定
+        //             if (Mathf.Abs(topTile.Value.y - targetPos.y) <= phase.AoEVerticalRange)
+        //             {
+        //                 result3D.Add(topTile.Value);
+        //             }
+        //         }
+        //     }
+        //     return result3D;
+        // }
 
         // 辅助方法：找到某个 (x,z) 坐标最顶层的“地面”格子
         private static Vector3Int? GetTopVisibleTile(int x, int z)
