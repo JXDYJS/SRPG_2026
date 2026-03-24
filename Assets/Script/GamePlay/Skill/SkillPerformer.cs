@@ -127,7 +127,13 @@ namespace GamePlay.Skill
             {
                 Vector3 targetWorldPos = MapManager.Instance.GetWorldPosition(phaseResult.TargetPosition) + visual.TargetAreaOffset;
                 Quaternion targetRotation = Quaternion.Euler(visual.TargetAreaRotation);
-                _ =Addressables.InstantiateAsync(visual.TargetAreaEffect, targetWorldPos, targetRotation);
+                var handle = Addressables.InstantiateAsync(visual.TargetAreaEffect, targetWorldPos, targetRotation);
+                GameObject effectObj = await handle.Task;
+                
+                if (visual.TargetAreaDuration > 0 && effectObj != null)
+                {
+                    _ = DestroyAreaEffectDelayed(effectObj, visual.TargetAreaDuration);
+                }
             }
 
             if (visual.Transit == TransitType.Projectile && visual.ProjectilePrefab != null && visual.ProjectilePrefab.RuntimeKeyIsValid())
@@ -262,6 +268,19 @@ namespace GamePlay.Skill
 
                 // 使用 BuffManager 应用 Buff
                 BuffManager.ApplyBuffToUnit(tResult.Target, buffInfo.BuffID, buffInfo.Stacks);
+            }
+        }
+
+        /// <summary>
+        /// 延迟销毁区域特效
+        /// </summary>
+        private static async UniTask DestroyAreaEffectDelayed(GameObject effectObj, float delaySeconds)
+        {
+            await UniTask.Delay(TimeSpan.FromSeconds(delaySeconds), delayType: DelayType.DeltaTime);
+            
+            if (effectObj != null)
+            {
+                Addressables.ReleaseInstance(effectObj);
             }
         }
     }

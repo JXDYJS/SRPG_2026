@@ -4,28 +4,25 @@
 
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 
-//CREATE BY GEMINI
 // 输入
 Texture2D<float4> _CameraColorTexture;
 Texture2D<float> _CameraDepthTexture;
-SAMPLER(sampler_CameraDepthTexture);
 
 // 输出与中间 Buffer
 RWTexture2D<float4> _SSPR_ReflectionTexture;
-RWStructuredBuffer<uint> _HashBuffer; // 用于原子操作存 [Height(16bit) | Color(16bit)]
+RWStructuredBuffer<uint> _HashBuffer;
 
 // 参数
-float4 _SSPR_RT_Size; // {width, height, 1/width, 1/height}
+float4 _SSPR_RT_Size; 
 float _ReflectPlaneHeight;
-float3 _CameraDirectionY; // 修正后的方向向量
+float3 _CameraDirectionY; 
 float _StretchIntensity;
 float _StretchThreshold;
 float _EdgeFadeOut;
 
 // --- 辅助函数 ---
-// 打包 16位高度(0-1) 和 16位颜色(RGB565)
 uint PackHeightColor(float height, float3 color) {
-    uint h = (uint)(saturate(1.0 - height) * 65535); // 高度取反，让低处像素拥有更大的值以便 InterlockedMax
+    uint h = (uint)(saturate(1.0 - height) * 65535);
     uint r = (uint)(saturate(color.r) * 31);
     uint g = (uint)(saturate(color.g) * 63);
     uint b = (uint)(saturate(color.b) * 31);
@@ -50,32 +47,52 @@ float SdfCube(float2 uv) {
 
 [numthreads(8, 8, 1)]
 void SSPR_Clear(uint3 id : SV_DispatchThreadID) {
-    _HashBuffer[id.y * _SSPR_RT_Size.x + id.x] = 0;
+    // 严格边界保护
+    if (id.x >= (uint)_SSPR_RT_Size.x || id.y >= (uint)_SSPR_RT_Size.y) return;
+    
+    uint idx = id.y * (uint)_SSPR_RT_Size.x + id.x;
+    _HashBuffer[idx] = 0;
     _SSPR_ReflectionTexture[id.xy] = float4(0, 0, 0, 0);
 }
 
 [numthreads(8, 8, 1)]
 void SSPR_Render(uint3 id : SV_DispatchThreadID) {
-    float2 uv = id.xy * _SSPR_RT_Size.zw;
-    float depth = _CameraDepthTexture.SampleLevel(sampler_CameraDepthTexture, uv, 0).r;
-    if(depth < 0.01) return;
+    // 严格边界保护
+    if (id.x >= (uint)_SSPR_RT_Size.x || id.y >= (uint)_SSPR_RT_Size.y) return;
+
+    float2 uv = (id.xy + 0.5) * _SSPR_RT_Size.zw;
     
+    // 📢 【核心修复】：使用 .Load 完全绕过 Vulkan 采样器绑定问题
+    float depth = _CameraDepthTexture.Load(int3(id.xy, 0)).r;
+    
+    #if UNITY_REVERSED_Z
+        if(depth < 0.0001) return;
+    #else
+        if(depth > 0.9999) return;
+    #endif
+
     // 还原世界坐标
     float3 wpos = ComputeWorldSpacePosition(uv, depth, UNITY_MATRIX_I_VP);
+
+    // NaN/Inf 保护，防止 Vulkan 下坐标算炸导致驱动崩溃
+    if (isinf(wpos.x) || isnan(wpos.x) || isinf(wpos.y) || isnan(wpos.y) || isinf(wpos.z) || isnan(wpos.z)) return;
     if (wpos.y < _ReflectPlaneHeight) return;
 
     // 反射计算
     float3 rwpos = wpos;
     rwpos.y = 2.0 * _ReflectPlaneHeight - rwpos.y;
-
     float4 rcpos = TransformWorldToHClip(rwpos);
     float2 ruv = (rcpos.xy / rcpos.w) * 0.5 + 0.5;
-    if (_ProjectionParams.x < 0) ruv.y = 1.0 - ruv.y; // 处理 OpenGL 平台反转
 
-    // --- 边缘拉伸 (Source Loss 修复) ---
+    // 处理 DX/Vulkan 平台的 RT 翻转差异
+    #if UNITY_UV_STARTS_AT_TOP
+        if (_ProjectionParams.x < 0) ruv.y = 1.0 - ruv.y; 
+    #endif
+
+    // 边缘拉伸
     float heightStretch = abs(wpos.y - _ReflectPlaneHeight);
     float screenStretch = saturate(abs(ruv.x * 2.0 - 1.0) - _StretchThreshold);
-    float angleStretch = saturate(-_CameraDirectionY.y); // 修正：使用 Y 分量
+    float angleStretch = saturate(-_CameraDirectionY.y); 
     
     float xRemap = ruv.x * 2.0 - 1.0;
     xRemap *= 1.0 + saturate(heightStretch * angleStretch * screenStretch) * _StretchIntensity;
@@ -83,30 +100,41 @@ void SSPR_Render(uint3 id : SV_DispatchThreadID) {
 
     if (any(ruv < 0) || any(ruv > 1)) return;
 
-    // --- SDF 边缘淡出 ---
+    // SDF 边缘淡出
     float mask = SdfCube(uv * 2.0 - 1.0);
     mask = saturate(1.0 - smoothstep(-_EdgeFadeOut, 0.0, mask));
 
-    // 原子操作：最高位是高度取反，确保靠近水面的像素获胜
-    uint packed = PackHeightColor(saturate(heightStretch / 100.0), _CameraColorTexture.SampleLevel(sampler_CameraDepthTexture, uv, 0).rgb);
-    uint idx = (uint)(ruv.y * _SSPR_RT_Size.y) * _SSPR_RT_Size.x + (uint)(ruv.x * _SSPR_RT_Size.x);
-    InterlockedMax(_HashBuffer[idx], packed);
+    // 📢 【核心修复】：颜色纹理也使用 .Load 绕过采样器
+    float3 sceneColor = _CameraColorTexture.Load(int3(id.xy, 0)).rgb;
+    uint packed = PackHeightColor(saturate(heightStretch / 100.0), sceneColor);
+    
+    uint2 writeCoords = (uint2)(ruv * _SSPR_RT_Size.xy);
+    uint idx = writeCoords.y * (uint)_SSPR_RT_Size.x + writeCoords.x;
+
+    // 安全写入
+    if (idx < (uint)(_SSPR_RT_Size.x * _SSPR_RT_Size.y)) {
+        InterlockedMax(_HashBuffer[idx], packed);
+    }
 }
 
 [numthreads(8, 8, 1)]
 void SSPR_Resolve(uint3 id : SV_DispatchThreadID) {
-    uint idx = id.y * _SSPR_RT_Size.x + id.x;
+    // 严格边界保护
+    if (id.x >= (uint)_SSPR_RT_Size.x || id.y >= (uint)_SSPR_RT_Size.y) return;
+
+    uint idx = id.y * (uint)_SSPR_RT_Size.x + id.x;
     uint packed = _HashBuffer[idx];
     
     if (packed > 0) {
         float3 color = UnpackColor(packed);
         _SSPR_ReflectionTexture[id.xy] = float4(color, 1.0);
     } else {
-        // --- 简单的空洞填充 (Hole Filling) ---
-        // 采样邻域寻找有效像素
-        uint p1 = _HashBuffer[idx + 1];
-        uint p2 = _HashBuffer[idx - 1];
-        uint p3 = _HashBuffer[idx + _SSPR_RT_Size.x];
+        // 空洞填充 (增加安全边界检查)
+        uint maxIdx = (uint)(_SSPR_RT_Size.x * _SSPR_RT_Size.y);
+        uint p1 = (idx + 1 < maxIdx) ? _HashBuffer[idx + 1] : 0;
+        uint p2 = (idx > 0) ? _HashBuffer[idx - 1] : 0;
+        uint p3 = (idx + (uint)_SSPR_RT_Size.x < maxIdx) ? _HashBuffer[idx + (uint)_SSPR_RT_Size.x] : 0;
+
         if (p1 > 0) _SSPR_ReflectionTexture[id.xy] = float4(UnpackColor(p1), 1.0);
         else if (p2 > 0) _SSPR_ReflectionTexture[id.xy] = float4(UnpackColor(p2), 1.0);
         else if (p3 > 0) _SSPR_ReflectionTexture[id.xy] = float4(UnpackColor(p3), 1.0);

@@ -886,8 +886,8 @@ namespace GamePlay.Units
             }
 
             /// <summary>
-            /// 恢复到记录的朝向（用于技能释放后）
-            /// 重要：恢复到当前旋转角度对应的最近四个基本朝向
+            /// 恢复到最近的四个基本朝向之一（用于技能释放后）
+            /// 从当前攻击角度平滑旋转到最近的四个大方向之一
             /// </summary>
             public void RestoreRecordedFacing()
             {
@@ -897,8 +897,8 @@ namespace GamePlay.Units
                 // 找到最近的四个基本朝向
                 UnitFacing nearestFacing = Global.FacingTool.RotationYToFacing(currentRotationY);
                 
-                // 恢复到这个最近的朝向
-                SetFacing(nearestFacing);
+                // 平滑旋转到这个最近的朝向
+                RotateToFacingSmoothly(nearestFacing);
             }
 
             /// <summary>

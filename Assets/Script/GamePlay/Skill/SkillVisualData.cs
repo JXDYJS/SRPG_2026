@@ -37,5 +37,8 @@ namespace GamePlay.Skill
         public AssetReferenceGameObject TargetAreaEffect;
         public Vector3 TargetAreaOffset = new Vector3(0, 8, 0);
         public Vector3 TargetAreaRotation = new Vector3(90, 0, 0);
+        
+        [Tooltip("区域特效持续时间（秒）。正数表示自动销毁，-1或0表示持久特效")]
+        public float TargetAreaDuration = -1f;
     }
 }
