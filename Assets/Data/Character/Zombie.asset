@@ -23,7 +23,7 @@ MonoBehaviour:
     m_EditorAssetChanged: 0
   BaseMaxHP: 20
   BaseATK: 2
-  BaseDEF: 0
+  BaseDEF: 1
   BaseRES: 0
   MoveRange: 5
   Height: 0

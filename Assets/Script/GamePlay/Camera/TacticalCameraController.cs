@@ -29,7 +29,7 @@ namespace GamePlay.VirtualCamera
         [Header("Blender视角预设")]
         [SerializeField] private float _viewTransitionSpeed = 10f;
         [SerializeField] private Vector3 _defaultOffset = new Vector3(0f, 8f, -10f);
-        [SerializeField] private Vector3 _topDownOffset = new Vector3(0f, 18f, -0.5f);
+        [SerializeField] private Vector3 _topDownOffset = new Vector3(0f, 18f, -5f); // 建议Z保持一点偏移而非完全为0
         [SerializeField] private Vector3 _frontOffset = new Vector3(0f, 5f, -20f);
         [SerializeField] private Vector3 _rightOffset = new Vector3(20f, 5f, 0f);
 
@@ -55,7 +55,8 @@ namespace GamePlay.VirtualCamera
                 _transposer = _virtualCamera.GetCinemachineComponent<CinemachineTransposer>();
             }
             
-            _targetRotationY = transform.eulerAngles.y;
+            // 规范化初始角度
+            _targetRotationY = Mathf.DeltaAngle(0, transform.eulerAngles.y);
             _targetPosition = transform.position;
         }
 
@@ -129,14 +130,10 @@ namespace GamePlay.VirtualCamera
             }
 
             if (Input.GetKey(KeyCode.K))
-            {
                 _targetPosition.y += _heightSpeed * Time.deltaTime;
-            }
             
             if (Input.GetKey(KeyCode.J))
-            {
                 _targetPosition.y -= _heightSpeed * Time.deltaTime;
-            }
             
             _targetPosition.y = Mathf.Clamp(_targetPosition.y, _minHeight, _maxHeight);
         }
@@ -154,6 +151,9 @@ namespace GamePlay.VirtualCamera
                 _targetRotationY -= 90f;
                 _targetPosition = new Vector3(_mapCenter.x, _targetPosition.y, _mapCenter.z);
             }
+
+            // 保持目标角度在 -180 到 180 之间
+            _targetRotationY = Mathf.DeltaAngle(0, _targetRotationY);
         }
 
         void HandleZoom()
@@ -172,10 +172,17 @@ namespace GamePlay.VirtualCamera
 
         void HandleBlenderViews()
         {
-            if (Input.GetKeyDown(KeyCode.Keypad7)) _targetFollowOffset = _topDownOffset;
-            if (Input.GetKeyDown(KeyCode.Keypad1)) _targetFollowOffset = _frontOffset;
-            if (Input.GetKeyDown(KeyCode.Keypad3)) _targetFollowOffset = _rightOffset;
-            if (Input.GetKeyDown(KeyCode.Keypad5)) _targetFollowOffset = _defaultOffset;
+            if (Input.GetKeyDown(KeyCode.Keypad7) || Input.GetKeyDown(KeyCode.Alpha7)) 
+                _targetFollowOffset = _topDownOffset;
+            
+            if (Input.GetKeyDown(KeyCode.Keypad1) || Input.GetKeyDown(KeyCode.Alpha1)) 
+                _targetFollowOffset = _frontOffset;
+            
+            if (Input.GetKeyDown(KeyCode.Keypad3) || Input.GetKeyDown(KeyCode.Alpha3)) 
+                _targetFollowOffset = _rightOffset;
+            
+            if (Input.GetKeyDown(KeyCode.Keypad5) || Input.GetKeyDown(KeyCode.Alpha5)) 
+                _targetFollowOffset = _defaultOffset;
         }
 
         void ApplySmoothTransition()
@@ -190,7 +197,6 @@ namespace GamePlay.VirtualCamera
             }
             
             Vector3 clampedPosition = _targetPosition;
-            
             if (_mapBoundsInitialized)
             {
                 clampedPosition = new Vector3(
@@ -205,12 +211,13 @@ namespace GamePlay.VirtualCamera
                 clampedPosition,
                 _moveSmoothTime * 10f * Time.deltaTime
             );
+
+            // --- 核心修复部分 ---
+            // 使用 DeltaAngle 确保旋转始终走最短路径，解决 0/180 度跳变问题
+            float currentY = transform.eulerAngles.y;
+            float nextY = Mathf.LerpAngle(currentY, _targetRotationY, _rotationSpeed * Time.deltaTime);
             
-            transform.rotation = Quaternion.Slerp(
-                transform.rotation, 
-                Quaternion.Euler(0f, _targetRotationY, 0f), 
-                _rotationSpeed * Time.deltaTime
-            );
+            transform.rotation = Quaternion.Euler(0f, nextY, 0f);
         }
     }
 }
