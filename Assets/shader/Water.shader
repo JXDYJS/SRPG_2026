@@ -275,7 +275,7 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
                 
                 finalColor = lerp(fogColor, finalColor, transmittance);
 
-                return half4(finalColor,1.0);
+                return half4(ssprData.rgb,1.0);
             }
             ENDHLSL
         }

@@ -58,7 +58,7 @@ public class SSPRFeature : ScriptableRendererFeature
             int kernelResolve = cs.FindKernel("SSPR_Resolve");
 
             // 2. 获取当前相机的 GPU 矩阵 (这是最稳妥的办法)
-            Matrix4x4 gpuProj = GL.GetGPUProjectionMatrix(camera.projectionMatrix, false);
+            Matrix4x4 gpuProj = GL.GetGPUProjectionMatrix(camera.projectionMatrix, true);
             Matrix4x4 viewMat = camera.worldToCameraMatrix;
             Matrix4x4 vpMatrix = gpuProj * viewMat;
 
@@ -87,6 +87,8 @@ public class SSPRFeature : ScriptableRendererFeature
 
             int groupsX = Mathf.CeilToInt(w / 8.0f);
             int groupsY = Mathf.CeilToInt(h / 8.0f);
+
+            Debug.Log($"Camera: {w}x{h}, DepthTexture: {cameraData.cameraTargetDescriptor.width}x{cameraData.cameraTargetDescriptor.height}");
 
             cmd.DispatchCompute(cs, kernelClear, groupsX, groupsY, 1);
             cmd.DispatchCompute(cs, kernelRender, groupsX, groupsY, 1);
