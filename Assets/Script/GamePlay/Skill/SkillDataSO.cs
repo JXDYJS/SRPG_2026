@@ -5,6 +5,7 @@ using GamePlay.Grid;
 using Managers;
 using Status.damage;
 using System.Collections.Generic;
+using GamePlay.Skill.CustomBehaviors;
 
 namespace GamePlay.Skill
 {
@@ -46,5 +47,8 @@ namespace GamePlay.Skill
 
         [Header("技能阶段配置")]
         public List<SkillPhase> Phases = new List<SkillPhase>();
+        [Header("是否使用自定义")]
+        public bool isCustomSkill = false;
+        public CustomSkillBehaviorSO CustomBehavior = null;
     }
 }

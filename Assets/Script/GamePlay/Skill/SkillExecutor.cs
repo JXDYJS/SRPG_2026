@@ -12,6 +12,17 @@ namespace GamePlay.Skill
     {
         public static SkillSequenceResult ExecuteSequence(MapUnit caster, SkillTargetContext context, SkillDataSO skillData)
         {
+            //自定义技能用自定义逻辑
+            if (skillData.isCustomSkill)
+            {
+                if(skillData.CustomBehavior == null)
+                {
+                    Debug.LogWarning("The CustomSkill don't have CustomBehavior");
+                    return new SkillSequenceResult(caster, context);
+                }
+                return skillData.CustomBehavior.ExecuteLogic(caster,context,skillData);
+            }
+
             SkillSequenceResult sequenceResult = new SkillSequenceResult(caster, context);
 
             if (skillData == null || skillData.Phases == null || skillData.Phases.Count == 0)
