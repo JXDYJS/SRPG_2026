@@ -57,24 +57,10 @@ public class SSPRFeature : ScriptableRendererFeature
             int kernelRender = cs.FindKernel("SSPR_Render");
             int kernelResolve = cs.FindKernel("SSPR_Resolve");
 
-            // // 2. 获取当前相机的 GPU 矩阵 (这是最稳妥的办法)
-            // Matrix4x4 gpuProj = GL.GetGPUProjectionMatrix(camera.projectionMatrix, false);
-            // Matrix4x4 viewMat = camera.worldToCameraMatrix;
-            // Matrix4x4 vpMatrix = gpuProj * viewMat;
-
-            // ----------------------------------------------------
-            // 2. 获取当前相机的 URP 标准矩阵 (这是最稳妥的办法)
-            // 放弃 GL.GetGPUProjectionMatrix，直接用 URP 封装好的数据
-            // ----------------------------------------------------
-            Matrix4x4 viewMat = cameraData.GetViewMatrix();
-            Matrix4x4 projMat = cameraData.GetProjectionMatrix();
-            Matrix4x4 vpMatrix = projMat * viewMat;
-
-            // 如果是渲染到纹理（URP 默认也是），projMat 内部已经处理了 Y 轴翻转，
-            // 此时传给 UNITY_MATRIX_I_VP 的矩阵在垂直方向上就是倒着的，这完全正确。
-
-            cmd.SetComputeMatrixParam(cs, "UNITY_MATRIX_VP", vpMatrix);
-            cmd.SetComputeMatrixParam(cs, "UNITY_MATRIX_I_VP", vpMatrix.inverse);
+            // 2. 获取当前相机的 GPU 矩阵 (这是最稳妥的办法)
+            Matrix4x4 gpuProj = GL.GetGPUProjectionMatrix(camera.projectionMatrix, false);
+            Matrix4x4 viewMat = camera.worldToCameraMatrix;
+            Matrix4x4 vpMatrix = gpuProj * viewMat;
 
             // 3. 显式绑定：只使用当前相机的资源
             cmd.SetComputeTextureParam(cs, kernelRender, "_CameraColorTexture", cameraData.renderer.cameraColorTargetHandle);
@@ -98,7 +84,6 @@ public class SSPRFeature : ScriptableRendererFeature
             cmd.SetComputeBufferParam(cs, kernelResolve, "_HashBuffer", hashBuffer);
             cmd.SetComputeTextureParam(cs, kernelClear, "_SSPR_ReflectionTexture", reflectionRT);
             cmd.SetComputeTextureParam(cs, kernelResolve, "_SSPR_ReflectionTexture", reflectionRT);
-            cmd.SetComputeTextureParam(cs, kernelRender, "_SSPR_ReflectionTexture", reflectionRT);//DEBUG
 
             int groupsX = Mathf.CeilToInt(w / 8.0f);
             int groupsY = Mathf.CeilToInt(h / 8.0f);
