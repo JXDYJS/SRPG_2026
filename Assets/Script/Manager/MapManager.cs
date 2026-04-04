@@ -23,6 +23,7 @@ public class MapManager : MonoBehaviour
     [Header("资源索引 (ID -> Prefab)")]
     // 你需要在 Inspector 里手动把预制体拖进去，或者写代码自动加载 Resources
     public List<MapObject> prefabIndex; 
+    public Dictionary<Vector3Int,MapObject> blocks;
 
     // 运行时逻辑网格
     public LogicalGrid logicalGrid = new LogicalGrid();
@@ -138,7 +139,7 @@ public class MapManager : MonoBehaviour
         MapData data = JsonUtility.FromJson<MapData>(json);
 
         List<MapObject> allObjects = new List<MapObject>();
-
+        Dictionary<Vector3Int,MapObject> blocks = new Dictionary<Vector3Int, MapObject>();
         // 3. 生成
         foreach (var cellData in data.cells)
         {
@@ -260,7 +261,7 @@ public class MapManager : MonoBehaviour
         // ==================================================
 
         List<MapObject> allObjects = new List<MapObject>();
-        
+        Dictionary<Vector3Int,MapObject> blocks = new Dictionary<Vector3Int, MapObject>();
         foreach (var block in currentLevelData.blocks)
         {
             // 查找 ID 对应的预制体
@@ -295,6 +296,7 @@ public class MapManager : MonoBehaviour
                 // 如果需要，可以在这里把保存时的某些额外属性赋回去
                 
                 allObjects.Add(mapObj);
+                blocks.Add(Vector3Int.FloorToInt(pos),mapObj);
             }
             else
             {
@@ -304,6 +306,7 @@ public class MapManager : MonoBehaviour
         
         // 构建逻辑网格
         logicalGrid.Build(allObjects);
+        this.blocks = blocks;
         
         Debug.Log($"地图加载完毕，生成了 {allObjects.Count} 个方块。");
     }

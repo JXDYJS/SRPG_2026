@@ -95,6 +95,7 @@ public class TurnManager : MonoBehaviour
         Debug.Log($"---> 轮到 {unit.name} 行动了！");
         unit.ResetTurnState();
         unit.OnTurnStart();
+        UnitManager.Instance.unitOnStay(unit);
 
         if (unit.Faction == FactionType.Player)
         {

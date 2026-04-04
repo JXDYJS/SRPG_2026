@@ -62,6 +62,33 @@ namespace Managers
             {
                 unitPositions[unit.gridPosition] = unit;
             }
+            //触发格子效果
+            MapManager mapManager = MapManager.Instance;
+            if(mapManager != null)
+            {
+                MapObject exitObj;
+                if(mapManager.blocks.TryGetValue(oldPos,out exitObj))
+                {
+                    exitObj.OnUnitExit(unit);
+                }
+                else
+                {
+                    Debug.LogError("UpdateUnitPos : fail to get ExitMapObj");
+                }
+                MapObject enterObj;
+                if (mapManager.blocks.TryGetValue(unit.gridPosition,out enterObj))
+                {
+                    enterObj.OnUnitEnter(unit);   
+                }
+                else
+                {
+                     Debug.LogError("UpdateUnitPos : fail to get EnterMapObj");
+                }
+            }
+            else
+            {
+                Debug.LogError("UpdataUnitPos : mapManager is null");
+            }
         }
 
         // 获取某格子的单位 (用于 A* 判断是否被敌方阻挡)
@@ -92,5 +119,48 @@ namespace Managers
         {
             return new List<MapUnit>(allUnits);
         }
+       /// <summary>
+        /// 触发所有 unit 所在方块的 OnStay 逻辑
+        /// </summary> 
+        public void AllUnitOnStay()
+        {
+            if(allUnits != null)
+            {
+                foreach(var unit in allUnits)
+                {
+                    MapObject block;
+                    if (unit.gridPosition != null && MapManager.Instance.blocks.TryGetValue(unit.gridPosition,out block))
+                    {
+                        block.OnStay(unit);   
+                    }
+                    else
+                    {
+                        Debug.LogError("AllUnitOnStay : fail to get unit block");
+                    }
+                }
+            }
+        }
+        /// <summary>
+        /// 触发 unit 所在方块的 OnStay 逻辑
+        /// </summary>
+        public void unitOnStay(MapUnit unit)
+        {
+            if (allUnits.Contains(unit))
+            {
+                MapObject block;
+                if (unit.gridPosition != null && MapManager.Instance.blocks.TryGetValue(unit.gridPosition,out block))
+                {
+                    block.OnStay(unit);   
+                }
+                else
+                {
+                    Debug.LogError("unitOnStay : fail to get unit block");
+                }
+            }
+            else
+            {
+                Debug.LogError("UnitOnStay : No such Unit");
+            }
+        } 
     }
 }

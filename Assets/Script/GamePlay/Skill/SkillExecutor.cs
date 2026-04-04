@@ -191,8 +191,15 @@ namespace GamePlay.Skill
 
             target.TakeDamage(info);
 
-            targetResult.ActualDamage = (int)info.damage;
-            targetResult.DamageType = effect.DamageType;
+            // 创建伤害记录并添加到列表
+            //其实项目中暂时还没有引入暴击计算  所以这一个先为False
+            DamageRecord damageRecord = new DamageRecord(
+                (int)info.damage,
+                effect.DamageType,
+                false
+            );
+            targetResult.DamageRecords.Add(damageRecord);
+            
             targetResult.IsDead = target.Character.statSystem.currentHP <= 0;
         }
 
@@ -210,7 +217,14 @@ namespace GamePlay.Skill
             );
 
             target.TakeHeal(healInfo);
-            targetResult.ActualDamage = -(int)healInfo.damage;
+            
+            // 创建治疗记录并添加到列表（使用负值表示治疗）
+            DamageRecord healRecord = new DamageRecord(
+                -(int)healInfo.damage,  // 负值表示治疗
+                DamageType.Heal,
+                false  // 治疗不会暴击
+            );
+            targetResult.DamageRecords.Add(healRecord);
         }
 
         private static void ApplyCasterMovement(MapUnit caster, Vector3Int targetPosition, PhaseResult phaseResult)

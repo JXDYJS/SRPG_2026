@@ -231,13 +231,31 @@ namespace GamePlay.Skill
 
             targetView.PlayHitVisual();
 
-            if (tResult.ActualDamage > 0)
+            // 遍历所有伤害记录并显示
+            if (tResult.HasDamageRecords)
             {
-                targetView.ShowDamageFloatingText(tResult.ActualDamage, tResult.IsCrit, tResult.DamageType);
-            }
-            else if (tResult.ActualDamage < 0)
-            {
-                targetView.ShowDamageFloatingText(-tResult.ActualDamage, false, DamageType.Heal);
+                // for (int i = 0; i < tResult.DamageRecords.Count; i++)
+                // {
+                //     var record = tResult.DamageRecords[i];
+                    
+                //     if (record.Value > 0)
+                //     {
+                //         // 伤害
+                //         targetView.ShowDamageFloatingText(record.Value, record.IsCrit, record.DamageType);
+                //     }
+                //     else if (record.Value < 0)
+                //     {
+                //         // 治疗（转为正数显示）
+                //         targetView.ShowDamageFloatingText(-record.Value, false, DamageType.Heal);
+                //     }
+                    
+                //     // 如果有多条伤害记录，添加短暂延迟以实现依次显示效果
+                //     if (i < tResult.DamageRecords.Count - 1)
+                //     {
+                //         await UniTask.Delay(TimeSpan.FromSeconds(0.1), delayType: DelayType.DeltaTime);
+                //     }
+                // }
+                await targetView.ShowDamageList(tResult.DamageRecords);
             }
 
             // 处理 Buff 结算

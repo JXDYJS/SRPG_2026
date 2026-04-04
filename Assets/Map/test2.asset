@@ -55,12 +55,6 @@ MonoBehaviour:
     XRound: 0
     ZRound: 0
     YRound: 0
-  - position: {x: 7, y: 0, z: 0}
-    prefabId: 1
-    rotationIndex: 0
-    XRound: 0
-    ZRound: 0
-    YRound: 0
   - position: {x: 0, y: 0, z: 6}
     prefabId: 1
     rotationIndex: 0
@@ -537,6 +531,12 @@ MonoBehaviour:
     YRound: 0
   - position: {x: 5, y: 1, z: 6}
     prefabId: 3
+    rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
+  - position: {x: 7, y: 0, z: 0}
+    prefabId: 5
     rotationIndex: 0
     XRound: 0
     ZRound: 0

@@ -2,6 +2,9 @@ using System;
 using UnityEngine;
 using Global;
 using Cysharp.Threading.Tasks;
+using GamePlay.Skill;
+using System.Collections.Generic;
+using Unity.VisualScripting;
 
 namespace GamePlay.View
 {
@@ -13,6 +16,8 @@ namespace GamePlay.View
         private Color[] _originalColors;
 
         public event Action<string> OnAnimationEventTriggered;
+        public int TimeGapDamage = 300;//调整两个伤害之间的时间间隔
+        public Vector3 DamagePosOffset = new Vector3(0.0f,2.0f,1.0f);
 
         void Awake()
         {
@@ -58,8 +63,22 @@ namespace GamePlay.View
         {
             if (Managers.DamageUIManager.Instance != null)
             {
-                Vector3 textPos = transform.position + Vector3.up * 1.5f;
+                //Vector3 textPos = transform.position + Vector3.up * 1.5f;
+                Vector3 textPos = transform.position +DamagePosOffset;
                 Managers.DamageUIManager.Instance.ShowDamage(textPos, damage, damageType);
+            }
+        }
+
+        public async UniTask ShowDamageList(List<DamageRecord> DamageRecords)
+        {
+            for(int i = 0;i < DamageRecords.Count; i++)
+            {
+                DamageRecord damageRecord = DamageRecords[i];
+                ShowDamageFloatingText(damageRecord.Value,damageRecord.IsCrit,damageRecord.DamageType);
+                if(i < DamageRecords.Count - 1)
+                {
+                    await UniTask.Delay(TimeGapDamage);
+                }
             }
         }
 
