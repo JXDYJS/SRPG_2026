@@ -93,60 +93,69 @@ def read_schem_file(schem_path):
     
     print(f"DEBUG: Palette type = {type(palette).__name__}")
     
-    palette_entries = []
-    
+    # 场景1: Palette 是 TAG_List（标准 Sponge Schematic 格式）
+    # 每个元素是 TAG_Compound，包含 "Name" 等字段
     if isinstance(palette, TAG_List):
-        # Palette 是 TAG_List（标准 Sponge Schematic 格式）
-        palette_entries = palette.tags
-        print(f"DEBUG: Palette is TAG_List with {len(palette_entries)} entries")
-    elif isinstance(palette, TAG_Compound):
-        # Palette 是 TAG_Compound（某些变体格式）
-        # 每个sub-tag是一个palette entry，tag.name可能是什么不重要
-        palette_entries = palette.tags
-        print(f"DEBUG: Palette is TAG_Compound with {len(palette_entries)} entries")
-    else:
-        raise ValueError(f"Unsupported palette type: {type(palette).__name__}")
-    
-    if not palette_entries:
-        raise ValueError(f"Palette has no entries")
-    
-    print(f"DEBUG: Processing {len(palette_entries)} palette entries")
-    
-    # 遍历 palette 条目
-    for palette_index, tag in enumerate(palette_entries):
-        print(f"DEBUG: [{palette_index}] Tag type={type(tag).__name__}, name='{tag.name}'")
-        
-        # 如果标签本身就是 Name 标签
-        if tag.name == "Name" and hasattr(tag, 'value'):
-            index_to_name[palette_index] = tag.value
-            print(f"DEBUG:   → Mapped: {tag.value}")
-        
-        # 如果是 TAG_Compound，在其中查找 Name 标签
-        elif isinstance(tag, TAG_Compound):
-            if hasattr(tag, 'tags'):
+        print(f"DEBUG: Palette is TAG_List with {len(palette.tags)} entries")
+        for palette_index, tag in enumerate(palette.tags):
+            if isinstance(tag, TAG_Compound):
                 for sub_tag in tag.tags:
                     if sub_tag.name == "Name":
                         index_to_name[palette_index] = sub_tag.value
-                        print(f"DEBUG:   → Mapped: {sub_tag.value}")
+                        print(f"DEBUG: [{palette_index}] -> {sub_tag.value}")
                         break
-            elif hasattr(tag, 'get'):
-                name_tag = tag.get('Name')
-                if name_tag:
-                    val = name_tag.value if hasattr(name_tag, 'value') else name_tag
-                    index_to_name[palette_index] = val
-                    print(f"DEBUG:   → Mapped via get: {val}")
-        
-        # 如果标签有 value 且包含 Name（某些变体）
-        elif hasattr(tag, 'value') and isinstance(tag, TAG_Compound) == False:
-            if 'name' in str(tag.value).lower() or tag.name in ['minecraft:air', 'minecraft:dirt', 'minecraft:grass_block']:
-                print(f"DEBUG:   → Potentially a block name: {tag.value}")
+            elif tag.name == "Name" and hasattr(tag, 'value'):
+                index_to_name[palette_index] = tag.value
+                print(f"DEBUG: [{palette_index}] -> {tag.value}")
     
-    print(f"DEBUG: Final palette mapping: {len(index_to_name)} entries")
+    # 场景2: Palette 是 TAG_Compound（某些 WorldEdit 版本或变体）
+    # 子标签的 name 是索引字符串（"0", "1", "2"...），value 是包含数据的 TAG_Compound
+    elif isinstance(palette, TAG_Compound):
+        print(f"DEBUG: Palette is TAG_Compound with {len(palette.tags)} entries")
+        
+        for tag in palette.tags:
+            # 尝试解析 tag.name 作为数字索引
+            try:
+                palette_index = int(tag.name)
+            except (ValueError, AttributeError):
+                # 如果 tag.name 不是数字，直接用枚举索引
+                palette_index = len(index_to_name)
+            
+            print(f"DEBUG: Entry '{tag.name}' -> index {palette_index}, type={type(tag).__name__}")
+            
+            # 如果标签本身是 TAG_Compound，在其中查找 Name
+            if isinstance(tag, TAG_Compound):
+                if hasattr(tag, 'tags'):
+                    for sub_tag in tag.tags:
+                        if sub_tag.name == "Name":
+                            index_to_name[palette_index] = sub_tag.value
+                            print(f"DEBUG:   Found Name: {sub_tag.value}")
+                            break
+                elif hasattr(tag, 'get'):
+                    name_tag = tag.get('Name')
+                    if name_tag:
+                        val = name_tag.value if hasattr(name_tag, 'value') else name_tag
+                        index_to_name[palette_index] = val
+                        print(f"DEBUG:   Found Name via get: {val}")
+            
+            # 如果标签的 value 包含 Name 信息（某些简化格式）
+            elif hasattr(tag, 'value'):
+                val = tag.value
+                if isinstance(val, TAG_Compound):
+                    for sub_tag in val.tags:
+                        if sub_tag.name == "Name":
+                            index_to_name[palette_index] = sub_tag.value
+                            print(f"DEBUG:   Found Name in value: {sub_tag.value}")
+                            break
+    else:
+        raise ValueError(f"Unsupported palette type: {type(palette).__name__}")
+    
+    print(f"DEBUG: Final palette mapping has {len(index_to_name)} entries")
     for idx, name in sorted(index_to_name.items()):
         print(f"DEBUG:   {idx}: {name}")
     
     if not index_to_name:
-        raise ValueError(f"Palette is empty or cannot be parsed (found {len(palette_entries)} entries)")
+        raise ValueError(f"Palette is empty or cannot be parsed")
             
     # Extract block data (varint encoded palette indices)
     raw_block_data = nbt_file.get('BlockData').value
