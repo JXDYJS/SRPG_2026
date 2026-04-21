@@ -109,41 +109,50 @@ def read_schem_file(schem_path):
                 print(f"DEBUG: [{palette_index}] -> {tag.value}")
     
     # 场景2: Palette 是 TAG_Compound（某些 WorldEdit 版本或变体）
-    # 子标签的 name 是索引字符串（"0", "1", "2"...），value 是包含数据的 TAG_Compound
     elif isinstance(palette, TAG_Compound):
         print(f"DEBUG: Palette is TAG_Compound with {len(palette.tags)} entries")
         
-        for palette_index, tag in enumerate(palette.tags):
-            print(f"DEBUG: Entry index {palette_index}: type={type(tag).__name__}, name='{tag.name}'")
+        for tag in palette.tags:
+            print(f"DEBUG: Entry: type={type(tag).__name__}, name='{tag.name}'")
+            
+            # 特殊格式：TAG_List，tag.name是block name，tag.value是palette index
+            if isinstance(tag, TAG_List) and hasattr(tag, 'value'):
+                palette_index = tag.value
+                block_name = tag.name
+                index_to_name[palette_index] = block_name
+                print(f"DEBUG:   >>> MAPPED [{palette_index}] -> {block_name}")
             
             # 特殊格式：tag.name 直接是 Minecraft 方块名称（如 "minecraft:air"）
-            if isinstance(tag.name, str) and (tag.name.startswith('minecraft:') or ':' in tag.name):
+            elif isinstance(tag.name, str) and (tag.name.startswith('minecraft:') or ':' in tag.name):
+                palette_index = len(index_to_name)
                 index_to_name[palette_index] = tag.name
-                print(f"DEBUG:   >>> MAPPED from tag.name: {tag.name}")
+                print(f"DEBUG:   >>> MAPPED [{palette_index}] -> {tag.name}")
             
             # 如果标签本身是 TAG_Compound，在其中查找 Name
             elif isinstance(tag, TAG_Compound):
+                palette_index = len(index_to_name)
                 if hasattr(tag, 'tags'):
                     for sub_tag in tag.tags:
                         if sub_tag.name == "Name":
                             index_to_name[palette_index] = sub_tag.value
-                            print(f"DEBUG:   >>> MAPPED from sub-tag: {sub_tag.value}")
+                            print(f"DEBUG:   >>> MAPPED [{palette_index}] -> {sub_tag.value}")
                             break
                 elif hasattr(tag, 'get'):
                     name_tag = tag.get('Name')
                     if name_tag:
                         val = name_tag.value if hasattr(name_tag, 'value') else name_tag
                         index_to_name[palette_index] = val
-                        print(f"DEBUG:   >>> MAPPED via get: {val}")
+                        print(f"DEBUG:   >>> MAPPED [{palette_index}] -> {val}")
             
             # 如果标签的 value 包含 Name 信息（某些简化格式）
             elif hasattr(tag, 'value'):
+                palette_index = len(index_to_name)
                 val = tag.value
                 if isinstance(val, TAG_Compound):
                     for sub_tag in val.tags:
                         if sub_tag.name == "Name":
                             index_to_name[palette_index] = sub_tag.value
-                            print(f"DEBUG:   >>> MAPPED from value: {sub_tag.value}")
+                            print(f"DEBUG:   >>> MAPPED [{palette_index}] -> {sub_tag.value}")
                             break
     else:
         raise ValueError(f"Unsupported palette type: {type(palette).__name__}")
