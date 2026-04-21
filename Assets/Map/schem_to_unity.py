@@ -1,0 +1,289 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Minecraft WorldEdit .schem to Unity MapDataSO converter
+Converts NBT .schem file to Unity ScriptableObject .asset YAML format
+"""
+
+import os
+import json
+import argparse
+import gzip
+from nbt.nbt import NBTFile, TAG_Compound, TAG_List, TAG_Int_Array, TAG_Byte_Array
+
+# Default paths (can be changed via command line arguments)
+DEFAULT_SCHEM_PATH = "Assets/Map/input.schem"
+DEFAULT_MAPPING_PATH = "Assets/Map/mapping.json"
+DEFAULT_OUTPUT_PATH = "Assets/Map/GeneratedMapData.asset"
+
+# Unity YAML template header
+YAML_HEADER = """%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 601d436ca52ab57408a36973df82a699, type: 3}
+  m_Name: GeneratedMap
+  m_EditorClassIdentifier: 
+  blocks:
+"""
+
+# YAML block template
+YAML_BLOCK_TEMPLATE = """  - position: {{x: {x}, y: {y}, z: {z}}}
+    prefabId: {prefab_id}
+    rotationIndex: 0
+    XRound: 0
+    ZRound: 0
+    YRound: 0
+"""
+
+# YAML footer
+YAML_FOOTER = """  editorPreviewId: 0
+"""
+
+
+def load_mapping(mapping_path):
+    """
+    Load block ID mapping from JSON file
+    Returns: Dictionary { "minecraft:block_id": prefabId_int }
+    """
+    if not os.path.exists(mapping_path):
+        raise FileNotFoundError(f"Mapping file not found: {mapping_path}")
+    
+    with open(mapping_path, 'r', encoding='utf-8') as f:
+        mapping = json.load(f)
+    
+    # Validate mapping format
+    for block_name, prefab_id in mapping.items():
+        if not isinstance(prefab_id, int):
+            raise ValueError(f"Invalid prefabId for {block_name}: must be integer")
+    
+    return mapping
+
+
+def read_schem_file(schem_path):
+    """
+    Read and parse .schem NBT file
+    Returns: (width, height, length, palette, block_data)
+    """
+    if not os.path.exists(schem_path):
+        raise FileNotFoundError(f"Schematic file not found: {schem_path}")
+    
+    # 【修改1】抛弃手动 gzip 解压，直接依赖 nbt 库原生的智能加载（与 V2 测试版一致）
+    nbt_file = NBTFile(schem_path)
+    
+    # Extract dimensions
+    width = nbt_file.get('Width').value
+    height = nbt_file.get('Height').value
+    length = nbt_file.get('Length').value
+    
+    # 【修改2】正确读取 Sponge Schematic V2/V3 格式的 Palette
+    # Palette 是 TAG_List，其中每个元素是 TAG_Compound，包含 "Name" 等标签
+    # 列表索引是 palette index，不是 tag.value 或 tag.name
+    index_to_name = {}
+    palette = nbt_file.get('Palette')
+    
+    if palette is None:
+        raise ValueError("Palette not found in schematic file")
+    
+    print(f"DEBUG: Palette type = {type(palette).__name__}")
+    print(f"DEBUG: Palette has 'tags' = {hasattr(palette, 'tags')}")
+    print(f"DEBUG: Palette has '__iter__' = {hasattr(palette, '__iter__')}")
+    
+    # 尝试多种方式读取 palette
+    palette_items = []
+    
+    # 方法1: 直接使用 .tags 属性（标准方式）
+    if hasattr(palette, 'tags'):
+        palette_items = palette.tags
+        print(f"DEBUG: Using .tags attribute, found {len(palette_items)} items")
+    # 方法2: 将 palette 视为可迭代对象
+    elif hasattr(palette, '__iter__'):
+        palette_items = list(palette)
+        print(f"DEBUG: Using iteration, found {len(palette_items)} items")
+    # 方法3: 使用 list() 构造函数
+    else:
+        try:
+            palette_items = list(palette)
+            print(f"DEBUG: Using list() constructor, found {len(palette_items)} items")
+        except:
+            pass
+    
+    if not palette_items:
+        print(f"DEBUG: All methods failed. Palette attributes: {[a for a in dir(palette) if not a.startswith('_')]}")
+        raise ValueError(f"Cannot read palette: no items found (palette type: {type(palette)})")
+    
+    print(f"DEBUG: Successfully got {len(palette_items)} palette items")
+    
+    # 遍历 palette 条目
+    for palette_index, tag in enumerate(palette_items):
+        if isinstance(tag, TAG_Compound):
+            # 在 Compound 中查找 "Name" 标签
+            if hasattr(tag, 'tags'):
+                for sub_tag in tag.tags:
+                    if sub_tag.name == "Name":
+                        index_to_name[palette_index] = sub_tag.value
+                        print(f"DEBUG: Mapped palette index {palette_index} -> '{sub_tag.value}'")
+                        break
+            # 也尝试直接访问属性
+            elif hasattr(tag, 'get'):
+                name_tag = tag.get('Name')
+                if name_tag:
+                    index_to_name[palette_index] = name_tag.value if hasattr(name_tag, 'value') else name_tag
+                    print(f"DEBUG: Mapped palette index {palette_index} -> '{index_to_name[palette_index]}' (via get method)")
+    
+    print(f"DEBUG: Final palette mapping has {len(index_to_name)} entries")
+    
+    if not index_to_name:
+        raise ValueError(f"Palette is empty or cannot be parsed (found {len(palette_items)} palette entries)")
+            
+    # Extract block data (varint encoded palette indices)
+    raw_block_data = nbt_file.get('BlockData').value
+    
+    # Decode varint array to get palette indices
+    decoded_block_data = []
+    pos = 0
+    while pos < len(raw_block_data):
+        value = 0
+        shift = 0
+        while True:
+            if pos >= len(raw_block_data):
+                break
+            byte = raw_block_data[pos] & 0xFF
+            pos += 1
+            value = value | ((byte & 0x7F) << shift)
+            if (byte & 0x80) == 0:
+                break
+            shift += 7
+        decoded_block_data.append(value)
+    
+    return width, height, length, index_to_name, decoded_block_data
+
+
+def convert_schem_to_unity(schem_path, mapping_path, output_path):
+    """
+    Main conversion function
+    """
+    # Check output directory exists
+    output_dir = os.path.dirname(output_path)
+    if output_dir and not os.path.exists(output_dir):
+        os.makedirs(output_dir, exist_ok=True)
+    
+    # Load mapping
+    print(f"Loading mapping from: {mapping_path}")
+    block_mapping = load_mapping(mapping_path)
+    
+    # Read schem file
+    print(f"Reading schematic from: {schem_path}")
+    width, height, length, index_to_name, block_data = read_schem_file(schem_path)
+    
+    print(f"Schematic dimensions: {width} x {height} x {length}")
+    print(f"Total blocks: {len(block_data)}")
+    print(f"Palette size: {len(index_to_name)}")
+    
+    # Build final mapping: schem_index -> prefab_id
+    # Skip air and blocks not in mapping
+    index_to_prefab = {}
+    skipped_air = 0
+    skipped_missing = 0
+    for schem_index, block_name in index_to_name.items():
+        if block_name == "minecraft:air" or block_name == "air":
+            skipped_air += 1
+            continue
+        if block_name not in block_mapping:
+            skipped_missing += 1
+            continue
+        index_to_prefab[schem_index] = block_mapping[block_name]
+    
+    print(f"Mapping complete: {len(index_to_prefab)} blocks mapped")
+    if skipped_air > 0:
+        print(f"Skipped {skipped_air} air blocks")
+    if skipped_missing > 0:
+        print(f"Skipped {skipped_missing} blocks not in mapping")
+    
+    # Generate YAML
+    print(f"Generating Unity asset to: {output_path}")
+    
+    with open(output_path, 'w', encoding='utf-8') as out_file:
+        # Write header
+        out_file.write(YAML_HEADER)
+        
+        # Iterate all blocks
+        generated_blocks = 0
+        
+        for y in range(height):
+            for z in range(length):
+                for x in range(width):
+                    # Calculate 1D index from 3D coordinates
+                    # Formula: Index = (y * Length + z) * Width + x
+                    index = (y * length + z) * width + x
+                    
+                    if index >= len(block_data):
+                        continue
+                    
+                    schem_index = block_data[index]
+                    
+                    # Check if this block should be included
+                    if schem_index not in index_to_prefab:
+                        continue
+                    
+                    prefab_id = index_to_prefab[schem_index]
+                    
+                    # Write block entry
+                    block_line = YAML_BLOCK_TEMPLATE.format(
+                        x=x, y=y, z=z,
+                        prefab_id=prefab_id
+                    )
+                    out_file.write(block_line)
+                    generated_blocks += 1
+        
+        # Write footer
+        out_file.write(YAML_FOOTER)
+    
+    print(f"\nConversion complete!")
+    print(f"Generated {generated_blocks} blocks in output file")
+    print(f"Output saved to: {output_path}")
+    
+    return generated_blocks
+
+
+def main():
+    """
+    Main entry point with argument parsing
+    """
+    parser = argparse.ArgumentParser(
+        description='Convert Minecraft WorldEdit .schem to Unity MapDataSO.asset'
+    )
+    parser.add_argument(
+        '-s', '--schem',
+        default=DEFAULT_SCHEM_PATH,
+        help=f'Path to input .schem file (default: {DEFAULT_SCHEM_PATH})'
+    )
+    parser.add_argument(
+        '-m', '--mapping',
+        default=DEFAULT_MAPPING_PATH,
+        help=f'Path to mapping.json file (default: {DEFAULT_MAPPING_PATH})'
+    )
+    parser.add_argument(
+        '-o', '--output',
+        default=DEFAULT_OUTPUT_PATH,
+        help=f'Path to output .asset file (default: {DEFAULT_OUTPUT_PATH})'
+    )
+    
+    args = parser.parse_args()
+    
+    try:
+        convert_schem_to_unity(args.schem, args.mapping, args.output)
+    except Exception as e:
+        print(f"Error: {e}")
+        exit(1)
+
+
+if __name__ == "__main__":
+    main()
