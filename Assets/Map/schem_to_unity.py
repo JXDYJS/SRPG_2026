@@ -84,8 +84,7 @@ def read_schem_file(schem_path):
     length = nbt_file.get('Length').value
     
     # 【修改2】正确读取 Sponge Schematic V2/V3 格式的 Palette
-    # Palette 是 TAG_List，其中每个元素是 TAG_Compound，包含 "Name" 等标签
-    # 列表索引是 palette index，不是 tag.value 或 tag.name
+    # Palette 可能是 TAG_List 或 TAG_Compound
     index_to_name = {}
     palette = nbt_file.get('Palette')
     
@@ -93,21 +92,22 @@ def read_schem_file(schem_path):
         raise ValueError("Palette not found in schematic file")
     
     print(f"DEBUG: Palette type = {type(palette).__name__}")
-    print(f"DEBUG: Palette has 'tags' = {hasattr(palette, 'tags')}")
-    print(f"DEBUG: Palette has '__iter__' = {hasattr(palette, '__iter__')}")
     
-    # 尝试多种方式读取 palette
     palette_items = []
     
-    # 方法1: 直接使用 .tags 属性（标准方式）
-    if hasattr(palette, 'tags'):
+    # 方法1: Palette 是 TAG_List（标准 Sponge Schematic 格式）
+    if hasattr(palette, 'tags') and isinstance(palette, TAG_List):
         palette_items = palette.tags
-        print(f"DEBUG: Using .tags attribute, found {len(palette_items)} items")
-    # 方法2: 将 palette 视为可迭代对象
+        print(f"DEBUG: Using TAG_List.tags, found {len(palette_items)} items")
+    # 方法2: Palette 是 TAG_Compound（某些变体格式）
+    elif isinstance(palette, TAG_Compound):
+        palette_items = palette.tags
+        print(f"DEBUG: Using TAG_Compound.tags, found {len(palette_items)} items")
+    # 方法3: 将 palette 视为可迭代对象
     elif hasattr(palette, '__iter__'):
         palette_items = list(palette)
         print(f"DEBUG: Using iteration, found {len(palette_items)} items")
-    # 方法3: 使用 list() 构造函数
+    # 方法4: 使用 list() 构造函数
     else:
         try:
             palette_items = list(palette)
@@ -116,27 +116,33 @@ def read_schem_file(schem_path):
             pass
     
     if not palette_items:
-        print(f"DEBUG: All methods failed. Palette attributes: {[a for a in dir(palette) if not a.startswith('_')]}")
+        print(f"DEBUG: All methods failed")
         raise ValueError(f"Cannot read palette: no items found (palette type: {type(palette)})")
     
     print(f"DEBUG: Successfully got {len(palette_items)} palette items")
     
     # 遍历 palette 条目
     for palette_index, tag in enumerate(palette_items):
+        print(f"DEBUG: Item {palette_index}: type={type(tag).__name__}, name='{tag.name}'")
+        
         if isinstance(tag, TAG_Compound):
             # 在 Compound 中查找 "Name" 标签
             if hasattr(tag, 'tags'):
                 for sub_tag in tag.tags:
                     if sub_tag.name == "Name":
                         index_to_name[palette_index] = sub_tag.value
-                        print(f"DEBUG: Mapped palette index {palette_index} -> '{sub_tag.value}'")
+                        print(f"DEBUG:   Found Name: {sub_tag.value}")
                         break
             # 也尝试直接访问属性
             elif hasattr(tag, 'get'):
                 name_tag = tag.get('Name')
                 if name_tag:
                     index_to_name[palette_index] = name_tag.value if hasattr(name_tag, 'value') else name_tag
-                    print(f"DEBUG: Mapped palette index {palette_index} -> '{index_to_name[palette_index]}' (via get method)")
+                    print(f"DEBUG:   Found Name via get: {index_to_name[palette_index]}")
+        elif hasattr(tag, 'value') and tag.name == "Name":
+            # 标签本身就是 Name 标签
+            index_to_name[palette_index] = tag.value
+            print(f"DEBUG:   Tag is Name: {tag.value}")
     
     print(f"DEBUG: Final palette mapping has {len(index_to_name)} entries")
     
