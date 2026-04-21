@@ -115,17 +115,30 @@ def read_schem_file(schem_path):
         for tag in palette.tags:
             print(f"DEBUG: Entry: type={type(tag).__name__}, name='{tag.name}'")
             
-            # 特殊格式：TAG_List，tag.name是palette index，tag.value是block name
+            # 特殊格式：TAG_List，tag.name是palette index，tag.value包含block name的TAG_Compound
             if isinstance(tag, TAG_List) and hasattr(tag, 'value'):
-                # tag.name is index (string like "0", "1", "2"), tag.value is block name
+                # tag.name is palette index ("0", "1", "2"...), tag.value is TAG_Compound with "Name" sub-tag
                 try:
                     palette_index = int(tag.name)
                 except (ValueError, TypeError):
                     # Fallback to enumeration if conversion fails
                     palette_index = len(index_to_name)
-                block_name = tag.value
-                index_to_name[palette_index] = block_name
-                print(f"DEBUG:   >>> MAPPED [{palette_index}] -> {block_name}")
+                
+                # tag.value is TAG_Compound, need to extract "Name" from its sub-tags
+                block_name_compound = tag.value
+                if isinstance(block_name_compound, TAG_Compound):
+                    if hasattr(block_name_compound, 'tags'):
+                        for sub_tag in block_name_compound.tags:
+                            if sub_tag.name == "Name":
+                                index_to_name[palette_index] = sub_tag.value
+                                print(f"DEBUG:   >>> MAPPED [{palette_index}] -> {sub_tag.value}")
+                                break
+                elif hasattr(block_name_compound, 'get'):
+                    name_tag = block_name_compound.get('Name')
+                    if (name_tag):
+                        val = name_tag.value if hasattr(name_tag, 'value') else name_tag
+                        index_to_name[palette_index] = val
+                        print(f"DEBUG:   >>> MAPPED [{palette_index}] -> {val}")
             
             # 特殊格式：tag.name 直接是 Minecraft 方块名称（如 "minecraft:air"）
             elif isinstance(tag.name, str) and (tag.name.startswith('minecraft:') or ':' in tag.name):
