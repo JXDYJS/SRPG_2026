@@ -113,30 +113,28 @@ def read_schem_file(schem_path):
     elif isinstance(palette, TAG_Compound):
         print(f"DEBUG: Palette is TAG_Compound with {len(palette.tags)} entries")
         
-        for tag in palette.tags:
-            # 尝试解析 tag.name 作为数字索引
-            try:
-                palette_index = int(tag.name)
-            except (ValueError, AttributeError):
-                # 如果 tag.name 不是数字，直接用枚举索引
-                palette_index = len(index_to_name)
+        for palette_index, tag in enumerate(palette.tags):
+            print(f"DEBUG: Entry index {palette_index}: type={type(tag).__name__}, name='{tag.name}'")
             
-            print(f"DEBUG: Entry '{tag.name}' -> index {palette_index}, type={type(tag).__name__}")
+            # 特殊格式：tag.name 直接是 Minecraft 方块名称（如 "minecraft:air"）
+            if isinstance(tag.name, str) and (tag.name.startswith('minecraft:') or ':' in tag.name):
+                index_to_name[palette_index] = tag.name
+                print(f"DEBUG:   >>> MAPPED from tag.name: {tag.name}")
             
             # 如果标签本身是 TAG_Compound，在其中查找 Name
-            if isinstance(tag, TAG_Compound):
+            elif isinstance(tag, TAG_Compound):
                 if hasattr(tag, 'tags'):
                     for sub_tag in tag.tags:
                         if sub_tag.name == "Name":
                             index_to_name[palette_index] = sub_tag.value
-                            print(f"DEBUG:   Found Name: {sub_tag.value}")
+                            print(f"DEBUG:   >>> MAPPED from sub-tag: {sub_tag.value}")
                             break
                 elif hasattr(tag, 'get'):
                     name_tag = tag.get('Name')
                     if name_tag:
                         val = name_tag.value if hasattr(name_tag, 'value') else name_tag
                         index_to_name[palette_index] = val
-                        print(f"DEBUG:   Found Name via get: {val}")
+                        print(f"DEBUG:   >>> MAPPED via get: {val}")
             
             # 如果标签的 value 包含 Name 信息（某些简化格式）
             elif hasattr(tag, 'value'):
@@ -145,7 +143,7 @@ def read_schem_file(schem_path):
                     for sub_tag in val.tags:
                         if sub_tag.name == "Name":
                             index_to_name[palette_index] = sub_tag.value
-                            print(f"DEBUG:   Found Name in value: {sub_tag.value}")
+                            print(f"DEBUG:   >>> MAPPED from value: {sub_tag.value}")
                             break
     else:
         raise ValueError(f"Unsupported palette type: {type(palette).__name__}")
