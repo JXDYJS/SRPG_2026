@@ -115,10 +115,15 @@ def read_schem_file(schem_path):
         for tag in palette.tags:
             print(f"DEBUG: Entry: type={type(tag).__name__}, name='{tag.name}'")
             
-            # 特殊格式：TAG_List，tag.name是block name，tag.value是palette index
+            # 特殊格式：TAG_List，tag.name是palette index，tag.value是block name
             if isinstance(tag, TAG_List) and hasattr(tag, 'value'):
-                palette_index = tag.value
-                block_name = tag.name
+                # tag.name is index (string like "0", "1", "2"), tag.value is block name
+                try:
+                    palette_index = int(tag.name)
+                except (ValueError, TypeError):
+                    # Fallback to enumeration if conversion fails
+                    palette_index = len(index_to_name)
+                block_name = tag.value
                 index_to_name[palette_index] = block_name
                 print(f"DEBUG:   >>> MAPPED [{palette_index}] -> {block_name}")
             
