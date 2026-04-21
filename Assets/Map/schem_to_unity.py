@@ -185,6 +185,10 @@ def read_schem_file(schem_path):
     # Extract block data (varint encoded palette indices)
     raw_block_data = nbt_file.get('BlockData').value
     
+    print(f"DEBUG: BlockData bytes: {len(raw_block_data)} (expected: {width * height * length} blocks)")
+    if len(raw_block_data) <= 100:
+        print(f"DEBUG: BlockData (first 100 bytes): {list(raw_block_data[:100])}")
+    
     # Decode varint array to get palette indices
     decoded_block_data = []
     pos = 0
@@ -201,6 +205,16 @@ def read_schem_file(schem_path):
                 break
             shift += 7
         decoded_block_data.append(value)
+    
+    print(f"DEBUG: Decoded {len(decoded_block_data)} palette indices")
+    if len(decoded_block_data) <= 50:
+        print(f"DEBUG: First 50 indices: {decoded_block_data[:50]}")
+    
+    # Check for invalid indices
+    max_palette_idx = len(index_to_name) - 1 if index_to_name else 0
+    invalid_indices = [i for i in decoded_block_data if i >= max_palette_idx]
+    if invalid_indices:
+        print(f"DEBUG: WARNING: Found {len(invalid_indices)} invalid palette indices (max valid: {max_palette_idx}): {invalid_indices[:10]}")
     
     return width, height, length, index_to_name, decoded_block_data
 
