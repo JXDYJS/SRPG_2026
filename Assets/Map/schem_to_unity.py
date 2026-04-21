@@ -231,14 +231,31 @@ def convert_schem_to_unity(schem_path, mapping_path, output_path):
     index_to_prefab = {}
     skipped_air = 0
     skipped_missing = 0
+    
     for schem_index, block_name in index_to_name.items():
+        # Skip air blocks
         if block_name == "minecraft:air" or block_name == "air":
             skipped_air += 1
             continue
-        if block_name not in block_mapping:
+        
+        # Normalize block name: remove state properties (anything in square brackets)
+        # 例如: "minecraft:grass_block[nowy=false]" -> "minecraft:grass_block"
+        normalized_name = block_name
+        if '[' in block_name:
+            normalized_name = block_name.split('[')[0]
+        
+        # Look up in mapping (try normalized name first, then original)
+        if normalized_name in block_mapping:
+            index_to_prefab[schem_index] = block_mapping[normalized_name]
+            if normalized_name != block_name:
+                print(f"DEBUG:   [{schem_index}] Normalized '{block_name}' -> '{normalized_name}' -> prefabId={block_mapping[normalized_name]}")
+        elif block_name in block_mapping:
+            index_to_prefab[schem_index] = block_mapping[block_name]
+        else:
             skipped_missing += 1
-            continue
-        index_to_prefab[schem_index] = block_mapping[block_name]
+            print(f"DEBUG:   [{schem_index}] '{normalized_name}' not in mapping (skipped)")
+            if normalized_name != block_name:
+                print(f"DEBUG:   [{schem_index}] Original '{block_name}' also not in mapping")
     
     print(f"Mapping complete: {len(index_to_prefab)} blocks mapped")
     if skipped_air > 0:
