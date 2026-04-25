@@ -38,7 +38,7 @@ MonoBehaviour:
 YAML_BLOCK_TEMPLATE = """  - position: {{x: {x}, y: {y}, z: {z}}}
     prefabId: {prefab_id}
     rotationIndex: 0
-    XRound: 0
+    XRound: {x_round}
     ZRound: 0
     YRound: 0
 """
@@ -312,10 +312,15 @@ def convert_schem_to_unity(schem_path, mapping_path, output_path):
                     
                     prefab_id = index_to_prefab[schem_index]
                     
+                    # 根据方块类型计算旋转值
+                    block_name = index_to_name.get(schem_index, "")
+                    x_round = -90 if "cobblestone_slab" in block_name else 0
+                    
                     # Write block entry
                     block_line = YAML_BLOCK_TEMPLATE.format(
                         x=x, y=y, z=z,
-                        prefab_id=prefab_id
+                        prefab_id=prefab_id,
+                        x_round=x_round
                     )
                     out_file.write(block_line)
                     generated_blocks += 1
