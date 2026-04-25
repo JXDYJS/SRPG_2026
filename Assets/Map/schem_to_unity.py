@@ -142,7 +142,11 @@ def read_schem_file(schem_path):
             
             # 特殊格式：tag.name 直接是 Minecraft 方块名称（如 "minecraft:air"）
             elif isinstance(tag.name, str) and (tag.name.startswith('minecraft:') or ':' in tag.name):
-                palette_index = len(index_to_name)
+                # tag.name 是方块名称，tag.value 是实际像素索引
+                if hasattr(tag, 'value'):
+                    palette_index = tag.value
+                else:
+                    palette_index = len(index_to_name)
                 index_to_name[palette_index] = tag.name
                 print(f"DEBUG:   >>> MAPPED [{palette_index}] -> {tag.name}")
             
