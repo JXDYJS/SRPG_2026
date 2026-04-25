@@ -214,11 +214,11 @@ def read_schem_file(schem_path):
     if len(decoded_block_data) <= 50:
         print(f"DEBUG: First 50 indices: {decoded_block_data[:50]}")
     
-    # Check for invalid indices
+    # Check for palette indices that have no block name mapping
     max_palette_idx = len(index_to_name) - 1 if index_to_name else 0
-    invalid_indices = [i for i in decoded_block_data if i >= max_palette_idx]
-    if invalid_indices:
-        print(f"DEBUG: WARNING: Found {len(invalid_indices)} invalid palette indices (max valid: {max_palette_idx}): {invalid_indices[:10]}")
+    unmapped_indices = [i for i in decoded_block_data if i not in index_to_name]
+    if unmapped_indices:
+        print(f"DEBUG: Found {len(unmapped_indices)} indices not in palette (first 10): {unmapped_indices[:10]}")
     
     return width, height, length, index_to_name, decoded_block_data
 
@@ -293,11 +293,12 @@ def convert_schem_to_unity(schem_path, mapping_path, output_path):
         out_file.write(YAML_HEADER)
         
         # Iterate all blocks
+        generated_blocks = 0
         for z in range(length):
             for y in range(height):
                 for x in range(width):
                     # Calculate 1D index from 3D coordinates
-                    # Sponge Schematic V2 index = (z * width) + (y * length * width) + x
+                    # Sponge Schematic V2 index = z * width + y * length * width + x
                     index = z * width + y * length * width + x
                     
                     if index >= len(block_data):
@@ -317,6 +318,7 @@ def convert_schem_to_unity(schem_path, mapping_path, output_path):
                         prefab_id=prefab_id
                     )
                     out_file.write(block_line)
+                    generated_blocks += 1
         
         # Write footer
         out_file.write(YAML_FOOTER)
