@@ -240,7 +240,7 @@ def convert_schem_to_unity(schem_path, mapping_path, output_path):
     print(f"Total blocks: {len(block_data)}")
     print(f"Palette size: {len(index_to_name)}")
     
-        # Build final mapping: schem_index -> prefab_id
+    # Build final mapping: schem_index -> prefab_id
     # Skip air and blocks not in mapping
     index_to_prefab = {}
     skipped_air = 0
@@ -269,11 +269,11 @@ def convert_schem_to_unity(schem_path, mapping_path, output_path):
                 print(f"DEBUG:   [{schem_index}] Normalized '{block_name}' -> '{normalized_name}' -> prefabId={block_mapping[normalized_name]}")
         elif block_name in block_mapping:
             index_to_prefab[schem_index] = block_mapping[block_name]
-            else:
-                skipped_missing += 1
-                print(f"DEBUG:   [{schem_index}] '{normalized_name}' not in mapping (skipped)")
-                if normalized_name != block_name:
-                    print(f"DEBUG:   [{schem_index}] Original '{block_name}' also not in mapping")
+        else:
+            skipped_missing += 1
+            print(f"DEBUG:   [{schem_index}] '{normalized_name}' not in mapping (skipped)")
+            if normalized_name != block_name:
+                print(f"DEBUG:   [{schem_index}] Original '{block_name}' also not in mapping")
     
     print(f"Mapping complete: {len(index_to_prefab)} blocks mapped")
     if skipped_air > 0:
@@ -289,17 +289,12 @@ def convert_schem_to_unity(schem_path, mapping_path, output_path):
         out_file.write(YAML_HEADER)
         
         # Iterate all blocks
-        generated_blocks = 0
-        debug_written = 0  # Count blocks written with debug
-        blocks_without_mapping = []  # Track indices without valid prefab
-        
-        for y in range(height):
-            for z in range(length):
+        for z in range(length):
+            for y in range(height):
                 for x in range(width):
                     # Calculate 1D index from 3D coordinates
-                    # Sponge Schematic V2/V3 format: 列优先
-                    # Formula: Index = y * (Length * Width + z * Width + x
-                    index = y * length * width + z * width + x
+                    # Sponge Schematic V2 index = (z * width) + (y * length * width) + x
+                    index = z * width + y * length * width + x
                     
                     if index >= len(block_data):
                         continue
@@ -308,9 +303,6 @@ def convert_schem_to_unity(schem_path, mapping_path, output_path):
                     
                     # Check if this block should be included
                     if schem_index not in index_to_prefab:
-                        # Track which indices are missing mapping
-                        if schem_index not in index_to_name:
-                            blocks_without_mapping.append((x, y, z, schem_index))
                         continue
                     
                     prefab_id = index_to_prefab[schem_index]
@@ -321,16 +313,6 @@ def convert_schem_to_unity(schem_path, mapping_path, output_path):
                         prefab_id=prefab_id
                     )
                     out_file.write(block_line)
-                    generated_blocks += 1
-                    debug_written += 1
-        
-        # Debug output: statistics
-        if debug_written < generated_blocks:
-            print(f"DEBUG: Written {debug_written} blocks, {len(blocks_without_mapping)} missing mapping")
-            if blocks_without_mapping:
-                print(f"DEBUG: First 10 missing blocks: {blocks_without_mapping[:10]}")
-        
-        print(f"DEBUG: Total written: {generated_blocks} blocks (expected {len(block_data)} total)")
         
         # Write footer
         out_file.write(YAML_FOOTER)
