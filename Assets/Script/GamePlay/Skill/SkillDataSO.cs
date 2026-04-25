@@ -50,5 +50,80 @@ namespace GamePlay.Skill
         [Header("是否使用自定义")]
         public bool isCustomSkill = false;
         public CustomSkillBehaviorSO CustomBehavior = null;
+
+        // ================ 深度复制 ================
+        public SkillDataSO DeepClone()
+        {
+            SkillDataSO clone = CreateInstance<SkillDataSO>();
+            
+            // 复制基础属性
+            clone.SkillName = this.SkillName;
+            clone.Description = this.Description;
+            clone.Icon = this.Icon;
+            clone.TargetType = this.TargetType;
+            clone.CastPattern = this.CastPattern;
+            clone.CastMaxRange = this.CastMaxRange;
+            clone.CastMinRange = this.CastMinRange;
+            clone.CastVerticalRange = this.CastVerticalRange;
+            clone.Trajectory = this.Trajectory;
+            clone.StopsAtFirstHit = this.StopsAtFirstHit;
+            clone.Cost = this.Cost;
+            clone.isCustomSkill = this.isCustomSkill;
+            clone.CustomBehavior = this.CustomBehavior;
+
+            // 深度复制Phases
+            clone.Phases = new List<SkillPhase>();
+            foreach (SkillPhase originalPhase in this.Phases)
+            {
+                SkillPhase phaseClone = new SkillPhase(originalPhase.PhaseName, originalPhase.TargetType);
+                
+                // 复制phase属性
+                phaseClone.AoEPattern = originalPhase.AoEPattern;
+                phaseClone.AoERadius = originalPhase.AoERadius;
+                phaseClone.AoEVerticalRange = originalPhase.AoEVerticalRange;
+                phaseClone.OriginType = originalPhase.OriginType;
+                
+                // 深度复制Effects
+                phaseClone.Effects = new List<SkillEffect>();
+                foreach (SkillEffect originalEffect in originalPhase.Effects)
+                {
+                    SkillEffect effectClone = new SkillEffect();
+                    effectClone.EffectType = originalEffect.EffectType;
+                    effectClone.FlatBonus = originalEffect.FlatBonus;
+                    effectClone.Multiplier = originalEffect.Multiplier;
+                    effectClone.Constant = originalEffect.Constant;
+                    effectClone.DamageType = originalEffect.DamageType;
+                    effectClone.BuffID = originalEffect.BuffID;
+                    effectClone.BuffStacks = originalEffect.BuffStacks;
+                    effectClone.RemoveMode = originalEffect.RemoveMode;
+                    phaseClone.Effects.Add(effectClone);
+                }
+                
+                // 复制VisualData (都是值类型和引用，不需要深层复制引用对象)
+                if (originalPhase.VisualData != null)
+                {
+                    phaseClone.VisualData = new SkillVisualData();
+                    phaseClone.VisualData.CastAnimTrigger = originalPhase.VisualData.CastAnimTrigger;
+                    phaseClone.VisualData.CastEffect = originalPhase.VisualData.CastEffect;
+                    phaseClone.VisualData.Transit = originalPhase.VisualData.Transit;
+                    phaseClone.VisualData.ProjectilePrefab = originalPhase.VisualData.ProjectilePrefab;
+                    phaseClone.VisualData.ProjectileSpeed = originalPhase.VisualData.ProjectileSpeed;
+                    phaseClone.VisualData.HitTimingMode = originalPhase.VisualData.HitTimingMode;
+                    phaseClone.VisualData.HitEventName = originalPhase.VisualData.HitEventName;
+                    phaseClone.VisualData.HitDelayTime = originalPhase.VisualData.HitDelayTime;
+                    phaseClone.VisualData.EndTimingMode = originalPhase.VisualData.EndTimingMode;
+                    phaseClone.VisualData.EndEventName = originalPhase.VisualData.EndEventName;
+                    phaseClone.VisualData.EndDelayTime = originalPhase.VisualData.EndDelayTime;
+                    phaseClone.VisualData.TargetAreaEffect = originalPhase.VisualData.TargetAreaEffect;
+                    phaseClone.VisualData.TargetAreaOffset = originalPhase.VisualData.TargetAreaOffset;
+                    phaseClone.VisualData.TargetAreaRotation = originalPhase.VisualData.TargetAreaRotation;
+                    phaseClone.VisualData.TargetAreaDuration = originalPhase.VisualData.TargetAreaDuration;
+                }
+                
+                clone.Phases.Add(phaseClone);
+            }
+
+            return clone;
+        }
     }
 }

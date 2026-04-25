@@ -35,3 +35,4 @@ MonoBehaviour:
   CustomPattern: []
   GrowthTable: []
   DefaultFaction: 0
+  skillConfig: {fileID: 11400000, guid: 3d949036d685a514b96747f549d8cb5d, type: 2}

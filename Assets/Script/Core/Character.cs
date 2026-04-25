@@ -53,10 +53,16 @@ namespace Character
                 statSystem = new StatSystem(characterData);
                 SkillInventory = new SkillInventory();
             }
-
-            public async UniTask InitializeSkillsAsync(CharacterSkillConfig skillConfig, int currentLevel)
+            /// <summary>
+            /// 现在characterData自己拿着skillConfig引用  skillConfig可以直接为null
+            /// </summary>
+            /// <param name="skillConfig"></param>
+            /// <param name="currentLevel"></param>
+            /// <returns></returns>
+            public async UniTask InitializeSkillsAsync(CharacterSkillConfig skillConfig = null, int currentLevel = 0)
             {
-                await SkillInventory.InitializeAsync(skillConfig, currentLevel);
+                if(characterData.skillConfig != null) await SkillInventory.InitializeAsync(characterData.skillConfig,currentLevel);
+                else await SkillInventory.InitializeAsync(skillConfig, currentLevel);
             }
 
             public void LevelUp(List<LevelReward> rewards)

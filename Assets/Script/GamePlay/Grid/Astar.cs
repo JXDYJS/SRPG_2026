@@ -8,20 +8,18 @@ using GamePlay.Units; // 确保引用了 UnitMoveStats
 
 namespace GamePlay.Grid
 {
+    public class Node
+    {
+        public Vector3Int position; // 存储的是“脚底方块”的坐标
+        public Node parent;
+        public float gCost;
+        public float hCost;
+        public float FCost => gCost + hCost;
+
+        public Node(Vector3Int pos) { this.position = pos; }
+    }
     public class AStar
     {
-        // 节点类升级为 3D 坐标
-        class Node
-        {
-            public Vector3Int position; // 存储的是“脚底方块”的坐标
-            public Node parent;
-            public float gCost;
-            public float hCost;
-            public float FCost => gCost + hCost;
-
-            public Node(Vector3Int pos) { this.position = pos; }
-        }
-
         // 入口函数：现在接收 3D 坐标
         public static List<Vector3Int> FindPath(Vector3Int start, Vector3Int end, LogicalGrid grid, UnitMoveStats stats)
         {
@@ -83,6 +81,14 @@ namespace GamePlay.Grid
 
             return null; // 没找到路径
         }
+        /// <summary>
+        /// 获得目标所有可达的地块
+        /// </summary>
+        /// <param name="start"></param>
+        /// <param name="moveRange"></param>
+        /// <param name="grid"></param>
+        /// <param name="stats"></param>
+        /// <returns></returns>
 
         public static HashSet<Vector3Int> GetReachableTiles(Vector3Int start, int moveRange, LogicalGrid grid, UnitMoveStats stats)
         {
@@ -124,8 +130,54 @@ namespace GamePlay.Grid
             return reachable;
         }
 
+        /// <summary>
+        /// 返回目标到所有能到的格子和相应的最短路径，这个会返回距离
+        /// </summary>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
+        /// <param name="grid"></param>
+        /// <param name="stats"></param>
+        /// <returns></returns>
+        public static Dictionary<Vector3Int,float> GetReachableTilesWithDistance(Vector3Int start, int moveRange, LogicalGrid grid, UnitMoveStats stats)
+        {
+            Dictionary<Vector3Int,float> reachableMap = new Dictionary<Vector3Int, float>();
+            Dictionary<Vector3Int, float> costSoFar = new Dictionary<Vector3Int, float>();
+            List<Node> openSet = new List<Node>();
+
+            Node startNode = new Node(start) { gCost = 0 };
+            openSet.Add(startNode);
+            costSoFar[start] = 0;
+
+            while (openSet.Count > 0)
+            {
+                Node currentNode = openSet.OrderBy(n => n.gCost).First();
+                openSet.Remove(currentNode);
+                reachableMap.Add(currentNode.position,currentNode.gCost);
+
+                foreach (Vector3Int neighborPos in GetValidNeighbors(currentNode, grid, stats))
+                {
+                    float distCost = 1.0f; 
+                    
+                    float currentStandY = currentNode.position.y + grid.GetBlockYSize(currentNode.position);
+                    float targetStandY = neighborPos.y + grid.GetBlockYSize(neighborPos);
+                    float heightCost = Mathf.Abs(targetStandY - currentStandY); 
+                    
+                    float newCost = currentNode.gCost + distCost + heightCost;
+
+                    if (newCost > moveRange) continue;
+
+                    if (!costSoFar.ContainsKey(neighborPos) || newCost < costSoFar[neighborPos])
+                    {
+                        costSoFar[neighborPos] = newCost;
+                        openSet.Add(new Node(neighborPos) { gCost = newCost });
+                    }
+                }
+            }
+            return reachableMap;
+        } 
+
         // === 核心逻辑：垂直扫描寻找邻居 ===
-        static List<Vector3Int> GetValidNeighbors(Node currentNode, LogicalGrid grid, UnitMoveStats stats)
+        public   static List<Vector3Int> GetValidNeighbors(Node currentNode, LogicalGrid grid, UnitMoveStats stats)
         {
             List<Vector3Int> validNeighbors = new List<Vector3Int>();
             
@@ -235,7 +287,7 @@ namespace GamePlay.Grid
             return true;
         }
 
-        static List<Vector3Int> RetracePath(Node startNode, Node endNode)
+        public static List<Vector3Int> RetracePath(Node startNode, Node endNode)
         {
             List<Vector3Int> path = new List<Vector3Int>();
             Node curr = endNode;
@@ -250,13 +302,13 @@ namespace GamePlay.Grid
         }
 
         // 平面距离 (用于 G Cost)
-        static float GetFlatDistance(Vector3Int a, Vector3Int b)
+        public static float GetFlatDistance(Vector3Int a, Vector3Int b)
         {
             return Mathf.Abs(a.x - b.x) + Mathf.Abs(a.z - b.z);
         }
 
         // 3D 曼哈顿距离 (用于启发式 H Cost)
-        static float Get3DDistance(Vector3Int a, Vector3Int b)
+        public static float Get3DDistance(Vector3Int a, Vector3Int b)
         {
             return Mathf.Abs(a.x - b.x) + Mathf.Abs(a.y - b.y) + Mathf.Abs(a.z - b.z);
         }

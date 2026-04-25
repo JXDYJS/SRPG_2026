@@ -161,6 +161,10 @@ namespace Managers
             {
                 Debug.LogError("UnitOnStay : No such Unit");
             }
-        } 
+        }
+        public List<MapUnit> GetAllAlivePlayers()
+        {
+            return new List<MapUnit>();
+        }
     }
 }

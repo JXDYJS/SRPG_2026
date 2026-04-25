@@ -6,12 +6,16 @@ using UnityEditor;
 #endif
 using Global;
 using GamePlay.Grid;
-
+using Utils;
 namespace Managers
 {
+    using System;
+
     using GamePlay;
     using GamePlay.Units;
-public class MapManager : MonoBehaviour
+    using Grid;
+
+    public class MapManager : MonoBehaviour
 {
     [Header("设置")]
     public Transform mapRoot; // 地图物体的父节点
@@ -24,7 +28,7 @@ public class MapManager : MonoBehaviour
     // 你需要在 Inspector 里手动把预制体拖进去，或者写代码自动加载 Resources
     public List<MapObject> prefabIndex; 
     public Dictionary<Vector3Int,MapObject> blocks;
-
+    public VoxelGrid voxelGrid;
     // 运行时逻辑网格
     public LogicalGrid logicalGrid = new LogicalGrid();
 
@@ -205,7 +209,6 @@ public class MapManager : MonoBehaviour
                     Debug.LogWarning($"⚠️ 发现重叠方块：位置 {pos} 已存在，跳过重复保存。建议清理场景。");
                     continue; // 跳过这个重复的方块
                 }
-
                 // 4. 记录位置并保存数据
                 recordedPositions.Add(pos);
                 
@@ -307,6 +310,7 @@ public class MapManager : MonoBehaviour
         // 构建逻辑网格
         logicalGrid.Build(allObjects);
         this.blocks = blocks;
+        this.initVoxel();
         
         Debug.Log($"地图加载完毕，生成了 {allObjects.Count} 个方块。");
     }
@@ -381,6 +385,58 @@ public class MapManager : MonoBehaviour
         {
             minBounds = Vector2.zero;
             maxBounds = Vector2.zero;
+        }
+    }
+    public void initVoxel()
+    {
+        if(blocks == null || blocks.Count == 0)
+        {
+            Debug.LogError("blocks is null or empty");
+        }
+        int maxWidth = -99999;
+        int maxHeight = -99999;
+        int maxDepth = -99999;
+        foreach(var block in blocks)
+        {
+            if(block.Key.y > maxDepth)
+            {
+                maxDepth = block.Key.y;
+            }
+            if(block.Key.x > maxWidth)
+            {
+                maxWidth = block.Key.x;
+            }
+            if(block.Key.z > maxHeight)
+            {
+                maxHeight = block.Key.z;
+            }
+        }
+        if(maxDepth <= 0 || maxDepth > 16 || maxHeight <= 0 || maxHeight > 16 || maxWidth <= 0 || maxWidth > 16)
+        {
+            Debug.Log("Depth"+maxDepth);
+            Debug.Log("Width"+maxWidth);
+            Debug.Log("Height"+maxHeight);
+            Debug.LogError("The map is too high or empty");
+            return;
+        }
+        if(maxHeight != maxWidth)
+        {
+            Debug.LogWarning("The map width ~= height");
+        }
+        voxelGrid = new VoxelGrid(maxWidth,maxHeight,maxDepth);
+        foreach(var block in blocks)
+        {
+            var type = block.Value.type;
+            byte type_val = 255;
+            type_val = Utils.Utils.getBlockTypeVal(type);
+            if(type_val == 255)
+            {
+                Debug.Log("type:"+type);
+                Debug.LogError("Error block type");
+                return;
+            }
+            var pos = block.Key;
+            voxelGrid.SetBlock(pos.x,pos.y,pos.z,type_val);
         }
     }
     

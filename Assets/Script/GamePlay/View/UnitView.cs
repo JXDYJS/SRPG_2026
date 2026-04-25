@@ -14,7 +14,10 @@ namespace GamePlay.View
         private Renderer[] _renderers;
         private int _hitCount = 0;
         private Color[] _originalColors;
-
+        /// <summary>
+        /// 由于现在要改成相同职业的角色共享普通攻击模板  所以在view里自带自己的visualData给自己的普通攻击使用
+        /// </summary>
+        public List<SkillVisualData> NormalAttackVisualData = null;
         public event Action<string> OnAnimationEventTriggered;
         public int TimeGapDamage = 300;//调整两个伤害之间的时间间隔
         public Vector3 DamagePosOffset = new Vector3(0.0f,2.0f,1.0f);

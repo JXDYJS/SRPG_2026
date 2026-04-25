@@ -21,11 +21,11 @@ MonoBehaviour:
   CastMinRange: 1
   CastVerticalRange: 1
   Trajectory: 0
-  StopsAtFirstHit: 1
+  StopsAtFirstHit: 0
   Cost: 0
   Phases:
   - PhaseName: attack
-    TargetType: 0
+    TargetType: 7
     AoEPattern: 0
     AoERadius: 0
     AoEVerticalRange: 0
@@ -37,6 +37,8 @@ MonoBehaviour:
       Constant: 0
       DamageType: 0
       BuffID: 
+      BuffStacks: 1
+      RemoveMode: 0
     VisualData:
       CastAnimTrigger: Attack
       CastEffect:
@@ -57,3 +59,13 @@ MonoBehaviour:
       EndTimingMode: 1
       EndEventName: End
       EndDelayTime: 0.3
+      TargetAreaEffect:
+        m_AssetGUID: 
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_EditorAssetChanged: 0
+      TargetAreaOffset: {x: 0, y: 8, z: 0}
+      TargetAreaRotation: {x: 90, y: 0, z: 0}
+      TargetAreaDuration: -1
+  isCustomSkill: 0
+  CustomBehavior: {fileID: 0}
