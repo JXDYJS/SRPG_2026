@@ -5,6 +5,7 @@ using Status.damage;
 using Global;
 using UnityEngine;
 using Command;
+using Utils;
 
 namespace GamePlay.Skill
 {
@@ -32,39 +33,88 @@ namespace GamePlay.Skill
             }
 
             // 检查条件：直线技能且碰到第一个目标时停止
+            // [旧实现 - 用 GetLinePath + 仅判断 != Air，无法处理半砖/楼梯的精确穿透]
+            // if (skillData.CastPattern == CastPatternType.Line && skillData.StopsAtFirstHit)
+            // {
+            //     List<Vector3Int> trajectory = Grid.AttackRangeSystem.GetLinePath(caster.gridPosition, context.TargetPosition);
+            //     foreach (Vector3Int pos in trajectory)
+            //     {
+            //         if (MapManager.Instance.logicalGrid.GetBlock(pos + Vector3Int.up) != BlockType.Air)
+            //         {
+            //             context.TargetPosition = pos;
+            //             Debug.Log($"弹道被地形阻挡，目标位置修正为：{pos}");
+            //             break;
+            //         }
+            //         MapUnit blockingUnit = UnitManager.Instance.GetUnitAt(pos);
+            //         if (blockingUnit != null)
+            //         {
+            //             context.TargetPosition = pos;
+            //             Debug.Log($"弹道被单位阻挡，目标位置修正为：{pos}");
+            //             break;
+            //         }
+            //     }
+            //     bool isValidTarget = Grid.AttackRangeSystem.IsValidTargetForCast(context.TargetPosition, skillData, caster.Faction);
+            //     if (!isValidTarget)
+            //     {
+            //         Debug.LogWarning("弹道拦截后目标无效，拒绝施法");
+            //         return sequenceResult;
+            //     }
+            // }
             if (skillData.CastPattern == CastPatternType.Line && skillData.StopsAtFirstHit)
             {
-                // 获取从施法者到目标位置的轨迹
+                // DDA 体素遍历 + AABB 精确检测
                 List<Vector3Int> trajectory = Grid.AttackRangeSystem.GetLinePath(caster.gridPosition, context.TargetPosition);
 
-                // 遍历轨迹，检查地形和单位阻挡
+                Vector3 eyeStart = new Vector3(caster.gridPosition.x + 0.5f, caster.gridPosition.y + 1f, caster.gridPosition.z + 0.5f);
+                Vector3 eyeEnd = new Vector3(context.TargetPosition.x + 0.5f, context.TargetPosition.y + 1f, context.TargetPosition.z + 0.5f);
+                Vector3 dir = (eyeEnd - eyeStart).normalized;
+                GridOcclusionUtils.RayData ray = new GridOcclusionUtils.RayData
+                {
+                    Origin = eyeStart,
+                    DirInv = new Vector3(1f / dir.x, 1f / dir.y, 1f / dir.z)
+                };
+
                 foreach (Vector3Int pos in trajectory)
                 {
-                    // 检查地形阻挡：如果格子是Solid且高度高于当前地面
-                    if (MapManager.Instance.logicalGrid.GetBlock(pos + Vector3Int.up) != BlockType.Air)
+                    // 地形阻挡检测（完整方块直接阻挡，半砖/楼梯用 AABB 精确检测）
+                    Vector3Int checkPos = pos + Vector3Int.up;
+                    BlockType block = MapManager.Instance.logicalGrid.GetBlock(checkPos);
+
+                    if (block == BlockType.Solid)
                     {
-                        // 弹道被地形阻挡，修改目标位置为墙壁坐标
                         context.TargetPosition = pos;
-                        Debug.Log($"弹道被地形阻挡，目标位置修正为：{pos}");
+                        Debug.Log($"弹道被地形阻挡（完整方块），目标位置修正为：{pos}");
                         break;
                     }
+                    else if (block == BlockType.Slab || block == BlockType.Stairs)
+                    {
+                        float blockHeight = MapManager.Instance.logicalGrid.GetBlockYSize(checkPos);
+                        if (blockHeight <= 0f) blockHeight = 0.5f;
 
-                    // 检查单位阻挡：如果格子上有人（不分敌我）
+                        Vector3 min = new Vector3(checkPos.x, checkPos.y, checkPos.z);
+                        Vector3 max = new Vector3(checkPos.x + 1f, checkPos.y + blockHeight, checkPos.z + 1f);
+
+                        if (GridOcclusionUtils.RayIntersectsAABB(ray, min, max))
+                        {
+                            context.TargetPosition = pos;
+                            Debug.Log($"弹道被地形阻挡（半砖/楼梯），目标位置修正为：{pos}");
+                            break;
+                        }
+                    }
+
+                    // 单位阻挡检测
                     MapUnit blockingUnit = UnitManager.Instance.GetUnitAt(pos);
                     if (blockingUnit != null)
                     {
-                        // 弹道被单位阻挡，修改目标位置为单位坐标
                         context.TargetPosition = pos;
                         Debug.Log($"弹道被单位阻挡，目标位置修正为：{pos}");
                         break;
                     }
                 }
 
-                //经过拦截修改TargetPosition后，必须再次校验新目标点
                 bool isValidTarget = Grid.AttackRangeSystem.IsValidTargetForCast(context.TargetPosition, skillData, caster.Faction);
                 if (!isValidTarget)
                 {
-                    // 拦截后目标无效，拒绝施法
                     Debug.LogWarning("弹道拦截后目标无效，拒绝施法");
                     return sequenceResult;
                 }

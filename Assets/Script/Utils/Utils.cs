@@ -1,5 +1,6 @@
 using UnityEngine;
 using Global;
+using GamePlay.Grid;
 namespace Utils
 {
     public static class Utils
@@ -25,7 +26,7 @@ namespace Utils
     public static class GridOcclusionUtils
     {
         // --- 为了极致性能，缓存射线的倒数方向 ---
-        private struct RayData
+        public struct RayData
         {
             public Vector3 Origin;
             public Vector3 DirInv; // 方向的倒数，避免在循环里做除法
@@ -121,10 +122,95 @@ namespace Utils
         }
 
         /// <summary>
+        /// LogicalGrid 版本的体素遮挡检测
+        /// 通过 Utils.getBlockTypeVal 将 BlockType 转换为 byte 复用相同的 DDA 逻辑
+        /// </summary>
+        public static bool IsVisible3D(LogicalGrid grid, Vector3 start, Vector3 end)
+        {
+            Vector3 direction = end - start;
+            float maxDistance = direction.magnitude;
+            if (maxDistance <= 0.0001f) return true;
+            direction /= maxDistance;
+
+            RayData ray = new RayData
+            {
+                Origin = start,
+                DirInv = new Vector3(1f / direction.x, 1f / direction.y, 1f / direction.z)
+            };
+
+            int currentX = Mathf.FloorToInt(start.x);
+            int currentY = Mathf.FloorToInt(start.y);
+            int currentZ = Mathf.FloorToInt(start.z);
+
+            int endX = Mathf.FloorToInt(end.x);
+            int endY = Mathf.FloorToInt(end.y);
+            int endZ = Mathf.FloorToInt(end.z);
+
+            int stepX = (direction.x > 0f) ? 1 : ((direction.x < 0f) ? -1 : 0);
+            int stepY = (direction.y > 0f) ? 1 : ((direction.y < 0f) ? -1 : 0);
+            int stepZ = (direction.z > 0f) ? 1 : ((direction.z < 0f) ? -1 : 0);
+
+            float tDeltaX = (stepX != 0) ? Mathf.Abs(1f / direction.x) : float.MaxValue;
+            float tDeltaY = (stepY != 0) ? Mathf.Abs(1f / direction.y) : float.MaxValue;
+            float tDeltaZ = (stepZ != 0) ? Mathf.Abs(1f / direction.z) : float.MaxValue;
+
+            float tMaxX = (stepX > 0) ? (Mathf.Floor(start.x) + 1f - start.x) * tDeltaX : ((stepX < 0) ? (start.x - Mathf.Floor(start.x)) * tDeltaX : float.MaxValue);
+            float tMaxY = (stepY > 0) ? (Mathf.Floor(start.y) + 1f - start.y) * tDeltaY : ((stepY < 0) ? (start.y - Mathf.Floor(start.y)) * tDeltaY : float.MaxValue);
+            float tMaxZ = (stepZ > 0) ? (Mathf.Floor(start.z) + 1f - start.z) * tDeltaZ : ((stepZ < 0) ? (start.z - Mathf.Floor(start.z)) * tDeltaZ : float.MaxValue);
+
+            float currentDistance = 0f;
+            int maxIterations = Mathf.Max(200, Mathf.CeilToInt(maxDistance * 2));
+
+            for (int i = 0; i < maxIterations; i++)
+            {
+                BlockType block = grid.GetBlock(currentX, currentY, currentZ);
+                byte blockVal = Utils.getBlockTypeVal(block);
+
+                if (blockVal != 0)
+                {
+                    if (blockVal == 1)
+                    {
+                        return false;
+                    }
+
+                    if (blockVal == 2)
+                    {
+                        float blockHeight = grid.GetBlockYSize(new Vector3Int(currentX, currentY, currentZ));
+                        if (blockHeight <= 0f) blockHeight = 0.5f;
+
+                        Vector3 min = new Vector3(currentX, currentY, currentZ);
+                        Vector3 max = new Vector3(currentX + 1f, currentY + blockHeight, currentZ + 1f);
+
+                        if (RayIntersectsAABB(ray, min, max))
+                        {
+                            return false;
+                        }
+                    }
+                }
+
+                if (currentX == endX && currentY == endY && currentZ == endZ) return true;
+
+                if (tMaxX < tMaxY)
+                {
+                    if (tMaxX < tMaxZ) { currentDistance = tMaxX; currentX += stepX; tMaxX += tDeltaX; }
+                    else { currentDistance = tMaxZ; currentZ += stepZ; tMaxZ += tDeltaZ; }
+                }
+                else
+                {
+                    if (tMaxY < tMaxZ) { currentDistance = tMaxY; currentY += stepY; tMaxY += tDeltaY; }
+                    else { currentDistance = tMaxZ; currentZ += stepZ; tMaxZ += tDeltaZ; }
+                }
+
+                if (currentDistance > maxDistance) return true;
+            }
+            return true;
+        }
+
+        /// <summary>
         /// 极速射线与边界框(AABB)相交检测算法 (Slab Method)
         /// 完全使用乘法和 Min/Max，无任何 GC
         /// </summary>
-        private static bool RayIntersectsAABB(RayData ray, Vector3 min, Vector3 max)
+        public static bool RayIntersectsAABB(RayData ray, Vector3 min, Vector3 max)
         {
             float t1 = (min.x - ray.Origin.x) * ray.DirInv.x;
             float t2 = (max.x - ray.Origin.x) * ray.DirInv.x;

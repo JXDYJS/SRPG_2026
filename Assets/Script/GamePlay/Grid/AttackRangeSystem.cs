@@ -6,6 +6,7 @@ using GamePlay.Skill;
 using GamePlay.Units;
 using Managers;
 using Command;
+using Utils;
 
 namespace GamePlay.Grid
 {
@@ -590,32 +591,29 @@ namespace GamePlay.Grid
         /// <summary>
         /// 直线视野弹道 - 需要从起点到终点的直线无遮挡
         /// 用于火枪、激光等直射技能
-        /// 算法：从起点的胸口（y+1）到终点的胸口（y+1）步进发射射线
+        /// 算法：采用 DDA 体素遍历 + AABB 精确检测（原 GetLinePath + Solid-only 方式已弃用）
+        /// 支持：完整方块完全阻挡，半砖/楼梯进行精确射线相交检测
         /// </summary>
+        // [旧实现 - 用 GetLinePath + 仅 Solid 判断，无法处理半砖/楼梯]
+        // public static bool CheckLineOfSight(Vector3 start, Vector3 end)
+        // {
+        //     Vector3 eyeStart = new Vector3(start.x, start.y + 1, start.z);
+        //     Vector3 eyeEnd = new Vector3(end.x, end.y + 1, end.z);
+        //     Vector3Int gridStart = new Vector3Int(Mathf.RoundToInt(eyeStart.x), Mathf.RoundToInt(eyeStart.y), Mathf.RoundToInt(eyeStart.z));
+        //     Vector3Int gridEnd = new Vector3Int(Mathf.RoundToInt(eyeEnd.x), Mathf.RoundToInt(eyeEnd.y), Mathf.RoundToInt(eyeEnd.z));
+        //     List<Vector3Int> path = GetLinePath(gridStart, gridEnd);
+        //     foreach (Vector3Int pos in path)
+        //     {
+        //         if (MapManager.Instance.logicalGrid.GetBlock(pos) == BlockType.Solid) return false;
+        //     }
+        //     return true;
+        // }
         public static bool CheckLineOfSight(Vector3 start, Vector3 end)
         {
-            // 计算起点和终点的"眼睛"高度（胸口位置，y+1）
-            Vector3 eyeStart = new Vector3(start.x, start.y + 1, start.z);
-            Vector3 eyeEnd = new Vector3(end.x, end.y + 1, end.z);
+            Vector3 eyeStart = new Vector3(start.x, start.y + 1f, start.z);
+            Vector3 eyeEnd = new Vector3(end.x, end.y + 1f, end.z);
 
-            // 转换为网格坐标
-            Vector3Int gridStart = new Vector3Int(Mathf.RoundToInt(eyeStart.x), Mathf.RoundToInt(eyeStart.y), Mathf.RoundToInt(eyeStart.z));
-            Vector3Int gridEnd = new Vector3Int(Mathf.RoundToInt(eyeEnd.x), Mathf.RoundToInt(eyeEnd.y), Mathf.RoundToInt(eyeEnd.z));
-
-            // 获取从起点到终点的直线路径
-            List<Vector3Int> path = GetLinePath(gridStart, gridEnd);
-
-            // 检查路径上的每个格子
-            foreach (Vector3Int pos in path)
-            {
-                // 如果遇到固体方块，视线被阻挡
-                if (MapManager.Instance.logicalGrid.GetBlock(pos) == BlockType.Solid)
-                {
-                    return false;
-                }
-            }
-
-            return true;
+            return GridOcclusionUtils.IsVisible3D(MapManager.Instance.logicalGrid, eyeStart, eyeEnd);
         }
 
         /// <summary>
