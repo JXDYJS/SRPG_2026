@@ -17,6 +17,11 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: f98965fa04444ca45ae9c9174dbcebc1
   m_SerializeEntries:
+  - m_GUID: 121455ccbdbc7c81eb825ee1458d5bfc
+    m_Address: Assets/Animation/zombie/zombie.controller
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 248fc52950ed1c5419e75da3f27f6f10
     m_Address: Assets/Data/Character/Zombie.asset
     m_ReadOnly: 0
@@ -69,6 +74,16 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a4c2d593add6b1b43a126c05ef3969a8
     m_Address: Assets/Mob/arrowRight.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: adfa9b30f8e8751108e54e8624190a27
+    m_Address: Assets/Data/UnitClass/Champion/Warrior_Common.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f170feae16a061f4794e49c87ddf6109
+    m_Address: Assets/Data/UnitClass/Champion/Warrior.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

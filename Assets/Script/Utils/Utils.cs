@@ -1,6 +1,8 @@
 using UnityEngine;
 using Global;
 using GamePlay.Grid;
+using Managers;
+using System.Collections.Generic;
 namespace Utils
 {
     public static class Utils
@@ -230,5 +232,114 @@ namespace Utils
             // tmax >= 0 保证了方块在射线的正前方，而不是在后方
             return tmax >= tmin && tmax >= 0f;
         }
+    }
+
+    /// <summary>
+    /// 调试可视化工具 - 在 Scene 视图格子上绘制色块
+    /// 配合 DebugGizmosHost (MonoBehaviour) 使用
+    /// </summary>
+    public static class DebugGizmos
+    {
+        private struct HighlightInfo
+        {
+            public Vector3Int pos;
+            public Color color;
+            public int lifetime; // 剩余帧数, -1 表示永不过期
+        }
+
+        private static List<HighlightInfo> _highlights = new List<HighlightInfo>();
+
+        /// <summary>
+        /// 确保宿主 GameObject 存在（Gizmos 渲染需要）
+        /// </summary>
+        private static void EnsureHost()
+        {
+            if (DebugSystem.DebugGizmosHost.Instance != null) return;
+
+            var existing = Object.FindObjectOfType<DebugSystem.DebugGizmosHost>();
+            if (existing != null) return;
+
+            var go = new GameObject("[DebugGizmos]");
+            if (Application.isPlaying)
+                Object.DontDestroyOnLoad(go);
+            go.AddComponent<DebugSystem.DebugGizmosHost>();
+        }
+
+        /// <summary>
+        /// 标记一个格子为高亮
+        /// </summary>
+        /// <param name="pos">格子坐标</param>
+        /// <param name="color">颜色+透明度</param>
+        /// <param name="lifetime">持续帧数, -1 永久</param>
+        public static void MarkTile(Vector3Int pos, Color? color = null, int lifetime = 300)
+        {
+            EnsureHost();
+            _highlights.Add(new HighlightInfo
+            {
+                pos = pos,
+                color = color ?? new Color(1f, 0.2f, 0.2f, 0.6f),
+                lifetime = lifetime
+            });
+        }
+
+        /// <summary>
+        /// 批量标记热力图 — 根据分数映射颜色强度
+        /// </summary>
+        /// <param name="scores">格子→分数的映射</param>
+        /// <param name="hotColor">热度颜色（高分偏向此色）</param>
+        /// <param name="maxScore">归一化最大值, 超出此值的都按最高亮度显示</param>
+        public static void MarkTiles(IEnumerable<KeyValuePair<Vector3Int, float>> scores, Color hotColor, float maxScore)
+        {
+            foreach (var kv in scores)
+            {
+                float t = Mathf.Clamp01(kv.Value / maxScore);
+                Color c = Color.Lerp(new Color(0, 0, 0, 0), hotColor, t);
+                c.a = 0.2f + t * 0.6f;
+                MarkTile(kv.Key, c, -1);
+            }
+        }
+
+        /// <summary>
+        /// 每帧减寿命, 自动清理过期项
+        /// </summary>
+        public static void TickLifetime()
+        {
+            for (int i = _highlights.Count - 1; i >= 0; i--)
+            {
+                var h = _highlights[i];
+                if (h.lifetime <= 0) continue;
+                h.lifetime--;
+                if (h.lifetime <= 0)
+                    _highlights.RemoveAt(i);
+                else
+                    _highlights[i] = h;
+            }
+        }
+
+        /// <summary>
+        /// 由 MonoBehaviour 的 OnDrawGizmos 调用
+        /// </summary>
+        public static void RenderAll()
+        {
+            if (MapManager.Instance == null) return;
+            float cs = MapManager.Instance.cellSize + 0.1f;
+
+            foreach (var h in _highlights)
+            {
+                Gizmos.color = h.color;
+
+                // 方块底面坐标 = gridPos * cellSize
+                Vector3 bottom = new Vector3(h.pos.x * cs, h.pos.y * cs, h.pos.z * cs);
+
+                // 中心 = 底面 + (0, 0.5, 0) * cs，大小 1x1x1 * cs
+                Vector3 center = bottom + new Vector3(0, 0.5f * cs, 0);
+                Vector3 size = new Vector3(cs, cs, cs);
+
+                Gizmos.DrawCube(center, size);
+            }
+        }
+
+        public static void Clear() => _highlights.Clear();
+        public static int Count => _highlights.Count;
     }
 }

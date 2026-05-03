@@ -6,7 +6,8 @@ using Global;
 using Command;
 using Managers;
 using GamePlay.Skill;
-
+using Utils;
+using Grid;
 namespace GamePlay.AI
 {
     public class EnemyAIManager : MonoBehaviour
@@ -20,6 +21,17 @@ namespace GamePlay.AI
 
         public void TakeControl(MapUnit enemyUnit)
         {
+            if (enemyUnit == null)
+            {
+                Debug.LogError("TakeControl : enemyUnit is null");
+                return;
+            }
+             if(TacticalMapManager.Instance == null)
+            {
+                Debug.LogError("TakeControl : TacticalMapManager is null");
+                return;
+            }
+            TacticalMapManager.Instance.RebuildThreatMapSnapshot();
             StartCoroutine(EnemyAILogic(enemyUnit));
         }
 

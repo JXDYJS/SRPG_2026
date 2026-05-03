@@ -448,6 +448,40 @@ namespace GamePlay.Units
             return AttackRangeSystem.GetSkillRange3D(this.gridPosition, targetPos, NormalAttackSkill);
         }
 
+        /// <summary>
+        /// 计算移动+攻击的全威胁范围（所有可移动到的格子后普攻能覆盖的格子的并集）
+        /// </summary>
+        public List<Vector3Int> GetAllPossibleAttackRange()
+        {
+            if (NormalAttackSkill == null)
+            {
+                Debug.LogWarning($"{name} 没有配置 NormalAttackSkill，无法计算全攻击范围");
+                return new List<Vector3Int>();
+            }
+
+            HashSet<Vector3Int> allRange = new HashSet<Vector3Int>();
+
+            int moveRange = (int)Character.statSystem.moveRange.getValue();
+
+            HashSet<Vector3Int> reachableTiles = AStar.GetReachableTiles(
+                gridPosition,
+                moveRange,
+                MapManager.Instance.logicalGrid,
+                moveStats
+            );
+
+            foreach (Vector3Int pos in reachableTiles)
+            {
+                List<Vector3Int> attackRange = AttackRangeSystem.GetCastRange3D(pos, NormalAttackSkill);
+                foreach (var tile in attackRange)
+                {
+                    allRange.Add(tile);
+        }
+            }
+        
+            return new List<Vector3Int>(allRange);
+        }
+
         public List<Vector3Int> GetSkillRange(SkillDataSO skill, Vector3Int? targetPos = null)
         {
             if (skill == null)

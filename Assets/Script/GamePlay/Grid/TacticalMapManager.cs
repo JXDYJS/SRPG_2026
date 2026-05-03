@@ -7,6 +7,10 @@ namespace Grid{
     public class TacticalMapManager : MonoBehaviour
     {
         public static TacticalMapManager Instance { get; private set; }
+        private void Awake()
+        {
+            Instance = this;
+        }
 
         // 威胁图：由玩家单位产生（负面分数）
         public InfluenceMapLayer ThreatMap { get; private set; } = new InfluenceMapLayer();
@@ -45,10 +49,6 @@ namespace Grid{
             {
                 if (player.Character == null) continue;
                 
-                // 获取该玩家当前的威胁半径（最大技能范围 + 移动距离）
-                int attackRange = player.getNormalAttackSkill()?.CastMaxRange ?? 1;
-                int threatRadius = attackRange + player.Character.characterData.MoveRange; // 普攻+移动能到达的范围就是威胁范围
-                
                 UnitClassSO playerClass = player.GetClass();
                 CharacterInstance playerInstance = player.Character;
                 var playerStatus = playerInstance.statSystem;
@@ -70,7 +70,10 @@ namespace Grid{
                 float hp = playerStatus.maxHP.getValue();
                 float hpThreat = CalculateAttributeThreat(hp, playerClass.hpRange, playerClass.hpThreat);
                 
-                float moveRange =  player.Character.characterData.MoveRange + playerClass.BonusMovementPoints;
+                // moveThreat: 移动力对威胁感知强度的影响
+                // 注：空间覆盖已由下面的 GetAllPossibleAttackRange() 精确捕获，
+                // moveThreat 仅影响每个格子的威胁强度，与空间覆盖正交
+                float moveRange = (int)player.Character.statSystem.moveRange.getValue() + playerClass.BonusMovementPoints;
                 float moveThreat = CalculateAttributeThreat(moveRange, playerClass.moveRangeRange, playerClass.moveRangeThreat);
                 
                 // 法抗已经是百分比，直接使用区间换算
@@ -81,11 +84,10 @@ namespace Grid{
                 float speedThreat = CalculateAttributeThreat(speed, playerClass.speedRange, playerClass.speedThreat);
                 
                 // 攻击距离威胁
-                float attackDist = attackRange;
-                float attackDistThreat = CalculateAttributeThreat(attackDist, playerClass.attackDistanceRange, playerClass.attackDistanceThreat);
+                float attackRange = player.NormalAttackSkill?.CastMaxRange ?? 1;
+                float attackDistThreat = CalculateAttributeThreat(attackRange, playerClass.attackDistanceRange, playerClass.attackDistanceThreat);
                 
-                // 技能范围威胁 - TODO: 需要遍历所有技能获取最大范围，这里先用普攻近似
-                // 如果需要更精确计算，替换为遍历所有技能并找到最大射程
+                // 技能范围威胁
                 float maxSkillRange = attackRange;
                 var allSkills = player.GetAvailableSkills();
                 foreach (var skill in allSkills)
@@ -101,20 +103,21 @@ namespace Grid{
                     moveThreat + resThreat + speedThreat + 
                     attackDistThreat + skillRangeThreat;
                 
-                // 基础威胁分数，受攻击性加成
                 float baseThreat = totalThreat * 10f * playerClass.Aggressiveness;
                 
-                // 遍历玩家周围的方块格子
-                // var affectedTiles = GridUtils.GetTilesInRadius(player.gridPosition, threatRadius);
+                // 使用精确的移动+攻击威胁范围（含寻路与攻击形状）
+                var affectedTiles = player.GetAllPossibleAttackRange();
                 
-                // foreach (var tile in affectedTiles)
-                // {
-                //     // 距离越近，威胁越大 (线性衰减)
-                //     int dist = GridUtils.GetManhattanDistance(player.gridPosition, tile);
-                //     float falloffScore = baseThreat * (1f - (float)dist / (threatRadius + 1));
-                    
-                //     ThreatMap.AddScore(tile, falloffScore);
-                // }
+                // 计算最大曼哈顿距离用于威胁衰减
+                int maxDist = (int)moveRange + (int)maxSkillRange;
+                if (maxDist <= 0) maxDist = 1;
+                
+                foreach (var tile in affectedTiles)
+                {
+                    int dist = Mathf.Abs(player.gridPosition.x - tile.x) + Mathf.Abs(player.gridPosition.z - tile.z);
+                    float falloffScore = baseThreat * (1f - (float)dist / (maxDist + 1));
+                    ThreatMap.AddScore(tile, Mathf.Max(0f, falloffScore));
+                }
             }
         }
     }

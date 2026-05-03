@@ -109,6 +109,7 @@ namespace Character
                     case "ATK": statSystem.ATK.addModifier(mod); break;
                     case "DEF": statSystem.DEF.addModifier(mod); break;
                     case "RES": statSystem.RES.addModifier(mod); break;
+                    case "MOV": statSystem.moveRange.addModifier(mod); break;
                     default: Debug.LogWarning($"未知的属性成长: {statName}"); break;
                 }
             }

@@ -156,7 +156,7 @@ namespace GamePlay.Control
 
         private void CalculateAndShowMoveRange()
         {
-            int range = activeUnit.Character.characterData.MoveRange;
+            int range = (int)activeUnit.Character.statSystem.moveRange.getValue();
 
             HashSet<Vector3Int> reachableTiles = AStar.GetReachableTiles(
                 activeUnit.gridPosition,

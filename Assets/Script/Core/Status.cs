@@ -106,15 +106,17 @@ namespace Status
             public Stat DEF;
             public Stat RES;
             public Stat Speed;
+            public Stat moveRange;
             public int currentHP;
 
-            public StatSystem(int maxHP, int ATK, int DEF, int RES,int SPD)
+            public StatSystem(int maxHP, int ATK, int DEF, int RES, int SPD, int MOV = 0)
             {
                 this.maxHP = new Stat(maxHP);
                 this.ATK = new Stat(ATK);
                 this.DEF = new Stat(DEF);
                 this.RES = new Stat(RES);
                 this.Speed = new Stat(SPD);
+                this.moveRange = new Stat(MOV);
                 currentHP = maxHP;
             }
             public StatSystem(CharacterData characterData)
@@ -124,6 +126,7 @@ namespace Status
                 DEF = new Stat(characterData.BaseDEF);
                 RES = new Stat(characterData.BaseRES);
                 Speed = new Stat(characterData.Speed);
+                moveRange = new Stat(characterData.MoveRange);
                 currentHP = characterData.BaseMaxHP;
             }
 
@@ -137,6 +140,7 @@ namespace Status
                 DEF.getValue();
                 RES.getValue();
                 Speed.getValue();
+                moveRange.getValue();
             }
             
         }

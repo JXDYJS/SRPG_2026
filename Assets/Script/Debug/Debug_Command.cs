@@ -1,0 +1,57 @@
+using UnityEngine;
+using System.Linq;
+using Utils;
+using Grid;
+using IngameDebugConsole;
+
+namespace DebugSystem
+{
+    public static class Debug_Command
+    {
+        [ConsoleMethod("highlight", "Mark tile x y z with default red")]
+        public static void HighlightTile(int x, int y, int z)
+        {
+            var pos = new Vector3Int(x, y, z);
+            DebugGizmos.MarkTile(pos);
+            Debug.Log($"[Debug] highlighted ({x},{y},{z})");
+        }
+
+        [ConsoleMethod("highlight_c", "Mark tile x y z r g b a with custom color")]
+        public static void HighlightTileColor(int x, int y, int z, float r, float g, float b, float a)
+        {
+            var pos = new Vector3Int(x, y, z);
+            DebugGizmos.MarkTile(pos, new Color(r, g, b, a));
+            Debug.Log($"[Debug] highlighted ({x},{y},{z}) color=({r:F2},{g:F2},{b:F2},{a:F2})");
+        }
+
+        [ConsoleMethod("clear", "Clear all debug tile highlights")]
+        public static void ClearHighlights()
+        {
+            DebugGizmos.Clear();
+            Debug.Log("[Debug] cleared all highlights");
+        }
+
+        [ConsoleMethod("threatmap", "Show threat map heatmap (auto maxScore)")]
+        public static void ThreatMap()
+        {
+            ThreatMap(100f);
+        }
+
+        [ConsoleMethod("threatmap", "Show threat map heatmap with given maxScore")]
+        public static void ThreatMap(float maxScore)
+        {
+            var tmm = TacticalMapManager.Instance;
+            if (tmm == null) { Debug.LogError("TacticalMapManager not found"); return; }
+
+            DebugGizmos.Clear();
+            tmm.RebuildThreatMapSnapshot();
+            var scores = tmm.ThreatMap.GetAllScores().ToList();
+
+            float actualMax = scores.Count > 0 ? scores.Max(kv => kv.Value) : 0f;
+            float usedMax = Mathf.Max(maxScore, actualMax);
+
+            DebugGizmos.MarkTiles(scores, Color.red, usedMax);
+            Debug.Log($"[Debug] threatmap rendered: {DebugGizmos.Count} tiles, max={actualMax:F1}");
+        }
+    }
+}

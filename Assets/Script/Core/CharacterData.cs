@@ -38,8 +38,7 @@ namespace Character{
 
             [Header("升级配置")]
             public List<LevelUpEntry> GrowthTable;
-            [Header("阵营配置")]
-            public FactionType DefaultFaction;
+
             [Header("技能配置")]
             public CharacterSkillConfig skillConfig;
             [Header("职业")]

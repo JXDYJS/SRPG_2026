@@ -88,7 +88,7 @@ public class SSPRFeature : ScriptableRendererFeature
             int groupsX = Mathf.CeilToInt(w / 8.0f);
             int groupsY = Mathf.CeilToInt(h / 8.0f);
 
-            Debug.Log($"Camera: {w}x{h}, DepthTexture: {cameraData.cameraTargetDescriptor.width}x{cameraData.cameraTargetDescriptor.height}");
+            // Debug.Log($"Camera: {w}x{h}, DepthTexture: {cameraData.cameraTargetDescriptor.width}x{cameraData.cameraTargetDescriptor.height}");
 
             cmd.DispatchCompute(cs, kernelClear, groupsX, groupsY, 1);
             cmd.DispatchCompute(cs, kernelRender, groupsX, groupsY, 1);

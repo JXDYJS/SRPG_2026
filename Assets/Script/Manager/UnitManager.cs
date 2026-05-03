@@ -106,7 +106,7 @@ namespace Managers
             List<MapUnit> units = new List<MapUnit>();
             foreach(var unit in allUnits)
             {
-                if(unit.Character.characterData.DefaultFaction == faction)
+                if(unit.Faction == faction)
                 {
                     units.Add(unit);
                 }
@@ -164,7 +164,15 @@ namespace Managers
         }
         public List<MapUnit> GetAllAlivePlayers()
         {
-            return new List<MapUnit>();
+            var players = new List<MapUnit>();
+            foreach(var unit in allUnits)
+            {
+                if(unit.Faction == FactionType.Player)
+                {
+                    players.Add(unit);
+                }
+            }
+            return players;
         }
     }
 }

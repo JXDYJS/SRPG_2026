@@ -23,5 +23,11 @@ namespace Grid{
         {
             return _gridScores.TryGetValue(position, out float score) ? score : 0f;
         }
+
+        // 枚举所有有分数的格子（用于调试可视化）
+        public IEnumerable<KeyValuePair<Vector3Int, float>> GetAllScores()
+        {
+            return _gridScores;
+        }
     }
 }

@@ -78,7 +78,7 @@ namespace GamePlay.Grid
             if (showCursor && Application.isPlaying)
             {
                 Gizmos.color = Color.yellow;
-                Gizmos.DrawWireCube(currentCursorPos, new Vector3(1, 1, 1) * mapManager.cellSize);
+                Gizmos.DrawWireCube(currentCursorPos + new Vector3(0, 0.5f, 0), new Vector3(1, 1, 1) * mapManager.cellSize);
             }
         }
     }
