@@ -53,5 +53,18 @@ namespace DebugSystem
             DebugGizmos.MarkTiles(scores, Color.red, usedMax);
             Debug.Log($"[Debug] threatmap rendered: {DebugGizmos.Count} tiles, max={actualMax:F1}");
         }
+        [ConsoleMethod("listAllThreats", "List all threats in the map")]
+        public static void ListAllThreats()
+        {
+            var tmm = TacticalMapManager.Instance;
+            if (tmm == null) { Debug.LogError("TacticalMapManager not found"); return; }
+
+            var scores = tmm.ThreatMap.GetAllScores().ToList();
+            Debug.Log($"[Debug] found {scores.Count} threats in the map");
+            foreach (var kv in scores)
+            {
+                Debug.Log($"[Debug] ({kv.Key})={kv.Value:F1}");
+            }
+        }
     }
 }

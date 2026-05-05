@@ -322,18 +322,16 @@ namespace Utils
         public static void RenderAll()
         {
             if (MapManager.Instance == null) return;
-            float cs = MapManager.Instance.cellSize + 0.1f;
+            float cellSize = MapManager.Instance.cellSize;
+            float drawSize = cellSize + 0.1f;
 
             foreach (var h in _highlights)
             {
                 Gizmos.color = h.color;
 
-                // 方块底面坐标 = gridPos * cellSize
-                Vector3 bottom = new Vector3(h.pos.x * cs, h.pos.y * cs, h.pos.z * cs);
-
-                // 中心 = 底面 + (0, 0.5, 0) * cs，大小 1x1x1 * cs
-                Vector3 center = bottom + new Vector3(0, 0.5f * cs, 0);
-                Vector3 size = new Vector3(cs, cs, cs);
+                Vector3 bottom = new Vector3(h.pos.x, h.pos.y, h.pos.z) * cellSize;
+                Vector3 center = bottom + new Vector3(0, 0.5f * cellSize, 0);
+                Vector3 size = new Vector3(drawSize, drawSize, drawSize);
 
                 Gizmos.DrawCube(center, size);
             }

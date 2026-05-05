@@ -20,6 +20,7 @@ namespace GamePlay.Grid
     }
     public class TileEffectSO : ScriptableObject
     {
+        public int ThreatScore;
         public virtual void  onApply(MapUnit unit,MapObject mapObject){}
     }
 

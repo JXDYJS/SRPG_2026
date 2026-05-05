@@ -87,5 +87,22 @@ namespace GamePlay.Units
         {
             // 默认实现：空操作，子类可重写
         }
+        public virtual int GetThreatScore()
+        {
+            int score = 0;
+            foreach (var effect in OnEnterEffect)
+            {
+                score += effect.ThreatScore;
+            }
+            foreach (var effect in OnExitEffect)
+            {
+                score -= effect.ThreatScore;
+            }
+            foreach (var effect in OnStayEffect)
+            {
+                score += effect.ThreatScore;
+            }
+            return score;
+        }
     }
 }

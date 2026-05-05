@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Managers;
+using GamePlay.Units;
 namespace Grid{
     public class InfluenceMapLayer
     {
@@ -18,10 +20,16 @@ namespace Grid{
                 _gridScores.Add(position, score);
         }
 
-        // 获取分数
+        // 获取分数（含方块本身的威胁值）
         public float GetScore(Vector3Int position)
         {
-            return _gridScores.TryGetValue(position, out float score) ? score : 0f;
+            float score = _gridScores.TryGetValue(position, out float s) ? s : 0f;
+            if (MapManager.Instance != null &&
+                MapManager.Instance.blocks.TryGetValue(position, out MapObject mapObj))
+            {
+                score += mapObj.GetThreatScore();
+            }
+            return score;
         }
 
         // 枚举所有有分数的格子（用于调试可视化）
