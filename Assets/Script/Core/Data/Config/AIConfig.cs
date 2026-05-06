@@ -23,6 +23,12 @@ namespace Core.Data
         public float attackWeight_Threat   = 0.20f;
         public float attackWeight_Damage   = 0.25f;
 
+        // ── 防御任务效用权重 ──
+        public float defendWeight_HPUrgency          = 0.35f;
+        public float defendWeight_DangerUrgency      = 0.25f;
+        public float defendWeight_SafetyImprovement  = 0.25f;
+        public float defendWeight_Distance           = 0.15f;
+
         // ── 技能评分 ──
         public float aoeExtraHitBonus = 0.3f;          // AoE 每多命中一个目标的加分
     }
