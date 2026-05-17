@@ -104,26 +104,15 @@ namespace GamePlay.Grid
         {
             HashSet<Vector3Int> reachable = new HashSet<Vector3Int>();
             Dictionary<Vector3Int, float> costSoFar = new Dictionary<Vector3Int, float>();
-            List<Node> openSet = new List<Node>();
+            AStarMinHeap openSet = new AStarMinHeap();
 
             Node startNode = new Node(start) { gCost = 0 };
-            openSet.Add(startNode);
+            openSet.Insert(startNode);
             costSoFar[start] = 0;
 
             while (openSet.Count > 0)
             {
-                // 取 gCost 最小的节点（手动遍历，避免 LINQ OrderBy）
-                Node currentNode = openSet[0];
-                int bestIdx = 0;
-                for (int j = 1; j < openSet.Count; j++)
-                {
-                    if (openSet[j].gCost < currentNode.gCost)
-                    {
-                        currentNode = openSet[j];
-                        bestIdx = j;
-                    }
-                }
-                openSet.RemoveAt(bestIdx);
+                Node currentNode = openSet.ExtractMin();
 
                 reachable.Add(currentNode.position);
 
@@ -142,7 +131,7 @@ namespace GamePlay.Grid
                     if (!costSoFar.ContainsKey(neighborPos) || newCost < costSoFar[neighborPos])
                     {
                         costSoFar[neighborPos] = newCost;
-                        openSet.Add(new Node(neighborPos) { gCost = newCost });
+                        openSet.Insert(new Node(neighborPos) { gCost = newCost });
                     }
                 }
             }
@@ -162,26 +151,15 @@ namespace GamePlay.Grid
         {
             Dictionary<Vector3Int,float> reachableMap = new Dictionary<Vector3Int, float>();
             Dictionary<Vector3Int, float> costSoFar = new Dictionary<Vector3Int, float>();
-            List<Node> openSet = new List<Node>();
+            AStarMinHeap openSet = new AStarMinHeap();
 
             Node startNode = new Node(start) { gCost = 0 };
-            openSet.Add(startNode);
+            openSet.Insert(startNode);
             costSoFar[start] = 0;
 
             while (openSet.Count > 0)
             {
-                // 取 gCost 最小的节点（手动遍历，避免 LINQ OrderBy）
-                Node currentNode = openSet[0];
-                int bestIdx = 0;
-                for (int j = 1; j < openSet.Count; j++)
-                {
-                    if (openSet[j].gCost < currentNode.gCost)
-                    {
-                        currentNode = openSet[j];
-                        bestIdx = j;
-                    }
-                }
-                openSet.RemoveAt(bestIdx);
+                Node currentNode = openSet.ExtractMin();
                 reachableMap.Add(currentNode.position,currentNode.gCost);
 
                 foreach (Vector3Int neighborPos in GetValidNeighbors(currentNode, grid, stats))

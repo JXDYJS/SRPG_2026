@@ -116,30 +116,30 @@ namespace GamePlay.Grid
         }
 
         // ==============================================================
-        // 方块查询（高频调用——直接数组索引 O(1)）
+        // 方块查询（高频调用——先检查边界再 Morton 编码）
         // ==============================================================
 
         public BlockType GetBlock(int x, int y, int z)
         {
             if (_blocks == null) return BlockType.Air;
+            if (!_mortonCode.Contains(x, y, z)) return BlockType.Air;
             long code = _mortonCode.Encode(x, y, z);
-            if (code < 0 || code >= _blocks.Length) return BlockType.Air;
             return _blocks[code];
         }
 
         public BlockType GetBlock(Vector3Int pos)
         {
             if (_blocks == null) return BlockType.Air;
+            if (!_mortonCode.Contains(pos.x, pos.y, pos.z)) return BlockType.Air;
             long code = _mortonCode.Encode(pos.x, pos.y, pos.z);
-            if (code < 0 || code >= _blocks.Length) return BlockType.Air;
             return _blocks[code];
         }
 
         public float GetBlockYSize(Vector3Int pos)
         {
             if (_blockYSizes == null) return 0f;
+            if (!_mortonCode.Contains(pos.x, pos.y, pos.z)) return 0f;
             long code = _mortonCode.Encode(pos.x, pos.y, pos.z);
-            if (code < 0 || code >= _blockYSizes.Length) return 0f;
             return _blockYSizes[code];
         }
 

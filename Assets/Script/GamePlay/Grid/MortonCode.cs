@@ -14,49 +14,49 @@ namespace GamePlay.Grid
         public readonly long MaxCode;
 
         private readonly int _offsetX, _offsetY, _offsetZ;
-        private readonly long _maskPerDim; // (1L << BitsPerDim) - 1
+        private readonly int _maxX, _maxY, _maxZ;
+        private readonly int _minX, _minY, _minZ;
 
-        /// <summary>
-        /// 根据空间边界初始化编码器
-        /// </summary>
-        /// <param name="maxX">X 轴最大值</param>
-        /// <param name="maxY">Y 轴最大值</param>
-        /// <param name="maxZ">Z 轴最大值</param>
-        /// <param name="minX">X 轴最小值（含负值）</param>
-        /// <param name="minY">Y 轴最小值</param>
-        /// <param name="minZ">Z 轴最小值</param>
         public MortonCode(int maxX, int maxY, int maxZ,
                           int minX = 0, int minY = 0, int minZ = 0)
         {
             _offsetX = minX;
             _offsetY = minY;
             _offsetZ = minZ;
+            _minX = minX; _minY = minY; _minZ = minZ;
+            _maxX = maxX; _maxY = maxY; _maxZ = maxZ;
 
             int rangeX = maxX - minX + 1;
             int rangeY = maxY - minY + 1;
             int rangeZ = maxZ - minZ + 1;
             int maxRange = Mathf.Max(rangeX, Mathf.Max(rangeY, rangeZ));
 
-            // 计算编码所需的 bits 数: ceil(log2(maxRange))
             BitsPerDim = Mathf.CeilToInt(Mathf.Log(maxRange, 2f));
             if (BitsPerDim < 1) BitsPerDim = 1;
 
             TotalBits = BitsPerDim * 3;
             MaxCode = (1L << TotalBits) - 1L;
-            _maskPerDim = (1L << BitsPerDim) - 1L;
         }
 
         /// <summary>
-        /// 将三维坐标编码为 Morton 码
+        /// 检查坐标是否在编码器覆盖范围内
+        /// </summary>
+        public bool Contains(int x, int y, int z)
+        {
+            return x >= _minX && x <= _maxX
+                && y >= _minY && y <= _maxY
+                && z >= _minZ && z <= _maxZ;
+        }
+
+        /// <summary>
+        /// 将三维坐标编码为 Morton 码（调用前请确保 Contains 返回 true）
         /// </summary>
         public long Encode(int x, int y, int z)
         {
-            // 偏移到非负范围
             ulong ux = (ulong)(x - _offsetX);
             ulong uy = (ulong)(y - _offsetY);
             ulong uz = (ulong)(z - _offsetZ);
 
-            // 比特交错: (x,y,z) → ...x2y2z2x1y1z1x0y0z0
             long code = 0;
             for (int i = 0, shift = 0; i < BitsPerDim; i++, shift += 3)
             {
