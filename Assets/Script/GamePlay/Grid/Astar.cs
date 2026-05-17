@@ -2,7 +2,6 @@
 
 using System.Collections.Generic;
 using UnityEngine;
-using System.Linq;
 using Global;
 using GamePlay.Units; // 确保引用了 UnitMoveStats
 
@@ -33,9 +32,20 @@ namespace GamePlay.Grid
 
             while (openSet.Count > 0)
             {
-                // 取出 FCost 最小的节点
-                Node currentNode = openSet.OrderBy(n => n.FCost).ThenBy(n => n.hCost).First();
-                openSet.Remove(currentNode);
+                // 取出 FCost 最小的节点（手动遍历，避免 LINQ OrderBy O(n log n) 排序）
+                Node currentNode = openSet[0];
+                int bestIdx = 0;
+                for (int j = 1; j < openSet.Count; j++)
+                {
+                    Node n = openSet[j];
+                    if (n.FCost < currentNode.FCost ||
+                        (n.FCost == currentNode.FCost && n.hCost < currentNode.hCost))
+                    {
+                        currentNode = n;
+                        bestIdx = j;
+                    }
+                }
+                openSet.RemoveAt(bestIdx);
                 closedSet.Add(currentNode.position);
 
                 // 到达终点判定
@@ -102,8 +112,18 @@ namespace GamePlay.Grid
 
             while (openSet.Count > 0)
             {
-                Node currentNode = openSet.OrderBy(n => n.gCost).First();
-                openSet.Remove(currentNode);
+                // 取 gCost 最小的节点（手动遍历，避免 LINQ OrderBy）
+                Node currentNode = openSet[0];
+                int bestIdx = 0;
+                for (int j = 1; j < openSet.Count; j++)
+                {
+                    if (openSet[j].gCost < currentNode.gCost)
+                    {
+                        currentNode = openSet[j];
+                        bestIdx = j;
+                    }
+                }
+                openSet.RemoveAt(bestIdx);
 
                 reachable.Add(currentNode.position);
 
@@ -150,8 +170,18 @@ namespace GamePlay.Grid
 
             while (openSet.Count > 0)
             {
-                Node currentNode = openSet.OrderBy(n => n.gCost).First();
-                openSet.Remove(currentNode);
+                // 取 gCost 最小的节点（手动遍历，避免 LINQ OrderBy）
+                Node currentNode = openSet[0];
+                int bestIdx = 0;
+                for (int j = 1; j < openSet.Count; j++)
+                {
+                    if (openSet[j].gCost < currentNode.gCost)
+                    {
+                        currentNode = openSet[j];
+                        bestIdx = j;
+                    }
+                }
+                openSet.RemoveAt(bestIdx);
                 reachableMap.Add(currentNode.position,currentNode.gCost);
 
                 foreach (Vector3Int neighborPos in GetValidNeighbors(currentNode, grid, stats))

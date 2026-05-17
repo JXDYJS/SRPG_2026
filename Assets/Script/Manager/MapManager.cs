@@ -167,7 +167,7 @@ namespace Managers
         // 4. 构建 3D 逻辑网格 (关键修改)
         logicalGrid.Build(allObjects);
         
-        Debug.Log($"地图加载完毕，构建了 {logicalGrid.blockData.Count} 个逻辑方块。");
+        Debug.Log($"地图加载完毕，构建了 {logicalGrid.BlockCount} 个逻辑方块。");
     }
 
 
@@ -368,8 +368,9 @@ namespace Managers
         minBounds = new Vector2(float.MaxValue, float.MaxValue);
         maxBounds = new Vector2(float.MinValue, float.MinValue);
         
-        if (logicalGrid != null && logicalGrid.blockData != null && logicalGrid.blockData.Count > 0)
+        if (logicalGrid != null && logicalGrid.BlockCount > 0)
         {
+            if (logicalGrid.blockData == null) return; // 惰性加载失败
             foreach (var kvp in logicalGrid.blockData)
             {
                 Vector3Int pos = kvp.Key;
