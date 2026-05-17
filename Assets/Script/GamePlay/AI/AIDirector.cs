@@ -103,16 +103,16 @@ namespace GamePlay.AI
                         continue;
                     }
 
-                    float priority = 1f - hpPercent * 0.8f;
-                    pool.Add(new SupportTask(skill, ally, priority));
+                    // BasePriority 不重复 HP 因素——SupportTask.CalculateUtilityFor 已通过 healUrgency 评估
+                    pool.Add(new SupportTask(skill, ally, 1f));
                 }
 
                 // 自疗：自身HP低且有可用的自疗技能
                 float ownHP = GetHPPercent(unit);
                 if (ownHP < 0.5f && CanTargetSelf(skill) && IsTargetInSkillRange(unit, skill, unit, moveRange))
                 {
-                    float priority = 0.8f - ownHP;
-                    pool.Add(new SupportTask(skill, unit, priority));
+                    // BasePriority 不重复 HP 因素——SupportTask.CalculateUtilityFor 已通过 ownHPLow 评估
+                    pool.Add(new SupportTask(skill, unit, 1f));
                 }
             }
         }
@@ -162,8 +162,8 @@ namespace GamePlay.AI
 
             if (bestThreat < currentThreat * Data.Config.AIConfig.threatImprovementRatio)
             {
-                float priority = currentThreat * (1f - hpPercent);
-                pool.Add(new DefendTask(bestSafePos, priority));
+                // BasePriority 不重复 HP/威胁因素——DefendTask.CalculateUtilityFor 已通过 hpUrgency + dangerUrgency 评估
+                pool.Add(new DefendTask(bestSafePos, 1f));
             }
         }
 
@@ -197,8 +197,8 @@ namespace GamePlay.AI
                         continue;
                     }
 
-                    float priority = EvaluateSkillPriority(skill, unit, target);
-                    pool.Add(new SkillTask(skill, target, priority));
+                    // BasePriority 不重复 AoE 因素——SkillTask.CalculateUtilityFor 已通过 aoeUtility 评估
+                    pool.Add(new SkillTask(skill, target, 1f));
                 }
             }
         }
