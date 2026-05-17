@@ -3,6 +3,7 @@ using System.Linq;
 using Utils;
 using Grid;
 using IngameDebugConsole;
+using Core.Data;
 
 namespace DebugSystem
 {
@@ -65,6 +66,12 @@ namespace DebugSystem
             {
                 Debug.Log($"[Debug] ({kv.Key})={kv.Value:F1}");
             }
+        }
+
+        [ConsoleMethod("playerInvincible", "Set player invincible")]
+        public static void PlayerInvincible(bool invincible)
+        {
+            Data.CommandConfig.playerInvincible = invincible;
         }
     }
 }

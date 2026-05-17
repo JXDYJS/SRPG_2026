@@ -1537,6 +1537,7 @@ GameObject:
   - component: {fileID: 348045455}
   - component: {fileID: 348045456}
   - component: {fileID: 348045457}
+  - component: {fileID: 348045458}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -1848,6 +1849,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca5ba3e41c6218b4e8fd29a1a2620439, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &348045458
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 348045437}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c218bfeed998b8c3b9478459fe170a84, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &395893897
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2056,7 +2069,7 @@ MonoBehaviour:
   sunAngle: 0.1
   sunDeclination: 30
   skyboxMaterial: {fileID: 2100000, guid: 3c29fac2a5dcae8479ede076c0994151, type: 2}
-  dynamicSkyMap: {fileID: 1733779945}
+  dynamicSkyMap: {fileID: 826293027}
 --- !u!1001 &420779828
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4595,6 +4608,44 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 825184150}
   m_PrefabAsset: {fileID: 0}
+--- !u!84 &826293027
+RenderTexture:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: DynamicSkyMap_256x128
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_ForcedFallbackFormat: 4
+  m_DownscaleFallback: 0
+  m_IsAlphaChannelOptional: 0
+  serializedVersion: 5
+  m_Width: 256
+  m_Height: 128
+  m_AntiAliasing: 1
+  m_MipCount: -1
+  m_DepthStencilFormat: 0
+  m_ColorFormat: 48
+  m_MipMap: 1
+  m_GenerateMips: 1
+  m_SRGB: 0
+  m_UseDynamicScale: 0
+  m_BindMS: 0
+  m_EnableCompatibleFormat: 1
+  m_EnableRandomWrite: 0
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 1
+    m_Aniso: 1
+    m_MipBias: 0
+    m_WrapU: 0
+    m_WrapV: 0
+    m_WrapW: 0
+  m_Dimension: 2
+  m_VolumeDepth: 1
+  m_ShadowSamplingMode: 2
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -6966,7 +7017,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 22400762, guid: 67117722a812a2e46ab8cb8eafbf5f5e, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.000011444092
+      value: -0.000022888184
       objectReference: {fileID: 0}
     - target: {fileID: 22426080, guid: 67117722a812a2e46ab8cb8eafbf5f5e, type: 3}
       propertyPath: m_AnchorMax.x
@@ -8359,44 +8410,6 @@ MonoBehaviour:
   _topDownOffset: {x: 0, y: 20, z: 0.1}
   _frontOffset: {x: 0, y: 5, z: -20}
   _rightOffset: {x: 20, y: 5, z: 0}
---- !u!84 &1733779945
-RenderTexture:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: DynamicSkyMap_256x128
-  m_ImageContentsHash:
-    serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  m_ForcedFallbackFormat: 4
-  m_DownscaleFallback: 0
-  m_IsAlphaChannelOptional: 0
-  serializedVersion: 5
-  m_Width: 256
-  m_Height: 128
-  m_AntiAliasing: 1
-  m_MipCount: -1
-  m_DepthStencilFormat: 0
-  m_ColorFormat: 48
-  m_MipMap: 0
-  m_GenerateMips: 1
-  m_SRGB: 0
-  m_UseDynamicScale: 0
-  m_BindMS: 0
-  m_EnableCompatibleFormat: 1
-  m_EnableRandomWrite: 0
-  m_TextureSettings:
-    serializedVersion: 2
-    m_FilterMode: 1
-    m_Aniso: 1
-    m_MipBias: 0
-    m_WrapU: 0
-    m_WrapV: 0
-    m_WrapW: 0
-  m_Dimension: 2
-  m_VolumeDepth: 1
-  m_ShadowSamplingMode: 2
 --- !u!1001 &1760093593
 PrefabInstance:
   m_ObjectHideFlags: 0

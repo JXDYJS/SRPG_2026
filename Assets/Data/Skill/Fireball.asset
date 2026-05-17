@@ -19,7 +19,7 @@ MonoBehaviour:
   CastPattern: 2
   CastMaxRange: 5
   CastMinRange: 1
-  CastVerticalRange: 0
+  CastVerticalRange: 1
   Trajectory: 0
   StopsAtFirstHit: 1
   Cost: 0
@@ -37,6 +37,8 @@ MonoBehaviour:
       Constant: 1
       DamageType: 1
       BuffID: 
+      BuffStacks: 1
+      RemoveMode: 0
     VisualData:
       CastAnimTrigger: 
       CastEffect:
@@ -51,8 +53,20 @@ MonoBehaviour:
         m_SubObjectType: 
         m_EditorAssetChanged: 0
       ProjectileSpeed: 3
+      HitTimingMode: 0
       HitEventName: 
+      HitDelayTime: 0.3
+      EndTimingMode: 0
       EndEventName: 
+      EndDelayTime: 0.3
+      TargetAreaEffect:
+        m_AssetGUID: 
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_EditorAssetChanged: 0
+      TargetAreaOffset: {x: 0, y: 8, z: 0}
+      TargetAreaRotation: {x: 90, y: 0, z: 0}
+      TargetAreaDuration: -1
   - PhaseName: "\u7206\u70B8"
     TargetType: 7
     AoEPattern: 2
@@ -66,6 +80,8 @@ MonoBehaviour:
       Constant: 1
       DamageType: 0
       BuffID: 
+      BuffStacks: 1
+      RemoveMode: 0
     VisualData:
       CastAnimTrigger: 
       CastEffect:
@@ -80,5 +96,19 @@ MonoBehaviour:
         m_SubObjectType: 
         m_EditorAssetChanged: 0
       ProjectileSpeed: 3
+      HitTimingMode: 0
       HitEventName: 
+      HitDelayTime: 0.3
+      EndTimingMode: 0
       EndEventName: 
+      EndDelayTime: 0.3
+      TargetAreaEffect:
+        m_AssetGUID: 
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_EditorAssetChanged: 0
+      TargetAreaOffset: {x: 0, y: 8, z: 0}
+      TargetAreaRotation: {x: 90, y: 0, z: 0}
+      TargetAreaDuration: -1
+  isCustomSkill: 0
+  CustomBehavior: {fileID: 0}
