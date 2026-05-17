@@ -175,3 +175,7 @@ When working on this project:
 - **State tracking**: `.planning/STATE.md`
 - **Roadmap**: `.planning/ROADMAP.md`
 - **Skills directory**: `.agent/skills/` for Unity automation tools
+## Git Branching & Workflow Rules
+1. **禁止在 main 分支直接修改**：所有开发、代码变更严禁直接提交到 `main` 分支。
+2. **分支策略**：请切换至 `dev` 分支，或者（最推荐）针对特定 AI 开发任务创建自定义的独立分支，避免把所有开发任务堆积在 `dev` 上。
+3. **代码评审机制**：在本地开发完成、确保 Unity 编辑器中编译无错且运行正常后，将代码 push 到远端仓库供用户进行 Review。

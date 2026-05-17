@@ -104,9 +104,9 @@ public class TurnManager : MonoBehaviour
         }
         else
         {
-            // 敌人回合，锁死玩家输入，并把指挥权交给 AI 管家
+            // 敌人回合，锁死玩家输入，并把指挥权交给 AI 任务系统
             GamePlay.Control.BattleInputController.Instance.ChangeState(GamePlay.Control.InputState.Locked);
-            EnemyAIManager.Instance.TakeControl(unit);
+            AITaskSystem.Instance.TakeControl(unit);
         }
     }
 
