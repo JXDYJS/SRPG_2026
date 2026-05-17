@@ -52,8 +52,8 @@ namespace GamePlay.AI
                     continue;
                 }
 
-                float priority = 0.5f + (1f - GetHPPercent(player)) * 0.5f;
-                pool.Add(new AttackTask(player, priority));
+                // BasePriority 不重复 HP 因素——AttackTask.CalculateUtilityFor 已通过 executeUtility 评估
+                pool.Add(new AttackTask(player, 1f));
             }
         }
 
