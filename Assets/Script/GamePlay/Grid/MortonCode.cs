@@ -31,7 +31,14 @@ namespace GamePlay.Grid
             int rangeZ = maxZ - minZ + 1;
             int maxRange = Mathf.Max(rangeX, Mathf.Max(rangeY, rangeZ));
 
-            BitsPerDim = Mathf.CeilToInt(Mathf.Log(maxRange, 2f));
+            int bits = 0;
+            int v = maxRange - 1;
+            while (v > 0)
+            {
+                bits++;
+                v >>= 1;
+            }
+            BitsPerDim = bits;
             if (BitsPerDim < 1) BitsPerDim = 1;
 
             TotalBits = BitsPerDim * 3;
@@ -75,9 +82,9 @@ namespace GamePlay.Grid
             ulong ux = 0, uy = 0, uz = 0;
             for (int i = 0, shift = 0; i < BitsPerDim; i++, shift += 3)
             {
-                ux |= ((ulong)code >> shift) & (1UL << i);
-                uy |= ((ulong)code >> (shift + 1)) & (1UL << i);
-                uz |= ((ulong)code >> (shift + 2)) & (1UL << i);
+                ux |= (((ulong)code >> shift) & 1UL) << i;
+                uy |= (((ulong)code >> (shift + 1)) & 1UL) << i;
+                uz |= (((ulong)code >> (shift + 2)) & 1UL) << i;
             }
             x = (int)ux + _offsetX;
             y = (int)uy + _offsetY;

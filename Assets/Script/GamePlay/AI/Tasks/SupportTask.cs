@@ -25,7 +25,7 @@ namespace GamePlay.AI.Tasks
         // ──────────────────────────────────────
         // CalculateUtilityFor
         // ──────────────────────────────────────
-        public override float CalculateUtilityFor(MapUnit unit)
+        public override float CalculateUtilityFor(MapUnit unit, AITaskContext ctx)
         {
             // 0. 前置检查
             if (Skill == null)
@@ -105,7 +105,7 @@ namespace GamePlay.AI.Tasks
         // ──────────────────────────────────────
         // GeneratePlan
         // ──────────────────────────────────────
-        public override AIPlan GeneratePlan(MapUnit unit)
+        public override AIPlan GeneratePlan(MapUnit unit, AITaskContext ctx)
         {
             AIPlan plan = new AIPlan();
 
@@ -122,11 +122,7 @@ namespace GamePlay.AI.Tasks
             // 2. 不在范围内则找最佳支援位置（威胁最低的施法位置）
             if (!alreadyInRange && unit.CanMove)
             {
-                int moveRange = (int)unit.Character.statSystem.moveRange.getValue();
-                HashSet<Vector3Int> reachableTiles = AStar.GetReachableTiles(
-                    unit.gridPosition, moveRange,
-                    MapManager.Instance.logicalGrid, unit.moveStats);
-                Vector3Int? bestPos = FindBestSupportPosition(unit, reachableTiles, Skill, TargetUnit);
+                Vector3Int? bestPos = FindBestSupportPosition(unit, ctx.ReachableTiles, Skill, TargetUnit);
 
                 if (bestPos.HasValue && bestPos.Value != unit.gridPosition)
                 {

@@ -21,7 +21,7 @@ namespace GamePlay.AI
         /// <summary>
         /// 对任务池进行竞价，返回最适合当前单位的任务
         /// </summary>
-        public AITask BidForTask(MapUnit unit, List<AITask> taskPool)
+        public AITask BidForTask(MapUnit unit, List<AITask> taskPool, AITaskContext ctx)
         {
             if (unit == null || taskPool == null || taskPool.Count == 0)
             {
@@ -32,7 +32,7 @@ namespace GamePlay.AI
             UnitClassSO unitClass = unit.GetClass();
             float hpFactor = (float)unit.Character.statSystem.currentHP
                            / unit.Character.statSystem.maxHP.getValue();
-            float maxReach = unit.Character.statSystem.moveRange.getValue();
+            float maxReach = ctx.MoveRange;
 
             AITask bestTask = null;
             float bestScore = float.MinValue;
@@ -51,7 +51,7 @@ namespace GamePlay.AI
                 }
 
                 // 2. 基础效用 (0~1，各任务统一量纲)
-                float baseUtility = task.CalculateUtilityFor(unit);
+                float baseUtility = task.CalculateUtilityFor(unit, ctx);
                 if (baseUtility <= 0f)
                 {
                     continue;

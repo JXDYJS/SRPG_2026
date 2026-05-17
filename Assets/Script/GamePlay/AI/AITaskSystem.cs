@@ -71,15 +71,20 @@ namespace GamePlay.AI
             }
             float tRebuildThreat = (Time.realtimeSinceStartup - t1) * 1000f;
 
+            // ─── 1.5 预计算上下文（AStar 泛洪 + 威胁图引用，后续全阶段复用）───
+            float t1_5 = Time.realtimeSinceStartup;
+            AITaskContext ctx = new AITaskContext(unit);
+            float tContext = (Time.realtimeSinceStartup - t1_5) * 1000f;
+
             // ─── 2. AIDirector 生成候选任务池 ───
             float t2 = Time.realtimeSinceStartup;
-            List<AITask> taskPool = _director.GenerateCandidateTasks(unit);
+            List<AITask> taskPool = _director.GenerateCandidateTasks(unit, ctx);
             float tGenerateTasks = (Time.realtimeSinceStartup - t2) * 1000f;
             Debug.Log($"[AITaskSystem] 生成 {taskPool.Count} 个候选任务");
 
             // ─── 3. 竞价：选择最优任务 ───
             float t3 = Time.realtimeSinceStartup;
-            AITask bestTask = _bidding.BidForTask(unit, taskPool);
+            AITask bestTask = _bidding.BidForTask(unit, taskPool, ctx);
             float tBidding = (Time.realtimeSinceStartup - t3) * 1000f;
             if (bestTask == null)
             {
@@ -93,7 +98,7 @@ namespace GamePlay.AI
 
             // ─── 4. 生成执行计划 ───
             float t4 = Time.realtimeSinceStartup;
-            AIPlan plan = bestTask.GeneratePlan(unit);
+            AIPlan plan = bestTask.GeneratePlan(unit, ctx);
             float tGenPlan = (Time.realtimeSinceStartup - t4) * 1000f;
             Debug.Log($"[AITaskSystem] 生成计划: {plan.Steps.Count} 步");
 
@@ -101,6 +106,7 @@ namespace GamePlay.AI
             float tTotalPreExec = (Time.realtimeSinceStartup - tStart) * 1000f;
             Debug.Log($"[AITaskSystem·性能] ═══════════════════════════════════");
             Debug.Log($"[AITaskSystem·性能]  威胁图重建: {tRebuildThreat:F1} ms");
+            Debug.Log($"[AITaskSystem·性能]  预计算上下文: {tContext:F1} ms");
             Debug.Log($"[AITaskSystem·性能]  生成任务池: {tGenerateTasks:F1} ms ({taskPool.Count}个)");
             Debug.Log($"[AITaskSystem·性能]  任务竞价:   {tBidding:F1} ms");
             Debug.Log($"[AITaskSystem·性能]  生成计划:   {tGenPlan:F1} ms");

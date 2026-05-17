@@ -34,6 +34,9 @@ namespace GamePlay.Grid
             int heightUp = skill.CastVerticalRange;
             int heightDown = skill.CastVerticalRange;
 
+            // 预计算施法者的世界坐标（每个 tile 循环都要用，提到外面避免重复计算）
+            Vector3 casterWorldPos = MapManager.Instance.GetWorldPosition(casterPos);
+
             foreach (Vector2Int p2d in range2D)
             {
                 for (int yOffset = -heightDown; yOffset <= heightUp; yOffset++)
@@ -51,7 +54,6 @@ namespace GamePlay.Grid
                     // 新增：根据弹道轨迹类型检查目标点是否可达
                     
                     // 计算正确的位置，考虑格子高度
-                    Vector3 casterWorldPos = MapManager.Instance.GetWorldPosition(casterPos);
                     Vector3 targetWorldPos = MapManager.Instance.GetWorldPosition(targetPos3D);
                     
                     bool isReachable = CheckTrajectoryReachable(casterWorldPos, targetWorldPos, skill);

@@ -6,12 +6,12 @@ namespace GamePlay.AI.Tasks
     {
         public WaitTask(float basePriority) : base(AITaskType.Wait, basePriority) { }
 
-        public override float CalculateUtilityFor(MapUnit unit)
+        public override float CalculateUtilityFor(MapUnit unit, AITaskContext ctx)
         {
             return 0.1f;
         }
 
-        public override AIPlan GeneratePlan(MapUnit unit)
+        public override AIPlan GeneratePlan(MapUnit unit, AITaskContext ctx)
         {
             AIPlan plan = new AIPlan();
             plan.AddStep(AIPlanStep.Wait(0.5f));

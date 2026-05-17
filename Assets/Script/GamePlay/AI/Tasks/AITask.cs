@@ -1,5 +1,10 @@
 using System;
+using System.Collections.Generic;
+using UnityEngine;
 using GamePlay.Units;
+using GamePlay.Grid;
+using Managers;
+using Grid;
 
 namespace GamePlay.AI.Tasks
 {
@@ -13,6 +18,26 @@ namespace GamePlay.AI.Tasks
         Wait
     }
 
+    /// <summary>
+    /// AI 任务上下文——持有单次 AI 回合内多次复用的预计算数据
+    /// 避免 AStar 泛洪、威胁图查询等重复计算
+    /// </summary>
+    public class AITaskContext
+    {
+        public readonly HashSet<Vector3Int> ReachableTiles;
+        public readonly InfluenceMapLayer ThreatMap;
+        public readonly int MoveRange;
+
+        public AITaskContext(MapUnit unit)
+        {
+            MoveRange = (int)unit.Character.statSystem.moveRange.getValue();
+            ReachableTiles = AStar.GetReachableTiles(
+                unit.gridPosition, MoveRange,
+                MapManager.Instance.logicalGrid, unit.moveStats);
+            ThreatMap = TacticalMapManager.Instance.ThreatMap;
+        }
+    }
+
     public abstract class AITask
     {
         public string TaskID { get; protected set; }
@@ -22,8 +47,8 @@ namespace GamePlay.AI.Tasks
         public int CurrentAssignees { get; protected set; }
         public bool IsAvailable => CurrentAssignees < MaxAssignees;
 
-        public abstract float CalculateUtilityFor(MapUnit unit);
-        public abstract AIPlan GeneratePlan(MapUnit unit);
+        public abstract float CalculateUtilityFor(MapUnit unit, AITaskContext ctx);
+        public abstract AIPlan GeneratePlan(MapUnit unit, AITaskContext ctx);
         public abstract float EstimatedDistanceTo(MapUnit unit);
         public abstract bool IsCompleted();
         public abstract bool IsFailed();
