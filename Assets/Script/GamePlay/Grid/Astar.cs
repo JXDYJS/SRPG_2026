@@ -177,7 +177,7 @@ namespace GamePlay.Grid
                     if (!costSoFar.ContainsKey(neighborPos) || newCost < costSoFar[neighborPos])
                     {
                         costSoFar[neighborPos] = newCost;
-                        openSet.Add(new Node(neighborPos) { gCost = newCost });
+                        openSet.Insert(new Node(neighborPos) { gCost = newCost });
                     }
                 }
             }
