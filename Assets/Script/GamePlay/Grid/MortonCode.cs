@@ -75,9 +75,9 @@ namespace GamePlay.Grid
             ulong ux = 0, uy = 0, uz = 0;
             for (int i = 0, shift = 0; i < BitsPerDim; i++, shift += 3)
             {
-                ux |= ((ulong)code >> shift) & 1 << i;
-                uy |= ((ulong)code >> (shift + 1)) & 1 << i;
-                uz |= ((ulong)code >> (shift + 2)) & 1 << i;
+                ux |= ((ulong)code >> shift) & (1UL << i);
+                uy |= ((ulong)code >> (shift + 1)) & (1UL << i);
+                uz |= ((ulong)code >> (shift + 2)) & (1UL << i);
             }
             x = (int)ux + _offsetX;
             y = (int)uy + _offsetY;
