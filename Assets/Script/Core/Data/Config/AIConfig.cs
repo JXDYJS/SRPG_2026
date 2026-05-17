@@ -29,6 +29,18 @@ namespace Core.Data
         public float defendWeight_SafetyImprovement  = 0.25f;
         public float defendWeight_Distance           = 0.15f;
 
+        // ── 技能任务效用权重 ──
+        public float skillWeight_Impact   = 0.35f;
+        public float skillWeight_AoE      = 0.25f;
+        public float skillWeight_Distance = 0.20f;
+        public float skillWeight_Type     = 0.20f;
+
+        // ── 支援任务效用权重 ──
+        public float supportWeight_HealUrgency  = 0.30f;
+        public float supportWeight_HPLow        = 0.20f;
+        public float supportWeight_Distance     = 0.20f;
+        public float supportWeight_ThreatCover  = 0.30f;
+
         // ── 技能评分 ──
         public float aoeExtraHitBonus = 0.3f;          // AoE 每多命中一个目标的加分
     }
