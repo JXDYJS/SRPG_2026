@@ -20,15 +20,45 @@ namespace GamePlay.AI
         {
             List<AITask> taskPool = new List<AITask>();
 
+            float t0 = Time.realtimeSinceStartup;
+
             GenerateAttackTasks(actingUnit, taskPool);
+            float t1 = Time.realtimeSinceStartup;
+
             GenerateSupportTasks(actingUnit, taskPool);
+            float t2 = Time.realtimeSinceStartup;
+
             GenerateDefendTasks(actingUnit, taskPool);
+            float t3 = Time.realtimeSinceStartup;
+
             GenerateSkillTasks(actingUnit, taskPool);
+            float t4 = Time.realtimeSinceStartup;
+
             GenerateMoveTasks(actingUnit, taskPool);
+            float t5 = Time.realtimeSinceStartup;
 
             taskPool.Add(new WaitTask(0f));
 
+            float tTotal = (t5 - t0) * 1000f;
+            UnityEngine.Debug.Log($"[AIDirector·性能] ─────────────────────────────");
+            UnityEngine.Debug.Log($"[AIDirector·性能]  Attack:  {(t1 - t0) * 1000f:F1} ms  → {CountByType(taskPool, AITaskType.Attack)} 个任务");
+            UnityEngine.Debug.Log($"[AIDirector·性能]  Support: {(t2 - t1) * 1000f:F1} ms  → {CountByType(taskPool, AITaskType.Support)} 个任务");
+            UnityEngine.Debug.Log($"[AIDirector·性能]  Defend:  {(t3 - t2) * 1000f:F1} ms  → {CountByType(taskPool, AITaskType.Defend)} 个任务");
+            UnityEngine.Debug.Log($"[AIDirector·性能]  Skill:   {(t4 - t3) * 1000f:F1} ms  → {CountByType(taskPool, AITaskType.Skill)} 个任务");
+            UnityEngine.Debug.Log($"[AIDirector·性能]  Move:    {(t5 - t4) * 1000f:F1} ms  → {CountByType(taskPool, AITaskType.Move)} 个任务");
+            UnityEngine.Debug.Log($"[AIDirector·性能]  总计:    {tTotal:F1} ms  → {taskPool.Count} 个任务");
+            UnityEngine.Debug.Log($"[AIDirector·性能] ─────────────────────────────");
+
             return taskPool;
+        }
+
+        private int CountByType(List<AITask> pool, AITaskType type)
+        {
+            int count = 0;
+            foreach (var t in pool)
+                if (t.TaskType == type)
+                    count++;
+            return count;
         }
 
         // ==============================================================
