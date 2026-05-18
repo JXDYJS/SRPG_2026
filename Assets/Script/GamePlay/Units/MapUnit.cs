@@ -10,7 +10,7 @@ using GamePlay.Grid;
 using GamePlay.Skill;
 using DG.Tweening;
 using UI;
-
+using Core.Data;
 namespace GamePlay.Units
 {
     using Character.instance;
@@ -309,6 +309,11 @@ namespace GamePlay.Units
 
         public virtual void TakeDamage(DamageInfo info)
         {
+            if (Data.CommandConfig.playerInvincible && this.Faction == FactionType.Player)
+            {
+                return;
+            }
+
             UndoSystem.Instance.RegisterDirty(this);
             Character.statSystem.currentHP -= (int)info.damage;
             Debug.Log($"{name} 受到 {info.damage} 点伤害 ({info.damageType})");

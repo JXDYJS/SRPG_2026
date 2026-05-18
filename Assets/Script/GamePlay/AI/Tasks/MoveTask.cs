@@ -19,7 +19,7 @@ namespace GamePlay.AI.Tasks
         // ──────────────────────────────────────
         // CalculateUtilityFor
         // ──────────────────────────────────────
-        public override float CalculateUtilityFor(MapUnit unit)
+        public override float CalculateUtilityFor(MapUnit unit, AITaskContext ctx)
         {
             // 0. 前置检查
             if (unit == null || unit.Character == null || unit.Character.statSystem.currentHP <= 0)
@@ -45,13 +45,8 @@ namespace GamePlay.AI.Tasks
                 return 0f;
             }
 
-            // 1. 可达性检查
-            int moveRange = (int)unit.Character.statSystem.moveRange.getValue();
-            HashSet<Vector3Int> reachableTiles = AStar.GetReachableTiles(
-                unit.gridPosition, moveRange,
-                MapManager.Instance.logicalGrid, unit.moveStats);
-
-            if (!reachableTiles.Contains(TargetPosition))
+            // 1. 可达性检查（复用预计算上下文）
+            if (!ctx.ReachableTiles.Contains(TargetPosition))
             {
                 return 0f;
             }
@@ -59,10 +54,10 @@ namespace GamePlay.AI.Tasks
             // 2. 距离效用：越近越好
             int manhattanDist = Mathf.Abs(unit.gridPosition.x - TargetPosition.x)
                               + Mathf.Abs(unit.gridPosition.z - TargetPosition.z);
-            float distanceUtility = 1.0f - Mathf.Clamp01((float)manhattanDist / (moveRange + 1));
+            float distanceUtility = 1.0f - Mathf.Clamp01((float)manhattanDist / (ctx.MoveRange + 1));
 
             // 3. 位置安全性效用：优先选择威胁更低的移动目标
-            InfluenceMapLayer threatMap = TacticalMapManager.Instance.ThreatMap;
+            InfluenceMapLayer threatMap = ctx.ThreatMap;
             float currentThreat = threatMap.GetScore(unit.gridPosition);
             float targetThreat = threatMap.GetScore(TargetPosition);
             float totalThreat = currentThreat + targetThreat;
@@ -77,7 +72,7 @@ namespace GamePlay.AI.Tasks
         // ──────────────────────────────────────
         // GeneratePlan
         // ──────────────────────────────────────
-        public override AIPlan GeneratePlan(MapUnit unit)
+        public override AIPlan GeneratePlan(MapUnit unit, AITaskContext ctx)
         {
             AIPlan plan = new AIPlan();
 

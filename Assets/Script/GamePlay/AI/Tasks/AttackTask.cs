@@ -23,7 +23,7 @@ namespace GamePlay.AI.Tasks
         // ──────────────────────────────────────
         // CalculateUtilityFor
         // ──────────────────────────────────────
-        public override float CalculateUtilityFor(MapUnit unit)
+        public override float CalculateUtilityFor(MapUnit unit, AITaskContext ctx)
         {
             // 0. 前置检查
             if (TargetUnit == null)
@@ -42,11 +42,9 @@ namespace GamePlay.AI.Tasks
                 return 0f;
             }
 
-            // 1. 获取可达位置
-            int moveRange = (int)unit.Character.statSystem.moveRange.getValue();
-            HashSet<Vector3Int> reachableTiles = AStar.GetReachableTiles(
-                unit.gridPosition, moveRange,
-                MapManager.Instance.logicalGrid, unit.moveStats);
+            // 1. 获取可达位置（复用预计算上下文）
+            HashSet<Vector3Int> reachableTiles = ctx.ReachableTiles;
+            int moveRange = ctx.MoveRange;
 
             // 2. 选择最佳攻击技能并找到最佳攻击位置
             SkillDataSO bestSkill = SelectBestAttackSkill(unit, TargetUnit);
@@ -72,7 +70,7 @@ namespace GamePlay.AI.Tasks
             float executeUtility = 1.0f - hpPercent;
 
             // 5. 威胁匹配效用：打高威胁目标更有价值
-            InfluenceMapLayer threatMap = TacticalMapManager.Instance.ThreatMap;
+            InfluenceMapLayer threatMap = ctx.ThreatMap;
             float targetThreat = threatMap.GetScore(TargetUnit.gridPosition);
             float threatUtility = Mathf.Clamp01(targetThreat / Data.Config.AIConfig.threatNormalizeBase);
 
@@ -94,7 +92,7 @@ namespace GamePlay.AI.Tasks
         // ──────────────────────────────────────
         // GeneratePlan
         // ──────────────────────────────────────
-        public override AIPlan GeneratePlan(MapUnit unit)
+        public override AIPlan GeneratePlan(MapUnit unit, AITaskContext ctx)
         {
             AIPlan plan = new AIPlan();
 
@@ -108,17 +106,13 @@ namespace GamePlay.AI.Tasks
                 return plan;
             }
 
-            // 2. 找位置
+            // 2. 找位置（复用预计算上下文）
             Vector3Int? attackPos = null;
-            List<Vector3Int> currentRange = AttackRangeSystem.GetCastRange3D(unit.gridPosition, attackSkill);
-            bool alreadyInRange = currentRange.Contains(TargetUnit.gridPosition);
+            bool alreadyInRange = AttackRangeSystem.CanCastTo(unit.gridPosition, TargetUnit.gridPosition, attackSkill);
 
             if (!alreadyInRange && unit.CanMove)
             {
-                int moveRange = (int)unit.Character.statSystem.moveRange.getValue();
-                HashSet<Vector3Int> reachableTiles = AStar.GetReachableTiles(
-                    unit.gridPosition, moveRange,
-                    MapManager.Instance.logicalGrid, unit.moveStats);
+                HashSet<Vector3Int> reachableTiles = ctx.ReachableTiles;
                 attackPos = FindBestAttackPosition(unit, reachableTiles, attackSkill, TargetUnit);
             }
 
@@ -250,7 +244,7 @@ namespace GamePlay.AI.Tasks
 
         /// <summary>
         /// 找到最佳攻击位置：在可达位置中选威胁度最低且能攻击到目标的格子
-        /// 逻辑与现有 EnemyAIManager.EnemyAILogic 一致
+        /// 先用 IsWithinCastDistance 做快速距离预滤，再通过 CanCastTo 精确判定
         /// </summary>
         private Vector3Int? FindBestAttackPosition(
             MapUnit unit,
@@ -264,7 +258,6 @@ namespace GamePlay.AI.Tasks
 
             foreach (Vector3Int tile in reachableTiles)
             {
-                // 跳过被其他单位占据的格子
                 if (tile != unit.gridPosition)
                 {
                     MapUnit occupying = UnitManager.Instance.GetUnitAt(tile);
@@ -274,8 +267,12 @@ namespace GamePlay.AI.Tasks
                     }
                 }
 
-                List<Vector3Int> attackRange = AttackRangeSystem.GetCastRange3D(tile, skill);
-                if (!attackRange.Contains(target.gridPosition))
+                if (!AttackRangeSystem.IsWithinCastDistance(tile, target.gridPosition, skill))
+                {
+                    continue;
+                }
+
+                if (!AttackRangeSystem.CanCastTo(tile, target.gridPosition, skill))
                 {
                     continue;
                 }

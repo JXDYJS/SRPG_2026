@@ -175,3 +175,33 @@ When working on this project:
 - **State tracking**: `.planning/STATE.md`
 - **Roadmap**: `.planning/ROADMAP.md`
 - **Skills directory**: `.agent/skills/` for Unity automation tools
+## Git Branching & Workflow Rules
+1. **禁止在 main 分支直接修改**：所有开发、代码变更严禁直接提交到 `main` 分支。
+2. **分支策略**：请切换至 `dev` 分支，或者（最推荐）针对特定 AI 开发任务创建自定义的独立分支，避免把所有开发任务堆积在 `dev` 上。
+3. **代码评审机制**：在本地开发完成、确保 Unity 编辑器中编译无错且运行正常后，将代码 push 到远端仓库供用户进行 Review。
+
+### GitHub Review Automation Rules
+1. **自动检索并提取评审意见**：当用户在对话中提及“修复代码”、“处理 Review”、“解决 comment”等指令时，AI **必须**严格按照以下两步自动化动作执行，严禁盲目猜测 PR 编号：
+   - **Step 1（自查编号）**：首先在终端执行以下命令，获取当前分支关联的 PR 编号（读取返回 JSON 中的 `number`）：
+     ```bash
+     gh pr view --json number,title,state
+     ```
+   - **Step 2（抓取数据）**：将获取到的编号（假设为 `${NUMBER}`）代入并执行以下命令，拉取全量的行内评审数据：
+     ```bash
+     gh api repos/JXDYJS/SRPG_2026/pulls/${NUMBER}/comments --jq '.[] | {file: .path, line: .line, user: .user.login, body: .body}'
+     ```
+2. **精准定位与修复**：AI 需自主解析 Step 2 返回的 JSON 数据，严格对照其中的 `file`（文件路径）、`line`（代码行号）以及 `body`（用户的评审意见），直接在本地源码中定位并尝试修复相关逻辑。
+3. **闭环反馈**：修复完毕、且确保 Unity 编辑器无编译错误后，将更改 commit 并重新 push 到远端 AI 分支，供用户进行下一轮 Review。
+
+### Mandatory Unity Compilation & Validation Hook (CRITICAL)
+Before declaring any task as "complete", "fixed", or ready for user Review, you **MUST** run the Unity integration skill to validate code correctness:
+1. **Trigger Unity Skill**: Execute the `unity` skill to establish a connection with the local Unity Editor instance.
+2. **Trigger Compilation**: Force or await a Unity compilation pass via the skill.
+3. **Capture Console Outputs**: Read and analyze all logs, warnings, and errors returned from the Unity Console window.
+4. **Auto-Fix Loop**: 
+   - If **any compilation errors or script-related exceptions** are detected, you must treat them as blocking issues.
+   - Automatically locate the source of the errors, apply fixes to the code, and **re-run the Unity skill compilation check**.
+   - This loop must continue until the Unity Console returns **0 errors**.
+5. **Graceful Degradation**: If the Unity Editor cannot be connected to (e.g., Editor is not running, skill timeout) or if errors persist after multiple refactoring attempts (max 3-5 loops):
+   - You **MUST halt** the task immediately.
+   - Do not push the code or ask for review blindly. Present the exact blockages, error logs, or connection failures to the user, and explain the root cause.

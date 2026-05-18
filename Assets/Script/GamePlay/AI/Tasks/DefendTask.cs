@@ -22,7 +22,7 @@ namespace GamePlay.AI.Tasks
         // ──────────────────────────────────────
         // CalculateUtilityFor
         // ──────────────────────────────────────
-        public override float CalculateUtilityFor(MapUnit unit)
+        public override float CalculateUtilityFor(MapUnit unit, AITaskContext ctx)
         {
             // 0. 前置检查
             if (unit.Character == null || unit.Character.statSystem.currentHP <= 0)
@@ -81,7 +81,7 @@ namespace GamePlay.AI.Tasks
         // ──────────────────────────────────────
         // GeneratePlan
         // ──────────────────────────────────────
-        public override AIPlan GeneratePlan(MapUnit unit)
+        public override AIPlan GeneratePlan(MapUnit unit, AITaskContext ctx)
         {
             AIPlan plan = new AIPlan();
 

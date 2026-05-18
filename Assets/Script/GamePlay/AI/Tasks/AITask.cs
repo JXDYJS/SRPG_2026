@@ -1,5 +1,12 @@
 using System;
+using System.Collections.Generic;
+using UnityEngine;
 using GamePlay.Units;
+using GamePlay.Grid;
+using GamePlay.Skill;
+using Managers;
+using Grid;
+using Global;
 
 namespace GamePlay.AI.Tasks
 {
@@ -13,6 +20,98 @@ namespace GamePlay.AI.Tasks
         Wait
     }
 
+    /// <summary>
+    /// AI 任务上下文——持有单次 AI 回合内多次复用的预计算数据
+    /// 避免 AStar 泛洪、威胁图查询等重复计算
+    /// </summary>
+    public class AITaskContext
+    {
+        public readonly HashSet<Vector3Int> ReachableTiles;
+        public readonly InfluenceMapLayer ThreatMap;
+        public readonly int MoveRange;
+
+        // 进攻技能范围预计算
+        public readonly List<SkillDataSO> OffensiveSkills;
+        public readonly int MaxOffensiveCastRange;
+        public readonly int MaxOffensiveSquareRange;
+        public readonly bool HasGlobalOffensiveSkill;
+
+        public AITaskContext(MapUnit unit)
+        {
+            MoveRange = (int)unit.Character.statSystem.moveRange.getValue();
+            ReachableTiles = AStar.GetReachableTiles(
+                unit.gridPosition, MoveRange,
+                MapManager.Instance.logicalGrid, unit.moveStats);
+            ThreatMap = TacticalMapManager.Instance.ThreatMap;
+
+            OffensiveSkills = new List<SkillDataSO>();
+            MaxOffensiveCastRange = 0;
+            MaxOffensiveSquareRange = 0;
+            HasGlobalOffensiveSkill = false;
+
+            List<SkillDataSO> activeSkills = unit.GetActiveSkills();
+            if (activeSkills != null)
+            {
+                foreach (SkillDataSO skill in activeSkills)
+                {
+                    if (skill == null)
+                    {
+                        continue;
+                    }
+
+                    if (!IsOffensiveSkillForAI(skill))
+                    {
+                        continue;
+                    }
+
+                    OffensiveSkills.Add(skill);
+
+                    if (skill.CastPattern == CastPatternType.Global)
+                    {
+                        HasGlobalOffensiveSkill = true;
+                    }
+                    else if (skill.CastPattern == CastPatternType.Square)
+                    {
+                        if (skill.CastMaxRange > MaxOffensiveSquareRange)
+                        {
+                            MaxOffensiveSquareRange = skill.CastMaxRange;
+                        }
+                    }
+
+                    if (skill.CastMaxRange > MaxOffensiveCastRange)
+                    {
+                        MaxOffensiveCastRange = skill.CastMaxRange;
+                    }
+                }
+            }
+
+            OffensiveSkills.Sort((a, b) => b.CastMaxRange.CompareTo(a.CastMaxRange));
+        }
+
+        private static bool IsOffensiveSkillForAI(SkillDataSO skill)
+        {
+            if (skill.TargetType == TargetType.Enemy ||
+                skill.TargetType == TargetType.Player ||
+                skill.TargetType == TargetType.ExceptTeammates)
+            {
+                return true;
+            }
+
+            if (skill.Phases != null && skill.Phases.Count > 0)
+            {
+                TargetType phaseTarget = skill.Phases[0].TargetType;
+                if (phaseTarget == TargetType.Enemy ||
+                    phaseTarget == TargetType.Player ||
+                    phaseTarget == TargetType.ExceptTeammates)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+    }
+
     public abstract class AITask
     {
         public string TaskID { get; protected set; }
@@ -22,8 +121,8 @@ namespace GamePlay.AI.Tasks
         public int CurrentAssignees { get; protected set; }
         public bool IsAvailable => CurrentAssignees < MaxAssignees;
 
-        public abstract float CalculateUtilityFor(MapUnit unit);
-        public abstract AIPlan GeneratePlan(MapUnit unit);
+        public abstract float CalculateUtilityFor(MapUnit unit, AITaskContext ctx);
+        public abstract AIPlan GeneratePlan(MapUnit unit, AITaskContext ctx);
         public abstract float EstimatedDistanceTo(MapUnit unit);
         public abstract bool IsCompleted();
         public abstract bool IsFailed();

@@ -21,6 +21,9 @@ namespace Core.Data
         // ── Persistent：存档/读档 ──
         public static PersistentData Persistent { get; private set; }
 
+        // ── CommandConfig：命令配置 ──
+        public static readonly CommandConfigData CommandConfig = new CommandConfigData();
+
         /// <summary>战斗开始时调用</summary>
         public static void CreateRuntime()
         {

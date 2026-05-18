@@ -25,7 +25,7 @@ namespace GamePlay.AI.Tasks
         // ──────────────────────────────────────
         // CalculateUtilityFor
         // ──────────────────────────────────────
-        public override float CalculateUtilityFor(MapUnit unit)
+        public override float CalculateUtilityFor(MapUnit unit, AITaskContext ctx)
         {
             // 0. 前置检查
             if (Skill == null)
@@ -105,7 +105,7 @@ namespace GamePlay.AI.Tasks
         // ──────────────────────────────────────
         // GeneratePlan
         // ──────────────────────────────────────
-        public override AIPlan GeneratePlan(MapUnit unit)
+        public override AIPlan GeneratePlan(MapUnit unit, AITaskContext ctx)
         {
             AIPlan plan = new AIPlan();
 
@@ -116,17 +116,12 @@ namespace GamePlay.AI.Tasks
             }
 
             // 1. 检查是否在施法范围内
-            List<Vector3Int> castRange = AttackRangeSystem.GetCastRange3D(unit.gridPosition, Skill);
-            bool alreadyInRange = castRange.Contains(TargetUnit.gridPosition);
+            bool alreadyInRange = AttackRangeSystem.CanCastTo(unit.gridPosition, TargetUnit.gridPosition, Skill);
 
             // 2. 不在范围内则找最佳支援位置（威胁最低的施法位置）
             if (!alreadyInRange && unit.CanMove)
             {
-                int moveRange = (int)unit.Character.statSystem.moveRange.getValue();
-                HashSet<Vector3Int> reachableTiles = AStar.GetReachableTiles(
-                    unit.gridPosition, moveRange,
-                    MapManager.Instance.logicalGrid, unit.moveStats);
-                Vector3Int? bestPos = FindBestSupportPosition(unit, reachableTiles, Skill, TargetUnit);
+                Vector3Int? bestPos = FindBestSupportPosition(unit, ctx.ReachableTiles, Skill, TargetUnit);
 
                 if (bestPos.HasValue && bestPos.Value != unit.gridPosition)
                 {
@@ -183,6 +178,7 @@ namespace GamePlay.AI.Tasks
 
         /// <summary>
         /// 寻找在可达格子中能施放支援技能的最佳位置（威胁最低优先）
+        /// 先用 IsWithinCastDistance 快滤，再用 CanCastTo 精确判定
         /// </summary>
         private Vector3Int? FindBestSupportPosition(
             MapUnit unit,
@@ -205,8 +201,12 @@ namespace GamePlay.AI.Tasks
                     }
                 }
 
-                List<Vector3Int> castRange = AttackRangeSystem.GetCastRange3D(tile, skill);
-                if (!castRange.Contains(target.gridPosition))
+                if (!AttackRangeSystem.IsWithinCastDistance(tile, target.gridPosition, skill))
+                {
+                    continue;
+                }
+
+                if (!AttackRangeSystem.CanCastTo(tile, target.gridPosition, skill))
                 {
                     continue;
                 }

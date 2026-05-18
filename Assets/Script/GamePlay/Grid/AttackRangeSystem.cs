@@ -34,6 +34,9 @@ namespace GamePlay.Grid
             int heightUp = skill.CastVerticalRange;
             int heightDown = skill.CastVerticalRange;
 
+            // 预计算施法者的世界坐标（每个 tile 循环都要用，提到外面避免重复计算）
+            Vector3 casterWorldPos = MapManager.Instance.GetWorldPosition(casterPos);
+
             foreach (Vector2Int p2d in range2D)
             {
                 for (int yOffset = -heightDown; yOffset <= heightUp; yOffset++)
@@ -51,7 +54,6 @@ namespace GamePlay.Grid
                     // 新增：根据弹道轨迹类型检查目标点是否可达
                     
                     // 计算正确的位置，考虑格子高度
-                    Vector3 casterWorldPos = MapManager.Instance.GetWorldPosition(casterPos);
                     Vector3 targetWorldPos = MapManager.Instance.GetWorldPosition(targetPos3D);
                     
                     bool isReachable = CheckTrajectoryReachable(casterWorldPos, targetWorldPos, skill);
@@ -65,6 +67,95 @@ namespace GamePlay.Grid
             }
 
             return result3D;
+        }
+
+        /// <summary>
+        /// 快速距离预过滤：检查 tile 是否在 skill 的理论最大距离内
+        /// 纯数学判距，不查轨迹/地形，用于跳过不可能命中的 tile
+        /// </summary>
+        public static bool IsWithinCastDistance(Vector3Int casterPos, Vector3Int targetPos, SkillDataSO skill)
+        {
+            int dx = Mathf.Abs(targetPos.x - casterPos.x);
+            int dz = Mathf.Abs(targetPos.z - casterPos.z);
+            int maxR = skill.CastMaxRange;
+
+            switch (skill.CastPattern)
+            {
+                case CastPatternType.Diamond:
+                    return (dx + dz) <= maxR;
+                case CastPatternType.Square:
+                    return Mathf.Max(dx, dz) <= maxR;
+                case CastPatternType.Line:
+                    return (dx == 0 && dz <= maxR) || (dz == 0 && dx <= maxR);
+                case CastPatternType.Global:
+                    return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// 零分配点对点判定：casterPos 能否对 targetPos 施放 skill
+        /// 纯数学判断 + 轨迹检查，不构建 List
+        /// </summary>
+        public static bool CanCastTo(Vector3Int casterPos, Vector3Int targetPos, SkillDataSO skill)
+        {
+            // 1. 2D shape check based on CastPattern
+            int dx = targetPos.x - casterPos.x;
+            int dz = targetPos.z - casterPos.z;
+            bool inPattern = false;
+
+            switch (skill.CastPattern)
+            {
+                case CastPatternType.Diamond:
+                {
+                    int dist = Mathf.Abs(dx) + Mathf.Abs(dz);
+                    inPattern = dist >= skill.CastMinRange && dist <= skill.CastMaxRange;
+                    break;
+                }
+                case CastPatternType.Square:
+                {
+                    int chebDist = Mathf.Max(Mathf.Abs(dx), Mathf.Abs(dz));
+                    inPattern = chebDist >= skill.CastMinRange && chebDist <= skill.CastMaxRange;
+                    break;
+                }
+                case CastPatternType.Line:
+                {
+                    if (dx == 0 && dz != 0)
+                        inPattern = Mathf.Abs(dz) >= skill.CastMinRange && Mathf.Abs(dz) <= skill.CastMaxRange;
+                    else if (dz == 0 && dx != 0)
+                        inPattern = Mathf.Abs(dx) >= skill.CastMinRange && Mathf.Abs(dx) <= skill.CastMaxRange;
+                    break;
+                }
+                case CastPatternType.Global:
+                {
+                    inPattern = true;
+                    break;
+                }
+            }
+
+            if (!inPattern)
+            {
+                return false;
+            }
+
+            // 2. Vertical range check
+            int dy = targetPos.y - casterPos.y;
+            if (Mathf.Abs(dy) > skill.CastVerticalRange)
+            {
+                return false;
+            }
+
+            // 3. CanPlaceSkillOnTile
+            if (!CanPlaceSkillOnTile(targetPos))
+            {
+                return false;
+            }
+
+            // 4. CheckTrajectoryReachable
+            Vector3 casterWorld = MapManager.Instance.GetWorldPosition(casterPos);
+            Vector3 targetWorld = MapManager.Instance.GetWorldPosition(targetPos);
+            return CheckTrajectoryReachable(casterWorld, targetWorld, skill);
         }
 
         /// <summary>
