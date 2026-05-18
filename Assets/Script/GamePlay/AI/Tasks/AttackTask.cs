@@ -108,8 +108,7 @@ namespace GamePlay.AI.Tasks
 
             // 2. 找位置（复用预计算上下文）
             Vector3Int? attackPos = null;
-            List<Vector3Int> currentRange = AttackRangeSystem.GetCastRange3D(unit.gridPosition, attackSkill);
-            bool alreadyInRange = currentRange.Contains(TargetUnit.gridPosition);
+            bool alreadyInRange = AttackRangeSystem.CanCastTo(unit.gridPosition, TargetUnit.gridPosition, attackSkill);
 
             if (!alreadyInRange && unit.CanMove)
             {
@@ -245,7 +244,7 @@ namespace GamePlay.AI.Tasks
 
         /// <summary>
         /// 找到最佳攻击位置：在可达位置中选威胁度最低且能攻击到目标的格子
-        /// 先按曼哈顿距离预筛选（技能 CastMaxRange 内才进入 GetCastRange3D 计算）
+        /// 先用 IsWithinCastDistance 做快速距离预滤，再通过 CanCastTo 精确判定
         /// </summary>
         private Vector3Int? FindBestAttackPosition(
             MapUnit unit,
@@ -256,11 +255,9 @@ namespace GamePlay.AI.Tasks
             Vector3Int? bestPos = null;
             float bestThreat = float.MaxValue;
             InfluenceMapLayer threatMap = TacticalMapManager.Instance.ThreatMap;
-            int castMax = skill.CastMaxRange;
 
             foreach (Vector3Int tile in reachableTiles)
             {
-                // 跳过被其他单位占据的格子
                 if (tile != unit.gridPosition)
                 {
                     MapUnit occupying = UnitManager.Instance.GetUnitAt(tile);
@@ -270,16 +267,12 @@ namespace GamePlay.AI.Tasks
                     }
                 }
 
-                // 曼哈顿距离预筛选：目标必须在技能施法范围内才有可能命中
-                int distToTarget = Mathf.Abs(tile.x - target.gridPosition.x)
-                                 + Mathf.Abs(tile.z - target.gridPosition.z);
-                if (distToTarget > castMax)
+                if (!AttackRangeSystem.IsWithinCastDistance(tile, target.gridPosition, skill))
                 {
                     continue;
                 }
 
-                List<Vector3Int> attackRange = AttackRangeSystem.GetCastRange3D(tile, skill);
-                if (!attackRange.Contains(target.gridPosition))
+                if (!AttackRangeSystem.CanCastTo(tile, target.gridPosition, skill))
                 {
                     continue;
                 }

@@ -293,15 +293,17 @@ namespace GamePlay.AI
 
         private bool IsUnitReachable(MapUnit unit, MapUnit target, AITaskContext ctx)
         {
-            HashSet<Vector3Int> reachableTiles = ctx.ReachableTiles;
-
-            SkillDataSO normalAttack = unit.NormalAttackSkill;
-            if (normalAttack == null)
+            if (ctx.OffensiveSkills.Count == 0)
             {
                 return false;
             }
 
-            foreach (Vector3Int tile in reachableTiles)
+            if (ctx.HasGlobalOffensiveSkill)
+            {
+                return true;
+            }
+
+            foreach (Vector3Int tile in ctx.ReachableTiles)
             {
                 if (tile != unit.gridPosition)
                 {
@@ -312,10 +314,25 @@ namespace GamePlay.AI
                     }
                 }
 
-                List<Vector3Int> attackRange = AttackRangeSystem.GetCastRange3D(tile, normalAttack);
-                if (attackRange.Contains(target.gridPosition))
+                // 快滤：对 Diamond/Line 用 Manhattan，对 Square 用 Chebyshev
+                int manhattanDist = Mathf.Abs(tile.x - target.gridPosition.x)
+                                  + Mathf.Abs(tile.z - target.gridPosition.z);
+                if (manhattanDist > ctx.MaxOffensiveCastRange)
                 {
-                    return true;
+                    int chebDist = Mathf.Max(Mathf.Abs(tile.x - target.gridPosition.x),
+                                             Mathf.Abs(tile.z - target.gridPosition.z));
+                    if (chebDist > ctx.MaxOffensiveSquareRange)
+                    {
+                        continue;
+                    }
+                }
+
+                foreach (SkillDataSO skill in ctx.OffensiveSkills)
+                {
+                    if (AttackRangeSystem.CanCastTo(tile, target.gridPosition, skill))
+                    {
+                        return true;
+                    }
                 }
             }
 
@@ -324,17 +341,12 @@ namespace GamePlay.AI
 
         private bool IsTargetInSkillRange(MapUnit caster, SkillDataSO skill, MapUnit target, AITaskContext ctx)
         {
-            HashSet<Vector3Int> reachableTiles = ctx.ReachableTiles;
-
-            // 先检查当前位置是否能施放
-            List<Vector3Int> castRange = AttackRangeSystem.GetCastRange3D(caster.gridPosition, skill);
-            if (castRange.Contains(target.gridPosition))
+            if (AttackRangeSystem.CanCastTo(caster.gridPosition, target.gridPosition, skill))
             {
                 return true;
             }
 
-            // 再检查移动后是否能施放
-            foreach (Vector3Int tile in reachableTiles)
+            foreach (Vector3Int tile in ctx.ReachableTiles)
             {
                 if (tile != caster.gridPosition)
                 {
@@ -345,8 +357,12 @@ namespace GamePlay.AI
                     }
                 }
 
-                List<Vector3Int> range = AttackRangeSystem.GetCastRange3D(tile, skill);
-                if (range.Contains(target.gridPosition))
+                if (!AttackRangeSystem.IsWithinCastDistance(tile, target.gridPosition, skill))
+                {
+                    continue;
+                }
+
+                if (AttackRangeSystem.CanCastTo(tile, target.gridPosition, skill))
                 {
                     return true;
                 }
