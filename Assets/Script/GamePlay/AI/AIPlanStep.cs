@@ -39,5 +39,10 @@ namespace GamePlay.AI
         {
             return new AIPlanStep(StepType.Wait) { WaitSeconds = seconds };
         }
+
+        public static AIPlanStep Evaluate()
+        {
+            return new AIPlanStep(StepType.Evaluate);
+        }
     }
 }

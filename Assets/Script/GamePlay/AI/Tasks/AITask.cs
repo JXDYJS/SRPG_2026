@@ -119,7 +119,7 @@ namespace GamePlay.AI.Tasks
         public float BasePriority { get; protected set; }
         public int MaxAssignees { get; protected set; }
         public int CurrentAssignees { get; protected set; }
-        public bool IsAvailable => CurrentAssignees < MaxAssignees;
+        public bool IsAvailable => CurrentAssignees < MaxAssignees && !IsCompleted() && !IsFailed();
 
         public abstract float CalculateUtilityFor(MapUnit unit, AITaskContext ctx);
         public abstract AIPlan GeneratePlan(MapUnit unit, AITaskContext ctx);

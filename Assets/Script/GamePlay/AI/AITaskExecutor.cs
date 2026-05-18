@@ -16,12 +16,16 @@ namespace GamePlay.AI
     /// </summary>
     public class AITaskExecutor
     {
+        private bool _planAborted;
+
         /// <summary>
         /// 执行计划，返回协程
-        /// 逐步执行 plan.Steps，支持中断（单位阵亡等）
+        /// 逐步执行 plan.Steps，支持中断（单位阵亡/条件评估失败等）
         /// </summary>
         public IEnumerator ExecutePlan(MapUnit unit, AIPlan plan)
         {
+            _planAborted = false;
+
             if (unit == null || plan == null || plan.Steps == null)
             {
                 yield break;
@@ -42,6 +46,12 @@ namespace GamePlay.AI
                 }
 
                 yield return ExecuteStep(unit, step);
+
+                if (_planAborted)
+                {
+                    Debug.Log($"[AI] {unit.name} 条件评估失败，中止计划");
+                    yield break;
+                }
             }
 
             Debug.Log($"[AI] {unit.name} 计划执行完毕");
@@ -67,10 +77,10 @@ namespace GamePlay.AI
                     break;
 
                 case AIPlanStep.StepType.Evaluate:
-                    // 条件评估步骤：如果条件不满足，可以提前终止计划
+                    // 条件评估步骤：如果条件不满足，中断整个计划
                     if (!EvaluateCondition(unit, step))
                     {
-                        Debug.Log($"[AI] {unit.name} 条件评估失败，跳过后续步骤");
+                        _planAborted = true;
                     }
                     break;
             }

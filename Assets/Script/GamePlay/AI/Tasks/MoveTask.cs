@@ -10,10 +10,16 @@ namespace GamePlay.AI.Tasks
     public class MoveTask : AITask
     {
         public Vector3Int TargetPosition { get; private set; }
+        private MapUnit _claimedUnit;
 
         public MoveTask(Vector3Int targetPos, float basePriority) : base(AITaskType.Move, basePriority)
         {
             TargetPosition = targetPos;
+        }
+
+        protected override void OnClaimed(MapUnit unit)
+        {
+            _claimedUnit = unit;
         }
 
         // ──────────────────────────────────────
@@ -103,7 +109,7 @@ namespace GamePlay.AI.Tasks
         // ──────────────────────────────────────
         public override bool IsCompleted()
         {
-            return false;
+            return _claimedUnit != null && _claimedUnit.gridPosition == TargetPosition;
         }
 
         public override bool IsFailed()

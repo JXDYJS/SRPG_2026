@@ -12,11 +12,17 @@ namespace GamePlay.AI.Tasks
     public class DefendTask : AITask
     {
         public Vector3Int SafePosition { get; private set; }
+        private MapUnit _claimedUnit;
 
         public DefendTask(Vector3Int safePos, float basePriority)
             : base(AITaskType.Defend, basePriority)
         {
             SafePosition = safePos;
+        }
+
+        protected override void OnClaimed(MapUnit unit)
+        {
+            _claimedUnit = unit;
         }
 
         // ──────────────────────────────────────
@@ -123,7 +129,7 @@ namespace GamePlay.AI.Tasks
         // ──────────────────────────────────────
         public override bool IsCompleted()
         {
-            return false;
+            return _claimedUnit != null && _claimedUnit.gridPosition == SafePosition;
         }
 
         public override bool IsFailed()
