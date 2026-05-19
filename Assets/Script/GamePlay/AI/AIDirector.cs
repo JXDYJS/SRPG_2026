@@ -373,77 +373,41 @@ namespace GamePlay.AI
 
         private bool IsSupportSkill(SkillDataSO skill)
         {
-            if (skill.TargetType == TargetType.Ally ||
-                skill.TargetType == TargetType.Teammates ||
-                skill.TargetType == TargetType.Self)
-            {
-                return true;
-            }
-
-            if (skill.Phases != null)
-            {
-                foreach (SkillPhase phase in skill.Phases)
-                {
-                    if (phase.TargetType == TargetType.Ally ||
-                        phase.TargetType == TargetType.Teammates ||
-                        phase.TargetType == TargetType.Self)
-                    {
-                        return true;
-                    }
-
-                    if (phase.Effects == null)
-                    {
-                        continue;
-                    }
-
-                    foreach (SkillEffect effect in phase.Effects)
-                    {
-                        if (effect.EffectType == EffectType.Heal ||
-                            effect.EffectType == EffectType.AddBuff)
-                        {
-                            return true;
-                        }
-                    }
-                }
-            }
-
-            return false;
+            return skill.IsSupportiveSkill();
         }
 
         private bool CanTargetSelf(SkillDataSO skill)
         {
-            if (skill.TargetType == TargetType.Self)
-            {
-                return true;
-            }
-
-            if (skill.Phases != null)
-            {
-                foreach (SkillPhase phase in skill.Phases)
-                {
-                    if (phase.TargetType == TargetType.Self)
-                    {
-                        return true;
-                    }
-                }
-            }
-
-            return false;
+            return skill.CanTargetSelf();
         }
 
         private List<MapUnit> GetValidTargetsForSkill(MapUnit unit, SkillDataSO skill)
         {
             List<MapUnit> targets = new List<MapUnit>();
 
-            // 根据技能目标类型确定候选池
-            bool targetsEnemy = skill.TargetType == TargetType.Enemy
-                             || skill.TargetType == TargetType.Player
-                             || skill.TargetType == TargetType.ExceptTeammates;
+            // 基于 AIBehavior 标志确定候选目标池
+            bool targetsEnemy = false;
+            bool targetsAlly = false;
+            bool targetsSelf = false;
 
-            bool targetsAlly = skill.TargetType == TargetType.Ally
-                            || skill.TargetType == TargetType.Teammates;
+            if (skill.AIBehavior != AISkillBehavior.Auto)
+            {
+                targetsEnemy = (skill.AIBehavior & (AISkillBehavior.Harm | AISkillBehavior.Debuff | AISkillBehavior.Control)) != 0;
+                targetsAlly = (skill.AIBehavior & (AISkillBehavior.Heal | AISkillBehavior.Buff)) != 0;
+                targetsSelf = targetsAlly;
+            }
+            else
+            {
+                // Auto 模式：保留旧版逻辑
+                targetsEnemy = skill.TargetType == TargetType.Enemy
+                            || skill.TargetType == TargetType.Player
+                            || skill.TargetType == TargetType.ExceptTeammates;
 
-            bool targetsSelf = skill.TargetType == TargetType.Self;
+                targetsAlly = skill.TargetType == TargetType.Ally
+                           || skill.TargetType == TargetType.Teammates;
+
+                targetsSelf = skill.TargetType == TargetType.Self;
+            }
 
             if (targetsSelf)
             {

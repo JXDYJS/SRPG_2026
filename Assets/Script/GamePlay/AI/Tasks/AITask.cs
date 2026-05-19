@@ -90,25 +90,7 @@ namespace GamePlay.AI.Tasks
 
         private static bool IsOffensiveSkillForAI(SkillDataSO skill)
         {
-            if (skill.TargetType == TargetType.Enemy ||
-                skill.TargetType == TargetType.Player ||
-                skill.TargetType == TargetType.ExceptTeammates)
-            {
-                return true;
-            }
-
-            if (skill.Phases != null && skill.Phases.Count > 0)
-            {
-                TargetType phaseTarget = skill.Phases[0].TargetType;
-                if (phaseTarget == TargetType.Enemy ||
-                    phaseTarget == TargetType.Player ||
-                    phaseTarget == TargetType.ExceptTeammates)
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return skill.IsOffensiveSkill();
         }
     }
 

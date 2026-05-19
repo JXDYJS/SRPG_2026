@@ -97,10 +97,10 @@ namespace GamePlay.AI.Tasks
             float wDist    = Data.Config.AIConfig.skillWeight_Distance;
             float wType    = Data.Config.AIConfig.skillWeight_Type;
 
-            return wImpact * skillImpact
+            return (wImpact * skillImpact
                  + wAoE    * aoeUtility
                  + wDist   * distanceUtility
-                 + wType   * typeUtility;
+                 + wType   * typeUtility) * Skill.AIPriority;
         }
 
         // ──────────────────────────────────────
@@ -335,89 +335,33 @@ namespace GamePlay.AI.Tasks
         }
 
         /// <summary>
-        /// 判断技能是否为进攻型技能
+        /// 基于 AIBehavior 判断技能是否为进攻型技能
+        /// Auto 模式下退化到旧版逻辑
         /// </summary>
         private bool IsOffensiveSkill(SkillDataSO skill)
         {
-            if (skill.TargetType == TargetType.Enemy ||
-                skill.TargetType == TargetType.Player ||
-                skill.TargetType == TargetType.ExceptTeammates)
-            {
-                return true;
-            }
-
-            if (skill.Phases != null)
-            {
-                foreach (SkillPhase phase in skill.Phases)
-                {
-                    if (phase.Effects == null)
-                    {
-                        continue;
-                    }
-
-                    foreach (SkillEffect effect in phase.Effects)
-                    {
-                        if (effect.EffectType == EffectType.Damage)
-                        {
-                            return true;
-                        }
-                    }
-                }
-            }
-
-            return false;
+            return skill.IsOffensiveSkill();
         }
 
         /// <summary>
-        /// 判断技能是否为防御/支援型技能
+        /// 基于 AIBehavior 判断技能是否为防御/支援型技能
+        /// Auto 模式下退化到旧版逻辑
         /// </summary>
         private bool IsDefensiveSkill(SkillDataSO skill)
         {
-            if (skill.TargetType == TargetType.Self ||
-                skill.TargetType == TargetType.Ally ||
-                skill.TargetType == TargetType.Teammates)
-            {
-                return true;
-            }
-
-            if (skill.Phases != null)
-            {
-                foreach (SkillPhase phase in skill.Phases)
-                {
-                    if (phase.TargetType == TargetType.Self ||
-                        phase.TargetType == TargetType.Ally ||
-                        phase.TargetType == TargetType.Teammates)
-                    {
-                        return true;
-                    }
-
-                    if (phase.Effects == null)
-                    {
-                        continue;
-                    }
-
-                    foreach (SkillEffect effect in phase.Effects)
-                    {
-                        if (effect.EffectType == EffectType.Heal ||
-                            effect.EffectType == EffectType.AddBuff)
-                        {
-                            return true;
-                        }
-                    }
-                }
-            }
-
-            return false;
+            return skill.IsSupportiveSkill();
         }
 
         /// <summary>
         /// 统计 AoE 范围内受技能影响的单位数
-        /// 进攻型技能统计敌方，防御/支援型技能统计友方
+        /// 基于 AIBehavior 标志：Harm/Debuff/Control 统计敌方，Heal/Buff 统计友方
+        /// 混合型技能（如撕咬回血）同时统计双方
         /// </summary>
         private int CountAffectedUnits(MapUnit caster, List<Vector3Int> aoeRange, SkillDataSO skill)
         {
             int count = 0;
-            bool isOffensive = IsOffensiveSkill(skill);
+            bool countEnemies = skill.IsOffensiveSkill();
+            bool countAllies = skill.IsSupportiveSkill();
 
             foreach (Vector3Int pos in aoeRange)
             {
@@ -427,19 +371,13 @@ namespace GamePlay.AI.Tasks
                     continue;
                 }
 
-                if (isOffensive)
+                if (countEnemies && unit.Faction != caster.Faction)
                 {
-                    if (unit.Faction != caster.Faction)
-                    {
-                        count++;
-                    }
+                    count++;
                 }
-                else
+                else if (countAllies && unit.Faction == caster.Faction)
                 {
-                    if (unit.Faction == caster.Faction)
-                    {
-                        count++;
-                    }
+                    count++;
                 }
             }
 

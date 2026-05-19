@@ -196,38 +196,11 @@ namespace GamePlay.AI.Tasks
         }
 
         /// <summary>
-        /// 判断技能是否为防御型技能
-        /// 防御技能特征：目标为 Self/Ally/Teammates 且包含 Heal 或 AddBuff 效果
+        /// 基于 AIBehavior 判断技能是否为防御/支援型技能
         /// </summary>
         private bool IsDefensiveSkill(SkillDataSO skill)
         {
-            // 技能整体 TargetType 为 Self
-            if (skill.TargetType == TargetType.Self)
-            {
-                return true;
-            }
-
-            // 技能整体 TargetType 为 Ally/Teammates（可治疗自己人 —— 包括自己）
-            if (skill.TargetType == TargetType.Ally || skill.TargetType == TargetType.Teammates)
-            {
-                return true;
-            }
-
-            // 检查各阶段的 TargetType
-            if (skill.Phases != null)
-            {
-                foreach (SkillPhase phase in skill.Phases)
-                {
-                    if (phase.TargetType == TargetType.Self ||
-                        phase.TargetType == TargetType.Ally ||
-                        phase.TargetType == TargetType.Teammates)
-                    {
-                        return true;
-                    }
-                }
-            }
-
-            return false;
+            return skill.IsSupportiveSkill();
         }
 
         /// <summary>
