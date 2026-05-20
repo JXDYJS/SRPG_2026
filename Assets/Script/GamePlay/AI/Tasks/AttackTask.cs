@@ -83,10 +83,10 @@ namespace GamePlay.AI.Tasks
             float wThreat = Data.Config.AIConfig.attackWeight_Threat;
             float wDamage = Data.Config.AIConfig.attackWeight_Damage;
 
-            return wDist  * distanceUtility
-                 + wExec  * executeUtility
-                 + wThreat * threatUtility
-                 + wDamage * damageUtility;
+            return (wDist  * distanceUtility
+                  + wExec  * executeUtility
+                  + wThreat * threatUtility
+                  + wDamage * damageUtility) * bestSkill.AIPriority;
         }
 
         // ──────────────────────────────────────
@@ -215,31 +215,11 @@ namespace GamePlay.AI.Tasks
         }
 
         /// <summary>
-        /// 判断技能是否为进攻型技能
-        /// 根据技能整体 TargetType 或第一阶段的 TargetType 判断
+        /// 基于 AIBehavior 判断技能是否为进攻型技能
         /// </summary>
         private bool IsOffensiveSkill(SkillDataSO skill)
         {
-            if (skill.TargetType == TargetType.Enemy ||
-                skill.TargetType == TargetType.Player ||
-                skill.TargetType == TargetType.ExceptTeammates)
-            {
-                return true;
-            }
-
-            // 如果技能有阶段，检查第一阶段的 TargetType
-            if (skill.Phases != null && skill.Phases.Count > 0)
-            {
-                TargetType phaseTarget = skill.Phases[0].TargetType;
-                if (phaseTarget == TargetType.Enemy ||
-                    phaseTarget == TargetType.Player ||
-                    phaseTarget == TargetType.ExceptTeammates)
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return skill.IsOffensiveSkill();
         }
 
         /// <summary>

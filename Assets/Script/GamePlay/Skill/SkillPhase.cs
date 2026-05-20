@@ -97,4 +97,16 @@ namespace GamePlay.Skill
         Teammates,
         ExceptTeammates,
     }
+
+    [System.Flags]
+    public enum AISkillBehavior
+    {
+        Auto        = 0,
+        Harm        = 1 << 0,
+        Heal        = 1 << 1,
+        Buff        = 1 << 2,
+        Debuff      = 1 << 3,
+        Control     = 1 << 4,
+        Movement    = 1 << 5,
+    }
 }

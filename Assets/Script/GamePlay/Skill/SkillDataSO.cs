@@ -47,9 +47,134 @@ namespace GamePlay.Skill
 
         [Header("技能阶段配置")]
         public List<SkillPhase> Phases = new List<SkillPhase>();
+        [Header("AI 行为配置")]
+        [Tooltip("AI使用技能的行为提示（可多选）。Auto=自动推断（向后兼容）")]
+        public AISkillBehavior AIBehavior = AISkillBehavior.Auto;
+
+        [Tooltip("AI使用优先级倍率：0=永不, 0.5=低优先, 1=标准, 2=高优先")]
+        [Range(0f, 5f)]
+        public float AIPriority = 1f;
+
         [Header("是否使用自定义")]
         public bool isCustomSkill = false;
         public CustomSkillBehaviorSO CustomBehavior = null;
+
+        // ================ AI 辅助判定方法 ================
+
+        /// <summary>
+        /// 技能是否主要用于对敌（伤害、减益、控制）
+        /// </summary>
+        public bool IsOffensiveSkill()
+        {
+            if (AIBehavior != AISkillBehavior.Auto)
+            {
+                return (AIBehavior & (AISkillBehavior.Harm | AISkillBehavior.Debuff | AISkillBehavior.Control)) != 0;
+            }
+
+            if (TargetType == TargetType.Enemy ||
+                TargetType == TargetType.Player ||
+                TargetType == TargetType.ExceptTeammates)
+            {
+                return true;
+            }
+
+            if (Phases != null)
+            {
+                foreach (SkillPhase phase in Phases)
+                {
+                    if (phase.Effects == null)
+                    {
+                        continue;
+                    }
+
+                    foreach (SkillEffect effect in phase.Effects)
+                    {
+                        if (effect.EffectType == EffectType.Damage)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// 技能是否主要用于支援（治疗或增益友军/自身）
+        /// </summary>
+        public bool IsSupportiveSkill()
+        {
+            if (AIBehavior != AISkillBehavior.Auto)
+            {
+                return (AIBehavior & (AISkillBehavior.Heal | AISkillBehavior.Buff)) != 0;
+            }
+
+            if (TargetType == TargetType.Ally ||
+                TargetType == TargetType.Teammates ||
+                TargetType == TargetType.Self)
+            {
+                return true;
+            }
+
+            if (Phases != null)
+            {
+                foreach (SkillPhase phase in Phases)
+                {
+                    if (phase.TargetType == TargetType.Ally ||
+                        phase.TargetType == TargetType.Teammates ||
+                        phase.TargetType == TargetType.Self)
+                    {
+                        return true;
+                    }
+
+                    if (phase.Effects == null)
+                    {
+                        continue;
+                    }
+
+                    foreach (SkillEffect effect in phase.Effects)
+                    {
+                        if (effect.EffectType == EffectType.Heal ||
+                            effect.EffectType == EffectType.AddBuff)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// 技能是否可以以自身为目标（自愈/自buff）
+        /// </summary>
+        public bool CanTargetSelf()
+        {
+            if (AIBehavior != AISkillBehavior.Auto)
+            {
+                return (AIBehavior & (AISkillBehavior.Heal | AISkillBehavior.Buff)) != 0;
+            }
+
+            if (TargetType == TargetType.Self)
+            {
+                return true;
+            }
+
+            if (Phases != null)
+            {
+                foreach (SkillPhase phase in Phases)
+                {
+                    if (phase.TargetType == TargetType.Self)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
 
         // ================ 深度复制 ================
         public SkillDataSO DeepClone()
@@ -70,6 +195,8 @@ namespace GamePlay.Skill
             clone.Cost = this.Cost;
             clone.isCustomSkill = this.isCustomSkill;
             clone.CustomBehavior = this.CustomBehavior;
+            clone.AIBehavior = this.AIBehavior;
+            clone.AIPriority = this.AIPriority;
 
             // 深度复制Phases
             clone.Phases = new List<SkillPhase>();

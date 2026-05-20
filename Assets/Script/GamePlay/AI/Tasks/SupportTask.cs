@@ -70,11 +70,9 @@ namespace GamePlay.AI.Tasks
                                / unit.Character.statSystem.maxHP.getValue();
             float ownHPLow = 1.0f - ownHPPercent;
 
-            // 如果目标是别人且自身HP更低，优先自保（除非技能只能对别人用）
+            // 如果目标是别人且自身HP更低，优先自保（除非技能只能对自己用）
             bool isSelfTarget = (TargetUnit == unit);
-            if (!isSelfTarget && ownHPLow > healUrgency
-                && Skill.TargetType != TargetType.Ally
-                && Skill.TargetType != TargetType.Teammates)
+            if (!isSelfTarget && ownHPLow > healUrgency && !Skill.IsSupportiveSkill())
             {
                 ownHPLow *= 1.5f; // 自身更危险时提升权重
             }
@@ -96,10 +94,10 @@ namespace GamePlay.AI.Tasks
             float wDist    = Data.Config.AIConfig.supportWeight_Distance;
             float wThreat  = Data.Config.AIConfig.supportWeight_ThreatCover;
 
-            return wHeal   * healUrgency
-                 + wHPLow  * ownHPLow
-                 + wDist   * distanceUtility
-                 + wThreat * threatCover;
+            return (wHeal   * healUrgency
+                  + wHPLow  * ownHPLow
+                  + wDist   * distanceUtility
+                  + wThreat * threatCover) * Skill.AIPriority;
         }
 
         // ──────────────────────────────────────

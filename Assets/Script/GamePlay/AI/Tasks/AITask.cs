@@ -90,25 +90,7 @@ namespace GamePlay.AI.Tasks
 
         private static bool IsOffensiveSkillForAI(SkillDataSO skill)
         {
-            if (skill.TargetType == TargetType.Enemy ||
-                skill.TargetType == TargetType.Player ||
-                skill.TargetType == TargetType.ExceptTeammates)
-            {
-                return true;
-            }
-
-            if (skill.Phases != null && skill.Phases.Count > 0)
-            {
-                TargetType phaseTarget = skill.Phases[0].TargetType;
-                if (phaseTarget == TargetType.Enemy ||
-                    phaseTarget == TargetType.Player ||
-                    phaseTarget == TargetType.ExceptTeammates)
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return skill.IsOffensiveSkill();
         }
     }
 
@@ -119,7 +101,7 @@ namespace GamePlay.AI.Tasks
         public float BasePriority { get; protected set; }
         public int MaxAssignees { get; protected set; }
         public int CurrentAssignees { get; protected set; }
-        public bool IsAvailable => CurrentAssignees < MaxAssignees;
+        public bool IsAvailable => CurrentAssignees < MaxAssignees && !IsCompleted() && !IsFailed();
 
         public abstract float CalculateUtilityFor(MapUnit unit, AITaskContext ctx);
         public abstract AIPlan GeneratePlan(MapUnit unit, AITaskContext ctx);
