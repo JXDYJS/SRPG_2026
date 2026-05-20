@@ -33,6 +33,7 @@ namespace GamePlay.Buff{
                 Debug.Log($"{Name} 持续时间减少，剩余: {Stacks}");
             }
         }
+
         public bool canAddStacks = true;
         
         /// <summary>

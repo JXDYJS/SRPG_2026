@@ -34,6 +34,5 @@ MonoBehaviour:
   MaxRange: 1
   CustomPattern: []
   GrowthTable: []
-  DefaultFaction: 0
   skillConfig: {fileID: 11400000, guid: b1147081a80afe640baf627c77e8961f, type: 2}
-  unitClass: {fileID: 11400000, guid: f170feae16a061f4794e49c87ddf6109, type: 2}
+  unitClass: {fileID: 11400000, guid: c1a72b7af1d237f379a0afe87703cc53, type: 2}

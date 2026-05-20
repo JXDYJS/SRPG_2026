@@ -75,3 +75,7 @@ MonoBehaviour:
       TargetAreaOffset: {x: 0, y: 8, z: 0}
       TargetAreaRotation: {x: 90, y: 0, z: 0}
       TargetAreaDuration: 3
+  AIBehavior: 1
+  AIPriority: 1
+  isCustomSkill: 0
+  CustomBehavior: {fileID: 0}

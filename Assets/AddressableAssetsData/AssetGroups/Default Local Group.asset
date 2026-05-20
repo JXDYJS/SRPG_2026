@@ -27,8 +27,23 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2edf6212b77694a06851b6cd9df463fe
+    m_Address: Assets/Data/UnitClass/Champion/Common/Archer_Common.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 34f89a8ba8126ea2a91c0eb71d7468b6
+    m_Address: Assets/Data/UnitClass/Champion/Common/Archer_Common 1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 37c5aabe3030cfc4f9c983a988319135
     m_Address: Assets/textures/gui/book.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3d949036d685a514b96747f549d8cb5d
+    m_Address: Assets/Data/Skill/Config/Steve.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -52,6 +67,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 55e6e2995d23414fba36542fdba05fa3
+    m_Address: weak
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 62b61988041d0b64b82f9b793d5ccc16
     m_Address: Assets/Data/Character/Steve.asset
     m_ReadOnly: 0
@@ -59,6 +79,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 649b29558b7903a42ae9c8ff1c5334ec
     m_Address: Assets/Mob/arrow(Clone).prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6d33f428d266f8246bc1c05cbae724c7
+    m_Address: Assets/Data/Buff
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -72,6 +97,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 995d7999bbcc2d9b1a1fbd0e4517bf48
+    m_Address: Assets/Data/UnitClass/Champion/Common/Tank_Common.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a0d6d26ff0047474991ab44e753b9c57
+    m_Address: Assets/Data/Skill/Config/Zombie.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a4c2d593add6b1b43a126c05ef3969a8
     m_Address: Assets/Mob/arrowRight.prefab
     m_ReadOnly: 0
@@ -79,6 +114,26 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: adfa9b30f8e8751108e54e8624190a27
     m_Address: Assets/Data/UnitClass/Champion/Warrior_Common.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b1147081a80afe640baf627c77e8961f
+    m_Address: Assets/Data/Skill/Config/Skeleton.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c1a72b7af1d237f379a0afe87703cc53
+    m_Address: Assets/Data/UnitClass/Champion/Archer_Sniper.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d7f2347b739af785aa327ab061a7d02b
+    m_Address: Assets/Data/Skill/Weak.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: eda5962829b59793c9c33867886b713f
+    m_Address: Assets/Data/UnitClass/Champion/Tank_Champion.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
