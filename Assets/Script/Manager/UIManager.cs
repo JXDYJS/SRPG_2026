@@ -31,6 +31,11 @@ namespace Managers
         public Transform Popup => _uiRoot?.Popup;
         public Transform Topmost => _uiRoot?.Topmost;
 
+        /// <summary>
+        /// 在首个场景加载之前自动初始化 UIManager。
+        /// 创建一个常驻 GameObject 并挂载 UIManager 脚本，通过 Awake 中的 DontDestroyOnLoad
+        /// 确保跨场景存活。无需在任何场景中手动放置，实现了"约定大于配置"的思路。
+        /// </summary>
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void AutoInitialize()
         {
@@ -138,6 +143,12 @@ namespace Managers
             eventSystem.AddComponent<UnityEngine.EventSystems.StandaloneInputModule>();
         }
 
+        /// <summary>
+        /// UIRoot 预制体自带 EventSystem，但场景中可能已存在另一个 EventSystem。
+        /// Unity 同一场景存在多个 EventSystem 会导致输入异常（控制台报错 "Multiple EventSystems"）。
+        /// 此方法在 UIRoot 实例化之后运行，确保有且仅有一个 EventSystem 存活，
+        /// 保留 DontDestroyOnLoad 的那个（通过 FindObjectsByType 的第一个结果）。
+        /// </summary>
         private void EnsureSingleEventSystem()
         {
             var eventSystems = Object.FindObjectsByType<UnityEngine.EventSystems.EventSystem>(
