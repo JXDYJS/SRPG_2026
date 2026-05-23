@@ -138,9 +138,22 @@ namespace GamePlay.View
             gameObject.SetActive(true);
         }
 
+        private bool _isDying;
+
         public void PlayDeathAnimation()
         {
+            if (_isDying) return;
+            _isDying = true;
+
             PlayAnim("Death");
+            DeathAnimationAsync().Forget();
+        }
+
+        private async UniTaskVoid DeathAnimationAsync()
+        {
+            // 等待动画播放完成（默认给予足够时间让死亡动画播完）
+            await UniTask.Delay(2000);
+            HideModel();
         }
     }
 }
