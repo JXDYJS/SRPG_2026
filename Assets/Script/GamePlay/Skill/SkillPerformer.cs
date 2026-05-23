@@ -263,7 +263,7 @@ namespace GamePlay.Skill
 
             if (tResult.IsDead)
             {
-                targetView.PlayDeathAnimation();
+                await targetView.PlayDeathAnimation();
             }
 
             await UniTask.Yield();

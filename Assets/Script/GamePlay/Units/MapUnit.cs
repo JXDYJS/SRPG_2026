@@ -623,7 +623,7 @@ namespace GamePlay.Units
             // 交给 View 播放死亡动画并自动隐藏；无 View 时（如环境伤害）立即隐藏
             if (View != null)
             {
-                View.PlayDeathAnimation();
+                View.PlayDeathAnimation().Forget();
             }
             else
             {

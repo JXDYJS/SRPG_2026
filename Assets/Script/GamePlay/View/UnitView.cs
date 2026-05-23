@@ -140,19 +140,27 @@ namespace GamePlay.View
 
         private bool _isDying;
 
-        public void PlayDeathAnimation()
+        public async UniTask PlayDeathAnimation()
         {
             if (_isDying) return;
             _isDying = true;
 
             PlayAnim("Death");
-            DeathAnimationAsync().Forget();
-        }
+            await UniTask.Yield();
 
-        private async UniTaskVoid DeathAnimationAsync()
-        {
-            // 等待动画播放完成（默认给予足够时间让死亡动画播完）
-            await UniTask.Delay(2000);
+            float elapsed = 0f;
+            const float timeout = 3f;
+            while (elapsed < timeout && !_animator.GetCurrentAnimatorStateInfo(0).IsName("Death"))
+            {
+                await UniTask.Yield();
+                elapsed += Time.deltaTime;
+            }
+
+            float clipLength = _animator.GetCurrentAnimatorStateInfo(0).IsName("Death")
+                ? _animator.GetCurrentAnimatorStateInfo(0).length
+                : 1f;
+
+            await UniTask.Delay(TimeSpan.FromSeconds(clipLength));
             HideModel();
         }
     }
