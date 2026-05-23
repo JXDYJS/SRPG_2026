@@ -9,14 +9,18 @@ namespace Character{
     public enum ClassInternalID
     {
         [InspectorName("战士/战士")] Warrior_Common,
-        [InspectorName("战士/冠军")]     Warrior_Champion,
-        [InspectorName("战士/狂战士")]   Warrior_Berserker,
-        [InspectorName("战士/圣骑士")]   Warrior_Paladin,
+        [InspectorName("战士/冠军")]        Warrior_Champion,
+        [InspectorName("战士/狂战士")]      Warrior_Berserker,
+        [InspectorName("战士/圣骑士")]      Warrior_Paladin,
         
         [InspectorName("射手/射手")] Archer_Common,
-        [InspectorName("射手/狙击手")]   Archer_Sniper,
-        [InspectorName("射手/游侠")]     Archer_Ranger,
-        [InspectorName("射手/强弩手")]   Archer_Marksman
+        [InspectorName("射手/狙击手")]      Archer_Sniper,
+        [InspectorName("射手/游侠")]        Archer_Ranger,
+        [InspectorName("射手/强弩手")]      Archer_Marksman,
+        [InspectorName("医疗/医疗兵")] Medical_Common,
+        [InspectorName("医疗/医生")]        Medical_Doctor,
+        [InspectorName("重装/重装")] Tank_Common,
+        [InspectorName("重装/冠军")]        Tank_Champion,
     }
 
     public static class ClassIDs
@@ -44,6 +48,26 @@ namespace Character{
                 public const ClassInternalID Sniper = ClassInternalID.Archer_Sniper; // 狙击手/神射手
                 public const ClassInternalID Ranger = ClassInternalID.Archer_Ranger; // 游侠/巡林者
                 public const ClassInternalID Marksman = ClassInternalID.Archer_Marksman; // 强弩手
+            }
+        }
+        // 医疗
+        public static class Medical
+        {
+            public const ClassInternalID Base = ClassInternalID.Medical_Common; // "医疗兵"
+            
+            public static class Sub
+            {
+                public const ClassInternalID Doctor = ClassInternalID.Medical_Doctor; // 医生
+            }
+        }
+        // 重装
+        public static class Tank
+        {
+            public const ClassInternalID Base = ClassInternalID.Tank_Common; // "重装"
+            
+            public static class Sub
+            {
+                public const ClassInternalID Champion = ClassInternalID.Tank_Champion; // 冠军/勇士
             }
         }
     }

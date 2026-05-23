@@ -258,6 +258,22 @@ namespace GamePlay.AI
                 float priority = Mathf.Clamp01(bestScore / Data.Config.AIConfig.dangerThreatThreshold);
                 pool.Add(new MoveTask(bestMovePos.Value, priority));
             }
+
+            // ─── 当没有可攻击目标时，尝试向最近的敌人前压 ───
+            if (HasLivingEnemy(unit) && !HasAnyReachableTarget(unit, ctx))
+            {
+                MapUnit nearestEnemy = FindNearestEnemy(unit);
+                if (nearestEnemy != null)
+                {
+                    Vector3Int? advancePos = FindAdvancePosition(unit, nearestEnemy, ctx);
+                    if (advancePos.HasValue && advancePos.Value != unit.gridPosition)
+                    {
+                        float hpPercent = GetHPPercent(unit);
+                        float priority = Mathf.Clamp01(hpPercent * 0.6f + 0.2f);
+                        pool.Add(new MoveTask(advancePos.Value, priority));
+                    }
+                }
+            }
         }
 
         // ==============================================================
@@ -477,6 +493,142 @@ namespace GamePlay.AI
             }
 
             return Mathf.Clamp01(priority);
+        }
+
+        // ==============================================================
+        // 前压移动辅助方法
+        // ==============================================================
+
+        /// <summary>
+        /// 战场上是否有存活的敌人
+        /// </summary>
+        private bool HasLivingEnemy(MapUnit unit)
+        {
+            List<MapUnit> allUnits = UnitManager.Instance.GetAllUnits();
+            foreach (MapUnit other in allUnits)
+            {
+                if (other == null || other == unit)
+                {
+                    continue;
+                }
+
+                if (other.Faction != unit.Faction && other.Character.statSystem.currentHP > 0)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// 是否有任意敌人在攻击范围内（含移动后）
+        /// </summary>
+        private bool HasAnyReachableTarget(MapUnit unit, AITaskContext ctx)
+        {
+            if (ctx.OffensiveSkills.Count == 0)
+            {
+                return false;
+            }
+
+            List<MapUnit> players = UnitManager.Instance.GetAllAlivePlayers();
+            foreach (MapUnit player in players)
+            {
+                if (IsUnitReachable(unit, player, ctx))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// 找到距离最近的存活敌人
+        /// </summary>
+        private MapUnit FindNearestEnemy(MapUnit unit)
+        {
+            MapUnit nearest = null;
+            int bestDist = int.MaxValue;
+            List<MapUnit> allUnits = UnitManager.Instance.GetAllUnits();
+
+            foreach (MapUnit other in allUnits)
+            {
+                if (other == null || other == unit)
+                {
+                    continue;
+                }
+
+                if (other.Faction == unit.Faction || other.Character.statSystem.currentHP <= 0)
+                {
+                    continue;
+                }
+
+                int dist = Mathf.Abs(unit.gridPosition.x - other.gridPosition.x)
+                         + Mathf.Abs(unit.gridPosition.z - other.gridPosition.z);
+                if (dist < bestDist)
+                {
+                    bestDist = dist;
+                    nearest = other;
+                }
+            }
+
+            return nearest;
+        }
+
+        /// <summary>
+        /// 找一个靠近最近敌人、但威胁不超过 HP 容忍度的可达位置
+        /// </summary>
+        private Vector3Int? FindAdvancePosition(MapUnit unit, MapUnit nearestEnemy, AITaskContext ctx)
+        {
+            float hpPercent = GetHPPercent(unit);
+
+            // 根据血量决定可接受的最大威胁度
+            // 满血时敢于踩 dangerThreatThreshold × 1.0 的区域
+            // 残血时只敢踩 dangerThreatThreshold × 0.2 的区域
+            float maxAcceptableThreat = Data.Config.AIConfig.dangerThreatThreshold * Mathf.Max(0.2f, hpPercent);
+
+            Vector3Int enemyPos = nearestEnemy.gridPosition;
+            Vector3Int? bestPos = null;
+            float bestScore = float.MinValue;
+
+            foreach (Vector3Int tile in ctx.ReachableTiles)
+            {
+                if (tile == unit.gridPosition)
+                {
+                    continue;
+                }
+
+                MapUnit occupying = UnitManager.Instance.GetUnitAt(tile);
+                if (occupying != null)
+                {
+                    continue;
+                }
+
+                float threat = ctx.ThreatMap.GetScore(tile);
+                if (threat > maxAcceptableThreat)
+                {
+                    continue;
+                }
+
+                int distToEnemy = Mathf.Abs(tile.x - enemyPos.x)
+                                + Mathf.Abs(tile.z - enemyPos.z);
+
+                // 距离效用：越靠近敌人越好
+                float proximity = 1.0f - Mathf.Clamp01((float)distToEnemy / (ctx.MoveRange + 5));
+
+                // 安全效用：威胁越低越好
+                float safety = 1.0f - Mathf.Clamp01(threat / (maxAcceptableThreat + 1f));
+
+                float score = proximity * 0.6f + safety * 0.4f;
+                if (score > bestScore)
+                {
+                    bestScore = score;
+                    bestPos = tile;
+                }
+            }
+
+            return bestPos;
         }
     }
 }

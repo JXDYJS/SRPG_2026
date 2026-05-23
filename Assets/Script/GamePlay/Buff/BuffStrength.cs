@@ -4,7 +4,7 @@ using Status.state;
 
 namespace GamePlay.Buff
 {
-    [CreateAssetMenu(fileName = "BuffStrength", menuName = "力量 Buff")]
+    [CreateAssetMenu(fileName = "Strength", menuName = "Buff/力量Buff")]
     public class BuffStrength : BuffBase
     {
         private StatModifier _atkMod;
