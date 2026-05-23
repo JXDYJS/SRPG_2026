@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using Global;
+using Core.Data;
 using Cysharp.Threading.Tasks;
 using GamePlay.Skill;
 using System.Collections.Generic;
@@ -140,7 +141,7 @@ namespace GamePlay.View
 
         private bool _isDying;
 
-        public async UniTask PlayDeathAnimation()
+        public async UniTask PlayDeathAnimation(Action onComplete = null)
         {
             if (_isDying) return;
             _isDying = true;
@@ -149,7 +150,7 @@ namespace GamePlay.View
             await UniTask.Yield();
 
             float elapsed = 0f;
-            const float timeout = 3f;
+            float timeout = Data.Config.ViewConfig.deathAnimationStateTimeout;
             while (elapsed < timeout && !_animator.GetCurrentAnimatorStateInfo(0).IsName("Death"))
             {
                 await UniTask.Yield();
@@ -158,10 +159,10 @@ namespace GamePlay.View
 
             float clipLength = _animator.GetCurrentAnimatorStateInfo(0).IsName("Death")
                 ? _animator.GetCurrentAnimatorStateInfo(0).length
-                : 1f;
+                : Data.Config.ViewConfig.deathAnimationDefaultClipLength;
 
             await UniTask.Delay(TimeSpan.FromSeconds(clipLength));
-            HideModel();
+            onComplete?.Invoke();
         }
     }
 }

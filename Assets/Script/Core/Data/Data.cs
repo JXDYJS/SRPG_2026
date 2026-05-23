@@ -50,6 +50,7 @@ namespace Core.Data
         public readonly AIConfigData AIConfig = new AIConfigData();
         public readonly BattleConfigData BattleConfig = new BattleConfigData();
         public readonly BalanceConfigData BalanceConfig = new BalanceConfigData();
+        public readonly ViewConfigData ViewConfig = new ViewConfigData();
     }
 
     public class RuntimeData
