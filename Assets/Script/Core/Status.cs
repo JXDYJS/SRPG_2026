@@ -152,6 +152,7 @@ namespace Status
         using GamePlay.Units;
         using Modifier;
         using GamePlay.Relics;
+        using Core.Data;
         public class DamageInfo
         {
             public float damage;
@@ -181,6 +182,14 @@ namespace Status
         {
             public static float CalculateDamage(DamageInfo damageInfo)
             {
+                // 秒杀指令：Player 阵营攻击直接造成巨额伤害
+                if (Data.CommandConfig.playerOneShotKill
+                    && damageInfo.sourceUnit != null
+                    && damageInfo.sourceUnit.Faction == FactionType.Player)
+                {
+                    damageInfo.damage = 99999;
+                }
+
                 float finalDamage = damageInfo.damage;
                 
                 var sourceMods = damageInfo.sourceUnit?.GetModifiers() ?? new List<CombatModifier>();

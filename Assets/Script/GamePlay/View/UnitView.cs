@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using Global;
+using Core.Data;
 using Cysharp.Threading.Tasks;
 using GamePlay.Skill;
 using System.Collections.Generic;
@@ -138,9 +139,30 @@ namespace GamePlay.View
             gameObject.SetActive(true);
         }
 
-        public void PlayDeathAnimation()
+        private bool _isDying;
+
+        public async UniTask PlayDeathAnimation(Action onComplete = null)
         {
+            if (_isDying) return;
+            _isDying = true;
+
             PlayAnim("Death");
+            await UniTask.Yield();
+
+            float elapsed = 0f;
+            float timeout = Data.Config.ViewConfig.deathAnimationStateTimeout;
+            while (elapsed < timeout && !_animator.GetCurrentAnimatorStateInfo(0).IsName("Death"))
+            {
+                await UniTask.Yield();
+                elapsed += Time.deltaTime;
+            }
+
+            float clipLength = _animator.GetCurrentAnimatorStateInfo(0).IsName("Death")
+                ? _animator.GetCurrentAnimatorStateInfo(0).length
+                : Data.Config.ViewConfig.deathAnimationDefaultClipLength;
+
+            await UniTask.Delay(TimeSpan.FromSeconds(clipLength));
+            onComplete?.Invoke();
         }
     }
 }
