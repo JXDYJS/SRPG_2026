@@ -22,6 +22,7 @@ namespace Command
     {
         public Vector3Int GridPosition;
         public int CurrentHP;
+        public int CurrentMP;
         public UnitState State;
         public List<BuffBase> ActiveBuffs;
         public List<BuffSnapshotData> BuffSnapshots;
@@ -33,6 +34,7 @@ namespace Command
         {
             this.GridPosition = unit.gridPosition;
             this.CurrentHP = unit.Character.statSystem.currentHP;
+            this.CurrentMP = unit.Character.statSystem.currentMP;
             this.State = unit.CurrentState;
             this.ActiveBuffs = new List<BuffBase>(unit.ActiveBuffs);
             this.BuffSnapshots = new List<BuffSnapshotData>();

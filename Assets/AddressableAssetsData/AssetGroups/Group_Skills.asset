@@ -22,6 +22,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3d949036d685a514b96747f549d8cb5d
+    m_Address: Assets/Data/Skill/Config/Steve.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3e77cd9c4a93c2145b7c637ade3db7f1
+    m_Address: Assets/Data/Skill/Fireball.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 42e02e674db46fc499bcddedc075bbb0
     m_Address: Fireball
     m_ReadOnly: 0
@@ -54,6 +64,26 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 743fc0c9fe194494abafe987598b4c2e
     m_Address: Assets/Data/Skill/SteveAddBuff.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 88ce9ef18dd3bfc4ba922b718235a47f
+    m_Address: Assets/Data/Skill/RemoteAttack.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a0d6d26ff0047474991ab44e753b9c57
+    m_Address: Assets/Data/Skill/Config/Zombie.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b1147081a80afe640baf627c77e8961f
+    m_Address: Assets/Data/Skill/Config/Skeleton.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d7f2347b739af785aa327ab061a7d02b
+    m_Address: Assets/Data/Skill/Weak.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

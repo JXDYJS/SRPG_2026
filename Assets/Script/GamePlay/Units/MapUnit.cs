@@ -207,6 +207,9 @@ namespace GamePlay.Units
             SetModifiersDirty();
         }
 
+        public int CurrentMP => Character?.MP ?? 0;
+        public int MaxMP => Character?.MaxMP ?? 0;
+
         public void SetModifiersDirty()
         {
             _isModifiersDirty = true;
@@ -776,7 +779,14 @@ namespace GamePlay.Units
                 mod.OnTurnStart(this);
             }
             actionPoints++;
-            //TODO
+
+            if (Character != null)
+            {
+                int maxMP = (int)Character.statSystem.maxMP.getValue();
+                int recoverAmount = Mathf.Max(1, maxMP / 5);
+                Character.statSystem.currentMP = Mathf.Min(maxMP, Character.statSystem.currentMP + recoverAmount);
+                Debug.Log($"{GetUnitName()} 回合开始，回复 {recoverAmount} MP，当前: {Character.MP}/{maxMP}");
+            }
         }
 
         public virtual void OnTurnEnd()
@@ -815,7 +825,8 @@ namespace GamePlay.Units
             
             // 2. 还原 HP
             Character.statSystem.currentHP = snap.CurrentHP;
-            // 如果有血条UI，这里记得调用 UpdateHealthUI();
+            // 2.5. 还原 MP
+            Character.statSystem.currentMP = snap.CurrentMP;
 
             // 3. 还原 Buff (核心修改部分)
             // 【清理阶段】彻底移除当前身上的所有Buff，触发 OnRemove 清理旧的属性修饰器
