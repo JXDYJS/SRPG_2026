@@ -26,6 +26,7 @@ namespace UI.Panel
         protected Vector2 _originalPosition;
 
         public GameObject PanelObject => gameObject;
+        public bool IsInitialized { get; protected set; }
 
         protected virtual void Awake()
         {
@@ -34,52 +35,51 @@ namespace UI.Panel
             _originalPosition = _rectTransform.anchoredPosition;
         }
 
-        // public virtual async UniTask PlayEnterAnimation()
-        // {
-        //     Vector2 startPos = _originalPosition + GetDirectionVector(_enterDirection) * _slideDistance;
-        //     _rectTransform.anchoredPosition = startPos;
+        public virtual void OnInit()
+        {
+            if (IsInitialized) return;
+            IsInitialized = true;
+        }
 
-        //     float elapsed = 0f;
-        //     while (elapsed < _animationDuration)
-        //     {
-        //         elapsed += Time.deltaTime;
-        //         float t = Mathf.Clamp01(elapsed / _animationDuration);
-        //         float eased = 1f - Mathf.Pow(1f - t, 3);
-        //         _rectTransform.anchoredPosition = Vector2.Lerp(startPos, _originalPosition, eased);
-        //         await UniTask.Yield();
-        //     }
+        public virtual void OnOpen(object data = null)
+        {
+            if (!IsInitialized) OnInit();
+        }
 
-        //     _rectTransform.anchoredPosition = _originalPosition;
-        // }
+        public virtual void OnClose()
+        {
+        }
 
-        // public virtual async UniTask PlayExitAnimation()
-        // {
-        //     Vector2 endPos = _originalPosition + GetDirectionVector(_exitDirection) * _slideDistance;
-        //     Vector2 startPos = _rectTransform.anchoredPosition;
+        public virtual void OnHide()
+        {
+            OnClose();
+        }
 
-        //     float elapsed = 0f;
-        //     while (elapsed < _animationDuration)
-        //     {
-        //         elapsed += Time.deltaTime;
-        //         float t = Mathf.Clamp01(elapsed / _animationDuration);
-        //         float eased = 1f - Mathf.Pow(1f - t, 3);
-        //         _rectTransform.anchoredPosition = Vector2.Lerp(startPos, endPos, eased);
-        //         await UniTask.Yield();
-        //     }
+        public virtual void ResetRectTransform()
+        {
+            if (_rectTransform == null)
+                _rectTransform = GetComponent<RectTransform>();
+            if (_rectTransform == null) return;
 
-        //     _rectTransform.anchoredPosition = endPos;
-        // }
+            _rectTransform.anchorMin = Vector2.zero;
+            _rectTransform.anchorMax = Vector2.one;
+            _rectTransform.anchoredPosition = Vector2.zero;
+            _rectTransform.sizeDelta = Vector2.zero;
+            _rectTransform.localScale = Vector3.one;
+            _originalPosition = Vector2.zero;
+
+            _rectTransform.DOKill();
+        }
 
         public virtual async UniTask PlayEnterAnimation()
         {
             Vector2 startPos = _originalPosition + GetDirectionVector(_enterDirection) * _slideDistance;
             _rectTransform.anchoredPosition = startPos;
 
-            _rectTransform.DOKill(); 
+            _rectTransform.DOKill();
 
-            // 一行代码搞定移动和缓动曲线，并 await 等待完成
             await _rectTransform.DOAnchorPos(_originalPosition, _animationDuration)
-                                .SetEase(Ease.OutCubic) 
+                                .SetEase(Ease.OutCubic)
                                 .AsyncWaitForCompletion();
         }
 
