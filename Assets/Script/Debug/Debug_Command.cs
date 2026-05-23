@@ -73,5 +73,11 @@ namespace DebugSystem
         {
             Data.CommandConfig.playerInvincible = invincible;
         }
+
+        [ConsoleMethod("oneShotKill", "Set player one-shot kill")]
+        public static void OneShotKill(bool enable)
+        {
+            Data.CommandConfig.playerOneShotKill = enable;
+        }
     }
 }
