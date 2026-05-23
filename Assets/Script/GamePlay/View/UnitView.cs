@@ -146,18 +146,19 @@ namespace GamePlay.View
             if (_isDying) return;
             _isDying = true;
 
-            PlayAnim("Death");
+            string animName = Data.Config.ViewConfig.deathAnimationName;
+            PlayAnim(animName);
             await UniTask.Yield();
 
             float elapsed = 0f;
             float timeout = Data.Config.ViewConfig.deathAnimationStateTimeout;
-            while (elapsed < timeout && !_animator.GetCurrentAnimatorStateInfo(0).IsName("Death"))
+            while (elapsed < timeout && !_animator.GetCurrentAnimatorStateInfo(0).IsName(animName))
             {
                 await UniTask.Yield();
                 elapsed += Time.deltaTime;
             }
 
-            float clipLength = _animator.GetCurrentAnimatorStateInfo(0).IsName("Death")
+            float clipLength = _animator.GetCurrentAnimatorStateInfo(0).IsName(animName)
                 ? _animator.GetCurrentAnimatorStateInfo(0).length
                 : Data.Config.ViewConfig.deathAnimationDefaultClipLength;
 
