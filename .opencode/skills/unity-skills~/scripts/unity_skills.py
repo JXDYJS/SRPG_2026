@@ -23,7 +23,7 @@ from typing import Any, Dict, List, Optional
 
 __version__ = "1.6.4"
 
-UNITY_URL = "http://localhost:8090"
+UNITY_URL = "http://127.0.0.1:8090"
 DEFAULT_PORT = 8090
 PORT_RANGE_START = 8090
 PORT_RANGE_END = 8100
@@ -121,7 +121,7 @@ class UnitySkills:
         """
         Initialize client.
         Args:
-            port: Connect to specific localhost port (e.g. 8091)
+            port: Connect to specific 127.0.0.1 port (e.g. 8091)
             target: Connect to instance by Name or ID (e.g. "MyGame" or "MyGame_A1B2") - auto-discovers port.
             url: Full URL override.
             version: Connect to instance by Unity version (e.g. "6", "2022", "2022.3") - auto-discovers port.
@@ -141,23 +141,27 @@ class UnitySkills:
 
         if not self.url:
             if port:
-                self.url = f"http://localhost:{port}"
+                self.url = f"http://127.0.0.1:{port}"
             elif target:
                 found_port = self._find_port_by_target(target)
                 if found_port:
-                    self.url = f"http://localhost:{found_port}"
+                    self.url = f"http://127.0.0.1:{found_port}"
                 else:
                     raise ValueError(f"Could not find Unity instance matching '{target}' in registry.")
             elif version:
                 found_port = self._find_port_by_version(version)
                 if found_port:
-                    self.url = f"http://localhost:{found_port}"
+                    self.url = f"http://127.0.0.1:{found_port}"
                 else:
                     raise ValueError(f"Could not find Unity instance matching version '{version}'.")
             else:
                 # Auto-discover: scan 8090-8100 for first responding instance
                 found_port = self._find_first_available()
-                self.url = f"http://localhost:{found_port}"
+                self.url = f"http://127.0.0.1:{found_port}"
+
+        # Store explicit Host header for per-request use (session-level Host is ignored by requests library)
+        port_part = self.url.rsplit(':', 1)[-1]
+        self._host_header = {'Host': f'127.0.0.1:{port_part}'}
 
         # Sync timeout from Unity server if user didn't specify one
         if not timeout:
@@ -166,7 +170,7 @@ class UnitySkills:
     def _sync_timeout_from_server(self):
         """Fetch requestTimeoutMinutes from /health and apply as self.timeout."""
         try:
-            resp = self._session.get(f"{self.url}/health", timeout=HEALTH_TIMEOUT)
+            resp = self._session.get(f"{self.url}/health", timeout=HEALTH_TIMEOUT, headers=self._host_header)
             if resp.status_code == 200:
                 minutes = resp.json().get('requestTimeoutMinutes')
                 if minutes and isinstance(minutes, (int, float)) and minutes > 0:
@@ -178,7 +182,8 @@ class UnitySkills:
         """Scan ports 8090-8100 and return the first responsive Unity instance."""
         for port in range(PORT_RANGE_START, PORT_RANGE_END + 1):
             try:
-                resp = requests.get(f"http://localhost:{port}/health", timeout=SCAN_TIMEOUT)
+                resp = requests.get(f"http://127.0.0.1:{port}/health", timeout=SCAN_TIMEOUT,
+                                    headers={'Host': f'127.0.0.1:{port}'})
                 if resp.status_code == 200:
                     return port
             except (requests.exceptions.RequestException, ValueError):
@@ -223,7 +228,8 @@ class UnitySkills:
 
             for port in ports_without_version:
                 try:
-                    resp = requests.get(f"http://localhost:{port}/health", timeout=HEALTH_TIMEOUT)
+                    resp = requests.get(f"http://127.0.0.1:{port}/health", timeout=HEALTH_TIMEOUT,
+                                        headers={'Host': f'127.0.0.1:{port}'})
                     if resp.status_code == 200:
                         health_data = resp.json()
                         health_version = health_data.get('unityVersion')
@@ -236,7 +242,8 @@ class UnitySkills:
         if not registry_data:
             for port in range(PORT_RANGE_START, PORT_RANGE_END + 1):
                 try:
-                    resp = requests.get(f"http://localhost:{port}/health", timeout=SCAN_TIMEOUT)
+                    resp = requests.get(f"http://127.0.0.1:{port}/health", timeout=SCAN_TIMEOUT,
+                                        headers={'Host': f'127.0.0.1:{port}'})
                     if resp.status_code == 200:
                         health_data = resp.json()
                         health_version = health_data.get('unityVersion')
@@ -266,10 +273,12 @@ class UnitySkills:
                 kwargs['verbose'] = verbose
                 # Preserve raw Unicode characters instead of forcing \\uXXXX escapes.
                 json_data = json.dumps(kwargs, ensure_ascii=False)
+                request_headers = {'Content-Type': 'application/json; charset=utf-8'}
+                request_headers.update(self._host_header)
                 response = self._session.post(
                     f"{self.url}/skill/{skill_name}",
                     data=json_data.encode('utf-8'),
-                    headers={'Content-Type': 'application/json; charset=utf-8'},
+                    headers=request_headers,
                     timeout=self.timeout
                 )
                 response.encoding = 'utf-8'  # Always decode server responses as UTF-8.
@@ -361,7 +370,7 @@ def connect(port: int = None, target: str = None, version: str = None) -> UnityS
     """
     Create a new UnitySkills client.
     Args:
-        port: Connect to specific localhost port (e.g. 8091)
+        port: Connect to specific 127.0.0.1 port (e.g. 8091)
         target: Connect to instance by Name or ID
         version: Connect to instance by Unity version (e.g. "6", "2022", "2022.3")
     """
@@ -527,7 +536,7 @@ def get_skills() -> Dict[str, Any]:
     """Get list of all available skills from the current default client."""
     try:
         client = _get_default_client()
-        response = client._session.get(f"{client.url}/skills", timeout=client.timeout)
+        response = client._session.get(f"{client.url}/skills", timeout=client.timeout, headers=client._host_header)
         response.encoding = 'utf-8'
         return response.json()
     except Exception as e:
@@ -537,7 +546,7 @@ def health() -> bool:
     """Check if the current default Unity server is running."""
     try:
         client = _get_default_client()
-        response = client._session.get(f"{client.url}/health", timeout=HEALTH_TIMEOUT)
+        response = client._session.get(f"{client.url}/health", timeout=HEALTH_TIMEOUT, headers=client._host_header)
         response.encoding = 'utf-8'
         return response.json().get("status") == "ok"
     except (requests.exceptions.RequestException, ValueError):
@@ -563,7 +572,7 @@ def get_server_status() -> Dict[str, Any]:
     """Get detailed health information from the current Unity server."""
     try:
         client = _get_default_client()
-        response = client._session.get(f"{client.url}/health", timeout=HEALTH_TIMEOUT)
+        response = client._session.get(f"{client.url}/health", timeout=HEALTH_TIMEOUT, headers=client._host_header)
         response.encoding = 'utf-8'
         return response.json()
     except requests.exceptions.ConnectionError:
