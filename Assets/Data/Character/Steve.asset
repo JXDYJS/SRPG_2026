@@ -27,13 +27,12 @@ MonoBehaviour:
   BaseRES: 0
   MoveRange: 5
   Height: 0
-  Speed: 100
+  Speed: 80
   RangeType: 0
   Pattern: 0
   MinRange: 1
   MaxRange: 1
   CustomPattern: []
   GrowthTable: []
-  DefaultFaction: 0
   skillConfig: {fileID: 11400000, guid: 3d949036d685a514b96747f549d8cb5d, type: 2}
   unitClass: {fileID: 11400000, guid: f170feae16a061f4794e49c87ddf6109, type: 2}
