@@ -136,6 +136,19 @@ namespace Command
 
         protected override void OnExecute()
         {
+            if (_skillData.Cost > 0 && !_caster.Character.HasEnoughMP(_skillData.Cost))
+            {
+                Debug.LogWarning($"技能 {_skillData.SkillName} 能量不足！需要: {_skillData.Cost}, 当前: {_caster.Character.MP}");
+                IsFinished = true;
+                return;
+            }
+
+            if (_skillData.Cost > 0)
+            {
+                _caster.Character.statSystem.currentMP -= _skillData.Cost;
+                Debug.Log($"{_caster.GetUnitName()} 消耗 {_skillData.Cost} MP 释放 {_skillData.SkillName}，剩余MP: {_caster.Character.MP}");
+            }
+
             _caster.MarkAsActionDone();
 
             IsFinished = false;

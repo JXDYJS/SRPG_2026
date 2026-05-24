@@ -10,55 +10,50 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
-  m_Name: Group_UI
+  m_Name: Group_Class
   m_EditorClassIdentifier: 
-  m_GroupName: Group_UI
+  m_GroupName: Group_Class
   m_Data:
     m_SerializedData: []
-  m_GUID: b07f89c5d2b157b4096f9659323bad5a
+  m_GUID: 9ad017c059a7f35a1ac7a9b8ad4b7c7b
   m_SerializeEntries:
-  - m_GUID: 0b3fd872f413ca64f8471ce512ae4c61
-    m_Address: SelectHighLight
+  - m_GUID: 2edf6212b77694a06851b6cd9df463fe
+    m_Address: Assets/Data/UnitClass/Champion/Common/Archer_Common.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 4494d36db42ce24428046b39d4facd5f
-    m_Address: Assets/UI/Mat_CursorHighlight.mat
+  - m_GUID: 34f89a8ba8126ea2a91c0eb71d7468b6
+    m_Address: Assets/Data/UnitClass/Champion/Common/Archer_Common 1.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 732ac50125401824498fa9fc0491fa33
-    m_Address: Button
+  - m_GUID: 995d7999bbcc2d9b1a1fbd0e4517bf48
+    m_Address: Assets/Data/UnitClass/Champion/Common/Tank_Common.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 8ca10076cf856d519bac34f0d7f087dd
-    m_Address: Assets/UI/Battle/BattleActionMenu.prefab
+  - m_GUID: adfa9b30f8e8751108e54e8624190a27
+    m_Address: Assets/Data/UnitClass/Champion/Warrior_Common.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: c3f53bd577417ee65931e32ceb967342
-    m_Address: Assets/UI/UIRoot.prefab
+  - m_GUID: c1a72b7af1d237f379a0afe87703cc53
+    m_Address: Assets/Data/UnitClass/Champion/Archer_Sniper.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: cf407dcfa0e8b534b959d4d473e55b10
-    m_Address: Assets/textures/gui/sprites/hud/experience_bar_background.png
+  - m_GUID: c8c133809571df33fb05520f3454d394
+    m_Address: Assets/Data/UnitClass/Champion/Medical_Doctor.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: d63f8b7ba506f4542bd5136112a5b1aa
-    m_Address: DamageUI
+  - m_GUID: eda5962829b59793c9c33867886b713f
+    m_Address: Assets/Data/UnitClass/Champion/Tank_Champion.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: d9e88bb0d73d2e545b596fca2872fd4a
-    m_Address: BattleActionMenu
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: dda72fa6f849a6e41b6431e4220a50e4
-    m_Address: Highlight
+  - m_GUID: f170feae16a061f4794e49c87ddf6109
+    m_Address: Assets/Data/UnitClass/Champion/Warrior.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -66,5 +61,5 @@ MonoBehaviour:
   m_Settings: {fileID: 11400000, guid: 1f6ca7d155b268c408ed984de8fdd20b, type: 2}
   m_SchemaSet:
     m_Schemas:
-    - {fileID: 11400000, guid: 020137b999394f64fb9afebef7863ce2, type: 2}
-    - {fileID: 11400000, guid: 5b4a365697c37244f94031cc37fe672c, type: 2}
+    - {fileID: 11400000, guid: e017c93ecc75b5d46a7c989c306e8741, type: 2}
+    - {fileID: 11400000, guid: c2de38682b202de4981e9fe361dd4453, type: 2}

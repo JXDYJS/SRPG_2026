@@ -152,6 +152,9 @@ namespace UI.Panel
 
             if (!_currentUnit.CanAction) return false;
 
+            if (skill.Cost > 0 && !_currentUnit.Character.HasEnoughMP(skill.Cost))
+                return false;
+
             return true;
         }
 

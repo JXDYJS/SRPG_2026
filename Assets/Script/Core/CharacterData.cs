@@ -26,6 +26,9 @@ namespace Character{
             public int Height;
             public int Speed;
 
+            [Header("能量属性")]
+            public int BaseMaxMP;
+
             [Header("战斗配置")]
             public AttackRangeType RangeType;
             public AttackPatternType Pattern;

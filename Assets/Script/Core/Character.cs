@@ -47,6 +47,15 @@ namespace Character
             public int level = 1;
             public int maxLevel = 5;
 
+            public int MP
+            {
+                get => statSystem.currentMP;
+                set => statSystem.currentMP = value;
+            }
+            public int MaxMP => (int)statSystem.maxMP.getValue();
+
+            public bool HasEnoughMP(int cost) => statSystem.currentMP >= cost;
+
             public CharacterInstance(CharacterData characterData)
             {
                 this.characterData = characterData;
@@ -75,6 +84,7 @@ namespace Character
                     ApplyReward(reward);
                 }
                 statSystem.currentHP = (int)statSystem.maxHP.getValue();
+                statSystem.currentMP = (int)statSystem.maxMP.getValue();
                 
                 SkillInventory.RefreshSkillsAsync(level).Forget();
             }
@@ -110,6 +120,7 @@ namespace Character
                     case "DEF": statSystem.DEF.addModifier(mod); break;
                     case "RES": statSystem.RES.addModifier(mod); break;
                     case "MOV": statSystem.moveRange.addModifier(mod); break;
+                    case "MP": statSystem.maxMP.addModifier(mod); break;
                     default: Debug.LogWarning($"未知的属性成长: {statName}"); break;
                 }
             }
