@@ -23,15 +23,6 @@ MonoBehaviour:
         m_SubObjectName: 
         m_SubObjectType: 
         m_EditorAssetChanged: 0
-  - SlotType: 1
-    SlotDisplayName: Heal
-    EvolutionChain:
-    - RequiredLevel: 0
-      SkillData:
-        m_AssetGUID: 69b5f56813a9a9942a6ce66245f89694
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_EditorAssetChanged: 0
   - SlotType: 2
     SlotDisplayName: Weak
     EvolutionChain:

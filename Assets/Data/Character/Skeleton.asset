@@ -27,7 +27,7 @@ MonoBehaviour:
   BaseRES: 0
   MoveRange: 5
   Height: 2
-  Speed: 100
+  Speed: 60
   RangeType: 0
   Pattern: 0
   MinRange: 1
