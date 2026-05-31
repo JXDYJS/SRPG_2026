@@ -9,7 +9,7 @@ namespace GamePlay.Buff
     public class BuffVampire : BuffBase
     {
         [Header("吸血配置")]
-        [SerializeField] private float healPercentPerStack = 0.10f;
+        [SerializeField] private int healPerStack = 1;
 
         public override void OnApply(MapUnit owner)
         {
@@ -21,7 +21,7 @@ namespace GamePlay.Buff
         {
             if (damageInfo.damage <= 0) return;
 
-            float healAmount = damageInfo.damage * Stacks * healPercentPerStack;
+            int healAmount = Stacks * healPerStack;
             if (healAmount <= 0) return;
 
             DamageInfo healInfo = new DamageInfo(healAmount, Owner, Owner, DamageType.Heal, DamageMethod.Normal);

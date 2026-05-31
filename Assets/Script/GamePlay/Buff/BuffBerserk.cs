@@ -8,7 +8,7 @@ namespace GamePlay.Buff
     public class BuffBerserk : BuffBase
     {
         [Header("狂暴配置")]
-        [SerializeField] private float damageMultiplierPerStack = 0.15f;
+        [SerializeField] private int bonusDamagePerStack = 2;
         [SerializeField] private float hpThreshold = 0.5f;
 
         public override void OnApply(MapUnit owner)
@@ -28,10 +28,10 @@ namespace GamePlay.Buff
             float hpPercent = currentHP / maxHP;
             if (hpPercent <= hpThreshold)
             {
-                float multiplier = 1.0f + Stacks * damageMultiplierPerStack;
-                damage *= multiplier;
+                int bonus = Stacks * bonusDamagePerStack;
+                damage += bonus;
 
-                Debug.Log($"{Owner.name} 的狂暴触发！血量 {hpPercent:P0} ≤ {hpThreshold:P0}，伤害倍率 {multiplier:F2}");
+                Debug.Log($"{Owner.name} 的狂暴触发！血量 {hpPercent:P0} ≤ {hpThreshold:P0}，伤害增加 {bonus}");
             }
         }
     }

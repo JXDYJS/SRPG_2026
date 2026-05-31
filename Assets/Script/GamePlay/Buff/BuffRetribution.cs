@@ -9,7 +9,7 @@ namespace GamePlay.Buff
     public class BuffRetribution : BuffBase
     {
         [Header("反伤配置")]
-        [SerializeField] private float reflectPercentPerStack = 0.15f;
+        [SerializeField] private int reflectDamagePerStack = 1;
 
         private static bool _isReflecting = false;
 
@@ -24,8 +24,7 @@ namespace GamePlay.Buff
             if (_isReflecting) return;
             if (damageInfo.sourceUnit == null || damageInfo.sourceUnit == Owner) return;
 
-            float reflectPercent = Stacks * reflectPercentPerStack;
-            float reflectDamage = damageInfo.damage * reflectPercent;
+            int reflectDamage = Stacks * reflectDamagePerStack;
             if (reflectDamage <= 0) return;
 
             _isReflecting = true;
