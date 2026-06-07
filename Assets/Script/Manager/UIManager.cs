@@ -213,7 +213,6 @@ namespace Managers
                 return null;
             }
 
-            panel.ResetRectTransform();
             panel.OnInit();
             panel.OnOpen(data);
 
