@@ -306,6 +306,7 @@ namespace Managers
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
+            EnsureSingleEventSystem();
         }
 
         private void OnSceneUnloaded(Scene scene)

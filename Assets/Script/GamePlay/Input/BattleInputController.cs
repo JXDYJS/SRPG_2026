@@ -69,6 +69,7 @@ namespace GamePlay.Control
             {
                 if (currentState != InputState.Locked) ChangeState(InputState.Locked);
                 GridVisualManager.Instance.HideCursor();
+                Debug.Log($"[BIC] Blocked: activeUnit null or not player (state={currentState})");
                 return;
             }
 
@@ -87,12 +88,17 @@ namespace GamePlay.Control
 
             if (Input.GetMouseButtonDown(0))
             {
-                if (EventSystem.current.IsPointerOverGameObject()) return;
+                if (EventSystem.current.IsPointerOverGameObject())
+                {
+                    Debug.Log($"[BIC] LeftClick blocked by IsPointerOverGameObject (state={currentState})");
+                    return;
+                }
                 HandleLeftClick(hoverPos);
             }
 
             if (Input.GetMouseButtonDown(1))
             {
+                Debug.Log($"[BIC] RightClick detected (state={currentState})");
                 if (currentState == InputState.TargetingMove || 
                     currentState == InputState.TargetingAttack ||
                     currentState == InputState.TargetingSkill)
