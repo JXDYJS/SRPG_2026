@@ -30,6 +30,16 @@ namespace UI
         {
             _targetUnit = unit;
             
+            if (_rectTransform == null)
+            {
+                _rectTransform = GetComponent<RectTransform>();
+                if (_rectTransform == null)
+                {
+                    Debug.LogError("TimelineIconUI: Initialize failed - no RectTransform found");
+                    return;
+                }
+            }
+            
             // 确保动态获取Image组件
             if (iconImage == null)
             {
@@ -49,7 +59,8 @@ namespace UI
             }
             
             // 强制设置长宽为20x20
-            _rectTransform.sizeDelta = new Vector2(20f, 20f);
+            if (_rectTransform != null)
+                _rectTransform.sizeDelta = new Vector2(20f, 20f);
         }
         
         /// <summary>

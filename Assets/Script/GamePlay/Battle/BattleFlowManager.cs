@@ -43,7 +43,7 @@ namespace GamePlay.Battle
             Instance = this;
         }
 
-        async Task Start()
+        async void Start()
         {
             Debug.Log("[FLOW] BattleFlowManager.Start() entered");
             if (CurrentLevel == null)
@@ -53,8 +53,15 @@ namespace GamePlay.Battle
             }
 
             Debug.Log($"[FLOW] CurrentLevel={CurrentLevel.name}, calling LoadLevelAsync");
-            await LoadLevelAsync();
-            Debug.Log("[FLOW] LoadLevelAsync completed");
+            try
+            {
+                await LoadLevelAsync();
+                Debug.Log("[FLOW] LoadLevelAsync completed");
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError($"[FLOW] LoadLevelAsync threw: {e.GetType().Name}: {e.Message}\n{e.StackTrace}");
+            }
         }
 
         /// <summary>
@@ -62,19 +69,29 @@ namespace GamePlay.Battle
         /// </summary>
         private async UniTask LoadLevelAsync()
         {
-            Debug.Log("开始加载关卡...");
-            SwitchState(BattleFlowState.Loading);
-
-            // 1. 加载地形
-            if (CurrentLevel.MapData != null)
+            Debug.Log("[FLOW] LoadLevelAsync: entered");
+            try
             {
-                MapManager.Instance.LoadFromSO();
-                Debug.Log("地形加载完成");
-            }
+                Debug.Log("开始加载关卡...");
+                SwitchState(BattleFlowState.Loading);
 
-            // 2. 生成初始单位
-            _spawnedUnits.Clear();
-            foreach (var config in CurrentLevel.InitialUnits)
+                // 1. 加载地形
+                Debug.Log("[FLOW] LoadLevelAsync: step 1 - checking MapData");
+                if (CurrentLevel.MapData != null)
+                {
+                    Debug.Log("[FLOW] LoadLevelAsync: calling MapManager.Instance.LoadFromSO()");
+                    MapManager.Instance.LoadFromSO();
+                    Debug.Log("地形加载完成");
+                }
+                else
+                {
+                    Debug.Log("[FLOW] LoadLevelAsync: MapData is null, skipping terrain");
+                }
+
+                // 2. 生成初始单位
+                Debug.Log($"[FLOW] LoadLevelAsync: step 2 - spawning {CurrentLevel.InitialUnits?.Count ?? 0} initial units");
+                _spawnedUnits.Clear();
+                foreach (var config in CurrentLevel.InitialUnits)
             {
                 MapUnit unit = await UnitFactory.CreateUnitAsync(
                     config, 
@@ -92,6 +109,7 @@ namespace GamePlay.Battle
             }
 
             // 3. 生成玩家单位
+            Debug.Log($"[FLOW] LoadLevelAsync: step 3 - spawning {PlayerUnitConfigs.Count} player units");
             foreach (var config in PlayerUnitConfigs)
             {
                 // 确保单位阵营为玩家
@@ -111,14 +129,30 @@ namespace GamePlay.Battle
                     Debug.Log($"生成玩家单位: {unit.name} 在位置 {config.SpawnPosition}");
                 }
             }
+            Debug.Log($"[FLOW] LoadLevelAsync: total spawned units = {_spawnedUnits.Count}");
 
+            Debug.Log("[FLOW] LoadLevelAsync: step 4 - InitTimeline");
             if (TimelineUIManager.Instance != null)
             {
-                TimelineUIManager.Instance.InitTimeline(_spawnedUnits);
+                try
+                {
+                    TimelineUIManager.Instance.InitTimeline(_spawnedUnits);
+                }
+                catch (System.Exception e)
+                {
+                    Debug.LogWarning($"[FLOW] InitTimeline failed (non-fatal): {e.Message}");
+                }
             }
 
+            Debug.Log("[FLOW] LoadLevelAsync: step 5 - calling ConfirmDeployment");
             // 5. 自动确认部署并进入战斗阶段
             ConfirmDeployment();
+            Debug.Log("[FLOW] LoadLevelAsync: completed normally");
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError($"[FLOW] LoadLevelAsync CRASHED: {e.GetType().Name}: {e.Message}\n{e.StackTrace}");
+            }
         }
 
         /// <summary>

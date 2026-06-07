@@ -35,7 +35,18 @@ namespace GamePlay.Control
 
         [Header("运行时状态")]
         public InputState currentState = InputState.Locked;
-        private MapUnit activeUnit => TurnManager.Instance.ActiveUnit;
+        private MapUnit activeUnit
+        {
+            get
+            {
+                if (TurnManager.Instance == null)
+                {
+                    Debug.LogWarning("[BIC] TurnManager.Instance is null!");
+                    return null;
+                }
+                return TurnManager.Instance.ActiveUnit;
+            }
+        }
 
         private HashSet<Vector3Int> _validTargetTiles = new HashSet<Vector3Int>();
         private HashSet<Vector3Int> _highlightTiles = new HashSet<Vector3Int>();
