@@ -11,9 +11,6 @@ namespace Managers
     {
         public static BattleUIManager Instance;
 
-        [Header("面板引用")]
-        [SerializeField] private ActionMenuPanel _actionMenuPanel;
-
         private UIStack _uiStack;
         private MapUnit _currentUnit;
         private SkillDataSO _selectedSkill;
@@ -25,9 +22,6 @@ namespace Managers
         {
             Instance = this;
             _uiStack = new UIStack();
-
-            if (_actionMenuPanel != null)
-                _actionMenuPanel.PanelObject.SetActive(false);
         }
 
         public void ShowActionMenu(MapUnit unit)
@@ -35,19 +29,24 @@ namespace Managers
             _currentUnit = unit;
             _selectedSkill = null;
 
-            if (_actionMenuPanel != null)
+            var panel = UIManager.Instance.OpenPanel<ActionMenuPanel>();
+            if (panel == null)
             {
-                _actionMenuPanel.Initialize(unit);
-                if (_uiStack.Count == 0 || _uiStack.Current.GetType() != typeof(ActionMenuPanel))
-                {
-                    _uiStack.Push(_actionMenuPanel).Forget();
-                }
+                Debug.LogError("BattleUIManager: 无法打开 ActionMenuPanel");
+                return;
+            }
+
+            panel.Initialize(unit);
+            if (_uiStack.Count == 0 || _uiStack.Current.GetType() != typeof(ActionMenuPanel))
+            {
+                _uiStack.Push(panel).Forget();
             }
         }
 
         public void HideActionMenu()
         {
             _uiStack.Clear();
+            UIManager.Instance.ClosePanel<ActionMenuPanel>();
         }
 
         public void ShowSkillMenu(MapUnit unit)
@@ -87,12 +86,10 @@ namespace Managers
         {
             _selectedSkill = skill;
             _uiStack.Clear();
-
-            if (_actionMenuPanel != null)
-                _actionMenuPanel.PanelObject.SetActive(false);
+            UIManager.Instance.ClosePanel<ActionMenuPanel>();
+            UIManager.Instance.ClosePanel<SkillMenuPanel>();
 
             GamePlay.Control.BattleInputController.Instance.StartSkillTargeting(skill);
         }
-
     }
 }
