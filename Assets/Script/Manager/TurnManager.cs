@@ -29,8 +29,11 @@ public class TurnManager : MonoBehaviour
 
     public void StartBattle()
     {
+        Debug.Log("[TURN] StartBattle called");
+
         // 获取UnitManager中注册的所有单位
         _allBattleUnits = UnitManager.Instance.GetAllUnits();
+        Debug.Log($"[TURN] GetAllUnits returned {_allBattleUnits.Count} units");
         
         // 所有人就位，计算起跑时间
         foreach(var unit in _allBattleUnits)
@@ -38,15 +41,15 @@ public class TurnManager : MonoBehaviour
             unit.ResetActionValue();
         }
 
-        // 注意：时间条UI已经在BattleFlowManager中初始化
-        // 这里只需要确保头像位置更新到初始状态
         if (TimelineUIManager.Instance != null)
         {
             TimelineUIManager.Instance.UpdateAllIconsPosition(0f);
         }
 
+        Debug.Log("[TURN] calling CalculateNextAction");
         // 开始跑时间轴
         CalculateNextAction();
+        Debug.Log("[TURN] CalculateNextAction returned");
     }
 
     // --- 核心机制：计算下一个行动者 ---
@@ -54,7 +57,12 @@ public class TurnManager : MonoBehaviour
     {
         // 1. 清理死人
         _allBattleUnits.RemoveAll(u => u == null || u.Character.statSystem.currentHP <= 0);
-        if (_allBattleUnits.Count == 0) return;
+        Debug.Log($"[TURN] CalculateNextAction: {_allBattleUnits.Count} units alive");
+        if (_allBattleUnits.Count == 0)
+        {
+            Debug.LogWarning("[TURN] CalculateNextAction: no units left, aborting");
+            return;
+        }
 
         // 2.1 更新行动队列：按照 CurrentActionValue 升序排列，如果 AV 相同，则按照 Speed 降序排列
         ActionQueue = new List<MapUnit>(_allBattleUnits);
@@ -87,6 +95,7 @@ public class TurnManager : MonoBehaviour
 
         // 4. 正式让这个人开始行动
         ActiveUnit = nextUnit;
+        Debug.Log($"[TURN] ActiveUnit set to: {nextUnit.name} (Faction={nextUnit.Faction})");
         StartUnitTurn(ActiveUnit);
     }
 

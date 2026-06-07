@@ -45,13 +45,16 @@ namespace GamePlay.Battle
 
         async Task Start()
         {
+            Debug.Log("[FLOW] BattleFlowManager.Start() entered");
             if (CurrentLevel == null)
             {
-                Debug.LogError("BattleFlowManager: 未指定关卡数据");
+                Debug.LogError("[FLOW] 未指定关卡数据, aborting");
                 return;
             }
 
+            Debug.Log($"[FLOW] CurrentLevel={CurrentLevel.name}, calling LoadLevelAsync");
             await LoadLevelAsync();
+            Debug.Log("[FLOW] LoadLevelAsync completed");
         }
 
         /// <summary>
@@ -143,14 +146,14 @@ namespace GamePlay.Battle
         /// </summary>
         public void ConfirmDeployment()
         {
-            Debug.Log("确认部署，开始战斗");
+            Debug.Log("[FLOW] ConfirmDeployment called");
             
-            // 清除部署区高亮
             GridVisualManager.Instance.ClearHighlights();
             
-            // 进入战斗阶段
             SwitchState(BattleFlowState.InBattle);
+            Debug.Log("[FLOW] calling StartBattle");
             StartBattle();
+            Debug.Log("[FLOW] StartBattle returned");
         }
 
         /// <summary>
@@ -158,10 +161,10 @@ namespace GamePlay.Battle
         /// </summary>
         private void StartBattle()
         {
-            Debug.Log("战斗开始");
-            
-            // 启动回合管理器
+            Debug.Log("[FLOW] StartBattle: calling TurnManager.Instance.StartBattle()");
+            Debug.Log($"[FLOW] TurnManager.Instance == null ? {TurnManager.Instance == null}");
             TurnManager.Instance.StartBattle();
+            Debug.Log("[FLOW] TurnManager.Instance.StartBattle() returned");
         }
 
         /// <summary>
