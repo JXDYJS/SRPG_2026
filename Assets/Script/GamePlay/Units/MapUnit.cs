@@ -9,7 +9,6 @@ using Command;
 using GamePlay.Grid;
 using GamePlay.Skill;
 using DG.Tweening;
-using UI;
 using Core.Data;
 namespace GamePlay.Units
 {
@@ -46,7 +45,23 @@ namespace GamePlay.Units
         public UnitMoveStats moveStats = new UnitMoveStats(); 
         public float moveSpeed = 5.0f;
         public const float BASE_ACTION_DISTANCE = 10000f;
-        public float CurrentActionValue; //行动倒计时
+
+        [field: System.NonSerialized]
+        public event System.Action<MapUnit> OnActionValueChanged;
+
+        [SerializeField] private float _currentActionValue;
+        public float CurrentActionValue
+        {
+            get => _currentActionValue;
+            set
+            {
+                if (!Mathf.Approximately(_currentActionValue, value))
+                {
+                    _currentActionValue = value;
+                    OnActionValueChanged?.Invoke(this);
+                }
+            }
+        }
 
         [Header("Runtime State (Read-Only)")]
         public Vector3Int gridPosition;
@@ -616,12 +631,6 @@ namespace GamePlay.Units
             Debug.Log($"{name} has died.");
             UndoSystem.Instance.RegisterDirty(this);
             UnitManager.Instance.UnregisterUnit(this);
-            
-            // 从时间条移除头像
-            if (TimelineUIManager.Instance != null)
-            {
-                TimelineUIManager.Instance.RemoveUnit(this);
-            }
             
             // 交给 View 播放死亡动画并自动隐藏；无 View 时（如环境伤害）立即隐藏
             if (View != null)

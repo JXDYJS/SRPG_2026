@@ -35,7 +35,18 @@ namespace GamePlay.Control
 
         [Header("运行时状态")]
         public InputState currentState = InputState.Locked;
-        private MapUnit activeUnit => TurnManager.Instance.ActiveUnit;
+        private MapUnit activeUnit
+        {
+            get
+            {
+                if (TurnManager.Instance == null)
+                {
+                    Debug.LogWarning("[BIC] TurnManager.Instance is null!");
+                    return null;
+                }
+                return TurnManager.Instance.ActiveUnit;
+            }
+        }
 
         private HashSet<Vector3Int> _validTargetTiles = new HashSet<Vector3Int>();
         private HashSet<Vector3Int> _highlightTiles = new HashSet<Vector3Int>();
@@ -69,6 +80,7 @@ namespace GamePlay.Control
             {
                 if (currentState != InputState.Locked) ChangeState(InputState.Locked);
                 GridVisualManager.Instance.HideCursor();
+                Debug.Log($"[BIC] Blocked: activeUnit null or not player (state={currentState})");
                 return;
             }
 
@@ -87,12 +99,17 @@ namespace GamePlay.Control
 
             if (Input.GetMouseButtonDown(0))
             {
-                if (EventSystem.current.IsPointerOverGameObject()) return;
+                if (EventSystem.current.IsPointerOverGameObject())
+                {
+                    Debug.Log($"[BIC] LeftClick blocked by IsPointerOverGameObject (state={currentState})");
+                    return;
+                }
                 HandleLeftClick(hoverPos);
             }
 
             if (Input.GetMouseButtonDown(1))
             {
+                Debug.Log($"[BIC] RightClick detected (state={currentState})");
                 if (currentState == InputState.TargetingMove || 
                     currentState == InputState.TargetingAttack ||
                     currentState == InputState.TargetingSkill)

@@ -5,6 +5,7 @@ using GamePlay.Units;
 
 namespace UI.Panel
 {
+    [UIPanelResource("UI/Battle/ActionMenuPanel")]
     public class ActionMenuPanel : BaseUIPanel
     {
         [Header("按钮引用")]

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UI;
@@ -185,12 +186,12 @@ namespace Managers
                 _panelCache.Remove(type);
             }
 
-            string prefabName = type.Name;
-            GameObject prefab = Resources.Load<GameObject>(UI_PREFAB_PATH + prefabName);
+            string prefabPath = ResolvePanelResourcePath(type);
+            GameObject prefab = Resources.Load<GameObject>(prefabPath);
 
             if (prefab == null)
             {
-                Debug.LogError($"UIManager: 无法加载面板 Prefab — Resources/{UI_PREFAB_PATH}{prefabName}");
+                Debug.LogError($"UIManager: 无法加载面板 Prefab — Resources/{prefabPath}");
                 return null;
             }
 
@@ -202,17 +203,16 @@ namespace Managers
             }
 
             GameObject instance = Instantiate(prefab, parent);
-            instance.name = prefabName;
+            instance.name = type.Name;
 
             T panel = instance.GetComponent<T>();
             if (panel == null)
             {
-                Debug.LogError($"UIManager: Prefab {prefabName} 上未找到组件 {prefabName}");
+                Debug.LogError($"UIManager: Prefab 上未找到组件 {type.Name}");
                 Destroy(instance);
                 return null;
             }
 
-            panel.ResetRectTransform();
             panel.OnInit();
             panel.OnOpen(data);
 
@@ -295,8 +295,18 @@ namespace Managers
             };
         }
 
+        private static string ResolvePanelResourcePath(Type panelType)
+        {
+            UIPanelResourceAttribute attr = panelType.GetCustomAttribute<UIPanelResourceAttribute>();
+            if (attr != null)
+                return attr.Path;
+
+            return UI_PREFAB_PATH + panelType.Name;
+        }
+
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
+            EnsureSingleEventSystem();
         }
 
         private void OnSceneUnloaded(Scene scene)
