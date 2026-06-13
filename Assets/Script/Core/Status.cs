@@ -107,9 +107,38 @@ namespace Status
             public Stat RES;
             public Stat Speed;
             public Stat moveRange;
-            public int currentHP;
             public Stat maxMP;
-            public int currentMP;
+
+            public event Action<int> OnHPChanged;
+            public event Action<int> OnMPChanged;
+
+            private int _currentHP;
+            public int currentHP
+            {
+                get => _currentHP;
+                set
+                {
+                    if (_currentHP != value)
+                    {
+                        _currentHP = value;
+                        OnHPChanged?.Invoke(_currentHP);
+                    }
+                }
+            }
+
+            private int _currentMP;
+            public int currentMP
+            {
+                get => _currentMP;
+                set
+                {
+                    if (_currentMP != value)
+                    {
+                        _currentMP = value;
+                        OnMPChanged?.Invoke(_currentMP);
+                    }
+                }
+            }
 
             public StatSystem(int maxHP, int ATK, int DEF, int RES, int SPD, int MOV = 0, int maxMP = 0)
             {
@@ -120,8 +149,8 @@ namespace Status
                 this.Speed = new Stat(SPD);
                 this.moveRange = new Stat(MOV);
                 this.maxMP = new Stat(maxMP);
-                currentHP = maxHP;
-                currentMP = maxMP;
+                _currentHP = maxHP;
+                _currentMP = maxMP;
             }
             public StatSystem(CharacterData characterData)
             {
@@ -132,8 +161,8 @@ namespace Status
                 Speed = new Stat(characterData.Speed);
                 moveRange = new Stat(characterData.MoveRange);
                 maxMP = new Stat(characterData.BaseMaxMP);
-                currentHP = characterData.BaseMaxHP;
-                currentMP = characterData.BaseMaxMP;
+                _currentHP = characterData.BaseMaxHP;
+                _currentMP = characterData.BaseMaxMP;
             }
 
             /// <summary>

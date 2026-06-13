@@ -7,7 +7,6 @@ using Global;
 using Managers;
 using Command;
 using GamePlay.AI;
-using UI;
 
 public class TurnManager : MonoBehaviour
 {
@@ -39,11 +38,6 @@ public class TurnManager : MonoBehaviour
         foreach(var unit in _allBattleUnits)
         {
             unit.ResetActionValue();
-        }
-
-        if (TimelineUIManager.Instance != null)
-        {
-            TimelineUIManager.Instance.UpdateAllIconsPosition(0f);
         }
 
         Debug.Log("[TURN] calling CalculateNextAction");
@@ -87,11 +81,7 @@ public class TurnManager : MonoBehaviour
             unit.CurrentActionValue -= timeElapsed;
         }
 
-        // 3.5 更新时间条UI，让所有头像向左移动
-        if (TimelineUIManager.Instance != null)
-        {
-            TimelineUIManager.Instance.UpdateAllIconsPosition(0.5f);
-        }
+        // 时间条UI通过事件自动更新，无需手动调用
 
         // 4. 正式让这个人开始行动
         ActiveUnit = nextUnit;
@@ -125,14 +115,8 @@ public class TurnManager : MonoBehaviour
         
         ActiveUnit.OnTurnEnd();
         
-        // 让他重新回到起点
+        // 让他重新回到起点（AV变更事件由TimelinePanel自动响应）
         ActiveUnit.ResetActionValue();
-        
-        // 更新时间条UI，让行动完的头像飞回右侧起跑线
-        if (TimelineUIManager.Instance != null)
-        {
-            TimelineUIManager.Instance.UpdateAllIconsPosition(0.5f);
-        }
         
         ActiveUnit = null;
 
