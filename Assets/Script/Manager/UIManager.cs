@@ -94,6 +94,7 @@ namespace Managers
                 _uiRoot = rootInstance.AddComponent<UIRoot>();
 
             DontDestroyOnLoad(rootInstance);
+            EnsureLayerGraphicRaycasters(rootInstance);
             EnsureSingleEventSystem();
         }
 
@@ -150,6 +151,26 @@ namespace Managers
         /// 此方法在 UIRoot 实例化之后运行，确保有且仅有一个 EventSystem 存活，
         /// 保留 DontDestroyOnLoad 的那个（通过 FindObjectsByType 的第一个结果）。
         /// </summary>
+        private static readonly string[] LayerNames = 
+            { "Background_Layer", "Window_Layer", "Popup_Layer", "Topmost_Layer" };
+
+        private void EnsureLayerGraphicRaycasters(GameObject root)
+        {
+            foreach (string layerName in LayerNames)
+            {
+                Transform layerTransform = root.transform.Find(layerName);
+                if (layerTransform == null) continue;
+
+                Canvas layerCanvas = layerTransform.GetComponent<Canvas>();
+                if (layerCanvas == null) continue;
+
+                if (layerTransform.GetComponent<UnityEngine.UI.GraphicRaycaster>() == null)
+                {
+                    layerTransform.gameObject.AddComponent<UnityEngine.UI.GraphicRaycaster>();
+                }
+            }
+        }
+
         private void EnsureSingleEventSystem()
         {
             var eventSystems = Object.FindObjectsByType<UnityEngine.EventSystems.EventSystem>(
