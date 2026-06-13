@@ -132,11 +132,12 @@ namespace GamePlay.Battle
             Debug.Log($"[FLOW] LoadLevelAsync: total spawned units = {_spawnedUnits.Count}");
 
             Debug.Log("[FLOW] LoadLevelAsync: step 4 - InitTimeline");
-            if (TimelinePanel.Instance != null)
+            var timeline = UIManager.Instance.GetPanel<TimelinePanel>();
+            if (timeline != null)
             {
                 try
                 {
-                    TimelinePanel.Instance.InitTimeline(_spawnedUnits);
+                    timeline.InitTimeline(_spawnedUnits);
                 }
                 catch (System.Exception e)
                 {

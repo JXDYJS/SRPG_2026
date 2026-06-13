@@ -2,13 +2,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using GamePlay.Units;
+using UI.Panel;
 
 namespace UI
 {
-    public class TimelinePanel : MonoBehaviour
+    [UIPanelResource("UI/Battle/Timeline")]
+    public class TimelinePanel : BaseUIPanel
     {
-        public static TimelinePanel Instance { get; private set; }
-
         [Header("UI引用")]
         [SerializeField] private RectTransform trackRect;
 
@@ -18,21 +18,22 @@ namespace UI
         private bool _isDirty;
         private bool _isFirstUpdate = true;
 
-        private void Awake()
+        protected override void Awake()
         {
-            if (Instance == null)
-            {
-                Instance = this;
-            }
-            else
-            {
-                Debug.LogError("TimelinePanel 已存在实例，重复创建！");
-                Destroy(gameObject);
-                return;
-            }
-
+            base.Awake();
             if (trackRect == null)
                 trackRect = GetComponent<RectTransform>();
+        }
+
+        public override void OnInit()
+        {
+            base.OnInit();
+        }
+
+        public override void OnClose()
+        {
+            ClearAllIcons();
+            base.OnClose();
         }
 
         private void LateUpdate()
