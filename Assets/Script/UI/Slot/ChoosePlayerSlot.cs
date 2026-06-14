@@ -15,7 +15,7 @@ namespace UI.Slot
     public class ChoosePlayerSlot : MonoBehaviour
     {
         [Header("UI控件")]
-        public Image PlayerImg;
+        public Image playerImg;
         public GameObject normalLine;
         public GameObject SelectLine;
         public GameObject placedMask;
@@ -34,9 +34,9 @@ namespace UI.Slot
             CharacterData = data;
             SlotIndex = index;
 
-            if (PlayerImg != null && data.Icon != null)
+            if (playerImg != null && data.Icon != null)
             {
-                PlayerImg.sprite = data.Icon;
+                playerImg.sprite = data.Icon;
             }
             if (nameText != null)
             {

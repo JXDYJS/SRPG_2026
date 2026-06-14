@@ -66,7 +66,7 @@ namespace GamePlay.Battle
             IsActive = true;
 
             GridVisualManager.Instance.ShowTilesHighlight(_validDeployZones, Color.cyan);
-            Debug.Log($"[DeploymentController] 高亮了 {_validDeployZones.Count} 个部署区");
+            Debug.Log($"[DeploymentController] StartDeployment: {characters.Count} 个角色, {_validDeployZones.Count} 个部署区, 最大{_maxDeployCount}人");
 
             var popup = UIManager.Instance.OpenPanel<ChoosePopWindowPanel>(null, Managers.UILayer.Popup);
             if (popup != null)
@@ -74,6 +74,10 @@ namespace GamePlay.Battle
                 popup.Initialize(characters);
                 popup.OnCharacterClicked = OnSlotClicked;
                 popup.OnStartClicked = OnStartClicked;
+            }
+            else
+            {
+                Debug.LogError("[DeploymentController] OpenPanel<ChoosePopWindowPanel> 返回 null");
             }
         }
 

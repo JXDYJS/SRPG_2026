@@ -26,6 +26,9 @@ namespace UI.Panel
         public override void OnOpen(object data = null)
         {
             base.OnOpen(data);
+
+            ClearAllContentChildren();
+
             if (startButton != null)
             {
                 startButton.onClick.RemoveAllListeners();
@@ -52,6 +55,8 @@ namespace UI.Panel
             }
 
             ClearSlots();
+
+            Debug.Log($"[ChoosePopWindowPanel] Initialize: creating {characters.Count} character slots");
             for (int i = 0; i < characters.Count; i++)
             {
                 var characterData = characters[i];
@@ -138,17 +143,21 @@ namespace UI.Panel
             }
         }
 
+        private void ClearAllContentChildren()
+        {
+            if (content == null) return;
+
+            for (int i = content.childCount - 1; i >= 0; i--)
+            {
+                Destroy(content.GetChild(i).gameObject);
+            }
+        }
+
         private void ClearSlots()
         {
-            foreach (var slot in _slots)
-            {
-                if (slot != null && slot.gameObject != null)
-                {
-                    Destroy(slot.gameObject);
-                }
-            }
             _slots.Clear();
             _selectedIndex = -1;
+            ClearAllContentChildren();
         }
 
         public override void OnClose()
