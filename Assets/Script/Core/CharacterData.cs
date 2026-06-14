@@ -46,6 +46,29 @@ namespace Character{
             public CharacterSkillConfig skillConfig;
             [Header("职业")]
             public UnitClassSO unitClass;
+
+            private const string CHARACTER_RESOURCES_PATH = "Data/Character/";
+
+            /// <summary>
+            /// 通过 ID 从 Resources 加载 CharacterData SO
+            /// 约定路径: Resources/Data/Character/{id}
+            /// 类似 [UIPanelResource] 的约定优于配置模式
+            /// </summary>
+            public static CharacterData LoadByID(string id)
+            {
+                if (string.IsNullOrEmpty(id))
+                {
+                    Debug.LogWarning("[CharacterData] LoadByID: id is null or empty");
+                    return null;
+                }
+
+                CharacterData result = Resources.Load<CharacterData>(CHARACTER_RESOURCES_PATH + id);
+                if (result == null)
+                {
+                    Debug.LogWarning($"[CharacterData] LoadByID: 未找到 ID='{id}' 的角色, 路径=Resources/{CHARACTER_RESOURCES_PATH}{id}");
+                }
+                return result;
+            }
         }
     }
 }

@@ -29,10 +29,6 @@ namespace GamePlay.Battle
         [Header("关卡配置")]
         public BattleLevelSO CurrentLevel;
 
-        [Header("角色注册表")]
-        [Tooltip("用于从存档 characterId 查找 CharacterData SO 引用")]
-        public Core.Data.CharacterDatabaseSO CharacterDatabase;
-
         [Header("运行时状态")]
         [SerializeField]
         private BattleFlowState currentState = BattleFlowState.Loading;

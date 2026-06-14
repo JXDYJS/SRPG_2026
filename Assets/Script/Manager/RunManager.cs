@@ -4,7 +4,6 @@ using GamePlay.Relics;
 using Character.instance;
 using Character.data;
 using Core.Data.Persistent;
-using Core.Data;
 using Status.state;
 using Cysharp.Threading.Tasks;
 
@@ -38,7 +37,7 @@ namespace Managers
         /// <summary>
         /// 从存档数据填充 MyTeam（异步，需要加载 Addressables 技能）
         /// </summary>
-        public async UniTask PopulateFromSaveData(List<CharacterSaveData> savedCharacters, CharacterDatabaseSO database)
+        public async UniTask PopulateFromSaveData(List<CharacterSaveData> savedCharacters)
         {
             MyTeam.Clear();
 
@@ -47,13 +46,7 @@ namespace Managers
 
             foreach (var sd in savedCharacters)
             {
-                if (database == null)
-                {
-                    Debug.LogError("[RunManager] CharacterDatabaseSO is null, cannot populate from save");
-                    continue;
-                }
-
-                CharacterData cd = database.GetById(sd.characterId);
+                CharacterData cd = CharacterData.LoadByID(sd.characterId);
                 if (cd == null)
                 {
                     Debug.LogWarning($"[RunManager] CharacterData with ID '{sd.characterId}' not found, skipping");
