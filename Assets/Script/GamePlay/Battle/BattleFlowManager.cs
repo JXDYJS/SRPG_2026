@@ -50,6 +50,11 @@ namespace GamePlay.Battle
         void Awake()
         {
             Instance = this;
+
+            if (GetComponent<DeploymentController>() == null)
+            {
+                gameObject.AddComponent<DeploymentController>();
+            }
         }
 
         async void Start()

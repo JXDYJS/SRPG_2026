@@ -40,6 +40,17 @@ namespace UI.Panel
 
         public void Initialize(List<CharacterData> characters)
         {
+            if (ChoosePerfab == null)
+            {
+                Debug.LogError("[ChoosePopWindowPanel] ChoosePerfab 未赋值，无法创建角色卡片");
+                return;
+            }
+            if (content == null)
+            {
+                Debug.LogError("[ChoosePopWindowPanel] content Transform 未赋值");
+                return;
+            }
+
             ClearSlots();
             for (int i = 0; i < characters.Count; i++)
             {
