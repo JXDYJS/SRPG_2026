@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 7074663903093708297}
   - component: {fileID: 3795006695647992717}
   - component: {fileID: 1037831090559324091}
+  - component: {fileID: -1256368153265604627}
+  - component: {fileID: -3048807154085093085}
   m_Layer: 5
   m_Name: Timeline
   m_TagString: Untagged
@@ -75,3 +77,32 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!225 &-1256368153265604627
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1351915618205758703}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
+--- !u!114 &-3048807154085093085
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1351915618205758703}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c24388882b69beb48be3564e5501c114, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _animationDuration: 0.25
+  _slideDistance: 300
+  _enterDirection: 0
+  _exitDirection: 1
+  trackRect: {fileID: 7074663903093708297}
