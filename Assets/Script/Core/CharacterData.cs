@@ -49,10 +49,39 @@ namespace Character{
 
             private const string CHARACTER_RESOURCES_PATH = "Data/Character/";
 
+            private static Dictionary<string, CharacterData> _idIndex;
+            private static bool _indexBuilt;
+
             /// <summary>
-            /// 通过 ID 从 Resources 加载 CharacterData SO
-            /// 约定路径: Resources/Data/Character/{id}
-            /// 类似 [UIPanelResource] 的约定优于配置模式
+            /// 扫描 Resources/Data/Character/ 下所有 CharacterData SO，按 ID 建索引
+            /// 文件名不必须匹配 ID，只需放在该目录下即可
+            /// </summary>
+            private static void BuildIndex()
+            {
+                if (_indexBuilt) return;
+
+                _idIndex = new Dictionary<string, CharacterData>();
+                CharacterData[] all = Resources.LoadAll<CharacterData>(CHARACTER_RESOURCES_PATH);
+
+                foreach (var cd in all)
+                {
+                    if (cd == null || string.IsNullOrEmpty(cd.ID)) continue;
+
+                    if (_idIndex.ContainsKey(cd.ID))
+                    {
+                        Debug.LogWarning($"[CharacterData] ID='{cd.ID}' 重复，文件={cd.name}，将被忽略");
+                        continue;
+                    }
+                    _idIndex[cd.ID] = cd;
+                }
+
+                _indexBuilt = true;
+                Debug.Log($"[CharacterData] BuildIndex: 扫描到 {_idIndex.Count} 个角色 ({CHARACTER_RESOURCES_PATH})");
+            }
+
+            /// <summary>
+            /// 通过 ID 查找 CharacterData SO
+            /// 首次调用时自动扫描 Resources/Data/Character/ 建索引，后续走缓存
             /// </summary>
             public static CharacterData LoadByID(string id)
             {
@@ -62,10 +91,12 @@ namespace Character{
                     return null;
                 }
 
-                CharacterData result = Resources.Load<CharacterData>(CHARACTER_RESOURCES_PATH + id);
+                BuildIndex();
+
+                _idIndex.TryGetValue(id, out CharacterData result);
                 if (result == null)
                 {
-                    Debug.LogWarning($"[CharacterData] LoadByID: 未找到 ID='{id}' 的角色, 路径=Resources/{CHARACTER_RESOURCES_PATH}{id}");
+                    Debug.LogWarning($"[CharacterData] LoadByID: 未找到 ID='{id}' 的角色");
                 }
                 return result;
             }
