@@ -253,7 +253,28 @@ namespace GamePlay.Battle
                 return;
             }
 
-            Debug.LogWarning("[FLOW] 无可选角色！RunManager.MyTeam 和 FallbackPlayerCharacters 均为空");
+            Debug.LogWarning("[FLOW] FallbackPlayerCharacters 为空，尝试自动扫描 Resources/Data/Character/");
+
+            List<CharacterData> allFromResources = CharacterData.LoadAll();
+            if (allFromResources.Count > 0)
+            {
+                foreach (CharacterData cd in allFromResources)
+                {
+                    _characterMetas.Add(new CharacterMeta
+                    {
+                        Data = cd,
+                        Level = 1,
+                        BonusHp = 0,
+                        BonusAtk = 0,
+                        BonusDef = 0,
+                        BonusRes = 0
+                    });
+                }
+                Debug.Log($"[FLOW] 自动扫描到 {_characterMetas.Count} 个角色");
+                return;
+            }
+
+            Debug.LogError("[FLOW] 无可选角色！RunManager、Fallback、Resources 均无角色数据");
         }
 
         public void ConfirmDeployment()

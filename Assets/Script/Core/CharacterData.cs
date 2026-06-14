@@ -100,6 +100,16 @@ namespace Character{
                 }
                 return result;
             }
+
+            /// <summary>
+            /// 返回 Resources/Data/Character/ 下所有 CharacterData SO
+            /// 用于自动发现角色列表，不依赖 Inspector 拖拽
+            /// </summary>
+            public static List<CharacterData> LoadAll()
+            {
+                BuildIndex();
+                return new List<CharacterData>(_idIndex.Values);
+            }
         }
     }
 }
