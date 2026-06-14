@@ -20,9 +20,6 @@ namespace GamePlay.Battle
         [Header("相机")]
         public Camera mainCam;
 
-        [Header("部署预览")]
-        public GameObject previewPrefab;
-
         public static DeploymentController Instance { get; private set; }
 
         public bool IsActive { get; private set; }
