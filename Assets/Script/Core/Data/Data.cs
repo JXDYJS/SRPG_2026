@@ -1,4 +1,6 @@
 using Core.Data.Runtime;
+using Core.Data.Persistent;
+using UnityEngine;
 
 namespace Core.Data
 {
@@ -12,34 +14,35 @@ namespace Core.Data
     /// </summary>
     public static class Data
     {
-        // ── Config：只读，程序启动时初始化，打包后不变 ──
         public static readonly ConfigData Config = new ConfigData();
-
-        // ── Runtime：每局战斗创建/销毁 ──
         public static RuntimeData Runtime { get; private set; }
-
-        // ── Persistent：存档/读档 ──
         public static PersistentData Persistent { get; private set; }
 
-        // ── CommandConfig：命令配置 ──
         public static readonly CommandConfigData CommandConfig = new CommandConfigData();
 
-        /// <summary>战斗开始时调用</summary>
         public static void CreateRuntime()
         {
             Runtime = new RuntimeData();
         }
 
-        /// <summary>战斗结束时调用</summary>
         public static void DestroyRuntime()
         {
             Runtime = null;
         }
 
-        /// <summary>创建新存档</summary>
+        /// <summary>尝试加载存档，若不存在则创建新存档</summary>
         public static void CreatePersistent()
         {
-            Persistent = new PersistentData();
+            Persistent = PersistentData.Load();
+            if (Persistent == null)
+            {
+                Persistent = new PersistentData { Data = new SaveData() };
+                Debug.Log("[Data] No save file found, created new PersistentData");
+            }
+            else
+            {
+                Debug.Log("[Data] Save file loaded successfully");
+            }
         }
     }
 
@@ -59,10 +62,44 @@ namespace Core.Data
         public readonly AIRuntimeData AI = new AIRuntimeData();
     }
 
-    // PersistentData 后续实现序列化，先留空壳
     public class PersistentData
     {
-        // public void Save(string path) { ... }
-        // public static PersistentData Load(string path) { ... }
+        public SaveData Data;
+
+        private static readonly string SavePath =
+            global::System.IO.Path.Combine(Application.persistentDataPath, "SaveData.json");
+
+        /// <summary>持久化存档到磁盘</summary>
+        public void Save()
+        {
+            Data.saveTime = global::System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+            string json = Newtonsoft.Json.JsonConvert.SerializeObject(Data, Newtonsoft.Json.Formatting.Indented);
+            global::System.IO.File.WriteAllText(SavePath, json);
+            Debug.Log($"[PersistentData] Saved to {SavePath}");
+        }
+
+        /// <summary>从磁盘加载存档，若文件不存在则返回 null</summary>
+        public static PersistentData Load()
+        {
+            if (!global::System.IO.File.Exists(SavePath))
+            {
+                Debug.Log("[PersistentData] No save file found");
+                return null;
+            }
+            string json = global::System.IO.File.ReadAllText(SavePath);
+            SaveData data = Newtonsoft.Json.JsonConvert.DeserializeObject<SaveData>(json);
+            Debug.Log($"[PersistentData] Loaded save: version={data.version}, stage={data.currentStageId}, party={data.party.Count}");
+            return new PersistentData { Data = data };
+        }
+
+        /// <summary>重置存档（新游戏）</summary>
+        public static void Reset()
+        {
+            if (global::System.IO.File.Exists(SavePath))
+            {
+                global::System.IO.File.Delete(SavePath);
+            }
+            Debug.Log("[PersistentData] Save file deleted");
+        }
     }
 }

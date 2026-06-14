@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 8103337278478951965}
   - component: {fileID: 7657778722393276214}
   - component: {fileID: 1288581329371888818}
+  - component: {fileID: 5080369380681107376}
+  - component: {fileID: -4409269788764830643}
   m_Layer: 0
   m_Name: ChoosePopWindow
   m_TagString: Untagged
@@ -80,6 +82,36 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!225 &5080369380681107376
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2909840316276882004}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
+--- !u!114 &-4409269788764830643
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2909840316276882004}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c987bb5c81acec94eba84c56c5d1ac4c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _animationDuration: 0.25
+  _slideDistance: 300
+  _enterDirection: 0
+  _exitDirection: 1
+  ChoosePerfab: {fileID: 7484147547056873766, guid: 641f65ef8405772408d2b3e60876ea88,
+    type: 3}
 --- !u!1001 &4271706587813597731
 PrefabInstance:
   m_ObjectHideFlags: 0

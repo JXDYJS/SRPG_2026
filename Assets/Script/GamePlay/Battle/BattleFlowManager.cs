@@ -9,15 +9,17 @@ using UnityEngine.AddressableAssets;
 using System.Threading.Tasks;
 using Global;
 using UI;
+using Character.data;
+using Character.instance;
 
 namespace GamePlay.Battle
 {
     public enum BattleFlowState
     {
-        Loading,        // 加载地形和单位
-        Deploying,       // 玩家部署期
-        InBattle,        // 战斗中
-        BattleEnd        // 结算
+        Loading,
+        Deploying,
+        InBattle,
+        BattleEnd
     }
 
     public class BattleFlowManager : MonoBehaviour
@@ -27,9 +29,9 @@ namespace GamePlay.Battle
         [Header("关卡配置")]
         public BattleLevelSO CurrentLevel;
 
-        [Header("玩家单位配置")]
-        [Tooltip("临时存储玩家阵营的单位配置")]
-        public List<UnitConfig> PlayerUnitConfigs = new List<UnitConfig>();
+        [Header("角色注册表")]
+        [Tooltip("用于从存档 characterId 查找 CharacterData SO 引用")]
+        public Core.Data.CharacterDatabaseSO CharacterDatabase;
 
         [Header("运行时状态")]
         [SerializeField]
@@ -37,6 +39,17 @@ namespace GamePlay.Battle
         public BattleFlowState CurrentState => currentState;
 
         private List<MapUnit> _spawnedUnits = new List<MapUnit>();
+        private List<CharacterMeta> _characterMetas = new List<CharacterMeta>();
+
+        private class CharacterMeta
+        {
+            public CharacterData Data;
+            public int Level;
+            public float BonusHp;
+            public float BonusAtk;
+            public float BonusDef;
+            public float BonusRes;
+        }
 
         void Awake()
         {
@@ -52,7 +65,6 @@ namespace GamePlay.Battle
                 return;
             }
 
-            Debug.Log($"[FLOW] CurrentLevel={CurrentLevel.name}, calling LoadLevelAsync");
             try
             {
                 await LoadLevelAsync();
@@ -64,9 +76,6 @@ namespace GamePlay.Battle
             }
         }
 
-        /// <summary>
-        /// 异步加载关卡
-        /// </summary>
         private async UniTask LoadLevelAsync()
         {
             Debug.Log("[FLOW] LoadLevelAsync: entered");
@@ -76,26 +85,114 @@ namespace GamePlay.Battle
                 SwitchState(BattleFlowState.Loading);
 
                 // 1. 加载地形
-                Debug.Log("[FLOW] LoadLevelAsync: step 1 - checking MapData");
+                Debug.Log("[FLOW] LoadLevelAsync: step 1 - loading terrain");
                 if (CurrentLevel.MapData != null)
                 {
-                    Debug.Log("[FLOW] LoadLevelAsync: calling MapManager.Instance.LoadFromSO()");
                     MapManager.Instance.LoadFromSO();
                     Debug.Log("地形加载完成");
                 }
                 else
                 {
-                    Debug.Log("[FLOW] LoadLevelAsync: MapData is null, skipping terrain");
+                    Debug.Log("[FLOW] MapData is null, skipping terrain");
                 }
 
-                // 2. 生成初始单位
-                Debug.Log($"[FLOW] LoadLevelAsync: step 2 - spawning {CurrentLevel.InitialUnits?.Count ?? 0} initial units");
+                // 2. 生成敌方/中立单位（部署阶段可见）
+                Debug.Log($"[FLOW] LoadLevelAsync: step 2 - spawning initial units (enemies)");
                 _spawnedUnits.Clear();
                 foreach (var config in CurrentLevel.InitialUnits)
+                {
+                    MapUnit unit = await UnitFactory.CreateUnitAsync(
+                        config,
+                        MapManager.Instance,
+                        MapManager.Instance.mapRoot,
+                        config.SkillConfig
+                    );
+
+                    if (unit != null)
+                    {
+                        _spawnedUnits.Add(unit);
+                        UnitManager.Instance.RegisterUnit(unit);
+                        Debug.Log($"生成单位: {unit.name} 在位置 {config.SpawnPosition}, faction={config.Faction}");
+                    }
+                }
+
+                // 3. 进入部署阶段（不再跳过）
+                Debug.Log("[FLOW] LoadLevelAsync: step 3 - entering deployment phase");
+                EnterDeploymentPhase();
+            }
+            catch (System.Exception e)
             {
+                Debug.LogError($"[FLOW] LoadLevelAsync CRASHED: {e.GetType().Name}: {e.Message}\n{e.StackTrace}");
+            }
+        }
+
+        /// <summary>
+        /// 进入部署阶段 — 弹出角色选择窗口，激活 DeploymentController
+        /// </summary>
+        public void EnterDeploymentPhase()
+        {
+            Debug.Log("进入部署阶段");
+            SwitchState(BattleFlowState.Deploying);
+
+            PopulateAvailableCharacters();
+
+            List<CharacterData> availableData = new List<CharacterData>();
+            foreach (var meta in _characterMetas)
+            {
+                availableData.Add(meta.Data);
+            }
+
+            if (DeploymentController.Instance == null)
+            {
+                Debug.LogError("[FLOW] DeploymentController.Instance is null, 回退到自动确认");
+                ConfirmDeployment();
+                return;
+            }
+
+            DeploymentController.Instance.OnDeploymentConfirmed += OnDeploymentConfirmed;
+            DeploymentController.Instance.StartDeployment(
+                availableData,
+                CurrentLevel.PlayerDeployZones,
+                CurrentLevel.MaxDeployCount
+            );
+        }
+
+        /// <summary>
+        /// 部署确认回调 — 根据玩家放置位置生成玩家单位
+        /// </summary>
+        private async void OnDeploymentConfirmed(List<DeploymentSlot> slots)
+        {
+            Debug.Log($"[FLOW] Deployment confirmed with {slots.Count} slots");
+
+            DeploymentController.Instance.OnDeploymentConfirmed -= OnDeploymentConfirmed;
+
+            foreach (var slot in slots)
+            {
+                if (slot.CharacterIndex < 0 || slot.CharacterIndex >= _characterMetas.Count)
+                {
+                    Debug.LogWarning($"[FLOW] Invalid character index: {slot.CharacterIndex}");
+                    continue;
+                }
+
+                CharacterMeta meta = _characterMetas[slot.CharacterIndex];
+
+                UnitConfig config = new UnitConfig
+                {
+                    CharacterTemplate = meta.Data,
+                    SkillConfig = meta.Data.skillConfig,
+                    SpawnPosition = slot.GridPosition,
+                    InitialFacing = slot.Facing,
+                    Faction = FactionType.Player,
+                    InitialLevel = meta.Level > 0 ? meta.Level : 1,
+                    HPBonusPercent = meta.BonusHp,
+                    ATKBonusPercent = meta.BonusAtk,
+                    DEFBonusPercent = meta.BonusDef,
+                    RESBonusPercent = meta.BonusRes
+                };
+
                 MapUnit unit = await UnitFactory.CreateUnitAsync(
-                    config, 
-                    MapManager.Instance, 
+                    config,
+                    MapManager.Instance,
                     MapManager.Instance.mapRoot,
                     config.SkillConfig
                 );
@@ -104,34 +201,77 @@ namespace GamePlay.Battle
                 {
                     _spawnedUnits.Add(unit);
                     UnitManager.Instance.RegisterUnit(unit);
-                    Debug.Log($"生成单位: {unit.name} 在位置 {config.SpawnPosition}");
+                    Debug.Log($"生成玩家单位: {unit.name} 在位置 {slot.GridPosition}");
                 }
             }
 
-            // 3. 生成玩家单位
-            Debug.Log($"[FLOW] LoadLevelAsync: step 3 - spawning {PlayerUnitConfigs.Count} player units");
-            foreach (var config in PlayerUnitConfigs)
+            Debug.Log($"[FLOW] Total spawned units = {_spawnedUnits.Count}");
+            ConfirmDeployment();
+        }
+
+        /// <summary>
+        /// 填充可选角色列表（优先 RunManager.MyTeam，后备 BattleLevelSO.Fallback）
+        /// </summary>
+        private void PopulateAvailableCharacters()
+        {
+            _characterMetas.Clear();
+
+            if (RunManager.Instance != null && RunManager.Instance.MyTeam.Count > 0)
             {
-                // 确保单位阵营为玩家
-                config.Faction = FactionType.Player;
-                
-                MapUnit unit = await UnitFactory.CreateUnitAsync(
-                    config, 
-                    MapManager.Instance, 
-                    MapManager.Instance.mapRoot,
-                    config.SkillConfig
-                );
-
-                if (unit != null)
+                foreach (CharacterInstance ci in RunManager.Instance.MyTeam)
                 {
-                    _spawnedUnits.Add(unit);
-                    UnitManager.Instance.RegisterUnit(unit);
-                    Debug.Log($"生成玩家单位: {unit.name} 在位置 {config.SpawnPosition}");
+                    _characterMetas.Add(new CharacterMeta
+                    {
+                        Data = ci.characterData,
+                        Level = ci.level,
+                        BonusHp = 0,
+                        BonusAtk = 0,
+                        BonusDef = 0,
+                        BonusRes = 0
+                    });
                 }
+                Debug.Log($"[FLOW] 从 RunManager.MyTeam 加载了 {_characterMetas.Count} 个角色");
+                return;
             }
-            Debug.Log($"[FLOW] LoadLevelAsync: total spawned units = {_spawnedUnits.Count}");
 
-            Debug.Log("[FLOW] LoadLevelAsync: step 4 - InitTimeline");
+            if (CurrentLevel.FallbackPlayerCharacters != null && CurrentLevel.FallbackPlayerCharacters.Count > 0)
+            {
+                foreach (CharacterData cd in CurrentLevel.FallbackPlayerCharacters)
+                {
+                    _characterMetas.Add(new CharacterMeta
+                    {
+                        Data = cd,
+                        Level = 1,
+                        BonusHp = 0,
+                        BonusAtk = 0,
+                        BonusDef = 0,
+                        BonusRes = 0
+                    });
+                }
+                Debug.Log($"[FLOW] 使用 FallbackPlayerCharacters: {_characterMetas.Count} 个角色");
+                return;
+            }
+
+            Debug.LogWarning("[FLOW] 无可选角色！RunManager.MyTeam 和 FallbackPlayerCharacters 均为空");
+        }
+
+        public void ConfirmDeployment()
+        {
+            Debug.Log("[FLOW] ConfirmDeployment called");
+
+            GridVisualManager.Instance.ClearHighlights();
+
+            SwitchState(BattleFlowState.InBattle);
+            Debug.Log("[FLOW] calling StartBattle");
+            StartBattle();
+            Debug.Log("[FLOW] StartBattle returned");
+        }
+
+        private void StartBattle()
+        {
+            Debug.Log("[FLOW] StartBattle: calling TurnManager.Instance.StartBattle()");
+            Debug.Log($"[FLOW] TurnManager.Instance == null ? {TurnManager.Instance == null}");
+
             var timeline = UIManager.Instance.GetPanel<TimelinePanel>();
             if (timeline != null)
             {
@@ -145,82 +285,23 @@ namespace GamePlay.Battle
                 }
             }
 
-            Debug.Log("[FLOW] LoadLevelAsync: step 5 - calling ConfirmDeployment");
-            // 5. 自动确认部署并进入战斗阶段
-            ConfirmDeployment();
-            Debug.Log("[FLOW] LoadLevelAsync: completed normally");
-            }
-            catch (System.Exception e)
-            {
-                Debug.LogError($"[FLOW] LoadLevelAsync CRASHED: {e.GetType().Name}: {e.Message}\n{e.StackTrace}");
-            }
-        }
-
-        /// <summary>
-        /// /// 进入部署阶段
-        /// </summary>
-        public void EnterDeploymentPhase()
-        {
-            Debug.Log("进入部署阶段");
-            
-            // 高亮玩家部署区
-            if (CurrentLevel.PlayerDeployZones != null && CurrentLevel.PlayerDeployZones.Count > 0)
-            {
-                GridVisualManager.Instance.ShowTilesHighlight(
-                    CurrentLevel.PlayerDeployZones, 
-                    Color.cyan
-                );
-                Debug.Log($"高亮了 {CurrentLevel.PlayerDeployZones.Count} 个部署区");
-            }
-
-            // TODO: 这里可以添加部署UI，显示"开始战斗"按钮
-        }
-
-        /// <summary>
-        /// 确认部署并开始战斗
-        /// </summary>
-        public void ConfirmDeployment()
-        {
-            Debug.Log("[FLOW] ConfirmDeployment called");
-            
-            GridVisualManager.Instance.ClearHighlights();
-            
-            SwitchState(BattleFlowState.InBattle);
-            Debug.Log("[FLOW] calling StartBattle");
-            StartBattle();
-            Debug.Log("[FLOW] StartBattle returned");
-        }
-
-        /// <summary>
-        /// 开始战斗
-        /// </summary>
-        private void StartBattle()
-        {
-            Debug.Log("[FLOW] StartBattle: calling TurnManager.Instance.StartBattle()");
-            Debug.Log($"[FLOW] TurnManager.Instance == null ? {TurnManager.Instance == null}");
             TurnManager.Instance.StartBattle();
             Debug.Log("[FLOW] TurnManager.Instance.StartBattle() returned");
         }
 
-        /// <summary>
-        /// 切换状态
-        /// </summary>
         private void SwitchState(BattleFlowState newState)
         {
             if (currentState == newState) return;
-            
+
+            var prev = currentState;
             currentState = newState;
-            Debug.Log($"战斗流程状态切换: {currentState} -> {newState}");
+            Debug.Log($"战斗流程状态切换: {prev} -> {newState}");
         }
 
-        /// <summary>
-        /// 清理关卡
-        /// </summary>
         public void CleanupLevel()
         {
             Debug.Log("清理关卡资源");
-            
-            // 清除所有生成的单位
+
             foreach (var unit in _spawnedUnits)
             {
                 if (unit != null && unit.gameObject != null)
@@ -230,11 +311,9 @@ namespace GamePlay.Battle
                 }
             }
             _spawnedUnits.Clear();
-            
-            // 清除地形
+
             MapManager.Instance.ClearMap();
-            
-            // 重置状态
+
             SwitchState(BattleFlowState.Loading);
         }
     }
