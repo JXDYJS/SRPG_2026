@@ -168,6 +168,12 @@ namespace GamePlay.Battle
                     MapUnit mu = obj.GetComponent<MapUnit>();
                     if (mu == null) mu = obj.AddComponent<MapUnit>();
                     mu.IsPreview = true;
+
+                    foreach (var col in obj.GetComponentsInChildren<Collider>())
+                    {
+                        col.enabled = false;
+                    }
+
                     obj.SetActive(false);
                     _previewUnits.Add(mu);
                     Debug.Log($"[FLOW] 预加载角色 {meta.Data.CharacterName} 完成");
