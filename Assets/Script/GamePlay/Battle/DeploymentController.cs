@@ -101,18 +101,29 @@ namespace GamePlay.Battle
 
         private void HandleHover()
         {
-            Vector3Int hoverPos = GetMouseGridPosition();
+            if (_selectedCharacterIndex < 0) return;
+
+            if (EventSystem.current.IsPointerOverGameObject())
+            {
+                GridVisualManager.Instance.HideCursor();
+                return;
+            }
+
+            if (!TryGetMouseGridPosition(out Vector3Int hoverPos))
+            {
+                GridVisualManager.Instance.HideCursor();
+                return;
+            }
+
             if (hoverPos == _lastHoverPos) return;
 
             _lastHoverPos = hoverPos;
 
-            if (_selectedCharacterIndex >= 0
-                && !EventSystem.current.IsPointerOverGameObject()
-                && IsValidDeployPosition(hoverPos))
+            if (IsValidDeployPosition(hoverPos))
             {
                 GridVisualManager.Instance.ShowCursorAt(hoverPos);
             }
-            else if (_selectedCharacterIndex < 0)
+            else
             {
                 GridVisualManager.Instance.HideCursor();
             }
@@ -128,7 +139,12 @@ namespace GamePlay.Battle
                     return;
                 }
 
-                Vector3Int clickPos = GetMouseGridPositionVerbose();
+                if (!TryGetMouseGridPositionVerbose(out Vector3Int clickPos))
+                {
+                    Debug.Log("[DeploymentController] Click ignored: raycast missed");
+                    return;
+                }
+
                 Debug.Log($"[DeploymentController] Click at gridPos={clickPos}, selectedIndex={_selectedCharacterIndex}, placementsCount={_placements.Count}");
 
                 if (_selectedCharacterIndex < 0)
@@ -344,18 +360,33 @@ namespace GamePlay.Battle
             {
                 Vector3 worldPos = hit.point - hit.normal * 0.01f;
                 Vector3Int logicPos = GridPositionTool.WorldToLogicPosition(worldPos);
-                // 仅在被选中且确保有无效放置的可能时打log，降低console噪音
                 return logicPos;
             }
             return Vector3Int.zero;
         }
 
-        private Vector3Int GetMouseGridPositionVerbose()
+        private bool TryGetMouseGridPosition(out Vector3Int pos)
         {
+            pos = Vector3Int.zero;
+            if (mainCam == null) return false;
+
+            Ray ray = mainCam.ScreenPointToRay(Input.mousePosition);
+            if (!Physics.Raycast(ray, out RaycastHit hit)) return false;
+
+            Vector3 worldPos = hit.point - hit.normal * 0.01f;
+            pos = GridPositionTool.WorldToLogicPosition(worldPos);
+            return true;
+        }
+            return Vector3Int.zero;
+        }
+
+        private bool TryGetMouseGridPositionVerbose(out Vector3Int pos)
+        {
+            pos = Vector3Int.zero;
             if (mainCam == null)
             {
                 Debug.Log("[DeploymentController] GetMouseGridPosition: mainCam is null");
-                return Vector3Int.zero;
+                return false;
             }
 
             Ray ray = mainCam.ScreenPointToRay(Input.mousePosition);
@@ -364,13 +395,13 @@ namespace GamePlay.Battle
             if (Physics.Raycast(ray, out RaycastHit hit))
             {
                 Vector3 worldPos = hit.point - hit.normal * 0.01f;
-                Vector3Int logicPos = GridPositionTool.WorldToLogicPosition(worldPos);
-                Debug.Log($"[DeploymentController] Raycast hit: {hit.collider.name} at world={hit.point}, logicPos={logicPos}");
-                return logicPos;
+                pos = GridPositionTool.WorldToLogicPosition(worldPos);
+                Debug.Log($"[DeploymentController] Raycast hit: {hit.collider.name} at world={hit.point}, logicPos={pos}");
+                return true;
             }
 
-            Debug.Log("[DeploymentController] Raycast hit NOTHING, returning Vector3Int.zero");
-            return Vector3Int.zero;
+            Debug.Log("[DeploymentController] Raycast hit NOTHING, returning false");
+            return false;
         }
 
         private void ShowPreviewAt(int index, Vector3Int pos)
