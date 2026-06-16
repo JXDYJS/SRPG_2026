@@ -377,8 +377,6 @@ namespace GamePlay.Battle
             pos = GridPositionTool.WorldToLogicPosition(worldPos);
             return true;
         }
-            return Vector3Int.zero;
-        }
 
         private bool TryGetMouseGridPositionVerbose(out Vector3Int pos)
         {
