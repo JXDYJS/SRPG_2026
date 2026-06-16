@@ -137,9 +137,13 @@ namespace GamePlay.Battle
                     return;
                 }
 
+                Debug.Log($"[DeploymentController] Validating position {clickPos}... _maxDeployCount={_maxDeployCount}");
+
                 bool valid = IsValidDeployPositionVerbose(clickPos, out string reason);
+                Debug.Log($"[DeploymentController] Validation result for {clickPos}: valid={valid}, reason={reason}");
                 if (valid)
                 {
+                    Debug.Log($"[DeploymentController] Calling PlaceCharacter({_selectedCharacterIndex}, {clickPos})");
                     PlaceCharacter(_selectedCharacterIndex, clickPos);
                 }
                 else
@@ -195,9 +199,11 @@ namespace GamePlay.Battle
 
         private void PlaceCharacter(int index, Vector3Int pos)
         {
+            Debug.Log($"[DeploymentController] PlaceCharacter ENTERED: index={index}, pos={pos}, placementsCount={_placements.Count}/{_maxDeployCount}");
+
             if (_placements.Count >= _maxDeployCount && !_placements.ContainsKey(index))
             {
-                Debug.LogWarning("[DeploymentController] Max deploy count reached");
+                Debug.LogWarning($"[DeploymentController] Max deploy count reached ({_placements.Count}/{_maxDeployCount})");
                 return;
             }
 
