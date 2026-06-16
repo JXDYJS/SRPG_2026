@@ -22,28 +22,13 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 248fc52950ed1c5419e75da3f27f6f10
-    m_Address: Assets/Data/Character/Zombie.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 37c5aabe3030cfc4f9c983a988319135
     m_Address: Assets/textures/gui/book.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 48519a9b14a1ba74b810c09f72c6ba9e
-    m_Address: Assets/Data/Character/Skeleton.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4f2f2d43fc7d2fe4ea7a00cf22e95ca2
     m_Address: Assets/Mob/arrow.fbx
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 62b61988041d0b64b82f9b793d5ccc16
-    m_Address: Assets/Data/Character/Steve.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

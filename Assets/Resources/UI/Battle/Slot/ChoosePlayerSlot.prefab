@@ -65,7 +65,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 195154982, guid: 74ce5bd995fdac042828f7c7069d00f8, type: 3}
+  m_Sprite: {fileID: -464255773, guid: 74ce5bd995fdac042828f7c7069d00f8, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -207,7 +207,10 @@ MonoBehaviour:
   playerImg: {fileID: 4024523935762366863}
   normalLine: {fileID: 8384702546445929269}
   SelectLine: {fileID: 1288298501748558816}
-  hasSelect: 0
+  placedMask: {fileID: 0}
+  button: {fileID: 2725495426385596185}
+  nameText: {fileID: 0}
+  levelText: {fileID: 0}
 --- !u!114 &2725495426385596185
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -355,7 +358,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 166989142, guid: d9cd827cec74a4f4f8df2e931ad81206, type: 3}
+  m_Sprite: {fileID: -1692467253, guid: d9cd827cec74a4f4f8df2e931ad81206, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
