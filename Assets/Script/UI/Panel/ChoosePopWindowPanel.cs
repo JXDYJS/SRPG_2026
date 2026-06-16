@@ -149,7 +149,9 @@ namespace UI.Panel
 
             for (int i = content.childCount - 1; i >= 0; i--)
             {
-                Destroy(content.GetChild(i).gameObject);
+                Transform child = content.GetChild(i);
+                if (startButton != null && child.gameObject == startButton.gameObject) continue;
+                Destroy(child.gameObject);
             }
         }
 
