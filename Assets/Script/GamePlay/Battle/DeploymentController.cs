@@ -74,17 +74,6 @@ namespace GamePlay.Battle
 
             GridVisualManager.Instance.ShowTilesHighlight(_validDeployZones, Color.cyan);
             Debug.Log($"[DeploymentController] StartDeployment: {characters.Count} 个角色, {_validDeployZones.Count} 个部署区, 最大{_maxDeployCount}人");
-            if (_validDeployZones.Count <= 10)
-            {
-                foreach (var z in _validDeployZones)
-                    Debug.Log($"[DeploymentController]   deployZone: {z}");
-            }
-            else
-            {
-                for (int i = 0; i < 5; i++)
-                    Debug.Log($"[DeploymentController]   deployZone[{i}]: {_validDeployZones[i]}");
-                Debug.Log($"[DeploymentController]   ... and {_validDeployZones.Count - 5} more");
-            }
 
             var popup = UIManager.Instance.OpenPanel<ChoosePopWindowPanel>(null, Managers.UILayer.Popup);
             if (popup != null)
@@ -105,12 +94,14 @@ namespace GamePlay.Battle
 
             if (EventSystem.current.IsPointerOverGameObject())
             {
+                Debug.Log("[Cursor] Hide: over UI");
                 GridVisualManager.Instance.HideCursor();
                 return;
             }
 
             if (!TryGetMouseGridPosition(out Vector3Int hoverPos))
             {
+                Debug.Log("[Cursor] Hide: raycast miss");
                 GridVisualManager.Instance.HideCursor();
                 return;
             }
@@ -121,10 +112,12 @@ namespace GamePlay.Battle
 
             if (IsValidDeployPosition(hoverPos))
             {
+                Debug.Log($"[Cursor] Show at {hoverPos}");
                 GridVisualManager.Instance.ShowCursorAt(hoverPos);
             }
             else
             {
+                Debug.Log($"[Cursor] Hide: pos {hoverPos} invalid (deployZones={_validDeployZones.Contains(hoverPos)}, canPut={GridVisualManager.CanPutOnGrid(hoverPos)}, unit={UnitManager.Instance.GetUnitAt(hoverPos) != null})");
                 GridVisualManager.Instance.HideCursor();
             }
         }
@@ -133,38 +126,15 @@ namespace GamePlay.Battle
         {
             if (Input.GetMouseButtonDown(0))
             {
-                if (EventSystem.current.IsPointerOverGameObject())
+                if (EventSystem.current.IsPointerOverGameObject()) return;
+
+                if (!TryGetMouseGridPosition(out Vector3Int clickPos)) return;
+
+                if (_selectedCharacterIndex < 0) return;
+
+                if (IsValidDeployPosition(clickPos))
                 {
-                    Debug.Log("[DeploymentController] Click blocked: over UI");
-                    return;
-                }
-
-                if (!TryGetMouseGridPositionVerbose(out Vector3Int clickPos))
-                {
-                    Debug.Log("[DeploymentController] Click ignored: raycast missed");
-                    return;
-                }
-
-                Debug.Log($"[DeploymentController] Click at gridPos={clickPos}, selectedIndex={_selectedCharacterIndex}, placementsCount={_placements.Count}");
-
-                if (_selectedCharacterIndex < 0)
-                {
-                    Debug.Log("[DeploymentController] Click ignored: no character selected");
-                    return;
-                }
-
-                Debug.Log($"[DeploymentController] Validating position {clickPos}... _maxDeployCount={_maxDeployCount}");
-
-                bool valid = IsValidDeployPositionVerbose(clickPos, out string reason);
-                Debug.Log($"[DeploymentController] Validation result for {clickPos}: valid={valid}, reason={reason}");
-                if (valid)
-                {
-                    Debug.Log($"[DeploymentController] Calling PlaceCharacter({_selectedCharacterIndex}, {clickPos})");
                     PlaceCharacter(_selectedCharacterIndex, clickPos);
-                }
-                else
-                {
-                    Debug.LogWarning($"[DeploymentController] Cannot place at {clickPos}: {reason}");
                 }
             }
 
@@ -216,11 +186,9 @@ namespace GamePlay.Battle
 
         private void PlaceCharacter(int index, Vector3Int pos)
         {
-            Debug.Log($"[DeploymentController] PlaceCharacter ENTERED: index={index}, pos={pos}, placementsCount={_placements.Count}/{_maxDeployCount}");
-
             if (_placements.Count >= _maxDeployCount && !_placements.ContainsKey(index))
             {
-                Debug.LogWarning($"[DeploymentController] Max deploy count reached ({_placements.Count}/{_maxDeployCount})");
+                Debug.LogWarning("[DeploymentController] Max deploy count reached");
                 return;
             }
 
@@ -271,40 +239,6 @@ namespace GamePlay.Battle
                 if (kvp.Value == pos) return false;
             }
 
-            return true;
-        }
-
-        private bool IsValidDeployPositionVerbose(Vector3Int pos, out string reason)
-        {
-            if (!_validDeployZones.Contains(pos))
-            {
-                reason = $"pos {pos} not in deploy zones (count={_validDeployZones.Count})";
-                return false;
-            }
-
-            if (!GridVisualManager.CanPutOnGrid(pos))
-            {
-                reason = $"CanPutOnGrid({pos}) returned false";
-                return false;
-            }
-
-            MapUnit existingUnit = UnitManager.Instance.GetUnitAt(pos);
-            if (existingUnit != null)
-            {
-                reason = $"unit already at {pos}: {existingUnit.name}";
-                return false;
-            }
-
-            foreach (var kvp in _placements)
-            {
-                if (kvp.Value == pos)
-                {
-                    reason = $"already placed another character at {pos} (charIndex={kvp.Key})";
-                    return false;
-                }
-            }
-
-            reason = "OK";
             return true;
         }
 
@@ -376,30 +310,6 @@ namespace GamePlay.Battle
             Vector3 worldPos = hit.point - hit.normal * 0.01f;
             pos = GridPositionTool.WorldToLogicPosition(worldPos);
             return true;
-        }
-
-        private bool TryGetMouseGridPositionVerbose(out Vector3Int pos)
-        {
-            pos = Vector3Int.zero;
-            if (mainCam == null)
-            {
-                Debug.Log("[DeploymentController] GetMouseGridPosition: mainCam is null");
-                return false;
-            }
-
-            Ray ray = mainCam.ScreenPointToRay(Input.mousePosition);
-            Debug.Log($"[DeploymentController] Ray origin={ray.origin}, dir={ray.direction}");
-
-            if (Physics.Raycast(ray, out RaycastHit hit))
-            {
-                Vector3 worldPos = hit.point - hit.normal * 0.01f;
-                pos = GridPositionTool.WorldToLogicPosition(worldPos);
-                Debug.Log($"[DeploymentController] Raycast hit: {hit.collider.name} at world={hit.point}, logicPos={pos}");
-                return true;
-            }
-
-            Debug.Log("[DeploymentController] Raycast hit NOTHING, returning false");
-            return false;
         }
 
         private void ShowPreviewAt(int index, Vector3Int pos)

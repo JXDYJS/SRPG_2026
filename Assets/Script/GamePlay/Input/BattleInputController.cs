@@ -10,6 +10,7 @@ using Global;
 using GamePlay.Grid;
 using GamePlay.Visual;
 using GamePlay.Skill;
+using GamePlay.Battle;
 using System.Collections;
 
 namespace GamePlay.Control
@@ -66,6 +67,11 @@ namespace GamePlay.Control
 
         void Update()
         {
+            if (DeploymentController.Instance != null && DeploymentController.Instance.IsActive)
+            {
+                return;
+            }
+
             if (currentState == InputState.ShowingAttribute)
             {
                 if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1))
