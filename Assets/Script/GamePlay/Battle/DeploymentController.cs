@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using Character.data;
 using Managers;
 using GamePlay.Visual;
+using GamePlay.Units;
 using Global;
 using UI.Panel;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.EventSystems;
 
 namespace GamePlay.Battle
@@ -33,6 +35,9 @@ namespace GamePlay.Battle
 
         private Vector3Int _lastHoverPos;
 
+        private List<MapUnit> _previewUnits;
+        private static readonly Vector3 HIDDEN_POS = new Vector3(-10000, -10000, -10000);
+
         public event Action<List<DeploymentSlot>> OnDeploymentConfirmed;
 
         void Awake()
@@ -55,10 +60,12 @@ namespace GamePlay.Battle
 
         public void StartDeployment(
             List<CharacterData> characters,
+            List<MapUnit> previewUnits,
             List<Vector3Int> deployZones,
             int maxDeployCount)
         {
             _availableCharacters = characters;
+            _previewUnits = previewUnits;
             _validDeployZones = deployZones;
             _maxDeployCount = maxDeployCount;
             _placements.Clear();
@@ -170,6 +177,8 @@ namespace GamePlay.Battle
             _placements[index] = pos;
             Debug.Log($"[DeploymentController] Placed character {index} at {pos}");
 
+            ShowPreviewAt(index, pos);
+
             var popup = UIManager.Instance.GetPanel<ChoosePopWindowPanel>();
             if (popup != null)
             {
@@ -187,6 +196,8 @@ namespace GamePlay.Battle
 
             _placements.Remove(index);
             Debug.Log($"[DeploymentController] Removed placement of character {index}");
+
+            HidePreview(index);
 
             var popup = UIManager.Instance.GetPanel<ChoosePopWindowPanel>();
             if (popup != null)
@@ -220,6 +231,8 @@ namespace GamePlay.Battle
                 Debug.LogWarning("[DeploymentController] 请至少部署一个角色");
                 return;
             }
+
+            CleanupAllPreviews();
 
             var slots = new List<DeploymentSlot>();
             foreach (var kvp in _placements)
@@ -267,8 +280,43 @@ namespace GamePlay.Battle
             return Vector3Int.zero;
         }
 
+        private void ShowPreviewAt(int index, Vector3Int pos)
+        {
+            if (_previewUnits == null || index >= _previewUnits.Count) return;
+            MapUnit preview = _previewUnits[index];
+            if (preview == null) return;
+
+            Vector3 worldPos = MapManager.Instance.GetWorldPosition(pos);
+            preview.transform.position = worldPos;
+            preview.gameObject.SetActive(true);
+        }
+
+        private void HidePreview(int index)
+        {
+            if (_previewUnits == null || index >= _previewUnits.Count) return;
+            MapUnit preview = _previewUnits[index];
+            if (preview == null) return;
+
+            preview.gameObject.SetActive(false);
+            preview.transform.position = HIDDEN_POS;
+        }
+
+        private void CleanupAllPreviews()
+        {
+            if (_previewUnits == null) return;
+            foreach (var mu in _previewUnits)
+            {
+                if (mu != null && mu.gameObject != null)
+                {
+                    Addressables.ReleaseInstance(mu.gameObject);
+                }
+            }
+            _previewUnits.Clear();
+        }
+
         void OnDestroy()
         {
+            CleanupAllPreviews();
             if (Instance == this)
                 Instance = null;
         }

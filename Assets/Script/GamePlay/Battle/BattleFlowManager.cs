@@ -6,6 +6,7 @@ using GamePlay.Battle;
 using GamePlay.Visual;
 using Cysharp.Threading.Tasks;
 using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 using System.Threading.Tasks;
 using Global;
 using UI;
@@ -36,6 +37,7 @@ namespace GamePlay.Battle
 
         private List<MapUnit> _spawnedUnits = new List<MapUnit>();
         private List<CharacterMeta> _characterMetas = new List<CharacterMeta>();
+        private List<MapUnit> _previewUnits = new List<MapUnit>();
 
         private class CharacterMeta
         {
@@ -119,7 +121,7 @@ namespace GamePlay.Battle
 
                 // 3. 进入部署阶段（不再跳过）
                 Debug.Log("[FLOW] LoadLevelAsync: step 3 - entering deployment phase");
-                EnterDeploymentPhase();
+                await EnterDeploymentPhaseAsync();
             }
             catch (System.Exception e)
             {
@@ -128,9 +130,9 @@ namespace GamePlay.Battle
         }
 
         /// <summary>
-        /// 进入部署阶段 — 弹出角色选择窗口，激活 DeploymentController
+        /// 进入部署阶段 — 预加载角色模型，弹出角色选择窗口，激活 DeploymentController
         /// </summary>
-        public void EnterDeploymentPhase()
+        private async UniTask EnterDeploymentPhaseAsync()
         {
             Debug.Log("进入部署阶段");
             SwitchState(BattleFlowState.Deploying);
@@ -143,9 +145,44 @@ namespace GamePlay.Battle
                 availableData.Add(meta.Data);
             }
 
+            // 预加载所有角色预制体到画面外（用于部署预览）
+            _previewUnits.Clear();
+            Vector3 hiddenPos = new Vector3(-10000, -10000, -10000);
+            for (int i = 0; i < _characterMetas.Count; i++)
+            {
+                CharacterMeta meta = _characterMetas[i];
+                if (meta.Data.Prefab == null || !meta.Data.Prefab.RuntimeKeyIsValid())
+                {
+                    Debug.LogWarning($"[FLOW] 角色 {meta.Data.CharacterName} 无有效 Prefab，跳过预加载");
+                    _previewUnits.Add(null);
+                    continue;
+                }
+
+                var handle = Addressables.InstantiateAsync(meta.Data.Prefab, MapManager.Instance.mapRoot);
+                await handle.Task;
+
+                if (handle.Status == AsyncOperationStatus.Succeeded)
+                {
+                    GameObject obj = handle.Result;
+                    obj.transform.position = hiddenPos;
+                    MapUnit mu = obj.GetComponent<MapUnit>();
+                    if (mu == null) mu = obj.AddComponent<MapUnit>();
+                    mu.IsPreview = true;
+                    obj.SetActive(false);
+                    _previewUnits.Add(mu);
+                    Debug.Log($"[FLOW] 预加载角色 {meta.Data.CharacterName} 完成");
+                }
+                else
+                {
+                    Debug.LogError($"[FLOW] 预加载角色 {meta.Data.CharacterName} 失败");
+                    _previewUnits.Add(null);
+                }
+            }
+
             if (DeploymentController.Instance == null)
             {
                 Debug.LogError("[FLOW] DeploymentController.Instance is null, 回退到自动确认");
+                CleanupPreviews();
                 ConfirmDeployment();
                 return;
             }
@@ -153,6 +190,7 @@ namespace GamePlay.Battle
             DeploymentController.Instance.OnDeploymentConfirmed += OnDeploymentConfirmed;
             DeploymentController.Instance.StartDeployment(
                 availableData,
+                _previewUnits,
                 CurrentLevel.PlayerDeployZones,
                 CurrentLevel.MaxDeployCount
             );
@@ -320,9 +358,23 @@ namespace GamePlay.Battle
             Debug.Log($"战斗流程状态切换: {prev} -> {newState}");
         }
 
+        private void CleanupPreviews()
+        {
+            foreach (var mu in _previewUnits)
+            {
+                if (mu != null && mu.gameObject != null)
+                {
+                    Addressables.ReleaseInstance(mu.gameObject);
+                }
+            }
+            _previewUnits.Clear();
+        }
+
         public void CleanupLevel()
         {
             Debug.Log("清理关卡资源");
+
+            CleanupPreviews();
 
             foreach (var unit in _spawnedUnits)
             {
