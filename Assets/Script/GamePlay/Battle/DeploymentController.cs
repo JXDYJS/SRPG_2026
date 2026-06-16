@@ -168,6 +168,7 @@ namespace GamePlay.Battle
             if (_placements.ContainsKey(index))
             {
                 RemovePlacement(index);
+                SelectCharacter(index);
                 return;
             }
 
