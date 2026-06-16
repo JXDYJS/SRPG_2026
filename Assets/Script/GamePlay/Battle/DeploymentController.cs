@@ -400,7 +400,7 @@ namespace GamePlay.Battle
             {
                 if (mu != null && mu.gameObject != null)
                 {
-                    Addressables.ReleaseInstance(mu.gameObject);
+                    Destroy(mu.gameObject);
                 }
             }
             _previewUnits.Clear();

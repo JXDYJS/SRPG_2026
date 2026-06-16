@@ -38,6 +38,7 @@ namespace GamePlay.Battle
         private List<MapUnit> _spawnedUnits = new List<MapUnit>();
         private List<CharacterMeta> _characterMetas = new List<CharacterMeta>();
         private List<MapUnit> _previewUnits = new List<MapUnit>();
+        private List<AsyncOperationHandle<GameObject>> _previewAssetHandles = new List<AsyncOperationHandle<GameObject>>();
 
         private class CharacterMeta
         {
@@ -158,13 +159,14 @@ namespace GamePlay.Battle
                     continue;
                 }
 
-                var handle = Addressables.InstantiateAsync(meta.Data.Prefab, MapManager.Instance.mapRoot);
-                await handle.Task;
+                var loadHandle = Addressables.LoadAssetAsync<GameObject>(meta.Data.Prefab);
+                await loadHandle.Task;
 
-                if (handle.Status == AsyncOperationStatus.Succeeded)
+                if (loadHandle.Status == AsyncOperationStatus.Succeeded)
                 {
-                    GameObject obj = handle.Result;
-                    obj.transform.position = hiddenPos;
+                    _previewAssetHandles.Add(loadHandle);
+                    GameObject prefab = loadHandle.Result;
+                    GameObject obj = Object.Instantiate(prefab, hiddenPos, Quaternion.identity, MapManager.Instance.mapRoot);
                     MapUnit mu = obj.GetComponent<MapUnit>();
                     if (mu == null) mu = obj.AddComponent<MapUnit>();
                     mu.IsPreview = true;
@@ -181,6 +183,7 @@ namespace GamePlay.Battle
                 else
                 {
                     Debug.LogError($"[FLOW] 预加载角色 {meta.Data.CharacterName} 失败");
+                    Addressables.Release(loadHandle);
                     _previewUnits.Add(null);
                 }
             }
@@ -370,10 +373,16 @@ namespace GamePlay.Battle
             {
                 if (mu != null && mu.gameObject != null)
                 {
-                    Addressables.ReleaseInstance(mu.gameObject);
+                    Destroy(mu.gameObject);
                 }
             }
             _previewUnits.Clear();
+
+            foreach (var handle in _previewAssetHandles)
+            {
+                Addressables.Release(handle);
+            }
+            _previewAssetHandles.Clear();
         }
 
         public void CleanupLevel()
