@@ -1,11 +1,9 @@
 using UnityEngine;
 using System.Collections.Generic;
 using Global;
+using Character.data;
 using GamePlay.Units;
 using Managers;
-using Cysharp.Threading.Tasks;
-using UnityEngine.AddressableAssets;
-using Character.data;
 using GamePlay.Grid;
 
 namespace GamePlay.Battle
@@ -18,15 +16,19 @@ namespace GamePlay.Battle
         public MapDataSO MapData;
 
         [Header("初始单位配置")]
-        [Tooltip("在关卡加载时直接生成在场上的单位（包括玩家角色和敌人）")]
+        [Tooltip("在关卡加载时直接生成在场上的单位（包括敌人和NPC）")]
         public List<UnitConfig> InitialUnits = new List<UnitConfig>();
 
         [Header("玩家部署配置")]
-        [Tooltip("当前关卡中，玩家可以拖拽部署自己棋子的合法地格坐标集合")]
+        [Tooltip("当前关卡中，玩家可以部署棋子的合法地格坐标集合")]
         public List<Vector3Int> PlayerDeployZones = new List<Vector3Int>();
 
         [Tooltip("玩家最大可上阵人数限制")]
         public int MaxDeployCount = 4;
+
+        [Header("后备角色池")]
+        [Tooltip("当 RunManager.MyTeam 为空（无存档/首次游玩）时使用的后备可选角色列表")]
+        public List<CharacterData> FallbackPlayerCharacters = new List<CharacterData>();
     }
 
     [System.Serializable]

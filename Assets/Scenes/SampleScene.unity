@@ -1464,6 +1464,7 @@ GameObject:
   - component: {fileID: 348045457}
   - component: {fileID: 348045458}
   - component: {fileID: 348045459}
+  - component: {fileID: 348045460}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -1689,29 +1690,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CurrentLevel: {fileID: 11400000, guid: 0e0761d8f6c094d48ba1883dba1cc779, type: 2}
-  PlayerUnitConfigs:
-  - CharacterTemplate: {fileID: 11400000, guid: 62b61988041d0b64b82f9b793d5ccc16,
-      type: 2}
-    SkillConfig: {fileID: 11400000, guid: 3d949036d685a514b96747f549d8cb5d, type: 2}
-    SpawnPosition: {x: 0, y: 0, z: 0}
-    InitialFacing: 0
-    Faction: 0
-    InitialLevel: 0
-    HPBonusPercent: 0
-    ATKBonusPercent: 0
-    DEFBonusPercent: 0
-    RESBonusPercent: 0
-  - CharacterTemplate: {fileID: 11400000, guid: 48519a9b14a1ba74b810c09f72c6ba9e,
-      type: 2}
-    SkillConfig: {fileID: 11400000, guid: b1147081a80afe640baf627c77e8961f, type: 2}
-    SpawnPosition: {x: 1, y: 0, z: 0}
-    InitialFacing: 0
-    Faction: 0
-    InitialLevel: 0
-    HPBonusPercent: 0
-    ATKBonusPercent: 0
-    DEFBonusPercent: 0
-    RESBonusPercent: 0
   currentState: 0
 --- !u!114 &348045455
 MonoBehaviour:
@@ -1779,6 +1757,19 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &348045460
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 348045437}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6739a474ba1f63e4a80c29895acb1d32, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainCam: {fileID: 330585545}
 --- !u!1001 &395893897
 PrefabInstance:
   m_ObjectHideFlags: 0

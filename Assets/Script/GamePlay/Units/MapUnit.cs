@@ -161,9 +161,12 @@ namespace GamePlay.Units
 
         // ================== Lifecycle ==================
 
+        [Header("Deployment Preview")]
+        public bool IsPreview;
+
         void Start()
         {
-            if (UnitManager.Instance != null)
+            if (!IsPreview && UnitManager.Instance != null)
             {
                 UnitManager.Instance.RegisterUnit(this);
             }

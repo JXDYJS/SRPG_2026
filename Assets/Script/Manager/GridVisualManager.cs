@@ -39,16 +39,18 @@ namespace GamePlay.Visual
         public void ShowCursorAt(Vector3Int gridPos)
         {
             if (_cursorHighlightObj == null) return;
-            
+
+            bool wasActive = _cursorHighlightObj.activeSelf;
             _cursorHighlightObj.SetActive(true);
-            // 放置在物理表面正上方一点点，防止闪烁
             _cursorHighlightObj.transform.position = MapManager.Instance.GetWorldPosition(gridPos) + Vector3.up * 0.02f;
+            Debug.Log($"[Cursor] ShowCursorAt({gridPos}) wasActive={wasActive}");
         }
 
         public void HideCursor()
         {
-            if (_cursorHighlightObj != null)
+            if (_cursorHighlightObj != null && _cursorHighlightObj.activeSelf)
             {
+                Debug.Log("[Cursor] HideCursor");
                 _cursorHighlightObj.SetActive(false);
             }
         }

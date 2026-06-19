@@ -7,22 +7,25 @@ namespace Core.Data.Persistent
     /// SaveData — 存档根对象
     ///
     /// 存放内容（持久化，使用 Newtonsoft.Json 序列化）：
-    ///   - 版本号（存档兼容性检查）
-    ///   - 存档时间戳
-    ///   - 玩家进度、队伍状态、资源等
+    ///   - version：存档兼容性检查
+    ///   - party：玩家队伍角色数据
+    ///   - relics：已收集藏品 ID 列表
+    ///   - gold / highestClearedStage：进度数据
+    ///   - currentStageId：当前关卡 ID
     ///
-    /// 序列化方式：JsonConvert.SerializeObject / DeserializeObject
-    /// 存储路径：Application.persistentDataPath / "SaveData.json"
+    /// 扩展方式：直接在本类添加字段即可，旧存档自动用默认值
     /// </summary>
     [Serializable]
     public class SaveData
     {
         public string version = "1.0";
         public string saveTime;
-        public int slotIndex;
+        public string currentStageId;
 
-        public PlayerProgressData playerProgress = new PlayerProgressData();
+        public List<CharacterSaveData> party = new List<CharacterSaveData>();
+        public List<string> relics = new List<string>();
 
-        // 后续扩展：队伍数据、关卡解锁、成就等
+        public int gold;
+        public int highestClearedStage;
     }
 }
