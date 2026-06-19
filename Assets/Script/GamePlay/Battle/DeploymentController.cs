@@ -101,7 +101,7 @@ namespace GamePlay.Battle
                 return;
             }
 
-            if (!TryGetMouseGridPosition(out Vector3Int hoverPos))
+            if (!GridPositionTool.TryGetMouseGridPosition(mainCam, out Vector3Int hoverPos))
             {
                 Debug.Log("[Cursor] Hide: raycast miss");
                 GridVisualManager.Instance.HideCursor();
@@ -130,7 +130,7 @@ namespace GamePlay.Battle
             {
                 if (InputUtil.IsPointerOverUI) return;
 
-                if (!TryGetMouseGridPosition(out Vector3Int clickPos)) return;
+                if (!GridPositionTool.TryGetMouseGridPosition(mainCam, out Vector3Int clickPos)) return;
 
                 if (_selectedCharacterIndex < 0) return;
 
@@ -286,33 +286,6 @@ namespace GamePlay.Battle
             {
                 popup.SetStartButtonEnabled(_placements.Count > 0);
             }
-        }
-
-        private Vector3Int GetMouseGridPosition()
-        {
-            if (mainCam == null) return Vector3Int.zero;
-
-            Ray ray = mainCam.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out RaycastHit hit))
-            {
-                Vector3 worldPos = hit.point - hit.normal * 0.01f;
-                Vector3Int logicPos = GridPositionTool.WorldToLogicPosition(worldPos);
-                return logicPos;
-            }
-            return Vector3Int.zero;
-        }
-
-        private bool TryGetMouseGridPosition(out Vector3Int pos)
-        {
-            pos = Vector3Int.zero;
-            if (mainCam == null) return false;
-
-            Ray ray = mainCam.ScreenPointToRay(Input.mousePosition);
-            if (!Physics.Raycast(ray, out RaycastHit hit)) return false;
-
-            Vector3 worldPos = hit.point - hit.normal * 0.01f;
-            pos = GridPositionTool.WorldToLogicPosition(worldPos);
-            return true;
         }
 
         private void ShowPreviewAt(int index, Vector3Int pos)

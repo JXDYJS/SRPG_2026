@@ -1,4 +1,6 @@
 using UnityEngine;
+using Character.data;
+
 namespace Global
 {
         public enum AttackRangeType
@@ -208,6 +210,23 @@ namespace Global
                 return Managers.MapManager.Instance.logicalGrid.GetBlock(pos) != BlockType.Air &&
                        Managers.MapManager.Instance.logicalGrid.GetBlock(pos + Vector3Int.up) == BlockType.Air;
             }
+
+            /// <summary>
+            /// 根据鼠标位置和相机获取对应的逻辑坐标（脚底方块坐标）
+            /// 统一封装了各处的鼠标→网格转换逻辑
+            /// </summary>
+            public static bool TryGetMouseGridPosition(Camera cam, out Vector3Int pos)
+            {
+                pos = Vector3Int.zero;
+                if (cam == null) return false;
+
+                Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+                if (!Physics.Raycast(ray, out RaycastHit hit)) return false;
+
+                Vector3 worldPos = hit.point - hit.normal * 0.01f;
+                pos = WorldToLogicPosition(worldPos);
+                return true;
+            }
         }
 
         /// <summary>
@@ -326,5 +345,15 @@ namespace Global
                 if (angle >= 135f && angle < 225f) return UnitFacing.South;
                 return UnitFacing.West;
             }
+        }
+
+        public class CharacterMeta
+        {
+            public CharacterData Data;
+            public int Level;
+            public float BonusHp;
+            public float BonusAtk;
+            public float BonusDef;
+            public float BonusRes;
         }
 }

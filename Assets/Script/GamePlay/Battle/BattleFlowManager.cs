@@ -40,16 +40,6 @@ namespace GamePlay.Battle
         private List<MapUnit> _previewUnits = new List<MapUnit>();
         private List<AsyncOperationHandle<GameObject>> _previewAssetHandles = new List<AsyncOperationHandle<GameObject>>();
 
-        private class CharacterMeta
-        {
-            public CharacterData Data;
-            public int Level;
-            public float BonusHp;
-            public float BonusAtk;
-            public float BonusDef;
-            public float BonusRes;
-        }
-
         void Awake()
         {
             Instance = this;

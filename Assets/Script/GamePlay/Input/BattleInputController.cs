@@ -94,7 +94,7 @@ namespace GamePlay.Control
 
             if (currentState == InputState.Locked) ChangeState(InputState.Idle);
 
-            Vector3Int hoverPos = GetMouseGridPosition();
+            GridPositionTool.TryGetMouseGridPosition(mainCam, out Vector3Int hoverPos);
 
             if (InputUtil.IsPointerOverUI || currentState == InputState.MenuOpen)
             {
@@ -226,7 +226,7 @@ namespace GamePlay.Control
                 return;
             }
 
-            Vector3Int hoverPos = GetMouseGridPosition();
+            GridPositionTool.TryGetMouseGridPosition(mainCam, out Vector3Int hoverPos);
 
             // 使用新的双层范围系统
             var (castTiles, aoeTiles) = AttackRangeSystem.GetSkillRangesForUI(
@@ -246,19 +246,6 @@ namespace GamePlay.Control
             // {
             //     GridVisualManager.Instance.ShowTilesHighlight(aoeTiles, Color.red);
             // }
-        }
-
-        private Vector3Int GetMouseGridPosition()
-        {
-            Ray ray = mainCam.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out RaycastHit hit))
-            {
-                // 重要：使用GridPositionTool确保返回脚底方块坐标
-                // 而不是角色身体所在的空气方块坐标
-                Vector3 worldPos = hit.point - hit.normal * 0.01f;
-                return GridPositionTool.WorldToLogicPosition(worldPos);
-            }
-            return Vector3Int.zero;
         }
 
         void HandleLeftClick(Vector3Int clickPos)
