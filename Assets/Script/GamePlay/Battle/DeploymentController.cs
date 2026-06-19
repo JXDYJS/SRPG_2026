@@ -2,14 +2,13 @@ using System;
 using System.Collections.Generic;
 using Character.data;
 using Managers;
+using GamePlay.InputSystem;
 using GamePlay.Visual;
 using GamePlay.Units;
 using Global;
 using UI.Panel;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using UnityEngine.EventSystems;
-
 namespace GamePlay.Battle
 {
     /// <summary>
@@ -72,6 +71,9 @@ namespace GamePlay.Battle
             _selectedCharacterIndex = -1;
             IsActive = true;
 
+            // 屏蔽战斗输入控制器，避免硬编码互相感知
+            InputLock.PushLock("Deployment");
+
             GridVisualManager.Instance.ShowTilesHighlight(_validDeployZones, Color.cyan);
             Debug.Log($"[DeploymentController] StartDeployment: {characters.Count} 个角色, {_validDeployZones.Count} 个部署区, 最大{_maxDeployCount}人");
 
@@ -92,7 +94,7 @@ namespace GamePlay.Battle
         {
             if (_selectedCharacterIndex < 0) return;
 
-            if (EventSystem.current.IsPointerOverGameObject())
+            if (InputUtil.IsPointerOverUI)
             {
                 Debug.Log("[Cursor] Hide: over UI");
                 GridVisualManager.Instance.HideCursor();
@@ -126,7 +128,7 @@ namespace GamePlay.Battle
         {
             if (Input.GetMouseButtonDown(0))
             {
-                if (EventSystem.current.IsPointerOverGameObject()) return;
+                if (InputUtil.IsPointerOverUI) return;
 
                 if (!TryGetMouseGridPosition(out Vector3Int clickPos)) return;
 
@@ -265,6 +267,7 @@ namespace GamePlay.Battle
 
             IsActive = false;
             GridVisualManager.Instance.HideCursor();
+            InputLock.PopLock("Deployment");
 
             var popup = UIManager.Instance.GetPanel<ChoosePopWindowPanel>();
             if (popup != null)
@@ -348,6 +351,8 @@ namespace GamePlay.Battle
 
         void OnDestroy()
         {
+            // 保护性弹出：异常退出时防止输入锁残留
+            if (IsActive) InputLock.PopLock("Deployment");
             CleanupAllPreviews();
             if (Instance == this)
                 Instance = null;

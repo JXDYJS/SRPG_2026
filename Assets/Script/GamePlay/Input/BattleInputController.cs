@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
 using Managers;
+using GamePlay.InputSystem;
 using GamePlay.Units;
 using Command;
 using Global;
@@ -67,7 +68,8 @@ namespace GamePlay.Control
 
         void Update()
         {
-            if (DeploymentController.Instance != null && DeploymentController.Instance.IsActive)
+            // 输入锁激活时（部署阶段/过场等），交出控制权
+            if (InputLock.IsLocked)
             {
                 return;
             }
@@ -94,7 +96,7 @@ namespace GamePlay.Control
 
             Vector3Int hoverPos = GetMouseGridPosition();
 
-            if (EventSystem.current.IsPointerOverGameObject() || currentState == InputState.MenuOpen)
+            if (InputUtil.IsPointerOverUI || currentState == InputState.MenuOpen)
             {
                 GridVisualManager.Instance.HideCursor();
             }
@@ -105,9 +107,9 @@ namespace GamePlay.Control
 
             if (Input.GetMouseButtonDown(0))
             {
-                if (EventSystem.current.IsPointerOverGameObject())
+                if (InputUtil.IsPointerOverUI)
                 {
-                    Debug.Log($"[BIC] LeftClick blocked by IsPointerOverGameObject (state={currentState})");
+                    Debug.Log($"[BIC] LeftClick blocked by IsPointerOverUI (state={currentState})");
                     return;
                 }
                 HandleLeftClick(hoverPos);
