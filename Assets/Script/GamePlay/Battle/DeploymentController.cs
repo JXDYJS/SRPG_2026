@@ -261,7 +261,7 @@ namespace GamePlay.Battle
                 {
                     CharacterIndex = kvp.Key,
                     GridPosition = kvp.Value,
-                    Facing = UnitFacing.South
+                    Facing = UnitFacing.North
                 });
             }
 
