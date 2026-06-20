@@ -1,7 +1,7 @@
 #ifndef UNIVERSAL_LIT_GBUFFER_PASS_INCLUDED
 #define UNIVERSAL_LIT_GBUFFER_PASS_INCLUDED
 
-#include "Assets/shader/pbr/CustomLighting.hlsl"
+#include "CustomLighting.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/UnityGBuffer.hlsl"
 #if defined(LOD_FADE_CROSSFADE)
     #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/LODCrossFade.hlsl"

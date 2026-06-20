@@ -1,0 +1,9 @@
+{
+    "AdditionalIncludeDirectories": [
+        "."
+    ],
+    "hlsl.virtualDirectoryMappings": {
+        "Packages/com.unity.render-pipelines.universal": "Library/PackageCache/com.unity.render-pipelines.universal@14.0.11",
+        "Packages/com.unity.render-pipelines.core": "Library/PackageCache/com.unity.render-pipelines.core@14.0.11"
+    }
+}

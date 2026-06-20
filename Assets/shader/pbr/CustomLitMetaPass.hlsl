@@ -1,7 +1,7 @@
 #ifndef UNIVERSAL_LIT_META_PASS_INCLUDED
 #define UNIVERSAL_LIT_META_PASS_INCLUDED
 
-#include "Assets/shader/pbr/CustomBRDF.hlsl"
+#include "CustomBRDF.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/UniversalMetaPass.hlsl"
 
 half4 UniversalFragmentMetaLit(Varyings input) : SV_Target
