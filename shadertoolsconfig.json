@@ -2,5 +2,18 @@
     "hlsl.additionalIncludeDirectories": [
         ".",
         ".vscode/HLSL_Includes"
-    ]
+    ],
+    "hlsl.preprocessorDefinitions": {
+        "SHADER_API_D3D11": "1",
+        "SHADER_TARGET": "45",
+        "UNITY_VERSION": "202230",
+
+        "UNITY_REVERSED_Z": "1",
+        "UNITY_COMPILER_HLSL": "1",
+        "SHADER_API_DESKTOP": "1",
+
+        "_MAIN_LIGHT_SHADOWS_CASCADE": "1",
+        "_ADDITIONAL_LIGHTS": "1",
+        "_SHADOWS_SOFT": "1"
+    }
 }
