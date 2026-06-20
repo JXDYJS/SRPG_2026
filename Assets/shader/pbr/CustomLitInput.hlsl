@@ -1,6 +1,7 @@
 #ifndef UNIVERSAL_LIT_INPUT_INCLUDED
 #define UNIVERSAL_LIT_INPUT_INCLUDED
 
+#include "Assets/shader/pbr/CustomSurfaceData.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/CommonMaterial.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/SurfaceInput.hlsl"
@@ -124,6 +125,7 @@ TEXTURE2D(_DetailNormalMap);    SAMPLER(sampler_DetailNormalMap);
 TEXTURE2D(_MetallicGlossMap);   SAMPLER(sampler_MetallicGlossMap);
 TEXTURE2D(_SpecGlossMap);       SAMPLER(sampler_SpecGlossMap);
 TEXTURE2D(_ClearCoatMap);       SAMPLER(sampler_ClearCoatMap);
+TEXTURE2D(_LabPbrSpecMap);      SAMPLER(sampler_LabPbrSpecMap);
 
 #ifdef _SPECULAR_SETUP
     #define SAMPLE_METALLICSPECULAR(uv) SAMPLE_TEXTURE2D(_SpecGlossMap, sampler_SpecGlossMap, uv)
@@ -310,8 +312,53 @@ inline void ApplyPerPixelDisplacement_lab(half3 viewDirTS, inout float2 uv) {
 // 注: 值为 255 会被忽略 (因无 Alpha 的图片默认 Alpha 为 255)
 // 发光颜色: 由 Albedo 贴图决定
 
-inline void read_lab_s_data(float2 uv,out lab_pbr_s_data){
-    half4 tex = SAMPLE_TEXTURE2D(, sampler_BumpMap, uv);
+inline void read_lab_s_data(float2 uv, out lab_pbr_s_data data)
+{
+    half4 tex = SAMPLE_TEXTURE2D(_LabPbrSpecMap, sampler_LabPbrSpecMap, uv);
+
+    // R: perceptual smoothness (0=rough, 1=smooth)
+    data.smoothness = tex.r;
+
+    // G: f0 dielectric / metal classification
+    // Per Photon/Jessie labPBR standard:
+    //   < 229.5/255: dielectric, G = linear f0 (0~0.9)
+    //   229.5~237.5/255: hardcoded metal (8 types)
+    //   >= 237.5/255: albedo metal (f0 = albedo)
+    const half METAL_THRESHOLD = 229.5h / 255.0h;
+    const half ALBEDO_METAL_THRESHOLD = 237.5h / 255.0h;
+
+    if (tex.g < METAL_THRESHOLD)
+    {
+        // Dielectric: f0 is monochrome, stored directly in G
+        data.f0 = half3(tex.g, tex.g, tex.g);
+    }
+    else if (tex.g < ALBEDO_METAL_THRESHOLD)
+    {
+        // Hardcoded metals: metal_id = (G * 255) - 230
+        // 230:Iron, 231:Gold, 232:Aluminum, 233:Chrome, 234:Copper, 235:Lead, 236:Platinum, 237:Silver
+        // f0 values from Photon / Jessie LC - approximated for now
+        data.f0 = half3(1.0h, 1.0h, 1.0h);
+    }
+    else
+    {
+        // Albedo metal: f0 = albedo (caller multiplies)
+        data.f0 = half3(1.0h, 1.0h, 1.0h);
+    }
+
+    // B: porosity (0~64/255) / SSS (65~255/255)
+    // These are mutually exclusive ranges in the same channel
+    {
+        half has_sss = step(64.5h / 255.0h, tex.b);
+        half sss_raw = saturate((tex.b - 64.0h / 255.0h) / (1.0h - 64.0h / 255.0h));
+        half porosity_raw = saturate(tex.b / (64.0h / 255.0h));
+
+        data.sss = sss_raw * has_sss;
+        data.porosity = porosity_raw * (1.0h - has_sss);
+    }
+
+    // A: emission strength (0~254/255), 255 = no emission
+    // Photon: material.emission = max(material.emission, material.albedo * specular_map.a * float(specular_map.a != 1.0))
+    data.light = tex.a;
 }
 
 inline void InitializeStandardLitSurfaceData(float2 uv, out SurfaceData outSurfaceData)

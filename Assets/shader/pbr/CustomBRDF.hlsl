@@ -1,5 +1,5 @@
-#ifndef CUSTOM_BRDF_INCLUDED
-#define CUSTOM_BRDF_INCLUDED
+#ifndef UNIVERSAL_BRDF_INCLUDED
+#define UNIVERSAL_BRDF_INCLUDED
 
 #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/BSDF.hlsl"
 #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/CommonMaterial.hlsl"
@@ -23,6 +23,10 @@ struct BRDFData
     // them in the light loop. Take a look at DirectBRDF function for detailed explaination.
     half normalizationTerm;     // roughness * 4.0 + 2.0
     half roughness2MinusOne;    // roughness^2 - 1.0
+
+    // labPBR extensions
+    half sss;        // subsurface scattering amount
+    half porosity;   // porosity amount
 };
 
 half ReflectivitySpecular(half3 specular)
