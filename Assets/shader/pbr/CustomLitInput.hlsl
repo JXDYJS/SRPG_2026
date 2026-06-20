@@ -246,6 +246,74 @@ half3 ApplyDetailNormal(float2 detailUv, half3 normalTS, half detailMask)
 #endif
 }
 
+//_n
+
+// 法线向量应采用DirectX格式（Y-）进行编码；这通常被称为自上而下的法线，其视觉特征为X轴/红色指向右侧，Y轴/绿色指向下方。
+// 红色通道存储X轴数据，表示从（0）左到（255）右的表面法线方向。
+// 绿色通道存储Y轴数据，表示从（0）到（255）的表面法线方向。
+// 蓝色通道 通常，该通道存储Z轴数据，但在LabPBR中，我们使用sqrt(1.0 - dot(normal.xy, normal.xy))来重建法向量的Z分量（即.z）。
+// 表示材质环境光遮挡。
+// 这是线性存储的；值为0表示100%遮挡，值为255表示0%遮挡。
+// Alpha通道表示高度/位移。
+// 这是线性存储的；值为0时，纹理深度为25%；值为255时，深度为0%。
+// 对于纹理艺术家，请注意，高度图上的值为0可能会导致某些着色器包的POM（粒子遮挡映射）实现出现问题，因此建议最小值设为1。
+// 这种布局的推理过程如下：AO（Ambient Occlusion）存储在蓝色通道中，因为法线纹理中像素的前三个分量表示一个长度为1的向量。由于已知长度，我们只需要三个分量中的两个就能重构该向量（感谢勾股定理）。这意味着三个通道中的一个可以用于其他目的，比如将AO存储在蓝色通道中。
+
+struct lab_pbr_n_data{
+    half3 normal;
+    half ao;
+};
+struct lab_pbr_s_data{
+    half smoothness;
+    half3 f0;
+    half porosity;
+    half sss;
+    half light;
+};
+inline void read_lab_n_data(float2 uv, out lab_pbr_n_data data) {
+    half4 tex = SAMPLE_TEXTURE2D(_BumpMap, sampler_BumpMap, uv);
+
+    half2 normal_xy = tex.xy * 2.0 - 1.0;
+    half normal_z = sqrt(saturate(1.0 - dot(normal_xy, normal_xy)));
+    data.normal = half3(normal_xy, normal_z);
+    data.ao = tex.z;
+}
+
+inline void ApplyPerPixelDisplacement_lab(half3 viewDirTS, inout float2 uv) {
+#if defined(_PARALLAXMAP)
+    half4 tex = SAMPLE_TEXTURE2D(_BumpMap, sampler_BumpMap, uv);
+    half height = tex.a;
+    float2 offset = ParallaxOffset1Step(height, _Parallax, viewDirTS);
+    uv += offset;
+#endif
+}
+
+//_s
+// --- R 通道 (Red): 感知平滑度 (Perceptual Smoothness) ---
+// 范围: 0 (0% 平滑/极粗糙) - 255 (100% 平滑/镜面)
+// 计算: 线性粗糙度 roughness = pow(1.0 - perceptualSmoothness, 2.0);
+// 对应: 传统意义上的 Glossiness (Roughness 的倒数)
+
+// --- G 通道 (Green): F0 反射率 / 金属度 (Reflectance / Metalness) ---
+// 范围 0-229: 线性存储的 F0 反射强度 (229 约等于 90% 反射率)
+// 范围 230-254: 预定义金属类型 (用于更准确的金属表现，此时 Albedo 决定反射色)
+// 范围 255: 全金属模式 (此时 Albedo 直接作为 F0 使用，精度略低)
+// 预定义金属参考: 230:铁, 231:金, 232:铝, 233:铬, 234:铜, 235:铅, 236:铂, 237:银
+
+// --- B 通道 (Blue): 多孔性 (Porosity) 与 次表面散射 (SSS) ---
+// 范围 0-64: 多孔性 (0:不吸水, 64:100%多孔) - 材质受潮变暗的依据
+// 范围 65-255: 次表面散射 (65:0%散射, 255:100%散射)
+// 注: 两种效果线性混合存储在此通道中
+
+// --- A 通道 (Alpha): 自发光强度 (Emissivity) ---
+// 范围 0-254: 线性存储自发光强度 (0:不发光, 254:100%强度)
+// 注: 值为 255 会被忽略 (因无 Alpha 的图片默认 Alpha 为 255)
+// 发光颜色: 由 Albedo 贴图决定
+
+inline void read_lab_s_data(float2 uv,out lab_pbr_s_data){
+    half4 tex = SAMPLE_TEXTURE2D(, sampler_BumpMap, uv);
+}
+
 inline void InitializeStandardLitSurfaceData(float2 uv, out SurfaceData outSurfaceData)
 {
     half4 albedoAlpha = SampleAlbedoAlpha(uv, TEXTURE2D_ARGS(_BaseMap, sampler_BaseMap));
