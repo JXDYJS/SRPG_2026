@@ -44,9 +44,6 @@ Shader "Custom/CustomLit"
         [HideInInspector] _ClearCoatMask("_ClearCoatMask", Float) = 0.0
         [HideInInspector] _ClearCoatSmoothness("_ClearCoatSmoothness", Float) = 0.0
 
-        // labPBR texture inputs
-        [NoScaleOffset] _LabPbrSpecMap("LabPBR Specular", 2D) = "white" {}
-
         // Blending state
         _Surface("__surface", Float) = 0.0
         _Blend("__blend", Float) = 0.0

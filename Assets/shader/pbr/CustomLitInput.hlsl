@@ -125,7 +125,6 @@ TEXTURE2D(_DetailNormalMap);    SAMPLER(sampler_DetailNormalMap);
 TEXTURE2D(_MetallicGlossMap);   SAMPLER(sampler_MetallicGlossMap);
 TEXTURE2D(_SpecGlossMap);       SAMPLER(sampler_SpecGlossMap);
 TEXTURE2D(_ClearCoatMap);       SAMPLER(sampler_ClearCoatMap);
-TEXTURE2D(_LabPbrSpecMap);      SAMPLER(sampler_LabPbrSpecMap);
 
 #ifdef _SPECULAR_SETUP
     #define SAMPLE_METALLICSPECULAR(uv) SAMPLE_TEXTURE2D(_SpecGlossMap, sampler_SpecGlossMap, uv)
@@ -314,7 +313,8 @@ inline void ApplyPerPixelDisplacement_lab(half3 viewDirTS, inout float2 uv) {
 
 inline void read_lab_s_data(float2 uv, out lab_pbr_s_data data)
 {
-    half4 tex = SAMPLE_TEXTURE2D(_LabPbrSpecMap, sampler_LabPbrSpecMap, uv);
+    // Uses _MetallicGlossMap texture slot for labPBR specular data
+    half4 tex = SAMPLE_TEXTURE2D(_MetallicGlossMap, sampler_MetallicGlossMap, uv);
 
     // R: perceptual smoothness (0=rough, 1=smooth)
     data.smoothness = tex.r;
