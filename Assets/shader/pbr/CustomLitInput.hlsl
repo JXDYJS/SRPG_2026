@@ -269,8 +269,24 @@ struct lab_pbr_s_data{
     half3 f0;
     half porosity;
     half sss;
-    half light;
+    half is_metal;   // 0=dielectric, 1=hardcoded metal, 2=albedo metal
+    half emission;
 };
+
+// Hardcoded metal f0 lookup — from Photon / Jessie LC
+// 230:Iron, 231:Gold, 232:Aluminum, 233:Chrome, 234:Copper, 235:Lead, 236:Platinum, 237:Silver
+half3 GetHardcodedMetalF0(uint metal_id)
+{
+    // if-else chain avoids dynamic array indexing which requires SM 4.0+
+    if (metal_id == 0u) return half3(0.78, 0.77, 0.74); // Iron
+    if (metal_id == 1u) return half3(1.00, 0.90, 0.61); // Gold
+    if (metal_id == 2u) return half3(1.00, 0.98, 1.00); // Aluminum
+    if (metal_id == 3u) return half3(0.77, 0.80, 0.79); // Chrome
+    if (metal_id == 4u) return half3(1.00, 0.89, 0.73); // Copper
+    if (metal_id == 5u) return half3(0.79, 0.87, 0.85); // Lead
+    if (metal_id == 6u) return half3(0.92, 0.90, 0.83); // Platinum
+    return half3(1.00, 1.00, 0.91); // Silver (237)
+}
 inline void read_lab_n_data(float2 uv, out lab_pbr_n_data data) {
     half4 tex = SAMPLE_TEXTURE2D(_BumpMap, sampler_BumpMap, uv);
 
@@ -331,18 +347,20 @@ inline void read_lab_s_data(float2 uv, out lab_pbr_s_data data)
     {
         // Dielectric: f0 is monochrome, stored directly in G
         data.f0 = half3(tex.g, tex.g, tex.g);
+        data.is_metal = 0.0h;
     }
     else if (tex.g < ALBEDO_METAL_THRESHOLD)
     {
         // Hardcoded metals: metal_id = (G * 255) - 230
-        // 230:Iron, 231:Gold, 232:Aluminum, 233:Chrome, 234:Copper, 235:Lead, 236:Platinum, 237:Silver
-        // f0 values from Photon / Jessie LC - approximated for now
-        data.f0 = half3(1.0h, 1.0h, 1.0h);
+        uint metal_id = clamp(uint(255.0h * tex.g) - 230u, 0u, 7u);
+        data.f0 = GetHardcodedMetalF0(metal_id);
+        data.is_metal = 1.0h;
     }
     else
     {
-        // Albedo metal: f0 = albedo (caller multiplies)
+        // Albedo metal: f0 = albedo (caller handles the multiply)
         data.f0 = half3(1.0h, 1.0h, 1.0h);
+        data.is_metal = 2.0h;
     }
 
     // B: porosity (0~64/255) / SSS (65~255/255)
@@ -358,7 +376,7 @@ inline void read_lab_s_data(float2 uv, out lab_pbr_s_data data)
 
     // A: emission strength (0~254/255), 255 = no emission
     // Photon: material.emission = max(material.emission, material.albedo * specular_map.a * float(specular_map.a != 1.0))
-    data.light = tex.a;
+    data.emission = tex.a;
 }
 
 inline void InitializeStandardLitSurfaceData(float2 uv, out SurfaceData outSurfaceData)
