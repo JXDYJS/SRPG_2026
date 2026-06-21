@@ -97,19 +97,24 @@ inline void InitializeBRDFData(half3 albedo, half metallic, half3 specular, half
 #else
     // labPBR: if specular was explicitly set, use it as f0 directly
     // Otherwise fall back to standard metallic workflow
+    half reflectivity;
+    half oneMinusReflectivity;
+    half3 brdfDiffuse;
+    half3 brdfSpecular;
+
     if (any(specular > 0.0h))
     {
-        half reflectivity = ReflectivitySpecular(specular);
-        half oneMinusReflectivity = half(1.0) - reflectivity;
-        half3 brdfDiffuse = albedo * oneMinusReflectivity;
-        half3 brdfSpecular = specular;
+        reflectivity = ReflectivitySpecular(specular);
+        oneMinusReflectivity = half(1.0) - reflectivity;
+        brdfDiffuse = albedo * oneMinusReflectivity;
+        brdfSpecular = specular;
     }
     else
     {
-        half oneMinusReflectivity = OneMinusReflectivityMetallic(metallic);
-        half reflectivity = half(1.0) - oneMinusReflectivity;
-        half3 brdfDiffuse = albedo * oneMinusReflectivity;
-        half3 brdfSpecular = lerp(kDieletricSpec.rgb, albedo, metallic);
+        oneMinusReflectivity = OneMinusReflectivityMetallic(metallic);
+        reflectivity = half(1.0) - oneMinusReflectivity;
+        brdfDiffuse = albedo * oneMinusReflectivity;
+        brdfSpecular = lerp(kDieletricSpec.rgb, albedo, metallic);
     }
 #endif
 
