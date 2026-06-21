@@ -441,7 +441,10 @@ inline void InitializeStandardLitSurfaceData(float2 uv, out SurfaceData outSurfa
 #endif
     outSurfaceData.smoothness = data_s.smoothness;
     outSurfaceData.normalTS = data_n.normal;
-    outSurfaceData.emission = data_s.emission;
+    // labPBR emission: albedo color * intensity, 255 = no emission
+    outSurfaceData.emission = outSurfaceData.albedo
+        * data_s.emission
+        * half(data_s.emission < (254.5h / 255.0h));
     outSurfaceData.occlusion = data_n.ao;
 #if defined(_CLEARCOAT) || defined(_CLEARCOATMAP)
     half2 clearCoat = SampleClearCoat(uv);
