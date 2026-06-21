@@ -1,5 +1,5 @@
-#ifndef CUSTOM_LIGHTING_INCLUDED
-#define CUSTOM_LIGHTING_INCLUDED
+#ifndef UNIVERSAL_LIGHTING_INCLUDED
+#define UNIVERSAL_LIGHTING_INCLUDED
 
 #include "CustomBRDF.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Debug/Debugging3D.hlsl"

@@ -269,7 +269,7 @@ struct lab_pbr_s_data{
     half3 f0;
     half porosity;
     half sss;
-    half is_metal;   // 0=dielectric, 1=hardcoded metal, 2=albedo metal
+    uint is_metal;   // 0u=dielectric, 1u=hardcoded metal, 2u=albedo metal
     half emission;
 };
 
@@ -347,20 +347,20 @@ inline void read_lab_s_data(float2 uv, out lab_pbr_s_data data)
     {
         // Dielectric: f0 is monochrome, stored directly in G
         data.f0 = half3(tex.g, tex.g, tex.g);
-        data.is_metal = 0.0h;
+        data.is_metal = 0u;
     }
     else if (tex.g < ALBEDO_METAL_THRESHOLD)
     {
         // Hardcoded metals: metal_id = (G * 255) - 230
         uint metal_id = clamp(uint(255.0h * tex.g) - 230u, 0u, 7u);
         data.f0 = GetHardcodedMetalF0(metal_id);
-        data.is_metal = 1.0h;
+        data.is_metal = 1u;
     }
     else
     {
         // Albedo metal: f0 = albedo (caller handles the multiply)
         data.f0 = half3(1.0h, 1.0h, 1.0h);
-        data.is_metal = 2.0h;
+        data.is_metal = 2u;
     }
 
     // B: porosity (0~64/255) / SSS (65~255/255)
@@ -381,26 +381,68 @@ inline void read_lab_s_data(float2 uv, out lab_pbr_s_data data)
 
 inline void InitializeStandardLitSurfaceData(float2 uv, out SurfaceData outSurfaceData)
 {
+//     half4 albedoAlpha = SampleAlbedoAlpha(uv, TEXTURE2D_ARGS(_BaseMap, sampler_BaseMap));
+//     outSurfaceData.alpha = Alpha(albedoAlpha.a, _BaseColor, _Cutoff);
+
+//     half4 specGloss = SampleMetallicSpecGloss(uv, albedoAlpha.a);
+//     outSurfaceData.albedo = albedoAlpha.rgb * _BaseColor.rgb;
+//     outSurfaceData.albedo = AlphaModulate(outSurfaceData.albedo, outSurfaceData.alpha);
+
+// #if _SPECULAR_SETUP
+//     outSurfaceData.metallic = half(1.0);
+//     outSurfaceData.specular = specGloss.rgb;
+// #else
+//     outSurfaceData.metallic = specGloss.r;
+//     outSurfaceData.specular = half3(0.0, 0.0, 0.0);
+// #endif
+
+//     outSurfaceData.smoothness = specGloss.a;
+//     outSurfaceData.normalTS = SampleNormal(uv, TEXTURE2D_ARGS(_BumpMap, sampler_BumpMap), _BumpScale);
+//     outSurfaceData.occlusion = SampleOcclusion(uv);
+//     outSurfaceData.emission = SampleEmission(uv, _EmissionColor.rgb, TEXTURE2D_ARGS(_EmissionMap, sampler_EmissionMap));
+
+// #if defined(_CLEARCOAT) || defined(_CLEARCOATMAP)
+//     half2 clearCoat = SampleClearCoat(uv);
+//     outSurfaceData.clearCoatMask       = clearCoat.r;
+//     outSurfaceData.clearCoatSmoothness = clearCoat.g;
+// #else
+//     outSurfaceData.clearCoatMask       = half(0.0);
+//     outSurfaceData.clearCoatSmoothness = half(0.0);
+// #endif
+
+// #if defined(_DETAIL)
+//     half detailMask = SAMPLE_TEXTURE2D(_DetailMask, sampler_DetailMask, uv).a;
+//     float2 detailUv = uv * _DetailAlbedoMap_ST.xy + _DetailAlbedoMap_ST.zw;
+//     outSurfaceData.albedo = ApplyDetailAlbedo(detailUv, outSurfaceData.albedo, detailMask);
+//     outSurfaceData.normalTS = ApplyDetailNormal(detailUv, outSurfaceData.normalTS, detailMask);
+// #endif
+
     half4 albedoAlpha = SampleAlbedoAlpha(uv, TEXTURE2D_ARGS(_BaseMap, sampler_BaseMap));
     outSurfaceData.alpha = Alpha(albedoAlpha.a, _BaseColor, _Cutoff);
-
-    half4 specGloss = SampleMetallicSpecGloss(uv, albedoAlpha.a);
     outSurfaceData.albedo = albedoAlpha.rgb * _BaseColor.rgb;
-    outSurfaceData.albedo = AlphaModulate(outSurfaceData.albedo, outSurfaceData.alpha);
+
+    lab_pbr_n_data data_n;
+    lab_pbr_s_data data_s;
+    read_lab_n_data(uv,data_n);
+    read_lab_s_data(uv,data_s);
 
 #if _SPECULAR_SETUP
-    outSurfaceData.metallic = half(1.0);
-    outSurfaceData.specular = specGloss.rgb;
-#else
-    outSurfaceData.metallic = specGloss.r;
+    // 我们不会使用高光工作流
+    outSurfaceData.metallic = half(0.0);
     outSurfaceData.specular = half3(0.0, 0.0, 0.0);
+#else
+    // labPBR: specular = 显式 f0，直接用作镜面反射率
+    outSurfaceData.metallic = data_s.is_metal > 0u ? half(1.0) : half(0.0);
+    // Albedo metal: f0 = albedo; others: f0 from labPBR lookup
+    if (data_s.is_metal == 2u)
+        outSurfaceData.specular = outSurfaceData.albedo;
+    else
+        outSurfaceData.specular = data_s.f0;
 #endif
-
-    outSurfaceData.smoothness = specGloss.a;
-    outSurfaceData.normalTS = SampleNormal(uv, TEXTURE2D_ARGS(_BumpMap, sampler_BumpMap), _BumpScale);
-    outSurfaceData.occlusion = SampleOcclusion(uv);
-    outSurfaceData.emission = SampleEmission(uv, _EmissionColor.rgb, TEXTURE2D_ARGS(_EmissionMap, sampler_EmissionMap));
-
+    outSurfaceData.smoothness = data_s.smoothness;
+    outSurfaceData.normalTS = data_n.normal;
+    outSurfaceData.emission = data_s.emission;
+    outSurfaceData.occlusion = data_n.ao;
 #if defined(_CLEARCOAT) || defined(_CLEARCOATMAP)
     half2 clearCoat = SampleClearCoat(uv);
     outSurfaceData.clearCoatMask       = clearCoat.r;
@@ -409,13 +451,8 @@ inline void InitializeStandardLitSurfaceData(float2 uv, out SurfaceData outSurfa
     outSurfaceData.clearCoatMask       = half(0.0);
     outSurfaceData.clearCoatSmoothness = half(0.0);
 #endif
-
-#if defined(_DETAIL)
-    half detailMask = SAMPLE_TEXTURE2D(_DetailMask, sampler_DetailMask, uv).a;
-    float2 detailUv = uv * _DetailAlbedoMap_ST.xy + _DetailAlbedoMap_ST.zw;
-    outSurfaceData.albedo = ApplyDetailAlbedo(detailUv, outSurfaceData.albedo, detailMask);
-    outSurfaceData.normalTS = ApplyDetailNormal(detailUv, outSurfaceData.normalTS, detailMask);
-#endif
+    outSurfaceData.sss = data_s.sss;
+    outSurfaceData.porosity = data_s.porosity;
 }
 
 #endif // UNIVERSAL_INPUT_SURFACE_PBR_INCLUDED
