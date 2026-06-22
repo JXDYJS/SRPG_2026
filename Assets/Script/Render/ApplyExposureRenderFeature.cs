@@ -75,16 +75,17 @@ public class ApplyExposureRenderFeature : ScriptableRendererFeature
             // ===================================================
 
             // 2. 准备纹理 (如果拿不到真的，就用安全的备用图)
-            var targetExposureTex = AutoExposureRenderFeature.CurrentExposureTexture;
+            RenderTexture targetExposureTex = AutoExposureRenderFeature.CurrentExposureTexture;
             
+            // 3. 显式绑定全局变量 (暂停时 Compute Pass 停摆致纹理失效，用 Stub 兜底)
             if (targetExposureTex == null || !targetExposureTex.IsCreated())
             {
-                // 暂停时 Compute Pass 停摆导致纹理失效，用 Stub 顶替，防止 null 传入 GPU 导致黑屏
-                targetExposureTex = m_StubTexture;
+                cmd.SetGlobalTexture(ExposureTexID, m_StubTexture);
             }
-
-            // 3. 显式绑定全局变量 (此时绝不可能是 null)
-            cmd.SetGlobalTexture(ExposureTexID, targetExposureTex);
+            else
+            {
+                cmd.SetGlobalTexture(ExposureTexID, targetExposureTex);
+            }
 
             // 4. 执行绘制 (使用 URP 官方 Blitter)
             // Blitter 内部会自动处理 _ProjectionParams 和所有翻转逻辑
