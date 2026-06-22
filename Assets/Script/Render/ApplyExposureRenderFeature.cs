@@ -22,9 +22,8 @@ public class ApplyExposureRenderFeature : ScriptableRendererFeature
         Material m_Material;
         RTHandle m_TempTexture; 
         Texture2D m_StubTexture;
-        string m_ProfilerTag = "Apply Auto Exposure (DEBUG)";
+        string m_ProfilerTag = "Apply Auto Exposure";
         
-        static readonly int MainTexID = Shader.PropertyToID("_MainTex");
         static readonly int ExposureTexID = Shader.PropertyToID("_GlobalExposureTexture");
 
         // 限制日志频率，防止卡死
@@ -89,12 +88,12 @@ public class ApplyExposureRenderFeature : ScriptableRendererFeature
             // 注意：cmd.Blit 会自动绑定 _MainTex，所以这里只绑曝光图
             cmd.SetGlobalTexture(ExposureTexID, targetExposureTex);
 
-            // 4. 执行绘制 (使用 cmd.Blit 替代 Blitter，更传统稳健)
-            // 步骤 A: Screen -> Temp
-            cmd.Blit(source, m_TempTexture, m_Material);
-            
-            // 步骤 B: Temp -> Screen
-            cmd.Blit(m_TempTexture, source);
+            // 4. 执行绘制 (使用 URP 官方 Blitter)
+            // Blitter 内部会自动处理 _ProjectionParams 和所有翻转逻辑
+            Blitter.BlitCameraTexture(cmd, source, m_TempTexture, m_Material, 0);
+
+            // 第二次 Blit 拷回屏幕。因为不需要特殊材质，直接传 source
+            Blitter.BlitCameraTexture(cmd, m_TempTexture, source);
 
             context.ExecuteCommandBuffer(cmd);
             CommandBufferPool.Release(cmd);
