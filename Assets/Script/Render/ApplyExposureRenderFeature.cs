@@ -80,6 +80,7 @@ public class ApplyExposureRenderFeature : ScriptableRendererFeature
             // 3. 显式绑定全局变量 (暂停时 Compute Pass 停摆致纹理失效，用 Stub 兜底)
             if (targetExposureTex == null || !targetExposureTex.IsCreated())
             {
+                Debug.LogError($"[ApplyExposure] 曝光纹理失效 (null={targetExposureTex == null}, created={targetExposureTex?.IsCreated()})，使用 Stub 兜底");
                 cmd.SetGlobalTexture(ExposureTexID, m_StubTexture);
             }
             else
