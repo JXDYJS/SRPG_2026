@@ -15,6 +15,10 @@
 #define REQUIRES_TANGENT_SPACE_VIEW_DIR_INTERPOLATOR
 #endif
 
+#if defined(_PARALLAXMAP) && !defined(REQUIRES_WORLD_SPACE_POS_INTERPOLATOR)
+#define REQUIRES_WORLD_SPACE_POS_INTERPOLATOR
+#endif
+
 #if (defined(_NORMALMAP) || (defined(_PARALLAXMAP) && !defined(REQUIRES_TANGENT_SPACE_VIEW_DIR_INTERPOLATOR))) || defined(_DETAIL)
 #define REQUIRES_WORLD_SPACE_TANGENT_INTERPOLATOR
 #endif
@@ -190,7 +194,7 @@ FragmentOutput LitGBufferPassFragment(Varyings input)
         half3 viewDirWS = GetWorldSpaceNormalizeViewDir(input.positionWS);
         half3 viewDirTS = GetViewDirectionTangentSpace(input.tangentWS, input.normalWS, viewDirWS);
     #endif
-    ApplyPerPixelDisplacement(viewDirTS, input.uv);
+    ApplyPerPixelDisplacement_lab(viewDirTS, input.uv, input.positionWS, input.positionCS);
 #endif
 
     SurfaceData surfaceData;

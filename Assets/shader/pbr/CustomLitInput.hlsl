@@ -2,14 +2,21 @@
 #define UNIVERSAL_LIT_INPUT_INCLUDED
 
 #include "Assets/shader/pbr/CustomSurfaceData.hlsl"
+#include "Assets/shader/global.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/CommonMaterial.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/SurfaceInput.hlsl"
 #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/ParallaxMapping.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DBuffer.hlsl"
+#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Random.hlsl"
 
 #if defined(_DETAIL_MULX2) || defined(_DETAIL_SCALED)
 #define _DETAIL
+#endif
+
+#if !defined(_PARALLAXMAP)
+    #define _PARALLAXMAP
+    //由于高度信息已经在_s图中  我们不会再贴任何视差贴图 所以直接开启就好
 #endif
 
 // NOTE: Do not ifdef the properties here as SRP batcher can not handle different layouts.
@@ -290,17 +297,59 @@ half3 GetHardcodedMetalF0(uint metal_id)
 inline void read_lab_n_data(float2 uv, out lab_pbr_n_data data) {
     half4 tex = SAMPLE_TEXTURE2D(_BumpMap, sampler_BumpMap, uv);
 
-    half2 normal_xy = tex.xy * 2.0 - 1.0;
+    //half2 normal_xy = tex.xy * 2.0 - 1.0;
+    half2 normal_xy = tex.xy;
     half normal_z = sqrt(saturate(1.0 - dot(normal_xy, normal_xy)));
     data.normal = half3(normal_xy, normal_z);
     data.ao = tex.z;
 }
 
-inline void ApplyPerPixelDisplacement_lab(half3 viewDirTS, inout float2 uv) {
+inline half2 ParallaxOffset1Step_lab(half rawHeight, half amplitude, half3 viewDirTS)
+{
+    half depth = (rawHeight - 1.0) * amplitude;// 0 = -0.25; 1 = 0
+    half3 v = normalize(viewDirTS);
+    v.z += 0.42; 
+    return depth * (v.xy / v.z);
+}
+
+inline half2 ParallaxOffsetPOM(half rawHeight, half amplitude, half3 viewDirTS, half distance, half2 uv, half noise) {
+    const half maxDistance = 32.0f;
+    half targetDepth = (1.0 - rawHeight) * amplitude;
+
+    [branch] if(targetDepth < 0.0039f || distance > (maxDistance * 2)){
+        return half2(0.0, 0.0);
+    }
+    else if (distance > maxDistance){
+        return ParallaxOffset1Step_lab(rawHeight, amplitude, viewDirTS);
+    }
+
+    const half maxStep = 40.0f;//这一步之后最好改小一点
+    int step_to_trace = floor(max(1.0f, maxStep * linear_step(maxDistance, maxDistance * 0.75, distance)));
+    half step_depth = amplitude / (half)step_to_trace;
+    half3 v = normalize(viewDirTS);
+    half2 step_toMove = v.xy * (step_depth / (v.z + 0.0001f));
+    
+    half2 pos = uv + step_toMove * noise;
+    half currentRayDepth = step_depth * noise; 
+    
+    // 射线步进
+    for(int i = 0; i < step_to_trace; i++){
+        if(currentRayDepth >= targetDepth) break;
+        
+        currentRayDepth += step_depth;
+        pos += step_toMove;
+        targetDepth = (1.0 - SAMPLE_TEXTURE2D(_BumpMap, sampler_BumpMap, pos).a) * amplitude;
+    }
+    return pos - uv;
+}
+
+inline void ApplyPerPixelDisplacement_lab(half3 viewDirTS, inout float2 uv, half3 positionWS, float4 positionCS) {
 #if defined(_PARALLAXMAP)
-    half4 tex = SAMPLE_TEXTURE2D(_BumpMap, sampler_BumpMap, uv);
-    half height = tex.a;
-    float2 offset = ParallaxOffset1Step(height, _Parallax, viewDirTS);
+    half height = SAMPLE_TEXTURE2D(_BumpMap, sampler_BumpMap, uv).a;
+    half dist = distance(positionWS, _WorldSpaceCameraPos);
+    half noise = InterleavedGradientNoise(positionCS.xy, (int)(_Time.y * 60.0));
+    //float2 offset = ParallaxOffset1Step_lab(height, 0.25, viewDirTS);
+    float2 offset = ParallaxOffsetPOM(height, 0.25, viewDirTS, dist, uv, noise);
     uv += offset;
 #endif
 }

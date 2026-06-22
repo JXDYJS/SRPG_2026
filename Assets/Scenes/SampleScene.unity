@@ -1874,8 +1874,8 @@ Light:
   serializedVersion: 10
   m_Type: 1
   m_Shape: 0
-  m_Color: {r: 1, g: 0.7056566, b: 0.46884006, a: 1}
-  m_Intensity: 2.9640276
+  m_Color: {r: 1, g: 0.37648726, b: 0.036450874, a: 1}
+  m_Intensity: 1.664221
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -1933,7 +1933,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 410087039}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.2984875, y: 0.24615154, z: -0.07997949, w: 0.9186501}
+  m_LocalRotation: {x: 0.9642056, y: 0.015439787, z: -0.25835812, w: 0.05762207}
   m_LocalPosition: {x: 0, y: 3.699, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1975,7 +1975,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3638aea9c7dcb4144b2722c06b721795, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sunAngle: 0.1
+  sunAngle: 0.481
   sunDeclination: 30
   skyboxMaterial: {fileID: 2100000, guid: 3c29fac2a5dcae8479ede076c0994151, type: 2}
   dynamicSkyMap: {fileID: 826293027}
@@ -6494,7 +6494,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 22400762, guid: 67117722a812a2e46ab8cb8eafbf5f5e, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.00008010864
+      value: 0.0000038146973
       objectReference: {fileID: 0}
     - target: {fileID: 22426080, guid: 67117722a812a2e46ab8cb8eafbf5f5e, type: 3}
       propertyPath: m_AnchorMax.x

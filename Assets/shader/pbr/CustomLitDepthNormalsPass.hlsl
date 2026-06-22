@@ -40,6 +40,10 @@ struct Varyings
     #endif
     half3 normalWS     : TEXCOORD2;
 
+    #if defined(_PARALLAXMAP)
+    float3 positionWS  : TEXCOORD3;
+    #endif
+
     #if defined(REQUIRES_WORLD_SPACE_TANGENT_INTERPOLATOR)
     half4 tangentWS    : TEXCOORD4;    // xyz: tangent, w: sign
     #endif
@@ -86,6 +90,10 @@ Varyings DepthNormalsVertex(Attributes input)
         output.viewDirTS = viewDirTS;
     #endif
 
+    #if defined(_PARALLAXMAP)
+        output.positionWS = vertexInput.positionWS;
+    #endif
+
     return output;
 }
 
@@ -121,7 +129,7 @@ void DepthNormalsFragment(
             #else
                 half3 viewDirTS = GetViewDirectionTangentSpace(input.tangentWS, input.normalWS, input.viewDirWS);
             #endif
-            ApplyPerPixelDisplacement(viewDirTS, input.uv);
+            ApplyPerPixelDisplacement_lab(viewDirTS, input.uv, input.positionWS, input.positionCS);
         #endif
 
         #if defined(_NORMALMAP) || defined(_DETAIL)

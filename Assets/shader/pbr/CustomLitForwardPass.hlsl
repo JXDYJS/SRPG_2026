@@ -5,10 +5,19 @@
 #if defined(LOD_FADE_CROSSFADE)
     #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/LODCrossFade.hlsl"
 #endif
+#if !defined(_PARALLAXMAP)
+    #define _PARALLAXMAP
+    //由于高度信息已经在_s图中  我们不会再贴任何视差贴图 所以直接开启就好
+#endif
+
 
 // GLES2 has limited amount of interpolators
 #if defined(_PARALLAXMAP) && !defined(SHADER_API_GLES)
 #define REQUIRES_TANGENT_SPACE_VIEW_DIR_INTERPOLATOR
+#endif
+
+#if defined(_PARALLAXMAP) && !defined(REQUIRES_WORLD_SPACE_POS_INTERPOLATOR)
+#define REQUIRES_WORLD_SPACE_POS_INTERPOLATOR
 #endif
 
 #if (defined(_NORMALMAP) || (defined(_PARALLAXMAP) && !defined(REQUIRES_TANGENT_SPACE_VIEW_DIR_INTERPOLATOR))) || defined(_DETAIL)
@@ -86,7 +95,6 @@ void InitializeInputData(Varyings input, half3 normalTS, out InputData inputData
 #else
     inputData.normalWS = input.normalWS;
 #endif
-
     inputData.normalWS = NormalizeNormalPerPixel(inputData.normalWS);
     inputData.viewDirectionWS = viewDirWS;
 
@@ -213,7 +221,9 @@ void LitPassFragment(
     half3 viewDirWS = GetWorldSpaceNormalizeViewDir(input.positionWS);
     half3 viewDirTS = GetViewDirectionTangentSpace(input.tangentWS, input.normalWS, viewDirWS);
 #endif
-    ApplyPerPixelDisplacement(viewDirTS, input.uv);
+    ApplyPerPixelDisplacement_lab(viewDirTS, input.uv, input.positionWS, input.positionCS);
+    // outColor = half4(frac(input.uv.x), frac(input.uv.y), 0.0, 1.0);
+    // return;
 #endif
 
     SurfaceData surfaceData;
@@ -234,7 +244,6 @@ void LitPassFragment(
     half4 color = UniversalFragmentPBR(inputData, surfaceData);
     color.rgb = MixFog(color.rgb, inputData.fogCoord);
     color.a = OutputAlpha(color.a, IsSurfaceTypeTransparent(_Surface));
-
     outColor = color;
 
 #ifdef _WRITE_RENDERING_LAYERS
