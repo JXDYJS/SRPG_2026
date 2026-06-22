@@ -39,6 +39,7 @@ public class ApplyExposureRenderFeature : ScriptableRendererFeature
         {
             var desc = renderingData.cameraData.cameraTargetDescriptor;
             desc.depthBufferBits = 0; 
+            desc.msaaSamples = 1;
             RenderingUtils.ReAllocateIfNeeded(ref m_TempTexture, desc, FilterMode.Bilinear, TextureWrapMode.Clamp, name: "_TempExposureApplyTex");
             ConfigureInput(ScriptableRenderPassInput.Color);
         }
@@ -88,12 +89,11 @@ public class ApplyExposureRenderFeature : ScriptableRendererFeature
                 cmd.SetGlobalTexture(ExposureTexID, targetExposureTex);
             }
 
-            // 4. 执行绘制 (使用 URP 官方 Blitter)
-            // Blitter 内部会自动处理 _ProjectionParams 和所有翻转逻辑
+            // 4. 第一遍: Blitter 处理曝光 (解决 UV 翻转)
             Blitter.BlitCameraTexture(cmd, source, m_TempTexture, m_Material, 0);
 
-            // 第二次 Blit 拷回屏幕。因为不需要特殊材质，直接传 source
-            Blitter.BlitCameraTexture(cmd, m_TempTexture, source);
+            // 第二遍: cmd.Blit 拷回 (Editor 暂停时 Blitter 空转，cmd.Blit 不受影响)
+            cmd.Blit(m_TempTexture, source);
 
             context.ExecuteCommandBuffer(cmd);
             CommandBufferPool.Release(cmd);
