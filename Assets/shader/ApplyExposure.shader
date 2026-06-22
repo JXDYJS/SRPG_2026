@@ -44,7 +44,7 @@ Shader "Hidden/Custom/ApplyExposure"
                 }
 
                 // 3. 采样屏幕源图 (必须用 _BlitTexture)
-                float4 color = SAMPLE_TEXTURE2D_X(_BlitTexture, sampler_LinearClamp, uv);
+                float4 color = SAMPLE_TEXTURE2D(_BlitTexture, sampler_LinearClamp, uv);
 
                 // 4. 应用曝光
                 color.rgb *= exposure;

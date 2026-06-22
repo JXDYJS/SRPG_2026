@@ -39,7 +39,6 @@ public class ApplyExposureRenderFeature : ScriptableRendererFeature
         {
             var desc = renderingData.cameraData.cameraTargetDescriptor;
             desc.depthBufferBits = 0; 
-            desc.msaaSamples = 1;
             RenderingUtils.ReAllocateIfNeeded(ref m_TempTexture, desc, FilterMode.Bilinear, TextureWrapMode.Clamp, name: "_TempExposureApplyTex");
             ConfigureInput(ScriptableRenderPassInput.Color);
         }
@@ -75,18 +74,16 @@ public class ApplyExposureRenderFeature : ScriptableRendererFeature
             // }
             // ===================================================
 
-            // 2. 准备纹理 (如果拿不到真的，就用绿色的调试图)
+            // 2. 准备纹理 (如果拿不到真的，就用安全的备用图)
             var targetExposureTex = AutoExposureRenderFeature.CurrentExposureTexture;
             
             if (targetExposureTex == null || !targetExposureTex.IsCreated())
             {
-                // 没拿到数据，强行塞绿色调试图
-                // 如果屏幕变绿，说明管线是通的，只是数据没传过来
-                Debug.LogError($"❌ 警告: 曝光纹理为空！使用绿色调试图 (1x1) 作为替代。");
+                // 暂停时 Compute Pass 停摆导致纹理失效，用 Stub 顶替，防止 null 传入 GPU 导致黑屏
+                targetExposureTex = m_StubTexture;
             }
 
-            // 3. 显式绑定全局变量
-            // 注意：cmd.Blit 会自动绑定 _MainTex，所以这里只绑曝光图
+            // 3. 显式绑定全局变量 (此时绝不可能是 null)
             cmd.SetGlobalTexture(ExposureTexID, targetExposureTex);
 
             // 4. 执行绘制 (使用 URP 官方 Blitter)
