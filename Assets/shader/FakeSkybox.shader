@@ -169,7 +169,18 @@ Shader "Skybox/Fakeskybox"
                 #endif
 
                 float3 sunDir = normalize(_WorldSpaceLightPos0.xyz);
-                return float4(GetFinalSkyColor(normalize(viewDir), sunDir), 1.0);
+                float3 color = GetFinalSkyColor(normalize(viewDir), sunDir);
+
+                // === DEBUG: 左上角像素标记 tonemap 状态 ===
+                if (i.texcoord.x < 0.02 && i.texcoord.y < 0.02)
+                {
+                    if (_UseCustomTonemap > 0.5)
+                        color = float3(0, 10, 0); // 绿 = tonemap ON
+                    else
+                        color = float3(10, 0, 0); // 红 = tonemap OFF
+                }
+
+                return float4(color, 1.0);
             }
             ENDCG
         }
