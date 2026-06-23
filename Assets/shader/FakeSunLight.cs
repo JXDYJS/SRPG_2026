@@ -28,7 +28,9 @@ public class FakeSunLight : MonoBehaviour
     private static readonly int SunIntensityId = Shader.PropertyToID("_SunIntensity");
     private static readonly int SunColorId = Shader.PropertyToID("_SunColor");
     
-    // LMS 矩阵属性 ID
+    // Tonemap / LMS 属性 ID
+    private static readonly int UseCustomTonemapId = Shader.PropertyToID("_UseCustomTonemap");
+    private static readonly int ExposureId = Shader.PropertyToID("_Exposure");
     private static readonly int UseLMSId = Shader.PropertyToID("_UseLMS");
     private static readonly int LMSRow1Id = Shader.PropertyToID("_LMS_Row1");
     private static readonly int LMSRow2Id = Shader.PropertyToID("_LMS_Row2");
@@ -153,7 +155,13 @@ public class FakeSunLight : MonoBehaviour
             // 同步材质参数
             bakeMaterial.CopyPropertiesFromMaterial(skyboxMaterial);
             // CopyProperties 会覆盖 Keyword，所以需要重新启用
-            bakeMaterial.EnableKeyword("BAKE_MODE"); 
+            bakeMaterial.EnableKeyword("BAKE_MODE");
+
+            // Unity 在 Keyword 切换后可能重置 float 属性（variant 重新初始化），
+            // 必须显式回写 tonemap / LMS 等关键属性
+            bakeMaterial.SetFloat(UseCustomTonemapId, skyboxMaterial.GetFloat(UseCustomTonemapId));
+            bakeMaterial.SetFloat(ExposureId, skyboxMaterial.GetFloat(ExposureId));
+            bakeMaterial.SetFloat(UseLMSId, skyboxMaterial.GetFloat(UseLMSId));
 
             // 调用克隆的材质，将天空绘制到 RenderTexture 上
             Graphics.Blit(null, dynamicSkyMap, bakeMaterial, 0);
