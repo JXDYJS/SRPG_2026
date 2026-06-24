@@ -30,6 +30,7 @@ Shader "Hidden/Custom/ApplyExposure"
 
             half4 Frag(Varyings input) : SV_Target
             {
+                //return half4(0.0,1.0,0.0,1.0);
                 // Blit.hlsl 中 Varyings 的 UV 字段名为 texcoord
                 float2 uv = input.texcoord;
 
@@ -47,7 +48,7 @@ Shader "Hidden/Custom/ApplyExposure"
                 float4 color = SAMPLE_TEXTURE2D(_BlitTexture, sampler_LinearClamp, uv);
 
                 // 4. 应用曝光
-                color.rgb *= exposure;
+                //color.rgb *= exposure;
 
                 return color;
             }

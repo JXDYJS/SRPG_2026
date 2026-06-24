@@ -39,7 +39,7 @@ public class ApplyExposureRenderFeature : ScriptableRendererFeature
         {
             var desc = renderingData.cameraData.cameraTargetDescriptor;
             desc.depthBufferBits = 0; 
-            desc.msaaSamples = 1;
+            //desc.msaaSamples = 1;
             RenderingUtils.ReAllocateIfNeeded(ref m_TempTexture, desc, FilterMode.Bilinear, TextureWrapMode.Clamp, name: "_TempExposureApplyTex");
             ConfigureInput(ScriptableRenderPassInput.Color);
         }

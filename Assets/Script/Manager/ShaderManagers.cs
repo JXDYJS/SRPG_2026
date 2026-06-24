@@ -18,6 +18,8 @@ namespace Managers
         [Header("天空盒材质引用 (可选)")]
         [SerializeField] private Material _skyboxMaterial;
 
+        private int _pomFrameCount;
+
         private void Awake()
         {
             if (Instance == null)
@@ -38,6 +40,12 @@ namespace Managers
             {
                 StartCoroutine(UpdateEnvironmentGIRoutine());
             }
+        }
+
+        private void Update()
+        {
+            _pomFrameCount = (_pomFrameCount + 1) & 7;
+            Shader.SetGlobalInt(Shader.PropertyToID("_POM_FrameCount"), _pomFrameCount);
         }
 
         /// <summary>

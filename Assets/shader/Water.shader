@@ -54,6 +54,7 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareOpaqueTexture.hlsl"
             #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/ImageBasedLighting.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/GlobalIllumination.hlsl"
+            #include "Assets/shader/global.hlsl"
 
             #define WATER_SAMPLE_COUNT 32
 
@@ -93,7 +94,7 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
                 float phi = atan2(dir.x, dir.z);
                 float theta = asin(clamp(dir.y, -1.0, 1.0));
                 // 映射到 [0, 1] UV 空间
-                return float2(phi * 0.15915494309 + 0.5, theta * 0.31830988618 + 0.5); 
+                return float2(phi * 0.15915494309, theta * 0.31830988618 + 0.5); 
             }
 
             float get_spherical_fog(float view_dist, float start, float density) {
@@ -156,8 +157,10 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
             }
 
             half4 frag(Varyings input) : SV_Target {
+                const float maxDistance = 64.0f;
                 float3 V = normalize(GetCameraPositionWS() - input.positionWS);
                 float2 screenUV = input.positionCS.xy / _ScreenParams.xy;
+                float view_dist = length(GetCameraPositionWS() - input.positionWS);
                 
                 float rawDepth = SampleSceneDepth(screenUV);
                 float sceneZ = LinearEyeDepth(rawDepth, _ZBufferParams);
@@ -176,6 +179,8 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
                 float3 worldNormal = float3(0, 1, 0);
                 float3x3 TBN = float3x3(worldTangent, worldBitangent, worldNormal);
                 N = normalize(TransformTangentToWorld(N, TBN));
+                N.xz *= linear_step(maxDistance,maxDistance * 0.5,view_dist);
+                N = normalize(N);
                 N.xz *= smoothstep(0.0,_NormalInfluence,abs(dot(float3(0.0,1.0,0.0),-V)));
 
                 Light mainLight = GetMainLight(TransformWorldToShadowCoord(input.positionWS));
@@ -267,14 +272,20 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
                                   + (sceneColor * accumTransmittance) * T_exit + finalReflection * (1.0 - T_exit) + sceneInScattering + directSpecular;
                 
                 // === 远景雾 (Fog) 采样动态天空图 ===
-                float view_dist = length(GetCameraPositionWS() - input.positionWS);
                 float transmittance = get_border_fog(view_dist, 150.0);
                 // 同样转换视线反方向到 UV (这里通常不需要模糊，所以 mip 直接设为 0)
-                float2 fogUV = DirToEquirectangularUV(-V);
+                float3 fogDir = -V;
+                
+                //fogDir.y = abs(fogDir.y); 
+                fogDir = normalize(fogDir);
+                float phi = atan2(fogDir.x, fogDir.z);
+                float theta = asin(clamp(fogDir.y, -1.0, 1.0));
+
+                float2 fogUV = float2(phi * 0.15915494309, theta * 0.31830988618 + 0.5);
                 float3 fogColor = SAMPLE_TEXTURE2D_LOD(_DynamicSkyMap, sampler_DynamicSkyMap, fogUV, 0).rgb;
                 
                 finalColor = lerp(fogColor, finalColor, transmittance);
-
+                //finalColor = transmittance;
                 return half4(finalColor,1.0);
             }
             ENDHLSL

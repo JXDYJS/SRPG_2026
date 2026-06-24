@@ -118,8 +118,8 @@ Shader "Skybox/Fakeskybox"
             color = calcAtmosphericScatter(sunDir, viewDir);
         }
 
-        if (_UseCustomTonemap > 0.5) color = robobo1221Tonemap(color * _Exposure);
-        if (_UseLMS > 0.5) color = ApplyLMS(color);
+        if (_UseCustomTonemap > -0.5) color = robobo1221Tonemap(color * _Exposure);//这里存在问题todo 修复天空图绘制中颜色压缩不起作用
+        if (_UseLMS > -0.5) color = ApplyLMS(color);
         
         return max(color, 0.0); 
     }
@@ -172,13 +172,13 @@ Shader "Skybox/Fakeskybox"
                 float3 color = GetFinalSkyColor(normalize(viewDir), sunDir);
 
                 // === DEBUG: 左上角像素标记 tonemap 状态 ===
-                if (i.texcoord.x < 0.02 && i.texcoord.y < 0.02)
-                {
-                    if (_UseCustomTonemap > 0.5)
-                        color = float3(0, 10, 0); // 绿 = tonemap ON
-                    else
-                        color = float3(10, 0, 0); // 红 = tonemap OFF
-                }
+                // if (i.texcoord.x < 0.02 && i.texcoord.y < 0.02)
+                // {
+                //     if (_UseCustomTonemap > -0.5)
+                //         color = float3(0, 10, 0); // 绿 = tonemap ON
+                //     else
+                //         color = float3(10, 0, 0); // 红 = tonemap OFF
+                // }
 
                 return float4(color, 1.0);
             }

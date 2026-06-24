@@ -124,6 +124,8 @@ void SetupDOTSLitMaterialPropertyCaches()
 
 #endif
 
+int _POM_FrameCount;
+
 TEXTURE2D(_ParallaxMap);        SAMPLER(sampler_ParallaxMap);
 TEXTURE2D(_OcclusionMap);       SAMPLER(sampler_OcclusionMap);
 TEXTURE2D(_DetailMask);         SAMPLER(sampler_DetailMask);
@@ -323,7 +325,7 @@ inline half2 ParallaxOffsetPOM(half rawHeight, half amplitude, half3 viewDirTS, 
         return ParallaxOffset1Step_lab(rawHeight, amplitude, viewDirTS);
     }
 
-    const half maxStep = 40.0f;//这一步之后最好改小一点
+    const half maxStep = 40.0f; // 这一步之后最好改小一点
     int step_to_trace = floor(max(1.0f, maxStep * linear_step(maxDistance, maxDistance * 0.75, distance)));
     half step_depth = amplitude / (half)step_to_trace;
     half3 v = normalize(viewDirTS);
@@ -332,23 +334,41 @@ inline half2 ParallaxOffsetPOM(half rawHeight, half amplitude, half3 viewDirTS, 
     half2 pos = uv + step_toMove * noise;
     half currentRayDepth = step_depth * noise; 
     
-    // 射线步进
     for(int i = 0; i < step_to_trace; i++){
         if(currentRayDepth >= targetDepth) break;
-        
         currentRayDepth += step_depth;
         pos += step_toMove;
-        targetDepth = (1.0 - SAMPLE_TEXTURE2D(_BumpMap, sampler_BumpMap, pos).a) * amplitude;
+        targetDepth = (1.0 - SAMPLE_TEXTURE2D_LOD(_BumpMap, sampler_BumpMap, pos, 0).a) * amplitude;
     }
+    pos -= step_toMove;
+    currentRayDepth -= step_depth;
+    
+    half2 deltaPos = step_toMove * 0.5f;
+    half deltaDepth = step_depth * 0.5f;
+    
+    // 3. 执行 4 次二分查找
+    for(int j = 0; j < 4; j++){
+        pos += deltaPos;
+        currentRayDepth += deltaDepth;
+        
+        targetDepth = (1.0 - SAMPLE_TEXTURE2D_LOD(_BumpMap, sampler_BumpMap, pos, 0).a) * amplitude;
+        
+        if(currentRayDepth > targetDepth){
+            pos -= deltaPos;
+            currentRayDepth -= deltaDepth;
+        }
+        deltaPos *= 0.5f;
+        deltaDepth *= 0.5f;
+    }
+    
     return pos - uv;
 }
 
-inline void ApplyPerPixelDisplacement_lab(half3 viewDirTS, inout float2 uv, half3 positionWS, float4 positionCS) {
+inline void ApplyPerPixelDisplacement_lab(half3 viewDirTS, inout float2 uv, float3 positionWS, float4 positionCS) {
 #if defined(_PARALLAXMAP)
     half height = SAMPLE_TEXTURE2D(_BumpMap, sampler_BumpMap, uv).a;
     half dist = distance(positionWS, _WorldSpaceCameraPos);
-    half noise = InterleavedGradientNoise(positionCS.xy, (int)(_Time.y * 60.0));
-    //float2 offset = ParallaxOffset1Step_lab(height, 0.25, viewDirTS);
+    half noise = InterleavedGradientNoise(positionCS.xy, _POM_FrameCount);
     float2 offset = ParallaxOffsetPOM(height, 0.25, viewDirTS, dist, uv, noise);
     uv += offset;
 #endif
