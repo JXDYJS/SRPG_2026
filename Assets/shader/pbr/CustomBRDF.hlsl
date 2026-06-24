@@ -239,6 +239,76 @@ half DirectBRDFSpecular(BRDFData brdfData, half3 normalWS, half3 lightDirectionW
     return specularTerm;
 }
 
+//#region lab-pbr
+
+half3 fresnelSchlick(half3 f0, half f90, half VdotH) {
+    return f0 + (f90 - f0) * pow(1.0 - VdotH, 5.0);
+}
+
+// GGX Normal Distribution Function
+// D = alphaSq / (PI * (NoH^2 * (alphaSq - 1) + 1)^2)
+// roughness: physical roughness (perceptualRoughness^2)
+half NDF(half roughness, half nDotH)
+{
+    half alphaSq = roughness * roughness;
+    alphaSq = alphaSq * alphaSq;
+    half nDotH2 = nDotH * nDotH;
+    half denom = nDotH2 * (alphaSq - 1.0) + 1.0;
+    return alphaSq / max(PI * denom * denom, HALF_MIN);
+}
+
+// Smith G1 / (2 * cos_theta)
+// Photon v1: 1 / (cos_theta + sqrt(cos^2 + alphaSq * (1 - cos^2)))
+half v1_smith_ggx(half cos_theta, half alphaSq)
+{
+    half cos2 = cos_theta * cos_theta;
+    half s = sqrt(cos2 + alphaSq * (1.0 - cos2));
+    return 1.0 / max(cos_theta + s, HALF_MIN);
+}
+
+// Height-correlated Smith G2 / (4 * NoL * NoV)
+// Photon v2: 0.5 / (NoV * S_l + NoL * S_v)
+// where S = sqrt(cos^2 + alphaSq * (1 - cos^2))
+half v2_smith_ggx(half NoL, half NoV, half alphaSq)
+{
+    half s_l = NoV * sqrt(NoL * NoL + alphaSq * (1.0 - NoL * NoL));
+    half s_v = NoL * sqrt(NoV * NoV + alphaSq * (1.0 - NoV * NoV));
+    return 0.5 / max(s_l + s_v, HALF_MIN);
+}
+
+// Cook-Torrance specular BRDF: f_spec = D * v2 * F
+// v2 already has G2/(4*NoL*NoV) baked in, so f_spec = D * v2 * F
+// Returns full specular color (Fresnel term baked in)
+half3 DirectBRDFSpecular_GGX(BRDFData brdfData, half3 normalWS, half3 lightDirectionWS, half3 viewDirectionWS)
+{
+    float3 halfDir = SafeNormalize(lightDirectionWS + viewDirectionWS);
+
+    half NoL = saturate(dot(normalWS, lightDirectionWS));
+    half NoV = abs(dot(normalWS, viewDirectionWS)) + HALF_MIN;
+    half NoH = saturate(dot(normalWS, halfDir));
+    half LoH = saturate(dot(lightDirectionWS, halfDir));
+
+    if (NoL <= 0.0)
+        return half3(0.0, 0.0, 0.0);
+
+    half alphaSq = brdfData.roughness2;  // roughness^4 = alpha^2 for GGX
+
+    half D = NDF(brdfData.roughness, NoH);
+    half G = v2_smith_ggx(NoL, NoV, alphaSq);
+    // Classic Schlick: f90 = 1.0 for all dielectrics/metals (grazingTerm is only for IBL split-sum)
+    half3 F = fresnelSchlick(brdfData.specular, 1.0, LoH);
+
+    half3 spec = D * G * F;
+
+#if REAL_IS_HALF
+    spec = min(spec, half3(1000.0, 1000.0, 1000.0));
+#endif
+
+    return spec;
+}
+//#endregion
+
+
 // Based on Minimalist CookTorrance BRDF
 // Implementation is slightly different from original derivation: http://www.thetenthplanet.de/archives/255
 //
