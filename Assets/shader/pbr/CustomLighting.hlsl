@@ -49,7 +49,7 @@ half3 LightingPhysicallyBased(BRDFData brdfData, BRDFData brdfDataClearCoat,
 #ifndef _SPECULARHIGHLIGHTS_OFF
     [branch] if (!specularHighlightsOff)
     {
-#if defined(_BRDF_DEBUG_D) || defined(_BRDF_DEBUG_G) || defined(_BRDF_DEBUG_F) || defined(_BRDF_DEBUG_SPECULAR)
+#if defined(_BRDFDEBUG_D) || defined(_BRDFDEBUG_G) || defined(_BRDFDEBUG_F) || defined(_BRDFDEBUG_SPECULAR)
         brdf = DirectBRDFSpecular_GGX(brdfData, normalWS, lightDirectionWS, viewDirectionWS);
         return brdf;
 #else

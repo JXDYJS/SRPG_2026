@@ -298,13 +298,13 @@ half3 DirectBRDFSpecular_GGX(BRDFData brdfData, half3 normalWS, half3 lightDirec
     // Classic Schlick: f90 = 1.0 for all dielectrics/metals (grazingTerm is only for IBL split-sum)
     half3 F = fresnelSchlick(brdfData.specular, 1.0, LoH);
 
-#if defined(_BRDF_DEBUG_D)
+#if defined(_BRDFDEBUG_D)
     return half3(D, D, D);
-#elif defined(_BRDF_DEBUG_G)
+#elif defined(_BRDFDEBUG_G)
     return half3(G, G, G);
-#elif defined(_BRDF_DEBUG_F)
+#elif defined(_BRDFDEBUG_F)
     return F;
-#elif defined(_BRDF_DEBUG_SPECULAR)
+#elif defined(_BRDFDEBUG_SPECULAR)
     half3 debugSpec = D * G * F;
     return debugSpec;
 #else

@@ -135,7 +135,7 @@ Shader "Custom/CustomLit"
 
             // -------------------------------------
             // BRDF Debug Keywords
-            #pragma shader_feature_local _ _BRDF_DEBUG_D _BRDF_DEBUG_G _BRDF_DEBUG_F _BRDF_DEBUG_SPECULAR
+            #pragma shader_feature_local _BRDFDEBUG_OFF _BRDFDEBUG_D _BRDFDEBUG_G _BRDFDEBUG_F _BRDFDEBUG_SPECULAR
 
             // -------------------------------------
             // Universal Pipeline keywords
@@ -274,7 +274,7 @@ Shader "Custom/CustomLit"
 
             // -------------------------------------
             // BRDF Debug Keywords
-            #pragma shader_feature_local _ _BRDF_DEBUG_D _BRDF_DEBUG_G _BRDF_DEBUG_F _BRDF_DEBUG_SPECULAR
+            #pragma shader_feature_local _BRDFDEBUG_OFF _BRDFDEBUG_D _BRDFDEBUG_G _BRDFDEBUG_F _BRDFDEBUG_SPECULAR
 
             // -------------------------------------
             // Universal Pipeline keywords
