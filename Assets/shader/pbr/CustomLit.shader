@@ -22,6 +22,8 @@ Shader "Custom/CustomLit"
         [ToggleOff] _SpecularHighlights("Specular Highlights", Float) = 1.0
         [ToggleOff] _EnvironmentReflections("Environment Reflections", Float) = 1.0
 
+        [KeywordEnum(Off, D, G, F, Specular)] _BRDFDebug("BRDF Debug", Float) = 0
+
         _BumpScale("Scale", Float) = 1.0
         _BumpMap("Normal Map", 2D) = "bump" {}
 
@@ -130,6 +132,10 @@ Shader "Custom/CustomLit"
             #pragma shader_feature_local_fragment _SPECULARHIGHLIGHTS_OFF
             #pragma shader_feature_local_fragment _ENVIRONMENTREFLECTIONS_OFF
             #pragma shader_feature_local_fragment _SPECULAR_SETUP
+
+            // -------------------------------------
+            // BRDF Debug Keywords
+            #pragma shader_feature_local _ _BRDF_DEBUG_D _BRDF_DEBUG_G _BRDF_DEBUG_F _BRDF_DEBUG_SPECULAR
 
             // -------------------------------------
             // Universal Pipeline keywords
@@ -265,6 +271,10 @@ Shader "Custom/CustomLit"
             #pragma shader_feature_local_fragment _ENVIRONMENTREFLECTIONS_OFF
             #pragma shader_feature_local_fragment _SPECULAR_SETUP
             #pragma shader_feature_local _RECEIVE_SHADOWS_OFF
+
+            // -------------------------------------
+            // BRDF Debug Keywords
+            #pragma shader_feature_local _ _BRDF_DEBUG_D _BRDF_DEBUG_G _BRDF_DEBUG_F _BRDF_DEBUG_SPECULAR
 
             // -------------------------------------
             // Universal Pipeline keywords

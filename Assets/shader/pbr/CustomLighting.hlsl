@@ -49,7 +49,12 @@ half3 LightingPhysicallyBased(BRDFData brdfData, BRDFData brdfDataClearCoat,
 #ifndef _SPECULARHIGHLIGHTS_OFF
     [branch] if (!specularHighlightsOff)
     {
+#if defined(_BRDF_DEBUG_D) || defined(_BRDF_DEBUG_G) || defined(_BRDF_DEBUG_F) || defined(_BRDF_DEBUG_SPECULAR)
+        brdf = DirectBRDFSpecular_GGX(brdfData, normalWS, lightDirectionWS, viewDirectionWS);
+        return brdf;
+#else
         brdf += DirectBRDFSpecular_GGX(brdfData, normalWS, lightDirectionWS, viewDirectionWS);
+#endif
 
 #if defined(_CLEARCOAT) || defined(_CLEARCOATMAP)
         // Clear coat evaluates the specular a second timw and has some common terms with the base specular.
