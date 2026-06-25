@@ -156,6 +156,9 @@ struct LightingData
 
 half3 CalculateLightingColor(LightingData lightingData, half3 albedo)
 {
+#if defined(_BRDFDEBUG_D) || defined(_BRDFDEBUG_G) || defined(_BRDFDEBUG_F) || defined(_BRDFDEBUG_SPECULAR)
+    return lightingData.mainLightColor;
+#endif
     half3 lightingColor = 0;
 
     if (IsOnlyAOLightingFeatureEnabled())
