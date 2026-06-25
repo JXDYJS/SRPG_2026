@@ -10,9 +10,6 @@ internal class CustomLitShaderGUI : BaseShaderGUI
     private LitGUI.LitProperties _litProperties;
     private MaterialProperty _brdfDebugProp;
 
-    private static readonly string[] _brdfDebugNames =
-        { "Off", "D (NDF)", "G (Visibility)", "F (Fresnel)", "Specular (D*G*F)" };
-
     public override void FindProperties(MaterialProperty[] properties)
     {
         base.FindProperties(properties);
@@ -54,10 +51,7 @@ internal class CustomLitShaderGUI : BaseShaderGUI
         if (_brdfDebugProp != null)
         {
             EditorGUILayout.Space();
-            _brdfDebugProp.floatValue = (float)EditorGUILayout.Popup(
-                "BRDF Debug Mode",
-                (int)_brdfDebugProp.floatValue,
-                _brdfDebugNames);
+            materialEditor.ShaderProperty(_brdfDebugProp, new GUIContent("BRDF Debug Mode"));
         }
 
         base.DrawAdvancedOptions(material);
