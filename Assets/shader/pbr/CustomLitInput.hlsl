@@ -402,7 +402,9 @@ inline void read_lab_s_data(float2 uv, out lab_pbr_s_data data)
     half4 tex = SAMPLE_TEXTURE2D(_MetallicGlossMap, sampler_MetallicGlossMap, uv);
 
     // R: perceptual smoothness (0=rough, 1=smooth)
-    data.smoothness = tex.r;
+    half perceptualSmoothness = tex.r;
+    //data.smoothness = (1.0 - perceptualSmoothness) * (1.0 - perceptualSmoothness);
+    data.smoothness = perceptualSmoothness;
 
     // G: f0 dielectric / metal classification
     // Per Photon/Jessie labPBR standard:

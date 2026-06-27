@@ -299,7 +299,7 @@ half3 DirectBRDFSpecular_GGX(BRDFData brdfData, half3 normalWS, half3 lightDirec
     half3 F = fresnelSchlick(brdfData.specular, 1.0, LoH);
 
 #if defined(_BRDFDEBUG_D)
-    return half3(D, D, D);
+    return half3(brdfData.roughness.xxx);
 #elif defined(_BRDFDEBUG_G)
     return half3(G, G, G);
 #elif defined(_BRDFDEBUG_F)
