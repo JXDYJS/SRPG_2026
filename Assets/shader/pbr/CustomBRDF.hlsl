@@ -279,7 +279,7 @@ half v2_smith_ggx(half NoL, half NoV, half alphaSq)
 // Cook-Torrance specular BRDF: f_spec = D * v2 * F
 // v2 already has G2/(4*NoL*NoV) baked in, so f_spec = D * v2 * F
 // Returns full specular color (Fresnel term baked in)
-half3 DirectBRDFSpecular_GGX(BRDFData brdfData, half3 normalWS, half3 lightDirectionWS, half3 viewDirectionWS)
+half3 DirectBRDFSpecular_GGX(BRDFData brdfData, half3 normalWS, half3 lightDirectionWS, half3 viewDirectionWS, inout half3 outFresnel)
 {
     float3 halfDir = SafeNormalize(lightDirectionWS + viewDirectionWS);
 
@@ -289,7 +289,10 @@ half3 DirectBRDFSpecular_GGX(BRDFData brdfData, half3 normalWS, half3 lightDirec
     half LoH = saturate(dot(lightDirectionWS, halfDir));
 
     if (NoL <= 0.0)
+    {
+        outFresnel = half3(0.0, 0.0, 0.0);
         return half3(0.0, 0.0, 0.0);
+    }
 
     half alphaSq = brdfData.roughness2;  // roughness^4 = alpha^2 for GGX
 
@@ -297,6 +300,7 @@ half3 DirectBRDFSpecular_GGX(BRDFData brdfData, half3 normalWS, half3 lightDirec
     half G = v2_smith_ggx(NoL, NoV, alphaSq);
     // Classic Schlick: f90 = 1.0 for all dielectrics/metals (grazingTerm is only for IBL split-sum)
     half3 F = fresnelSchlick(brdfData.specular, 1.0, LoH);
+    outFresnel = F;
 
 #if defined(_BRDFDEBUG_D)
     return half3(brdfData.roughness.xxx);

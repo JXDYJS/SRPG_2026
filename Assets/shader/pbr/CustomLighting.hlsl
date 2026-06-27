@@ -49,11 +49,13 @@ half3 LightingPhysicallyBased(BRDFData brdfData, BRDFData brdfDataClearCoat,
 #ifndef _SPECULARHIGHLIGHTS_OFF
     [branch] if (!specularHighlightsOff)
     {
+        half3 fresnelTerm;
+        half3 specularGGX = DirectBRDFSpecular_GGX(brdfData, normalWS, lightDirectionWS, viewDirectionWS, fresnelTerm);
 #if defined(_BRDFDEBUG_D) || defined(_BRDFDEBUG_G) || defined(_BRDFDEBUG_F) || defined(_BRDFDEBUG_SPECULAR)
-        brdf = DirectBRDFSpecular_GGX(brdfData, normalWS, lightDirectionWS, viewDirectionWS);
+        brdf = specularGGX;
         return brdf;
 #else
-        brdf += DirectBRDFSpecular_GGX(brdfData, normalWS, lightDirectionWS, viewDirectionWS);
+        brdf = brdfData.albedo * saturate(half3(1.0h, 1.0h, 1.0h) - fresnelTerm) + specularGGX;
 #endif
 
 #if defined(_CLEARCOAT) || defined(_CLEARCOATMAP)
