@@ -27,6 +27,10 @@ struct BRDFData
     // labPBR extensions
     half sss;        // subsurface scattering amount
     half porosity;   // porosity amount
+
+    // Hammon 2017: energy conservation for diffuse
+    // ecf = 1 - E_avg, where E_avg = (4√f0 + 5f0²)/9 is the hemisphere-averaged Fresnel
+    half energyConservationFactor;
 };
 
 half ReflectivitySpecular(half3 specular)
@@ -69,6 +73,9 @@ inline void InitializeBRDFDataDirect(half3 albedo, half3 diffuse, half3 specular
     outBRDFData.grazingTerm         = saturate(smoothness + reflectivity);
     outBRDFData.normalizationTerm   = outBRDFData.roughness * half(4.0) + half(2.0);
     outBRDFData.roughness2MinusOne  = outBRDFData.roughness2 - half(1.0);
+
+    half E_avg = (half(4.0) * sqrt(reflectivity) + half(5.0) * reflectivity * reflectivity) / half(9.0);
+    outBRDFData.energyConservationFactor = max(half(1.0) - E_avg, HALF_MIN);
 
     // Input is expected to be non-alpha-premultiplied while ROP is set to pre-multiplied blend.
     // We use input color for specular, but (pre-)multiply the diffuse with alpha to complete the standard alpha blend equation.

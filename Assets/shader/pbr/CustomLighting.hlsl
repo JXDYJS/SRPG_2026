@@ -55,7 +55,10 @@ half3 LightingPhysicallyBased(BRDFData brdfData, BRDFData brdfDataClearCoat,
         brdf = specularGGX;
         return brdf;
 #else
-        brdf = brdfData.albedo * saturate(half3(1.0h, 1.0h, 1.0h) - fresnelTerm) + specularGGX;
+        brdf = brdfData.albedo * saturate(half3(1.0h, 1.0h, 1.0h) - fresnelTerm)
+             / brdfData.energyConservationFactor
+             * (half3(1.0h, 1.0h, 1.0h) + half3(0.1159h, 0.1159h, 0.1159h) * brdfData.roughness)
+             + specularGGX;
 #endif
 
 #if defined(_CLEARCOAT) || defined(_CLEARCOATMAP)
