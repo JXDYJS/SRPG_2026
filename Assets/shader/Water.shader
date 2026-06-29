@@ -88,15 +88,6 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
             struct Attributes { float4 positionOS : POSITION; float2 uv : TEXCOORD0; };
             struct Varyings { float4 positionCS : SV_POSITION; float3 positionWS : TEXCOORD0; float2 uv : TEXCOORD1; };
 
-            // === 新增：将 3D 方向向量转换为 2D 全景图 UV 的核心函数 ===
-            float2 DirToEquirectangularUV(float3 dir) {
-                // atan2 算出经度 (Phi) [-PI, PI]，asin 算出纬度 (Theta) [-PI/2, PI/2]
-                float phi = atan2(dir.x, dir.z);
-                float theta = asin(clamp(dir.y, -1.0, 1.0));
-                // 映射到 [0, 1] UV 空间
-                return float2(phi * 0.15915494309, theta * 0.31830988618 + 0.5); 
-            }
-
             float get_spherical_fog(float view_dist, float start, float density) {
                 return exp2(-density * max(view_dist - start, 0.0));
             }

@@ -2,11 +2,18 @@
 #define UNIVERSAL_LIGHTING_INCLUDED
 
 #include "CustomBRDF.hlsl"
+#include "Assets/shader/global.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Debug/Debugging3D.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/GlobalIllumination.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/RealtimeLights.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/AmbientOcclusion.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DBuffer.hlsl"
+
+// Dynamic sky map: baked per-frame by FakeSunLight, replaces unity_SpecCube0 for IBL specular
+TEXTURE2D(_DynamicSkyMap);
+SAMPLER(sampler_DynamicSkyMap);
+// DynamicSkyMap is 256x128 with 9 mip levels (0-8)
+#define DYNAMIC_SKY_MIP_COUNT 8
 
 #if defined(LIGHTMAP_ON)
     #define DECLARE_LIGHTMAP_OR_SH(lmName, shName, index) float2 lmName : TEXCOORD##index
@@ -267,6 +274,43 @@ half3 CalculateBlinnPhong(Light light, InputData inputData, SurfaceData surfaceD
 ////////////////////////////////////////////////////////////////////////////////
 /// PBR lighting...
 ////////////////////////////////////////////////////////////////////////////////
+// Custom dynamic GI: replaces GlossyEnvironmentReflection's static cubemap
+// (unity_SpecCube0) with the dynamic equirectangular sky map baked per-frame
+// by FakeSunLight. Mirrors GlobalIllumination() logic but uses _DynamicSkyMap.
+half3 CustomDynamicGI(BRDFData brdfData, BRDFData brdfDataClearCoat, float clearCoatMask,
+    half3 bakedGI, half occlusion,
+    half3 normalWS, half3 viewDirectionWS)
+{
+    half3 reflectVector = reflect(-viewDirectionWS, normalWS);
+    half NoV = saturate(dot(normalWS, viewDirectionWS));
+    half fresnelTerm = Pow4(1.0 - NoV);
+
+    half3 indirectDiffuse = bakedGI;
+
+    // Equirectangular dynamic sky map sampling replaces cubemap SAMPLE_TEXTURECUBE_LOD
+    float2 envUV = DirToEquirectangularUV(reflectVector);
+    half mip = PerceptualRoughnessToMipmapLevel(brdfData.perceptualRoughness, DYNAMIC_SKY_MIP_COUNT);
+    half3 indirectSpecular = SAMPLE_TEXTURE2D_LOD(_DynamicSkyMap, sampler_DynamicSkyMap, envUV, mip).rgb;
+
+    half3 color = EnvironmentBRDF(brdfData, indirectDiffuse, indirectSpecular, fresnelTerm);
+
+    if (IsOnlyAOLightingFeatureEnabled())
+    {
+        color = half3(1,1,1); // "Base white" for AO debug lighting mode
+    }
+
+#if defined(_CLEARCOAT) || defined(_CLEARCOATMAP)
+    half mipCoat = PerceptualRoughnessToMipmapLevel(brdfDataClearCoat.perceptualRoughness, DYNAMIC_SKY_MIP_COUNT);
+    half3 coatIndirectSpecular = SAMPLE_TEXTURE2D_LOD(_DynamicSkyMap, sampler_DynamicSkyMap, envUV, mipCoat).rgb;
+    half3 coatColor = EnvironmentBRDFClearCoat(brdfDataClearCoat, clearCoatMask, coatIndirectSpecular, fresnelTerm);
+
+    half coatFresnel = kDielectricSpec.x + kDielectricSpec.a * fresnelTerm;
+    return (color * (1.0 - coatFresnel * clearCoatMask) + coatColor) * occlusion;
+#else
+    return color * occlusion;
+#endif
+}
+
 half4 UniversalFragmentPBR(InputData inputData, SurfaceData surfaceData)
 {
     #if defined(_SPECULARHIGHLIGHTS_OFF)
@@ -307,9 +351,9 @@ half4 UniversalFragmentPBR(InputData inputData, SurfaceData surfaceData)
 
     LightingData lightingData = CreateLightingData(inputData, surfaceData);
 
-    lightingData.giColor = GlobalIllumination(brdfData, brdfDataClearCoat, surfaceData.clearCoatMask,
-                                              inputData.bakedGI, aoFactor.indirectAmbientOcclusion, inputData.positionWS,
-                                              inputData.normalWS, inputData.viewDirectionWS, inputData.normalizedScreenSpaceUV);
+    lightingData.giColor = CustomDynamicGI(brdfData, brdfDataClearCoat, surfaceData.clearCoatMask,
+                                              inputData.bakedGI, aoFactor.indirectAmbientOcclusion,
+                                              inputData.normalWS, inputData.viewDirectionWS);
 #ifdef _LIGHT_LAYERS
     if (IsMatchingLightLayer(mainLight.layerMask, meshRenderingLayers))
 #endif
