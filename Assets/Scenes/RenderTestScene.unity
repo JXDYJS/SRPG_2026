@@ -949,6 +949,11 @@ PrefabInstance:
       propertyPath: dynamicSkyMap
       value: 
       objectReference: {fileID: 731703142}
+    - target: {fileID: 1380755099173815078, guid: 76fcf4ba804f0094fbc62fec53cf782f,
+        type: 3}
+      propertyPath: minSunElevation
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 1925767420115934604, guid: 76fcf4ba804f0094fbc62fec53cf782f,
         type: 3}
       propertyPath: m_LocalPosition.x
