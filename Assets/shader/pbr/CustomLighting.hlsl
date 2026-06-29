@@ -295,6 +295,13 @@ half4 UniversalFragmentPBR(InputData inputData, SurfaceData surfaceData)
     uint meshRenderingLayers = GetMeshRenderingLayer();
     Light mainLight = GetMainLight(inputData, shadowMask, aoFactor);
 
+    // Prevent grazing-angle shadow map aliasing: force shadowed when NdotL is near zero
+    half NoL = saturate(dot(inputData.normalWS, mainLight.direction));
+    if (NoL < 0.02)
+    {
+        mainLight.shadowAttenuation = 0;
+    }
+
     // NOTE: We don't apply AO to the GI here because it's done in the lighting calculation below...
     MixRealtimeAndBakedGI(mainLight, inputData.normalWS, inputData.bakedGI);
 

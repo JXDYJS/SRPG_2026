@@ -12,6 +12,11 @@ public class FakeSunLight : MonoBehaviour
     [Tooltip("太阳的偏航角(模拟季节/纬度，防止太阳永远只在头顶正上方)")]
     public float sunDeclination = 30f;
 
+    [Header("Grazing Angle Prevention (防掠射角)")]
+    [Tooltip("太阳最低离地平线角度(度)，低于此值将被钳制，防止掠射角阴影混叠")]
+    [Range(0f, 15f)]
+    public float minSunElevation = 5f;
+
     [Header("Skybox Reference (关联材质)")]
     public Material skyboxMaterial;
 
@@ -60,7 +65,12 @@ public class FakeSunLight : MonoBehaviour
         // ==========================================
         // 1. 根据控制参数旋转平行光
         // ==========================================
-        float pitch = sunAngle * 360f; 
+        float pitch = sunAngle * 360f;
+        // 防止掠射角阴影混叠：太阳至少保持 minSunElevation 度离地平线
+        if (pitch < minSunElevation)
+            pitch = minSunElevation;
+        else if (pitch > 180f - minSunElevation && pitch <= 180f)
+            pitch = 180f - minSunElevation;
         transform.rotation = Quaternion.Euler(pitch, sunDeclination, 0f);
 
         Vector3 sunDir = -transform.forward;
