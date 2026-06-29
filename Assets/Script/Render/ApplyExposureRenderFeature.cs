@@ -22,9 +22,8 @@ public class ApplyExposureRenderFeature : ScriptableRendererFeature
         Material m_Material;
         RTHandle m_TempTexture; 
         Texture2D m_StubTexture;
-        string m_ProfilerTag = "Apply Auto Exposure (DEBUG)";
+        string m_ProfilerTag = "Apply Auto Exposure";
         
-        static readonly int MainTexID = Shader.PropertyToID("_MainTex");
         static readonly int ExposureTexID = Shader.PropertyToID("_GlobalExposureTexture");
 
         // 限制日志频率，防止卡死
@@ -40,6 +39,7 @@ public class ApplyExposureRenderFeature : ScriptableRendererFeature
         {
             var desc = renderingData.cameraData.cameraTargetDescriptor;
             desc.depthBufferBits = 0; 
+            //desc.msaaSamples = 1;
             RenderingUtils.ReAllocateIfNeeded(ref m_TempTexture, desc, FilterMode.Bilinear, TextureWrapMode.Clamp, name: "_TempExposureApplyTex");
             ConfigureInput(ScriptableRenderPassInput.Color);
         }
@@ -75,25 +75,24 @@ public class ApplyExposureRenderFeature : ScriptableRendererFeature
             // }
             // ===================================================
 
-            // 2. 准备纹理 (如果拿不到真的，就用绿色的调试图)
-            var targetExposureTex = AutoExposureRenderFeature.CurrentExposureTexture;
+            // 2. 准备纹理 (如果拿不到真的，就用安全的备用图)
+            RenderTexture targetExposureTex = AutoExposureRenderFeature.CurrentExposureTexture;
             
+            // 3. 显式绑定全局变量 (暂停时 Compute Pass 停摆致纹理失效，用 Stub 兜底)
             if (targetExposureTex == null || !targetExposureTex.IsCreated())
             {
-                // 没拿到数据，强行塞绿色调试图
-                // 如果屏幕变绿，说明管线是通的，只是数据没传过来
-                Debug.LogError($"❌ 警告: 曝光纹理为空！使用绿色调试图 (1x1) 作为替代。");
+                Debug.LogError($"[ApplyExposure] 曝光纹理失效 (null={targetExposureTex == null}, created={targetExposureTex?.IsCreated()})，使用 Stub 兜底");
+                cmd.SetGlobalTexture(ExposureTexID, m_StubTexture);
+            }
+            else
+            {
+                cmd.SetGlobalTexture(ExposureTexID, targetExposureTex);
             }
 
-            // 3. 显式绑定全局变量
-            // 注意：cmd.Blit 会自动绑定 _MainTex，所以这里只绑曝光图
-            cmd.SetGlobalTexture(ExposureTexID, targetExposureTex);
+            // 4. 第一遍: Blitter 处理曝光 (解决 UV 翻转)
+            Blitter.BlitCameraTexture(cmd, source, m_TempTexture, m_Material, 0);
 
-            // 4. 执行绘制 (使用 cmd.Blit 替代 Blitter，更传统稳健)
-            // 步骤 A: Screen -> Temp
-            cmd.Blit(source, m_TempTexture, m_Material);
-            
-            // 步骤 B: Temp -> Screen
+            // 第二遍: cmd.Blit 拷回 (Editor 暂停时 Blitter 空转，cmd.Blit 不受影响)
             cmd.Blit(m_TempTexture, source);
 
             context.ExecuteCommandBuffer(cmd);

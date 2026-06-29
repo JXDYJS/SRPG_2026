@@ -12,6 +12,11 @@ public class FakeSunLight : MonoBehaviour
     [Tooltip("太阳的偏航角(模拟季节/纬度，防止太阳永远只在头顶正上方)")]
     public float sunDeclination = 30f;
 
+    [Header("Grazing Angle Prevention (防掠射角)")]
+    [Tooltip("太阳最低离地平线角度(度)，低于此值将被钳制，防止掠射角阴影混叠")]
+    [Range(0f, 15f)]
+    public float minSunElevation = 5f;
+
     [Header("Skybox Reference (关联材质)")]
     public Material skyboxMaterial;
 
@@ -28,7 +33,9 @@ public class FakeSunLight : MonoBehaviour
     private static readonly int SunIntensityId = Shader.PropertyToID("_SunIntensity");
     private static readonly int SunColorId = Shader.PropertyToID("_SunColor");
     
-    // LMS 矩阵属性 ID
+    // Tonemap / LMS 属性 ID
+    private static readonly int UseCustomTonemapId = Shader.PropertyToID("_UseCustomTonemap");
+    private static readonly int ExposureId = Shader.PropertyToID("_Exposure");
     private static readonly int UseLMSId = Shader.PropertyToID("_UseLMS");
     private static readonly int LMSRow1Id = Shader.PropertyToID("_LMS_Row1");
     private static readonly int LMSRow2Id = Shader.PropertyToID("_LMS_Row2");
@@ -58,7 +65,12 @@ public class FakeSunLight : MonoBehaviour
         // ==========================================
         // 1. 根据控制参数旋转平行光
         // ==========================================
-        float pitch = sunAngle * 360f; 
+        float pitch = sunAngle * 360f;
+        // 防止掠射角阴影混叠：太阳至少保持 minSunElevation 度离地平线
+        if (pitch < minSunElevation)
+            pitch = minSunElevation;
+        else if (pitch > 180f - minSunElevation && pitch <= 180f)
+            pitch = 180f - minSunElevation;
         transform.rotation = Quaternion.Euler(pitch, sunDeclination, 0f);
 
         Vector3 sunDir = -transform.forward;
@@ -153,7 +165,13 @@ public class FakeSunLight : MonoBehaviour
             // 同步材质参数
             bakeMaterial.CopyPropertiesFromMaterial(skyboxMaterial);
             // CopyProperties 会覆盖 Keyword，所以需要重新启用
-            bakeMaterial.EnableKeyword("BAKE_MODE"); 
+            bakeMaterial.EnableKeyword("BAKE_MODE");
+
+            // Unity 在 Keyword 切换后可能重置 float 属性（variant 重新初始化），
+            // 必须显式回写 tonemap / LMS 等关键属性
+            bakeMaterial.SetFloat(UseCustomTonemapId, skyboxMaterial.GetFloat(UseCustomTonemapId));
+            bakeMaterial.SetFloat(ExposureId, skyboxMaterial.GetFloat(ExposureId));
+            bakeMaterial.SetFloat(UseLMSId, skyboxMaterial.GetFloat(UseLMSId));
 
             // 调用克隆的材质，将天空绘制到 RenderTexture 上
             Graphics.Blit(null, dynamicSkyMap, bakeMaterial, 0);

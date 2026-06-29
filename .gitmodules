@@ -1,0 +1,3 @@
+[submodule "Assets/Resources/Vanilla-Normals-Renewed"]
+	url = git@github.com:JXDYJS/Vanilla-Normals-Renewed.git
+	path = Assets/Resources/Vanilla-Normals-Renewed
