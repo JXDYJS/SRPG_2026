@@ -12,7 +12,7 @@ namespace GamePlay.AI.Tasks
 {
     public class AttackTask : AITask
     {
-        public MapUnit TargetUnit { get; private set; }
+        public override MapUnit TargetUnit { get; protected set; }
 
         public AttackTask(MapUnit target, float basePriority)
             : base(AITaskType.Attack, basePriority)

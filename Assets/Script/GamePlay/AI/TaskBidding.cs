@@ -72,8 +72,15 @@ namespace GamePlay.AI
                     distanceFactor = Mathf.Clamp(distanceFactor, 0.1f, 1f);
                 }
 
-                // 6. 综合评分
-                float finalScore = baseUtility * classWeight * hpModifier * distanceFactor * task.BasePriority;
+                // 6. 挤占系数：已有人认领同一目标时降低效用
+                float crewFactor = 1f;
+                if (task.TargetUnit != null && SharedTaskBoard.Instance != null)
+                {
+                    crewFactor = SharedTaskBoard.Instance.GetCrewFactor(task.TargetUnit, task.TaskType);
+                }
+
+                // 7. 综合评分
+                float finalScore = baseUtility * classWeight * hpModifier * distanceFactor * task.BasePriority * crewFactor;
 
                 if (finalScore > bestScore)
                 {
@@ -108,6 +115,8 @@ namespace GamePlay.AI
                 case AITaskType.Attack:
                     return hpFactor; // 满血1.0，残血接近0
 
+                case AITaskType.Skill:
+                    return hpFactor;
                 default:
                     return 1f;
             }

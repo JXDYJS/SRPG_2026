@@ -94,7 +94,7 @@ namespace GamePlay.AI.Tasks
         }
     }
 
-    public abstract class AITask
+        public abstract class AITask
     {
         public string TaskID { get; protected set; }
         public AITaskType TaskType { get; protected set; }
@@ -102,6 +102,8 @@ namespace GamePlay.AI.Tasks
         public int MaxAssignees { get; protected set; }
         public int CurrentAssignees { get; protected set; }
         public bool IsAvailable => CurrentAssignees < MaxAssignees && !IsCompleted() && !IsFailed();
+
+        public virtual MapUnit TargetUnit { get; protected set; }
 
         public abstract float CalculateUtilityFor(MapUnit unit, AITaskContext ctx);
         public abstract AIPlan GeneratePlan(MapUnit unit, AITaskContext ctx);

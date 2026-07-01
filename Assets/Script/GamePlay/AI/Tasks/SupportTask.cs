@@ -13,7 +13,7 @@ namespace GamePlay.AI.Tasks
     public class SupportTask : AITask
     {
         public SkillDataSO Skill { get; private set; }
-        public MapUnit TargetUnit { get; private set; }
+        public override MapUnit TargetUnit { get; protected set; }
 
         public SupportTask(SkillDataSO skill, MapUnit target, float basePriority)
             : base(AITaskType.Support, basePriority)

@@ -48,5 +48,14 @@ namespace Core.Data
         public float planStepWaitSeconds = 0.5f;       // 计划步骤(AIPlanStep.Wait)等待时间
         public float moveExecuteDelaySeconds = 0.3f;   // 移动指令后等待间隔
         public float skillExecuteDelaySeconds = 0.5f;  // 技能指令后等待间隔
+
+        // ── 任务挤占控制 ──
+        // ≤crewMin: 全额效用; ≥crewMax: 效用归零（不再抢同一目标）; 中间线性递减
+        public float attackCrewMin = 1f;
+        public float attackCrewMax = 3f;
+        public float skillCrewMin = 1f;
+        public float skillCrewMax = 3f;
+        public float supportCrewMin = 0f;
+        public float supportCrewMax = 2f;
     }
 }

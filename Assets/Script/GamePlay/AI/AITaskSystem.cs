@@ -77,6 +77,16 @@ namespace GamePlay.AI
             AITaskContext ctx = new AITaskContext(unit);
             float tContext = (Time.realtimeSinceStartup - t1_5) * 1000f;
 
+            //--新增  重建可打击版
+            if (SharedTaskBoard.Instance)
+            {
+                SharedTaskBoard.Instance.RoundStart();
+            }
+            else
+            {
+                Debug.LogError("task board is null");
+            }
+
             // ─── 2. AIDirector 生成候选任务池 ───
             float t2 = Time.realtimeSinceStartup;
             List<AITask> taskPool = _director.GenerateCandidateTasks(unit, ctx);
@@ -121,6 +131,17 @@ namespace GamePlay.AI
             float tTotal = (Time.realtimeSinceStartup - tStart) * 1000f;
             Debug.Log($"[AITaskSystem·性能]  计划执行:   {tExecute:F1} ms");
             Debug.Log($"[AITaskSystem·性能]  全部合计:   {tTotal:F1} ms");
+            if (SharedTaskBoard.Instance != null)
+            {
+                if (bestTask.TargetUnit != null)
+                {
+                    SharedTaskBoard.Instance.RegisterCommitment(bestTask.TargetUnit, bestTask.TaskType);
+                }
+            }
+            else
+            {
+                Debug.LogError("task board is null");
+            }
 
             // ─── 6. 结束回合 ───
             TurnManager.Instance.EndCurrentUnitTurn();
