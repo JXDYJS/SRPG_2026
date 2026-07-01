@@ -701,8 +701,8 @@ namespace GamePlay.Grid
         // }
         public static bool CheckLineOfSight(Vector3 start, Vector3 end)
         {
-            Vector3 eyeStart = new Vector3(start.x, start.y + 1f, start.z);
-            Vector3 eyeEnd = new Vector3(end.x, end.y + 1f, end.z);
+            Vector3 eyeStart = new Vector3(start.x + 0.5f, start.y + 1f, start.z + 0.5f);
+            Vector3 eyeEnd = new Vector3(end.x + 0.5f, end.y + 1f, end.z + 0.5f);
 
             return GridOcclusionUtils.IsVisible3D(MapManager.Instance.logicalGrid, eyeStart, eyeEnd);
         }
@@ -746,9 +746,9 @@ namespace GamePlay.Grid
         /// </summary>
         public static bool CheckParabola(Vector3 start, Vector3 end, float arcHeightFactor = 0.5f)
         {
-            // 计算起点和终点的"眼睛"高度（胸口位置，y+1）
-            Vector3 eyeStart = new Vector3(start.x, start.y + 1, start.z);
-            Vector3 eyeEnd = new Vector3(end.x, end.y + 1, end.z);
+            // 计算起点和终点的"眼睛"高度（胸口位置）
+            Vector3 eyeStart = new Vector3(start.x + 0.5f, start.y + 1f, start.z + 0.5f);
+            Vector3 eyeEnd = new Vector3(end.x + 0.5f, end.y + 1f, end.z + 0.5f);
 
             // 计算水平距离（仅x和z的2D距离）
             float horizontalDist = Vector2.Distance(

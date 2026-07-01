@@ -65,8 +65,8 @@ namespace GamePlay.Skill
                 // DDA 体素遍历 + AABB 精确检测
                 List<Vector3Int> trajectory = Grid.AttackRangeSystem.GetLinePath(caster.gridPosition, context.TargetPosition);
 
-                Vector3 eyeStart = new Vector3(caster.gridPosition.x + 0.5f, caster.gridPosition.y + 1f, caster.gridPosition.z + 0.5f);
-                Vector3 eyeEnd = new Vector3(context.TargetPosition.x + 0.5f, context.TargetPosition.y + 1f, context.TargetPosition.z + 0.5f);
+                Vector3 eyeStart = caster.GetProjectileOrigin(skillData);
+                Vector3 eyeEnd = MapUnit.GetGridHitPoint(context.TargetPosition);
                 Vector3 dir = (eyeEnd - eyeStart).normalized;
                 GridOcclusionUtils.RayData ray = new GridOcclusionUtils.RayData
                 {
