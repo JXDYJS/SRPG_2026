@@ -934,11 +934,12 @@ namespace GamePlay.Units
             Vector3 worldPos = MapManager.Instance.GetWorldPosition(gridPosition);
             float cellSize = _mapManager != null ? _mapManager.cellSize : 1f;
             float halfCell = cellSize * 0.5f;
+            float halfHeight = Character.characterData.Height * cellSize * 0.5f;
             if (skill != null)
             {
                 // 预留：自定义技能可通过 skill.CustomBehavior 或 if 分支覆写
             }
-            return new Vector3(worldPos.x + halfCell, worldPos.y + cellSize, worldPos.z + halfCell);
+            return new Vector3(worldPos.x + halfCell, worldPos.y + halfHeight, worldPos.z + halfCell);
         }
 
         /// <summary>
@@ -949,7 +950,8 @@ namespace GamePlay.Units
             Vector3 worldPos = MapManager.Instance.GetWorldPosition(gridPosition);
             float cellSize = _mapManager != null ? _mapManager.cellSize : 1f;
             float halfCell = cellSize * 0.5f;
-            return new Vector3(worldPos.x + halfCell, worldPos.y + cellSize, worldPos.z + halfCell);
+            float halfHeight = Character.characterData.Height * cellSize * 0.5f;
+            return new Vector3(worldPos.x + halfCell, worldPos.y + halfHeight, worldPos.z + halfCell);
         }
 
         /// <summary>
@@ -960,7 +962,9 @@ namespace GamePlay.Units
             Vector3 worldPos = MapManager.Instance.GetWorldPosition(gridPos);
             float cellSize = MapManager.Instance?.cellSize ?? 1f;
             float halfCell = cellSize * 0.5f;
-            return new Vector3(worldPos.x + halfCell, worldPos.y + cellSize, worldPos.z + halfCell);
+            // 静态版本没有 CharacterData，默认假设目标高度为 2
+            float defaultHalfHeight = cellSize;
+            return new Vector3(worldPos.x + halfCell, worldPos.y + defaultHalfHeight, worldPos.z + halfCell);
         }
 
         public void SetGridPositionDirectly(Vector3Int pos)
