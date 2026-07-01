@@ -37,6 +37,9 @@ namespace GamePlay.AI
             AITask bestTask = null;
             float bestScore = float.MinValue;
 
+            Debug.Log($"[AI·竞价] ── {unit.name} ── HP={hpFactor:P0} | Move={maxReach} | Pos=({unit.gridPosition.x},{unit.gridPosition.y},{unit.gridPosition.z}) ──────────");
+
+            int idx = 0;
             foreach (AITask task in taskPool)
             {
                 if (task == null)
@@ -44,9 +47,13 @@ namespace GamePlay.AI
                     continue;
                 }
 
+                string taskDesc = GetTaskDescription(task);
+
                 // 1. 任务已不可用——跳过
                 if (!task.IsAvailable)
                 {
+                    Debug.Log($"[AI·竞价]   [{idx}] {taskDesc,-40} | (UNAVAILABLE)");
+                    idx++;
                     continue;
                 }
 
@@ -54,6 +61,8 @@ namespace GamePlay.AI
                 float baseUtility = task.CalculateUtilityFor(unit, ctx);
                 if (baseUtility <= 0f)
                 {
+                    Debug.Log($"[AI·竞价]   [{idx}] {taskDesc,-40} | baseU=0.000 (SKIPPED)");
+                    idx++;
                     continue;
                 }
 
@@ -82,18 +91,28 @@ namespace GamePlay.AI
                 // 7. 综合评分
                 float finalScore = baseUtility * classWeight * hpModifier * distanceFactor * task.BasePriority * crewFactor;
 
+                Debug.Log($"[AI·竞价]   [{idx}] {taskDesc,-40} | baseU={baseUtility:F3} | clsW={classWeight:F2} | hpM={hpModifier:F2} | distF={distanceFactor:F2} | crewF={crewFactor:F2} | prio={task.BasePriority:F2} | → {finalScore:F4}");
+
                 if (finalScore > bestScore)
                 {
                     bestScore = finalScore;
                     bestTask = task;
                 }
+
+                idx++;
             }
 
             // 7. 竞标成功——接取任务
             if (bestTask != null)
             {
                 bestTask.Claim(unit);
+                Debug.Log($"[AI·竞价]   ★ WINNER: {GetTaskDescription(bestTask)}  (score={bestScore:F4})");
             }
+            else
+            {
+                Debug.Log($"[AI·竞价]   ★ NO WINNER — all tasks skipped");
+            }
+            Debug.Log($"[AI·竞价] ──────────────────────────────────────────────");
 
             return bestTask;
         }
@@ -119,6 +138,41 @@ namespace GamePlay.AI
                     return hpFactor;
                 default:
                     return 1f;
+            }
+        }
+
+        private static string GetTaskDescription(AITask task)
+        {
+            switch (task.TaskType)
+            {
+                case AITaskType.Attack:
+                    return $"Attack → {task.TargetUnit?.name ?? "???"}";
+                case AITaskType.Support:
+                    {
+                        var st = task as SupportTask;
+                        return $"Support → {st?.Skill?.SkillName ?? "?"} → {task.TargetUnit?.name ?? "???"}";
+                    }
+                case AITaskType.Skill:
+                    {
+                        var sk = task as SkillTask;
+                        return $"Skill  → {sk?.Skill?.SkillName ?? "?"} → {task.TargetUnit?.name ?? "???"}";
+                    }
+                case AITaskType.Move:
+                    {
+                        var mt = task as MoveTask;
+                        var pos = mt?.TargetPosition ?? Vector3Int.zero;
+                        return $"Move   → ({pos.x},{pos.z})";
+                    }
+                case AITaskType.Defend:
+                    {
+                        var dt = task as DefendTask;
+                        var pos = dt?.SafePosition ?? Vector3Int.zero;
+                        return $"Defend → ({pos.x},{pos.z})";
+                    }
+                case AITaskType.Wait:
+                    return "Wait";
+                default:
+                    return task.TaskType.ToString();
             }
         }
     }
