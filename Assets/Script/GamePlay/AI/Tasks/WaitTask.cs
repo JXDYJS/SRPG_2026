@@ -1,4 +1,5 @@
 using GamePlay.Units;
+using Core.Data;
 
 namespace GamePlay.AI.Tasks
 {
