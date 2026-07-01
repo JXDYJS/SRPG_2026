@@ -5,6 +5,7 @@ using GamePlay.AI.Tasks;
 using GamePlay.Units;
 using Managers;
 using Grid;
+using Core.Data;
 
 namespace GamePlay.AI
 {
@@ -89,7 +90,7 @@ namespace GamePlay.AI
             if (bestTask == null)
             {
                 Debug.LogWarning($"[AITaskSystem] {unit.name} 没有可选任务，兜底待机");
-                yield return new WaitForSeconds(0.5f);
+                yield return new WaitForSeconds(Data.Config.AIConfig.planStepWaitSeconds);
                 TurnManager.Instance.EndCurrentUnitTurn();
                 yield break;
             }

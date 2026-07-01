@@ -14,7 +14,7 @@ namespace GamePlay.AI.Tasks
         public override AIPlan GeneratePlan(MapUnit unit, AITaskContext ctx)
         {
             AIPlan plan = new AIPlan();
-            plan.AddStep(AIPlanStep.Wait(0.5f));
+            plan.AddStep(AIPlanStep.Wait(Data.Config.AIConfig.planStepWaitSeconds));
             return plan;
         }
 

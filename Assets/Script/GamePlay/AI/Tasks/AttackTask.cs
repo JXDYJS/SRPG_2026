@@ -102,7 +102,7 @@ namespace GamePlay.AI.Tasks
 
             if (attackSkill == null)
             {
-                plan.AddStep(AIPlanStep.Wait(0.5f));
+                plan.AddStep(AIPlanStep.Wait(Data.Config.AIConfig.planStepWaitSeconds));
                 return plan;
             }
 

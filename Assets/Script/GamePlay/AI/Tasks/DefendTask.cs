@@ -107,7 +107,7 @@ namespace GamePlay.AI.Tasks
                 }
                 else
                 {
-                    plan.AddStep(AIPlanStep.Wait(0.5f));
+                    plan.AddStep(AIPlanStep.Wait(Data.Config.AIConfig.planStepWaitSeconds));
                 }
             }
 

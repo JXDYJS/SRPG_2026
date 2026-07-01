@@ -7,6 +7,7 @@ using GamePlay.Skill;
 using GamePlay.Units;
 using Command;
 using Global;
+using Core.Data;
 
 namespace GamePlay.AI
 {
@@ -109,7 +110,7 @@ namespace GamePlay.AI
 
             MoveCommand moveCmd = new MoveCommand(unit, path);
             yield return Tool.WaitUntilCommandFinish(moveCmd);
-            yield return new WaitForSeconds(0.3f);
+            yield return new WaitForSeconds(Data.Config.AIConfig.moveExecuteDelaySeconds);
         }
 
         // ==============================================================
@@ -136,7 +137,7 @@ namespace GamePlay.AI
 
             SkillCommand skillCmd = new SkillCommand(unit, step.SkillData, context);
             yield return Tool.WaitUntilCommandFinish(skillCmd);
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(Data.Config.AIConfig.skillExecuteDelaySeconds);
         }
 
         // ==============================================================

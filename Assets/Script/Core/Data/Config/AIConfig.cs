@@ -43,5 +43,10 @@ namespace Core.Data
 
         // ── 技能评分 ──
         public float aoeExtraHitBonus = 0.3f;          // AoE 每多命中一个目标的加分
+
+        // ── 执行节奏 ──
+        public float planStepWaitSeconds = 0.5f;       // 计划步骤(AIPlanStep.Wait)等待时间
+        public float moveExecuteDelaySeconds = 0.3f;   // 移动指令后等待间隔
+        public float skillExecuteDelaySeconds = 0.5f;  // 技能指令后等待间隔
     }
 }

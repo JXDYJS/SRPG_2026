@@ -114,7 +114,7 @@ namespace GamePlay.AI.Tasks
 
             if (Skill == null || TargetUnit == null)
             {
-                plan.AddStep(AIPlanStep.Wait(0.5f));
+                plan.AddStep(AIPlanStep.Wait(Data.Config.AIConfig.planStepWaitSeconds));
                 return plan;
             }
 
@@ -137,7 +137,7 @@ namespace GamePlay.AI.Tasks
             {
                 if (Skill.Cost > 0 && !unit.Character.HasEnoughMP(Skill.Cost))
                 {
-                    plan.AddStep(AIPlanStep.Wait(0.5f));
+                    plan.AddStep(AIPlanStep.Wait(Data.Config.AIConfig.planStepWaitSeconds));
                 }
                 else
                 {
@@ -146,7 +146,7 @@ namespace GamePlay.AI.Tasks
             }
             else
             {
-                plan.AddStep(AIPlanStep.Wait(0.5f));
+                plan.AddStep(AIPlanStep.Wait(Data.Config.AIConfig.planStepWaitSeconds));
             }
 
             return plan;
