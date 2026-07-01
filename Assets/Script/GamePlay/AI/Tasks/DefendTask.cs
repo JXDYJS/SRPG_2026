@@ -170,6 +170,11 @@ namespace GamePlay.AI.Tasks
                     continue;
                 }
 
+                if (skill.Cost > 0 && !unit.Character.HasEnoughMP(skill.Cost))
+                {
+                    continue;
+                }
+
                 float score = 0f;
 
                 // 治疗技能：估计治疗效用

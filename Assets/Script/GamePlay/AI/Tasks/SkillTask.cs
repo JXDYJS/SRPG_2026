@@ -42,6 +42,11 @@ namespace GamePlay.AI.Tasks
                 return 0f;
             }
 
+            if (Skill.Cost > 0 && !unit.Character.HasEnoughMP(Skill.Cost))
+            {
+                return 0f;
+            }
+
             // 1. 技能影响评估 (0~1)
             float skillImpact = EvaluateSkillImpact(Skill, unit, TargetUnit);
             if (skillImpact <= 0f)
@@ -133,7 +138,14 @@ namespace GamePlay.AI.Tasks
             // 3. 使用技能
             if (unit.CanAction)
             {
-                plan.AddStep(AIPlanStep.UseSkill(Skill, TargetUnit));
+                if (Skill.Cost > 0 && !unit.Character.HasEnoughMP(Skill.Cost))
+                {
+                    plan.AddStep(AIPlanStep.Wait(0.5f));
+                }
+                else
+                {
+                    plan.AddStep(AIPlanStep.UseSkill(Skill, TargetUnit));
+                }
             }
             else
             {

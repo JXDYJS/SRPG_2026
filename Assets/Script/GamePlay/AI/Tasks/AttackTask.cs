@@ -191,6 +191,12 @@ namespace GamePlay.AI.Tasks
                     continue;
                 }
 
+                // 过滤：MP不足的技能不考虑
+                if (skill.Cost > 0 && !unit.Character.HasEnoughMP(skill.Cost))
+                {
+                    continue;
+                }
+
                 // 评分：预估伤害
                 float score = EstimateDamageValue(unit, skill, target);
 

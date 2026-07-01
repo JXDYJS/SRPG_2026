@@ -54,6 +54,11 @@ namespace GamePlay.AI.Tasks
                 return 0f;
             }
 
+            if (Skill.Cost > 0 && !unit.Character.HasEnoughMP(Skill.Cost))
+            {
+                return 0f;
+            }
+
             // 1. 治疗紧迫度 (0~1)：目标HP越低越需要支援
             float targetHPPercent = (float)TargetUnit.Character.statSystem.currentHP
                                   / TargetUnit.Character.statSystem.maxHP.getValue();
@@ -130,7 +135,14 @@ namespace GamePlay.AI.Tasks
             // 3. 使用支援技能
             if (unit.CanAction)
             {
-                plan.AddStep(AIPlanStep.UseSkill(Skill, TargetUnit));
+                if (Skill.Cost > 0 && !unit.Character.HasEnoughMP(Skill.Cost))
+                {
+                    plan.AddStep(AIPlanStep.Wait(0.5f));
+                }
+                else
+                {
+                    plan.AddStep(AIPlanStep.UseSkill(Skill, TargetUnit));
+                }
             }
             else
             {

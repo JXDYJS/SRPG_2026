@@ -123,6 +123,12 @@ namespace GamePlay.AI
                 yield break;
             }
 
+            if (step.SkillData.Cost > 0 && !unit.Character.HasEnoughMP(step.SkillData.Cost))
+            {
+                Debug.LogWarning($"[AI] {unit.name} MP不足无法释放 {step.SkillData.SkillName}，需要 {step.SkillData.Cost}，当前 {unit.Character.MP}");
+                yield break;
+            }
+
             SkillTargetContext context = new SkillTargetContext(
                 step.SkillTarget.gridPosition,
                 new List<MapUnit> { step.SkillTarget }

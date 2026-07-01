@@ -109,6 +109,11 @@ namespace GamePlay.AI
                     continue;
                 }
 
+                if (!HasEnoughMPForSkill(unit, skill))
+                {
+                    continue;
+                }
+
                 foreach (MapUnit ally in allies)
                 {
                     if (ally.Character.statSystem.currentHP <= 0)
@@ -200,6 +205,11 @@ namespace GamePlay.AI
             foreach (SkillDataSO skill in activeSkills)
             {
                 if (skill == null || skill == normalAttack)
+                {
+                    continue;
+                }
+
+                if (!HasEnoughMPForSkill(unit, skill))
                 {
                     continue;
                 }
@@ -629,6 +639,21 @@ namespace GamePlay.AI
             }
 
             return bestPos;
+        }
+
+        private bool HasEnoughMPForSkill(MapUnit unit, SkillDataSO skill)
+        {
+            if (skill.Cost <= 0)
+            {
+                return true;
+            }
+
+            if (unit.Character == null)
+            {
+                return false;
+            }
+
+            return unit.Character.HasEnoughMP(skill.Cost);
         }
     }
 }
