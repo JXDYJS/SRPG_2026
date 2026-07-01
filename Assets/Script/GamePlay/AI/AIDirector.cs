@@ -39,15 +39,15 @@ namespace GamePlay.AI
 
             taskPool.Add(new WaitTask(0f));
 
-            float tTotal = (t5 - t0) * 1000f;
-            UnityEngine.Debug.Log($"[AIDirector·性能] ─────────────────────────────");
-            UnityEngine.Debug.Log($"[AIDirector·性能]  Attack:  {(t1 - t0) * 1000f:F1} ms  → {CountByType(taskPool, AITaskType.Attack)} 个任务");
-            UnityEngine.Debug.Log($"[AIDirector·性能]  Support: {(t2 - t1) * 1000f:F1} ms  → {CountByType(taskPool, AITaskType.Support)} 个任务");
-            UnityEngine.Debug.Log($"[AIDirector·性能]  Defend:  {(t3 - t2) * 1000f:F1} ms  → {CountByType(taskPool, AITaskType.Defend)} 个任务");
-            UnityEngine.Debug.Log($"[AIDirector·性能]  Skill:   {(t4 - t3) * 1000f:F1} ms  → {CountByType(taskPool, AITaskType.Skill)} 个任务");
-            UnityEngine.Debug.Log($"[AIDirector·性能]  Move:    {(t5 - t4) * 1000f:F1} ms  → {CountByType(taskPool, AITaskType.Move)} 个任务");
-            UnityEngine.Debug.Log($"[AIDirector·性能]  总计:    {tTotal:F1} ms  → {taskPool.Count} 个任务");
-            UnityEngine.Debug.Log($"[AIDirector·性能] ─────────────────────────────");
+            // float tTotal = (t5 - t0) * 1000f;
+            // UnityEngine.Debug.Log($"[AIDirector·性能] ─────────────────────────────");
+            // UnityEngine.Debug.Log($"[AIDirector·性能]  Attack:  {(t1 - t0) * 1000f:F1} ms  → {CountByType(taskPool, AITaskType.Attack)} 个任务");
+            // UnityEngine.Debug.Log($"[AIDirector·性能]  Support: {(t2 - t1) * 1000f:F1} ms  → {CountByType(taskPool, AITaskType.Support)} 个任务");
+            // UnityEngine.Debug.Log($"[AIDirector·性能]  Defend:  {(t3 - t2) * 1000f:F1} ms  → {CountByType(taskPool, AITaskType.Defend)} 个任务");
+            // UnityEngine.Debug.Log($"[AIDirector·性能]  Skill:   {(t4 - t3) * 1000f:F1} ms  → {CountByType(taskPool, AITaskType.Skill)} 个任务");
+            // UnityEngine.Debug.Log($"[AIDirector·性能]  Move:    {(t5 - t4) * 1000f:F1} ms  → {CountByType(taskPool, AITaskType.Move)} 个任务");
+            // UnityEngine.Debug.Log($"[AIDirector·性能]  总计:    {tTotal:F1} ms  → {taskPool.Count} 个任务");
+            // UnityEngine.Debug.Log($"[AIDirector·性能] ─────────────────────────────");
 
             return taskPool;
         }
@@ -299,16 +299,16 @@ namespace GamePlay.AI
         private List<MapUnit> GetAliveAllies(MapUnit unit)
         {
             List<MapUnit> allies = new List<MapUnit>();
-            List<MapUnit> allUnits = UnitManager.Instance.GetAllUnits();
+            List<MapUnit> aliveUnits = UnitManager.Instance.GetAllAliveUnit();
 
-            foreach (MapUnit other in allUnits)
+            foreach (MapUnit other in aliveUnits)
             {
                 if (other == null || other == unit)
                 {
                     continue;
                 }
 
-                if (other.Faction == unit.Faction && other.Character.statSystem.currentHP > 0)
+                if (other.Faction == unit.Faction)
                 {
                     allies.Add(other);
                 }
@@ -367,6 +367,12 @@ namespace GamePlay.AI
 
         private bool IsTargetInSkillRange(MapUnit caster, SkillDataSO skill, MapUnit target, AITaskContext ctx)
         {
+            // 对自己施法：永远在范围内，无需距离/移动判断
+            if (target == caster && CanTargetSelf(skill))
+            {
+                return true;
+            }
+
             if (AttackRangeSystem.CanCastTo(caster.gridPosition, target.gridPosition, skill))
             {
                 return true;
@@ -420,7 +426,7 @@ namespace GamePlay.AI
             {
                 targetsEnemy = (skill.AIBehavior & (AISkillBehavior.Harm | AISkillBehavior.Debuff | AISkillBehavior.Control)) != 0;
                 targetsAlly = (skill.AIBehavior & (AISkillBehavior.Heal | AISkillBehavior.Buff)) != 0;
-                targetsSelf = targetsAlly;
+                targetsSelf = targetsAlly || skill.TargetType == TargetType.Self;
             }
             else
             {
@@ -441,16 +447,11 @@ namespace GamePlay.AI
                 return targets;
             }
 
-            List<MapUnit> allUnits = UnitManager.Instance.GetAllUnits();
+            List<MapUnit> aliveUnits = UnitManager.Instance.GetAllAliveUnit();
 
-            foreach (MapUnit other in allUnits)
+            foreach (MapUnit other in aliveUnits)
             {
                 if (other == null || other == unit)
-                {
-                    continue;
-                }
-
-                if (other.Character.statSystem.currentHP <= 0)
                 {
                     continue;
                 }
@@ -514,15 +515,15 @@ namespace GamePlay.AI
         /// </summary>
         private bool HasLivingEnemy(MapUnit unit)
         {
-            List<MapUnit> allUnits = UnitManager.Instance.GetAllUnits();
-            foreach (MapUnit other in allUnits)
+            List<MapUnit> aliveUnits = UnitManager.Instance.GetAllAliveUnit();
+            foreach (MapUnit other in aliveUnits)
             {
                 if (other == null || other == unit)
                 {
                     continue;
                 }
 
-                if (other.Faction != unit.Faction && other.Character.statSystem.currentHP > 0)
+                if (other.Faction != unit.Faction)
                 {
                     return true;
                 }
@@ -560,16 +561,16 @@ namespace GamePlay.AI
         {
             MapUnit nearest = null;
             int bestDist = int.MaxValue;
-            List<MapUnit> allUnits = UnitManager.Instance.GetAllUnits();
+            List<MapUnit> aliveUnits = UnitManager.Instance.GetAllAliveUnit();
 
-            foreach (MapUnit other in allUnits)
+            foreach (MapUnit other in aliveUnits)
             {
                 if (other == null || other == unit)
                 {
                     continue;
                 }
 
-                if (other.Faction == unit.Faction || other.Character.statSystem.currentHP <= 0)
+                if (other.Faction == unit.Faction)
                 {
                     continue;
                 }

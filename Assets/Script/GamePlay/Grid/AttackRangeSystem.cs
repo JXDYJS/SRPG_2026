@@ -100,6 +100,12 @@ namespace GamePlay.Grid
         /// </summary>
         public static bool CanCastTo(Vector3Int casterPos, Vector3Int targetPos, SkillDataSO skill)
         {
+            // 对自己施法：无视 CastMinRange/CastMaxRange，只需落脚点有效
+            if (casterPos == targetPos && skill.TargetType == TargetType.Self)
+            {
+                return CanPlaceSkillOnTile(targetPos);
+            }
+
             // 1. 2D shape check based on CastPattern
             int dx = targetPos.x - casterPos.x;
             int dz = targetPos.z - casterPos.z;
