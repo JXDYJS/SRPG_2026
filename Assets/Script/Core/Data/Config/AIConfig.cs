@@ -49,6 +49,26 @@ namespace Core.Data
         public float moveExecuteDelaySeconds = 0.3f;   // 移动指令后等待间隔
         public float skillExecuteDelaySeconds = 0.5f;  // 技能指令后等待间隔
 
+        // ── 战略评分权重（0~1，和为1） ──
+        public float strategicWeight_HPUrgency  = 0.35f; // 残血紧迫度
+        public float strategicWeight_Threat     = 0.25f; // 威胁贡献
+        public float strategicWeight_Role       = 0.20f; // 职业价值
+        public float strategicWeight_Coverage   = 0.20f; // 战场覆盖度
+
+        // ── 资源惩罚 ──
+        public float resourcePenaltyFactor = 0.30f; // cost/maxMP 的最大惩罚比例
+
+        // ── Effect 类型基础效用值（Phase 命中时的单目标基准分） ──
+        public float effectValue_AddBuff    = 0.22f; // 增益/减益单目标
+        public float effectValue_RemoveBuff = 0.28f; // 移除负面单目标（更高紧迫度）
+        public float effectValue_MoveCaster = 0.12f; // 位移类
+
+        // ── Effect HP 上下文修正 ──
+        // AddBuff: 目标血量越高价值越大（效果持续时间更长）
+        public float addBuff_HPBonus = 0.30f;        // hpPercent 每 1.0 加成 30%
+        // RemoveBuff: 目标血量越低越紧迫（濒死带着负面急需解）
+        public float removeBuff_LowHPUrgency = 0.50f; // (1-hpPercent) 每 1.0 加成 50%
+
         // ── 任务挤占控制 ──
         // ≤crewMin: 全额效用; ≥crewMax: 效用归零（不再抢同一目标）; 中间线性递减
         public float attackCrewMin = 1f;

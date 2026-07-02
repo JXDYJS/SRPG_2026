@@ -4,7 +4,9 @@ using UnityEngine;
 using GamePlay.Units;
 using GamePlay.Grid;
 using GamePlay.AI.Tasks;
+using Grid;
 using Global;
+using Character;
 using Core.Data;
 
 namespace GamePlay.AI
@@ -17,6 +19,7 @@ namespace GamePlay.AI
         private Dictionary<MapUnit, int> _attackCounts = new();
         private Dictionary<MapUnit, int> _skillCounts = new();
         private Dictionary<MapUnit, int> _supportCounts = new();
+        private Dictionary<MapUnit,float> _strategicScore = new();
         private bool _roundPrepared;
 
         public void Awake()
@@ -30,6 +33,7 @@ namespace GamePlay.AI
             if (_roundPrepared) return;
             _roundPrepared = true;
             RefreshCoverage();
+            RefreshStrategicScores();
         }
 
         public void RoundEnd()
@@ -39,6 +43,7 @@ namespace GamePlay.AI
             _attackCounts.Clear();
             _skillCounts.Clear();
             _supportCounts.Clear();
+            _strategicScore.Clear();
         }
 
         private void RefreshCoverage()
@@ -91,6 +96,57 @@ namespace GamePlay.AI
             if (max <= 0f) return 1f;
             int count = GetCommitmentCount(target, taskType);
             return LinearStep(min, max, count);
+        }
+
+        // ==============================================================
+        // 战略评分系统 — 每个单位的综合战术价值 (0~1)
+        // ==============================================================
+        private void RefreshStrategicScores()
+        {
+            _strategicScore.Clear();
+            var allUnits = Managers.UnitManager.Instance.GetAllAliveUnit();
+            if (allUnits == null || allUnits.Count == 0) return;
+
+            InfluenceMapLayer threatMap = TacticalMapManager.Instance?.ThreatMap;
+            float threatBase = Data.Config.AIConfig.threatNormalizeBase;
+            float wHP = Data.Config.AIConfig.strategicWeight_HPUrgency;
+            float wThreat = Data.Config.AIConfig.strategicWeight_Threat;
+            float wRole = Data.Config.AIConfig.strategicWeight_Role;
+            float wCov = Data.Config.AIConfig.strategicWeight_Coverage;
+
+            foreach (var unit in allUnits)
+            {
+                float hpPercent = (float)unit.Character.statSystem.currentHP
+                                / unit.Character.statSystem.maxHP.getValue();
+                float hpUrgency = 1f - hpPercent;
+
+                float threatScore = 0f;
+                if (threatMap != null)
+                    threatScore = Mathf.Clamp01(threatMap.GetScore(unit.gridPosition) / threatBase);
+
+                float roleScore = 0.5f;
+                var unitClass = unit.GetClass();
+                if (unitClass != null)
+                    roleScore = Mathf.Max(unitClass.Aggressiveness, unitClass.Supportiveness) * 0.8f + 0.2f;
+
+                float coverageScore = 0f;
+                if (_coverageTable.TryGetValue(unit, out var covered))
+                    coverageScore = Mathf.Clamp01(covered.Count / 10f);
+
+                float score = wHP * hpUrgency + wThreat * threatScore
+                            + wRole * roleScore + wCov * coverageScore;
+                _strategicScore[unit] = Mathf.Clamp01(score);
+            }
+        }
+
+        /// <summary>
+        /// 获取单位的战略价值分 (0~1)。未计算时返回 0.5 (中性)。
+        /// </summary>
+        public float GetStrategicScore(MapUnit unit)
+        {
+            if (_strategicScore.TryGetValue(unit, out float score))
+                return score;
+            return 0.5f;
         }
 
         public void TargetDied(MapUnit target)
