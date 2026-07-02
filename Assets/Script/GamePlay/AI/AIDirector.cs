@@ -338,7 +338,7 @@ namespace GamePlay.AI
         }
 
         /// <summary>
-        /// A*寻路到目标，沿路径在移动力范围内选最佳落点
+        /// A*寻路到目标（不限行动力），沿路径在移动力内选最佳落点
         /// score = 路径进度×0.6 + 安全度×0.4
         /// </summary>
         private Vector3Int? FindAdvancePositionAlongPath(MapUnit unit, MapUnit target, AITaskContext ctx)
@@ -352,23 +352,27 @@ namespace GamePlay.AI
 
             Vector3Int? bestPos = null;
             float bestScore = float.MinValue;
+            float accumulatedCost = 0f;
+            Vector3Int lastPos = unit.gridPosition;
 
             for (int i = 0; i < path.Count; i++)
             {
                 Vector3Int tile = path[i];
 
-                // 超出移动力则停止
-                if (!ctx.ReachableTiles.Contains(tile))
+                float stepCost = Mathf.Abs(tile.x - lastPos.x)
+                               + Mathf.Abs(tile.z - lastPos.z)
+                               + Mathf.Abs(tile.y - lastPos.y);
+                accumulatedCost += stepCost;
+                if (accumulatedCost > ctx.MoveRange)
                     break;
 
-                // 被占用则跳过
                 if (UnitManager.Instance.GetUnitAt(tile) != null)
+                {
+                    lastPos = tile;
                     continue;
+                }
 
-                // 路径进度：越远越好 (0~1)
                 float progress = (float)(i + 1) / path.Count;
-
-                // 安全度：威胁越低越好
                 float threat = ctx.ThreatMap.GetScore(tile);
                 float safety = 1.0f - Mathf.Clamp01(threat / 50f);
 
@@ -378,6 +382,8 @@ namespace GamePlay.AI
                     bestScore = score;
                     bestPos = tile;
                 }
+
+                lastPos = tile;
             }
 
             return bestPos;
