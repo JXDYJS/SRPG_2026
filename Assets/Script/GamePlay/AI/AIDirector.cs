@@ -233,53 +233,20 @@ namespace GamePlay.AI
         // ==============================================================
         private void GenerateMoveTasks(MapUnit unit, List<AITask> pool, AITaskContext ctx)
         {
-            InfluenceMapLayer threatMap = ctx.ThreatMap;
-            float currentThreat = threatMap.GetScore(unit.gridPosition);
-
-            HashSet<Vector3Int> reachableTiles = ctx.ReachableTiles;
-
-            Vector3Int? bestMovePos = null;
-            float bestScore = float.MinValue;
-
-            foreach (Vector3Int tile in reachableTiles)
+            // ─── Part 1: 撤退 — 找周围威胁更低的格子 ───
+            Vector3Int? retreatPos = FindRetreatPosition(unit, ctx);
+            if (retreatPos.HasValue)
             {
-                if (tile == unit.gridPosition)
-                {
-                    continue;
-                }
-
-                MapUnit occupying = UnitManager.Instance.GetUnitAt(tile);
-                if (occupying != null)
-                {
-                    continue;
-                }
-
-                float threat = threatMap.GetScore(tile);
-                float score = currentThreat - threat;
-                if (score > bestScore)
-                {
-                    bestScore = score;
-                    bestMovePos = tile;
-                }
+                pool.Add(new MoveTask(retreatPos.Value, 0.8f));
             }
 
-            // 只要有任何威胁降低，就提供规避移动选项
-            if (bestMovePos.HasValue && bestScore > 0f)
-            {
-                float priority = Mathf.Clamp01(bestScore / Data.Config.AIConfig.dangerThreatThreshold);
-                pool.Add(new MoveTask(bestMovePos.Value, priority));
-            }
-
-            // ─── 向最近的敌人前压 ──────────
-            // 只要敌人存活就生成前压 Move，不依赖 IsUnitReachable 的预判。
-            // TaskBidding 中 Attack/Skill 的 baseU 若可用则自然优先胜出；
-            // 若不可用（CalculateUtilityFor 返回 0），Move 将自动顶替，避免罚站。
+            // ─── Part 2: 前压 — 选最佳目标 → A*寻路 → 沿路径选落点 ───
             if (HasLivingEnemy(unit))
             {
-                MapUnit nearestEnemy = FindNearestEnemy(unit);
-                if (nearestEnemy != null)
+                MapUnit bestTarget = SelectAdvanceTarget(unit, ctx);
+                if (bestTarget != null)
                 {
-                    Vector3Int? advancePos = FindAdvancePosition(unit, nearestEnemy, ctx);
+                    Vector3Int? advancePos = FindAdvancePositionAlongPath(unit, bestTarget, ctx);
                     if (advancePos.HasValue && advancePos.Value != unit.gridPosition)
                     {
                         float hpPercent = GetHPPercent(unit);
@@ -288,6 +255,132 @@ namespace GamePlay.AI
                     }
                 }
             }
+        }
+
+        // ==============================================================
+        // 移动辅助方法
+        // ==============================================================
+
+        /// <summary>
+        /// 撤退位置：在可达格中找威胁比当前位置低的格子
+        /// </summary>
+        private Vector3Int? FindRetreatPosition(MapUnit unit, AITaskContext ctx)
+        {
+            float currentThreat = ctx.ThreatMap.GetScore(unit.gridPosition);
+            if (currentThreat <= 0.01f)
+                return null;
+
+            Vector3Int? bestPos = null;
+            float bestThreat = currentThreat;
+
+            foreach (Vector3Int tile in ctx.ReachableTiles)
+            {
+                if (tile == unit.gridPosition)
+                    continue;
+
+                if (UnitManager.Instance.GetUnitAt(tile) != null)
+                    continue;
+
+                float threat = ctx.ThreatMap.GetScore(tile);
+                if (threat < bestThreat)
+                {
+                    bestThreat = threat;
+                    bestPos = tile;
+                }
+            }
+
+            return bestPos;
+        }
+
+        /// <summary>
+        /// 综合评分选出最有价值的前压目标
+        /// score = strategicScore×0.4 + 距离因子×0.3 + 血量因子×0.3
+        /// </summary>
+        private MapUnit SelectAdvanceTarget(MapUnit unit, AITaskContext ctx)
+        {
+            MapUnit best = null;
+            float bestScore = float.MinValue;
+
+            List<MapUnit> aliveUnits = UnitManager.Instance.GetAllAliveUnit();
+            foreach (MapUnit enemy in aliveUnits)
+            {
+                if (enemy == null || enemy == unit)
+                    continue;
+                if (enemy.Faction == unit.Faction)
+                    continue;
+                if (enemy.Character == null || enemy.Character.statSystem.currentHP <= 0)
+                    continue;
+
+                // 战略评分 (SharedTaskBoard 综合了 HP紧迫+威胁+职业+覆盖)
+                float strategic = 0.5f;
+                if (SharedTaskBoard.Instance != null)
+                    strategic = SharedTaskBoard.Instance.GetStrategicScore(enemy);
+
+                // 距离因子：曼哈顿粗排，越近分越高
+                int manhattan = Mathf.Abs(unit.gridPosition.x - enemy.gridPosition.x)
+                              + Mathf.Abs(unit.gridPosition.z - enemy.gridPosition.z);
+                float distanceFactor = 1.0f - Mathf.Clamp01((float)manhattan / 20f);
+
+                // 血量因子：残血优先
+                float hpPercent = (float)enemy.Character.statSystem.currentHP
+                                / enemy.Character.statSystem.maxHP.getValue();
+                float hpFactor = 1.0f - hpPercent;
+
+                float score = strategic * 0.4f + distanceFactor * 0.3f + hpFactor * 0.3f;
+                if (score > bestScore)
+                {
+                    bestScore = score;
+                    best = enemy;
+                }
+            }
+
+            return best;
+        }
+
+        /// <summary>
+        /// A*寻路到目标，沿路径在移动力范围内选最佳落点
+        /// score = 路径进度×0.6 + 安全度×0.4
+        /// </summary>
+        private Vector3Int? FindAdvancePositionAlongPath(MapUnit unit, MapUnit target, AITaskContext ctx)
+        {
+            List<Vector3Int> path = AStar.FindPath(
+                unit.gridPosition, target.gridPosition,
+                MapManager.Instance.logicalGrid, unit.moveStats);
+
+            if (path == null || path.Count == 0)
+                return null;
+
+            Vector3Int? bestPos = null;
+            float bestScore = float.MinValue;
+
+            for (int i = 0; i < path.Count; i++)
+            {
+                Vector3Int tile = path[i];
+
+                // 超出移动力则停止
+                if (!ctx.ReachableTiles.Contains(tile))
+                    break;
+
+                // 被占用则跳过
+                if (UnitManager.Instance.GetUnitAt(tile) != null)
+                    continue;
+
+                // 路径进度：越远越好 (0~1)
+                float progress = (float)(i + 1) / path.Count;
+
+                // 安全度：威胁越低越好
+                float threat = ctx.ThreatMap.GetScore(tile);
+                float safety = 1.0f - Mathf.Clamp01(threat / 50f);
+
+                float score = progress * 0.6f + safety * 0.4f;
+                if (score > bestScore)
+                {
+                    bestScore = score;
+                    bestPos = tile;
+                }
+            }
+
+            return bestPos;
         }
 
         // ==============================================================
@@ -534,94 +627,6 @@ namespace GamePlay.AI
             }
 
             return false;
-        }
-
-        /// <summary>
-        /// 找到距离最近的存活敌人
-        /// </summary>
-        private MapUnit FindNearestEnemy(MapUnit unit)
-        {
-            MapUnit nearest = null;
-            int bestDist = int.MaxValue;
-            List<MapUnit> aliveUnits = UnitManager.Instance.GetAllAliveUnit();
-
-            foreach (MapUnit other in aliveUnits)
-            {
-                if (other == null || other == unit)
-                {
-                    continue;
-                }
-
-                if (other.Faction == unit.Faction)
-                {
-                    continue;
-                }
-
-                int dist = Mathf.Abs(unit.gridPosition.x - other.gridPosition.x)
-                         + Mathf.Abs(unit.gridPosition.z - other.gridPosition.z);
-                if (dist < bestDist)
-                {
-                    bestDist = dist;
-                    nearest = other;
-                }
-            }
-
-            return nearest;
-        }
-
-        /// <summary>
-        /// 找一个靠近最近敌人、但威胁不超过 HP 容忍度的可达位置
-        /// </summary>
-        private Vector3Int? FindAdvancePosition(MapUnit unit, MapUnit nearestEnemy, AITaskContext ctx)
-        {
-            float hpPercent = GetHPPercent(unit);
-
-            // 根据血量决定可接受的最大威胁度
-            // 满血时敢于踩 dangerThreatThreshold × 1.0 的区域
-            // 残血时只敢踩 dangerThreatThreshold × 0.2 的区域
-            float maxAcceptableThreat = Data.Config.AIConfig.dangerThreatThreshold * Mathf.Max(0.2f, hpPercent);
-
-            Vector3Int enemyPos = nearestEnemy.gridPosition;
-            Vector3Int? bestPos = null;
-            float bestScore = float.MinValue;
-
-            foreach (Vector3Int tile in ctx.ReachableTiles)
-            {
-                if (tile == unit.gridPosition)
-                {
-                    continue;
-                }
-
-                MapUnit occupying = UnitManager.Instance.GetUnitAt(tile);
-                if (occupying != null)
-                {
-                    continue;
-                }
-
-                float threat = ctx.ThreatMap.GetScore(tile);
-                if (threat > maxAcceptableThreat)
-                {
-                    continue;
-                }
-
-                int distToEnemy = Mathf.Abs(tile.x - enemyPos.x)
-                                + Mathf.Abs(tile.z - enemyPos.z);
-
-                // 距离效用：越靠近敌人越好
-                float proximity = 1.0f - Mathf.Clamp01((float)distToEnemy / (ctx.MoveRange + 5));
-
-                // 安全效用：威胁越低越好
-                float safety = 1.0f - Mathf.Clamp01(threat / (maxAcceptableThreat + 1f));
-
-                float score = proximity * 0.6f + safety * 0.4f;
-                if (score > bestScore)
-                {
-                    bestScore = score;
-                    bestPos = tile;
-                }
-            }
-
-            return bestPos;
         }
 
         private bool HasEnoughMPForSkill(MapUnit unit, SkillDataSO skill)
