@@ -263,14 +263,18 @@ namespace GamePlay.AI
                 }
             }
 
-            if (bestMovePos.HasValue && bestScore > Data.Config.AIConfig.dangerThreatThreshold * 0.3f)
+            // 只要有任何威胁降低，就提供规避移动选项
+            if (bestMovePos.HasValue && bestScore > 0f)
             {
                 float priority = Mathf.Clamp01(bestScore / Data.Config.AIConfig.dangerThreatThreshold);
                 pool.Add(new MoveTask(bestMovePos.Value, priority));
             }
 
-            // ─── 当没有可攻击目标时，尝试向最近的敌人前压 ───
-            if (HasLivingEnemy(unit) && !HasAnyReachableTarget(unit, ctx))
+            // ─── 向最近的敌人前压 ──────────
+            // 只要敌人存活就生成前压 Move，不依赖 IsUnitReachable 的预判。
+            // TaskBidding 中 Attack/Skill 的 baseU 若可用则自然优先胜出；
+            // 若不可用（CalculateUtilityFor 返回 0），Move 将自动顶替，避免罚站。
+            if (HasLivingEnemy(unit))
             {
                 MapUnit nearestEnemy = FindNearestEnemy(unit);
                 if (nearestEnemy != null)
@@ -524,28 +528,6 @@ namespace GamePlay.AI
                 }
 
                 if (other.Faction != unit.Faction)
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        /// <summary>
-        /// 是否有任意敌人在攻击范围内（含移动后）
-        /// </summary>
-        private bool HasAnyReachableTarget(MapUnit unit, AITaskContext ctx)
-        {
-            if (ctx.OffensiveSkills.Count == 0)
-            {
-                return false;
-            }
-
-            List<MapUnit> players = UnitManager.Instance.GetAllAlivePlayers();
-            foreach (MapUnit player in players)
-            {
-                if (IsUnitReachable(unit, player, ctx))
                 {
                     return true;
                 }
