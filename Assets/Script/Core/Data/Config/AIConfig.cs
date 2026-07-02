@@ -11,7 +11,7 @@ namespace Core.Data
 
         // ── 防御/自保 ──
         public float lowHPThreshold = 0.35f;          // HP 低于此比例触发防御
-        public float dangerThreatThreshold = 30f;      // 威胁分超过此值考虑撤退
+        public float dangerThreatThreshold = 9999f;      // 威胁分超过此值考虑撤退
         public float threatImprovementRatio = 0.5f;    // 新位置威胁需 < 当前位置 * 此值
 
         // ── 支援 ──
@@ -62,6 +62,7 @@ namespace Core.Data
         public float effectValue_AddBuff    = 0.22f; // 增益/减益单目标
         public float effectValue_RemoveBuff = 0.28f; // 移除负面单目标（更高紧迫度）
         public float effectValue_MoveCaster = 0.12f; // 位移类
+        public float effectValue_Execute = 0.15f;//  斩杀固定加成
 
         // ── Effect HP 上下文修正 ──
         // AddBuff: 目标血量越高价值越大（效果持续时间更长）

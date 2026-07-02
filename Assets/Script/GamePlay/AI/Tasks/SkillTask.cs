@@ -15,6 +15,8 @@ namespace GamePlay.AI.Tasks
         public SkillDataSO Skill { get; private set; }
         public override MapUnit TargetUnit { get; protected set; }
 
+        private Vector3Int? _bestCastPos;
+
         public SkillTask(SkillDataSO skill, MapUnit target, float basePriority) : base(AITaskType.Skill, basePriority)
         {
             Skill = skill;
@@ -32,7 +34,7 @@ namespace GamePlay.AI.Tasks
             if (Skill.Cost > 0 && !unit.Character.HasEnoughMP(Skill.Cost)) return 0f;
 
             // 1. Phase 命中效用：每个 Phase 独立统计命中单位 × 单目标价值 × 战略分，跨 Phase 求和
-            float phaseTotal = EvaluatePhaseUtility(unit);
+            float phaseTotal = EvaluatePhaseUtility(unit, ctx);
             if (phaseTotal <= 0f) return 0f;
 
             // 2. 距离效用 (0~1)：越近越好
@@ -70,11 +72,16 @@ namespace GamePlay.AI.Tasks
                 return plan;
             }
 
-            // 1. 检查是否在施法范围内
+            // 1. 检查是否在施法范围内（Self-target 当前位置永远合法）
             bool alreadyInRange = AttackRangeSystem.CanCastTo(unit.gridPosition, TargetUnit.gridPosition, Skill);
 
-            // 2. 不在范围内则找最佳施法位置
-            if (!alreadyInRange && unit.CanMove)
+            // 2. Self-target AoE：需要走到 optimal cast position 才能覆盖到目标
+            if (TargetUnit == unit && _bestCastPos.HasValue && _bestCastPos.Value != unit.gridPosition && unit.CanMove)
+            {
+                plan.AddStep(AIPlanStep.Move(_bestCastPos.Value));
+            }
+            // 3. 非 Self-target：不在范围内则找最佳施法位置
+            else if (!alreadyInRange && unit.CanMove)
             {
                 Vector3Int? bestPos = FindBestCastPosition(unit, ctx.ReachableTiles, Skill, TargetUnit);
 
@@ -84,7 +91,7 @@ namespace GamePlay.AI.Tasks
                 }
             }
 
-            // 3. 使用技能
+            // 4. 使用技能
             if (unit.CanAction)
             {
                 if (Skill.Cost > 0 && !unit.Character.HasEnoughMP(Skill.Cost))
@@ -137,16 +144,55 @@ namespace GamePlay.AI.Tasks
         // ==============================================================
 
         /// <summary>
-        /// 遍历技能所有 Phase，对每个 Phase 统计 AoE 命中单位数 × 单目标价值 × 战略分
+        /// 遍历技能所有 Phase，统计每个 Phase 的命中单位 × 单目标价值 × 战略分。
         /// 命中单位为 0 的 Phase 不贡献。各 Phase 求和。
+        /// Self-target AoE：先从脚下算，无命中则扫描 reachable tiles（找到第一个就停）。
         /// </summary>
-        private float EvaluatePhaseUtility(MapUnit caster)
+        private float EvaluatePhaseUtility(MapUnit caster, AITaskContext ctx)
+        {
+            if (Skill.Phases == null || Skill.Phases.Count == 0) return 0f;
+
+            // 非 Self-target：AoE 中心固定（目标/落点），不随施法者移动
+            if (TargetUnit != caster)
+                return ComputePhaseUtilityAt(caster.gridPosition, caster);
+
+            // Self-target：AoE 跟着施法者。优先原地，无命中则扫描可达 tile。
+            float utility = ComputePhaseUtilityAt(caster.gridPosition, caster);
+            if (utility > 0f)
+            {
+                _bestCastPos = caster.gridPosition;
+                return utility;
+            }
+
+            foreach (Vector3Int tile in ctx.ReachableTiles)
+            {
+                if (tile == caster.gridPosition) continue;
+                MapUnit occupying = UnitManager.Instance.GetUnitAt(tile);
+                if (occupying != null) continue;
+
+                utility = ComputePhaseUtilityAt(tile, caster);
+                if (utility > 0f)
+                {
+                    _bestCastPos = tile;
+                    return utility;
+                }
+            }
+
+            return 0f;
+        }
+
+        /// <summary>
+        /// 在指定位置计算 Phase 命中效用（不改变状态，纯计算）
+        /// </summary>
+        private float ComputePhaseUtilityAt(Vector3Int casterPos, MapUnit caster)
         {
             if (Skill.Phases == null || Skill.Phases.Count == 0) return 0f;
 
             float totalUtility = 0f;
             int casterATK = (int)caster.Character.statSystem.ATK.getValue();
             bool anyPhaseHit = false;
+
+            Vector3Int effectiveTargetPos = (TargetUnit == caster) ? casterPos : TargetUnit.gridPosition;
 
             foreach (SkillPhase phase in Skill.Phases)
             {
@@ -155,7 +201,6 @@ namespace GamePlay.AI.Tasks
                 float phaseUtility = 0f;
                 bool hasHit = false;
 
-                // Self-target Phase：施法者自身就是目标，永远命中
                 if (phase.TargetType == TargetType.Self)
                 {
                     float unitImpact = EvaluateEffectImpactOnUnit(caster, caster, phase, casterATK);
@@ -165,7 +210,7 @@ namespace GamePlay.AI.Tasks
                 else
                 {
                     List<Vector3Int> aoeTiles = AttackRangeSystem.GetAoERange3D(
-                        caster.gridPosition, TargetUnit.gridPosition, phase);
+                        casterPos, effectiveTargetPos, phase);
 
                     foreach (Vector3Int tile in aoeTiles)
                     {
@@ -214,7 +259,7 @@ namespace GamePlay.AI.Tasks
                             impact *= 1.0f + lethality * 0.3f;
                             // 斩杀固定加分：消除一个威胁的战略价值
                             if (mitigated >= target.Character.statSystem.currentHP)
-                                impact += 0.15f;
+                                impact += Data.Config.AIConfig.effectValue_Execute;
                             totalImpact += impact;
                         }
                         break;
