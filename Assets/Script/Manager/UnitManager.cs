@@ -174,5 +174,17 @@ namespace Managers
             }
             return players;
         }
+        public List<MapUnit> GetAllAliveUnit()
+        {
+            List<MapUnit> ans = new List<MapUnit>();
+            foreach (var _unit in allUnits)
+            {
+                if (_unit != null && _unit.CurrentState != UnitState.Dead)
+                {
+                    ans.Add(_unit);
+                }
+            }
+            return ans;
+        }
     }
 }
