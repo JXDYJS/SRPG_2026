@@ -230,71 +230,29 @@ namespace GamePlay.AI
 
         // ==============================================================
         // 移动任务生成
+        // 前压 — MoveTask 只负责逼近敌人。撤退交由 GenerateDefendTasks 处理。
         // ==============================================================
         private void GenerateMoveTasks(MapUnit unit, List<AITask> pool, AITaskContext ctx)
         {
-            // ─── Part 1: 撤退 — 找周围威胁更低的格子 ───
-            Vector3Int? retreatPos = FindRetreatPosition(unit, ctx);
-            if (retreatPos.HasValue)
-            {
-                pool.Add(new MoveTask(retreatPos.Value, 0.8f));
-            }
+            if (!HasLivingEnemy(unit))
+                return;
 
-            // ─── Part 2: 前压 — 选最佳目标 → A*寻路 → 沿路径选落点 ───
-            if (HasLivingEnemy(unit))
+            MapUnit bestTarget = SelectAdvanceTarget(unit, ctx);
+            if (bestTarget == null)
+                return;
+
+            Vector3Int? advancePos = FindAdvancePositionAlongPath(unit, bestTarget, ctx);
+            if (advancePos.HasValue && advancePos.Value != unit.gridPosition)
             {
-                MapUnit bestTarget = SelectAdvanceTarget(unit, ctx);
-                if (bestTarget != null)
-                {
-                    Vector3Int? advancePos = FindAdvancePositionAlongPath(unit, bestTarget, ctx);
-                    if (advancePos.HasValue)
-                        Debug.Log($"[AI·前压] {unit.name} → {bestTarget.name} A*路径落点=({advancePos.Value.x},{advancePos.Value.y},{advancePos.Value.z})");
-                    else
-                        Debug.LogWarning($"[AI·前压] {unit.name} → {bestTarget.name} FindAdvancePositionAlongPath 返回 null");
-                    if (advancePos.HasValue && advancePos.Value != unit.gridPosition)
-                    {
-                        float hpPercent = GetHPPercent(unit);
-                        float priority = Mathf.Clamp01(hpPercent * 0.6f + 0.2f);
-                        pool.Add(new MoveTask(advancePos.Value, priority));
-                    }
-                }
+                float hpPercent = GetHPPercent(unit);
+                float priority = Mathf.Clamp01(hpPercent * 0.6f + 0.2f);
+                pool.Add(new MoveTask(advancePos.Value, priority));
             }
         }
 
         // ==============================================================
-        // 移动辅助方法
+        // 前压辅助方法
         // ==============================================================
-
-        /// <summary>
-        /// 撤退位置：在可达格中找威胁比当前位置低的格子
-        /// </summary>
-        private Vector3Int? FindRetreatPosition(MapUnit unit, AITaskContext ctx)
-        {
-            float currentThreat = ctx.ThreatMap.GetScore(unit.gridPosition);
-            if (currentThreat <= 0.01f)
-                return null;
-
-            Vector3Int? bestPos = null;
-            float bestThreat = currentThreat;
-
-            foreach (Vector3Int tile in ctx.ReachableTiles)
-            {
-                if (tile == unit.gridPosition)
-                    continue;
-
-                if (UnitManager.Instance.GetUnitAt(tile) != null)
-                    continue;
-
-                float threat = ctx.ThreatMap.GetScore(tile);
-                if (threat < bestThreat)
-                {
-                    bestThreat = threat;
-                    bestPos = tile;
-                }
-            }
-
-            return bestPos;
-        }
 
         /// <summary>
         /// 综合评分选出最有价值的前压目标

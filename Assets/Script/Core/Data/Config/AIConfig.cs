@@ -11,7 +11,7 @@ namespace Core.Data
 
         // ── 防御/自保 ──
         public float lowHPThreshold = 0.35f;          // HP 低于此比例触发防御
-        public float dangerThreatThreshold = 9999f;      // 威胁分超过此值考虑撤退
+        public float dangerThreatThreshold = 30f;        // 威胁分超过此值考虑撤退
         public float threatImprovementRatio = 0.5f;    // 新位置威胁需 < 当前位置 * 此值
 
         // ── 支援 ──
