@@ -84,5 +84,11 @@ namespace Core.Data
         public float overkillThresholdRatio = 0.8f;
         // 过杀惩罚完全归零的额外区间（ratio + fullKillMargin → 惩罚=0）
         public float overkillFullKillMargin = 0.5f;
+
+        // ── 职业-任务权重细调 ──
+        // Skill 任务的基础倍率
+        public float classWeight_SkillMult = 1.5f;
+        // Skill 任务中 Aggressiveness 的占比（0~1，剩余归 Supportiveness）
+        public float classWeight_SkillAggroBlend = 0.7f;
     }
 }

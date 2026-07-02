@@ -1,6 +1,7 @@
 using Character;
 using UnityEngine;
 using GamePlay.AI.Tasks;
+using Core.Data;
 
 namespace GamePlay.AI
 {
@@ -29,7 +30,12 @@ namespace GamePlay.AI
                     return unitClass.Aggressiveness * 1.5f;
 
                 case AITaskType.Skill:
-                    return Mathf.Max(unitClass.Aggressiveness, unitClass.Supportiveness) * 1.2f;
+                    {
+                        float blend = Data.Config.AIConfig.classWeight_SkillAggroBlend;
+                        float mult  = Data.Config.AIConfig.classWeight_SkillMult;
+                        return (unitClass.Aggressiveness * blend
+                              + unitClass.Supportiveness * (1f - blend)) * mult;
+                    }
 
                 case AITaskType.Support:
                     return unitClass.Supportiveness * 1.5f;
