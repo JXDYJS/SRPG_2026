@@ -88,10 +88,17 @@ namespace GamePlay.AI
                     crewFactor = SharedTaskBoard.Instance.GetCrewFactor(task.TargetUnit, task.TaskType);
                 }
 
-                // 7. 综合评分
-                float finalScore = baseUtility * classWeight * hpModifier * distanceFactor * task.BasePriority * crewFactor;
+                // 6.5 过杀惩罚：目标已有足够承诺伤害时阻止更多人攻击
+                float overkillPenalty = 1f;
+                if (task.TargetUnit != null && SharedTaskBoard.Instance != null)
+                {
+                    overkillPenalty = SharedTaskBoard.Instance.GetOverkillPenalty(task.TargetUnit);
+                }
 
-                Debug.Log($"[AI·竞价]   [{idx}] {taskDesc,-40} | baseU={baseUtility:F3} | clsW={classWeight:F2} | hpM={hpModifier:F2} | distF={distanceFactor:F2} | crewF={crewFactor:F2} | prio={task.BasePriority:F2} | → {finalScore:F4}");
+                // 7. 综合评分
+                float finalScore = baseUtility * classWeight * hpModifier * distanceFactor * task.BasePriority * crewFactor * overkillPenalty;
+
+                Debug.Log($"[AI·竞价]   [{idx}] {taskDesc,-40} | baseU={baseUtility:F3} | clsW={classWeight:F2} | hpM={hpModifier:F2} | distF={distanceFactor:F2} | crewF={crewFactor:F2} | overkill={overkillPenalty:F2} | prio={task.BasePriority:F2} | → {finalScore:F4}");
 
                 if (finalScore > bestScore)
                 {

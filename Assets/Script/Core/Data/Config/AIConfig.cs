@@ -17,11 +17,11 @@ namespace Core.Data
         // ── 支援 ──
         public float healThreshold = 0.7f;             // 友军 HP 高于此比例不治疗
 
-        // ── 攻击任务效用权重 ──
+        // ── 攻击任务效用权重（和为1.0） ──
         public float attackWeight_Distance = 0.20f;
-        public float attackWeight_Execute  = 0.35f;
-        public float attackWeight_Threat   = 0.20f;
-        public float attackWeight_Damage   = 0.25f;
+        public float attackWeight_Execute  = 0.10f;   // 降低残血偏好，避免集火
+        public float attackWeight_Threat   = 0.30f;   // 提高威胁目标权重
+        public float attackWeight_Damage   = 0.40f;   // 提高伤害预估权重
 
         // ── 防御任务效用权重 ──
         public float defendWeight_HPUrgency          = 0.35f;
@@ -78,5 +78,11 @@ namespace Core.Data
         public float skillCrewMax = 3f;
         public float supportCrewMin = 0f;
         public float supportCrewMax = 2f;
+
+        // ── 过杀惩罚 ──
+        // 承诺伤害 ≥ currentHP × ratio 时开始惩罚，防止多人猛攻同一残血目标
+        public float overkillThresholdRatio = 0.8f;
+        // 过杀惩罚完全归零的额外区间（ratio + fullKillMargin → 惩罚=0）
+        public float overkillFullKillMargin = 0.5f;
     }
 }

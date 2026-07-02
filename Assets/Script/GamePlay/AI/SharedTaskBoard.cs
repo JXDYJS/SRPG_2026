@@ -20,6 +20,7 @@ namespace GamePlay.AI
         private Dictionary<MapUnit, int> _skillCounts = new();
         private Dictionary<MapUnit, int> _supportCounts = new();
         private Dictionary<MapUnit,float> _strategicScore = new();
+        private Dictionary<MapUnit, float> _committedDamage = new();
         private bool _roundPrepared;
 
         public void Awake()
@@ -44,6 +45,7 @@ namespace GamePlay.AI
             _skillCounts.Clear();
             _supportCounts.Clear();
             _strategicScore.Clear();
+            _committedDamage.Clear();
         }
 
         private void RefreshCoverage()
@@ -70,12 +72,20 @@ namespace GamePlay.AI
             return list.Count(u => u.Faction == faction);
         }
 
-        public void RegisterCommitment(MapUnit target, AITaskType taskType)
+        public void RegisterCommitment(MapUnit target, AITaskType taskType, float estimatedDamage = 0f)
         {
             var dict = GetCommitDict(taskType);
-            if (dict == null) return;
-            dict.TryGetValue(target, out int count);
-            dict[target] = count + 1;
+            if (dict != null)
+            {
+                dict.TryGetValue(target, out int count);
+                dict[target] = count + 1;
+            }
+
+            if (estimatedDamage > 0f)
+            {
+                _committedDamage.TryGetValue(target, out float current);
+                _committedDamage[target] = current + estimatedDamage;
+            }
         }
 
         public int GetCommitmentCount(MapUnit target, AITaskType taskType)
@@ -96,6 +106,47 @@ namespace GamePlay.AI
             if (max <= 0f) return 1f;
             int count = GetCommitmentCount(target, taskType);
             return LinearStep(min, max, count);
+        }
+
+        /// <summary>
+        /// 获取已承诺的伤害总量
+        /// </summary>
+        public float GetCommittedDamage(MapUnit target)
+        {
+            if (_committedDamage.TryGetValue(target, out float damage))
+                return damage;
+            return 0f;
+        }
+
+        /// <summary>
+        /// 过杀惩罚因子（0~1）
+        /// 1.0 = 可以继续攻击; 0.0 = 目标已有足够承诺伤害，不应再攻击
+        /// 当 committedDamage / remainingHP ≤ thresholdRatio → 1.0
+        /// 当 committedDamage / remainingHP ≥ thresholdRatio + fullKillMargin → 0.0
+        /// 中间线性递减
+        /// </summary>
+        public float GetOverkillPenalty(MapUnit target)
+        {
+            if (target == null || target.Character == null)
+                return 1f;
+
+            float remainingHP = target.Character.statSystem.currentHP;
+            if (remainingHP <= 0f)
+                return 0f;
+
+            float committed = GetCommittedDamage(target);
+            if (committed <= 0f)
+                return 1f;
+
+            float ratio = committed / remainingHP;
+            float threshold = Data.Config.AIConfig.overkillThresholdRatio;
+            float margin = Data.Config.AIConfig.overkillFullKillMargin;
+
+            if (ratio <= threshold)
+                return 1f;
+            if (ratio >= threshold + margin)
+                return 0f;
+            return 1f - (ratio - threshold) / margin;
         }
 
         // ==============================================================
@@ -155,6 +206,7 @@ namespace GamePlay.AI
             _attackCounts.Remove(target);
             _skillCounts.Remove(target);
             _supportCounts.Remove(target);
+            _committedDamage.Remove(target);
         }
 
         private Dictionary<MapUnit, int> GetCommitDict(AITaskType type) => type switch

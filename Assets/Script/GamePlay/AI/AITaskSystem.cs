@@ -135,7 +135,13 @@ namespace GamePlay.AI
             {
                 if (bestTask.TargetUnit != null)
                 {
-                    SharedTaskBoard.Instance.RegisterCommitment(bestTask.TargetUnit, bestTask.TaskType);
+                    float estimatedDamage = 0f;
+                    if (bestTask is AttackTask atk)
+                    {
+                        estimatedDamage = atk.EstimatedDamage;
+                    }
+                    SharedTaskBoard.Instance.RegisterCommitment(
+                        bestTask.TargetUnit, bestTask.TaskType, estimatedDamage);
                 }
             }
             else

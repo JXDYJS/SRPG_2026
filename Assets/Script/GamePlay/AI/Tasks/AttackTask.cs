@@ -14,6 +14,14 @@ namespace GamePlay.AI.Tasks
     {
         public override MapUnit TargetUnit { get; protected set; }
 
+        private SkillDataSO _bestSkill;
+        private float _estimatedDamage;
+
+        /// <summary>
+        /// 最近一次 CalculateUtilityFor 估算的伤害值，供 AITaskSystem 传递给 SharedTaskBoard
+        /// </summary>
+        public float EstimatedDamage => _estimatedDamage;
+
         public AttackTask(MapUnit target, float basePriority)
             : base(AITaskType.Attack, basePriority)
         {
@@ -42,18 +50,22 @@ namespace GamePlay.AI.Tasks
                 return 0f;
             }
 
+            // 重置缓存
+            _bestSkill = null;
+            _estimatedDamage = 0f;
+
             // 1. 获取可达位置（复用预计算上下文）
             HashSet<Vector3Int> reachableTiles = ctx.ReachableTiles;
             int moveRange = ctx.MoveRange;
 
-            // 2. 选择最佳攻击技能并找到最佳攻击位置
-            SkillDataSO bestSkill = SelectBestAttackSkill(unit, TargetUnit);
-            if (bestSkill == null)
+            // 2. 选择最佳攻击技能并缓存
+            _bestSkill = SelectBestAttackSkill(unit, TargetUnit);
+            if (_bestSkill == null)
             {
                 return 0f; // 没有可用的攻击手段
             }
 
-            Vector3Int? bestPos = FindBestAttackPosition(unit, reachableTiles, bestSkill, TargetUnit);
+            Vector3Int? bestPos = FindBestAttackPosition(unit, reachableTiles, _bestSkill, TargetUnit);
             if (!bestPos.HasValue)
             {
                 return 0f; // 走不到能攻击目标的位置
@@ -75,7 +87,7 @@ namespace GamePlay.AI.Tasks
             float threatUtility = Mathf.Clamp01(targetThreat / Data.Config.AIConfig.threatNormalizeBase);
 
             // 6. 伤害预估效用：能打多少伤害
-            float damageUtility = EstimateDamageUtility(unit, bestSkill, TargetUnit);
+            float damageUtility = EstimateDamageUtility(unit, _bestSkill, TargetUnit);
 
             // 7. 综合效用
             float wDist  = Data.Config.AIConfig.attackWeight_Distance;
@@ -86,7 +98,7 @@ namespace GamePlay.AI.Tasks
             return (wDist  * distanceUtility
                   + wExec  * executeUtility
                   + wThreat * threatUtility
-                  + wDamage * damageUtility) * bestSkill.AIPriority;
+                  + wDamage * damageUtility) * _bestSkill.AIPriority;
         }
 
         // ──────────────────────────────────────
@@ -96,8 +108,8 @@ namespace GamePlay.AI.Tasks
         {
             AIPlan plan = new AIPlan();
 
-            // 1. 选技能
-            SkillDataSO attackSkill = SelectBestAttackSkill(unit, TargetUnit)
+            // 1. 选技能（复用 CalculateUtilityFor 缓存的结果，避免重复计算）
+            SkillDataSO attackSkill = _bestSkill ?? SelectBestAttackSkill(unit, TargetUnit)
                                      ?? unit.NormalAttackSkill;
 
             if (attackSkill == null)
@@ -334,10 +346,13 @@ namespace GamePlay.AI.Tasks
 
         /// <summary>
         /// 伤害预估的效用值（对目标的伤害占目标最大HP的比例）
+        /// 同时缓存原始伤害值供外部使用
         /// </summary>
         private float EstimateDamageUtility(MapUnit caster, SkillDataSO skill, MapUnit target)
         {
             float estimatedDamage = EstimateDamageValue(caster, skill, target);
+            _estimatedDamage = estimatedDamage;
+
             float targetMaxHP = target.Character.statSystem.maxHP.getValue();
             if (targetMaxHP <= 0f)
             {
