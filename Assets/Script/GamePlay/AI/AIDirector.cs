@@ -347,7 +347,8 @@ namespace GamePlay.AI
         /// </summary>
         private Vector3Int? FindAdvancePositionAlongPath(MapUnit unit, MapUnit target, AITaskContext ctx)
         {
-            List<Vector3Int> path = AStar.FindPath(
+            // A*寻路到目标——允许终点被目标占据（FindPathToOccupied 专为此设计）
+            List<Vector3Int> path = AStar.FindPathToOccupied(
                 unit.gridPosition, target.gridPosition,
                 MapManager.Instance.logicalGrid, unit.moveStats);
 
@@ -358,7 +359,6 @@ namespace GamePlay.AI
             float bestScore = float.MinValue;
             float accumulatedCost = 0f;
             Vector3Int lastPos = unit.gridPosition;
-
             for (int i = 0; i < path.Count; i++)
             {
                 Vector3Int tile = path[i];

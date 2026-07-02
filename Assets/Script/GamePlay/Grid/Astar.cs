@@ -91,6 +91,69 @@ namespace GamePlay.Grid
 
             return null; // 没找到路径
         }
+
+        /// <summary>
+        /// A*寻路——允许终点被单位占据（用于AI寻找通往敌人的路径）
+        /// 除了终点格可以被人站着外，其他规则与 FindPath 完全相同。
+        /// </summary>
+        public static List<Vector3Int> FindPathToOccupied(Vector3Int start, Vector3Int end, LogicalGrid grid, UnitMoveStats stats)
+        {
+            List<Node> openSet = new List<Node>();
+            HashSet<Vector3Int> closedSet = new HashSet<Vector3Int>();
+
+            Node startNode = new Node(start);
+            openSet.Add(startNode);
+
+            while (openSet.Count > 0)
+            {
+                Node currentNode = openSet[0];
+                int bestIdx = 0;
+                for (int j = 1; j < openSet.Count; j++)
+                {
+                    Node n = openSet[j];
+                    if (n.FCost < currentNode.FCost ||
+                        (n.FCost == currentNode.FCost && n.hCost < currentNode.hCost))
+                    {
+                        currentNode = n;
+                        bestIdx = j;
+                    }
+                }
+                openSet.RemoveAt(bestIdx);
+                closedSet.Add(currentNode.position);
+
+                if (currentNode.position == end)
+                {
+                    return RetracePath(startNode, currentNode);
+                }
+
+                foreach (Vector3Int neighborPos in GetValidNeighbors(currentNode, grid, stats, end))
+                {
+                    if (closedSet.Contains(neighborPos)) continue;
+
+                    float distCost = GetFlatDistance(currentNode.position, neighborPos);
+                    float currentStandY = currentNode.position.y + grid.GetBlockYSize(currentNode.position);
+                    float targetStandY = neighborPos.y + grid.GetBlockYSize(neighborPos);
+                    float heightCost = Mathf.Abs(targetStandY - currentStandY);
+                    float newCost = currentNode.gCost + distCost + heightCost;
+
+                    Node neighborNode = openSet.Find(n => n.position == neighborPos);
+                    if (neighborNode == null || newCost < neighborNode.gCost)
+                    {
+                        if (neighborNode == null)
+                        {
+                            neighborNode = new Node(neighborPos);
+                            openSet.Add(neighborNode);
+                        }
+                        neighborNode.gCost = newCost;
+                        neighborNode.hCost = Get3DDistance(neighborPos, end);
+                        neighborNode.parent = currentNode;
+                    }
+                }
+            }
+
+            return null;
+        }
+
         /// <summary>
         /// 获得目标所有可达的地块
         /// </summary>
@@ -185,7 +248,7 @@ namespace GamePlay.Grid
         } 
 
         // === 核心逻辑：垂直扫描寻找邻居 ===
-        public   static List<Vector3Int> GetValidNeighbors(Node currentNode, LogicalGrid grid, UnitMoveStats stats)
+        public static List<Vector3Int> GetValidNeighbors(Node currentNode, LogicalGrid grid, UnitMoveStats stats, Vector3Int? endPosition = null)
         {
             List<Vector3Int> validNeighbors = new List<Vector3Int>();
             
@@ -206,12 +269,14 @@ namespace GamePlay.Grid
 
                     if (CanStandAt(grid, targetBlockPos, currentPos, stats))
                     {
-                        // 检查该位置是否有单位占用
-                        MapUnit unitAtPos = Managers.UnitManager.Instance?.GetUnitAt(targetBlockPos);
-                        if (unitAtPos != null)
+                        // 检查该位置是否有单位占用（终点允许被目标单位占据）
+                        if (!(endPosition.HasValue && targetBlockPos == endPosition.Value))
                         {
-                            // 有单位，不能走
-                            break;
+                            MapUnit unitAtPos = Managers.UnitManager.Instance?.GetUnitAt(targetBlockPos);
+                            if (unitAtPos != null)
+                            {
+                                break;
+                            }
                         }
                         
                         validNeighbors.Add(targetBlockPos);
@@ -293,6 +358,32 @@ namespace GamePlay.Grid
             }
 
             return true;
+        }
+        /// <summary>
+        /// 函数返回在一个角色攻击范围+移动范围内的所有角色 注意他只是使用了范围进行判断搜索 并不考虑遮挡 用于AI的粗略判断
+        /// </summary>
+        /// <param name="start"></param>
+        /// <param name="moveRange"></param>
+        /// <param name="grid"></param>
+        /// <param name="stats"></param>
+        /// <returns></returns>
+        public static List<MapUnit> GetUnitInRangeFuzzy(MapUnit unit)
+        {
+            float moveRange = unit.Character.statSystem.moveRange.getValue();
+            int maxAttackRange = unit.Character.characterData.MaxRange;
+            int minAttackRange = unit.Character.characterData.MinRange;
+            List<MapUnit>ans = new List<MapUnit>();
+            foreach(var _unit in Managers.UnitManager.Instance.GetAllAliveUnit())
+            {
+                var Hitpoint = _unit.GetHitPoint();
+                float dis = GameMath.abs(Hitpoint,unit.GetProjectileOrigin());
+                if(dis >= minAttackRange && dis <= moveRange + maxAttackRange)
+                {
+                    ans.Add(_unit);
+                }
+                
+            }
+            return ans;
         }
 
         public static List<Vector3Int> RetracePath(Node startNode, Node endNode)
