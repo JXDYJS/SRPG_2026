@@ -247,6 +247,10 @@ namespace GamePlay.AI
                 if (bestTarget != null)
                 {
                     Vector3Int? advancePos = FindAdvancePositionAlongPath(unit, bestTarget, ctx);
+                    if (advancePos.HasValue)
+                        Debug.Log($"[AI·前压] {unit.name} → {bestTarget.name} A*路径落点=({advancePos.Value.x},{advancePos.Value.y},{advancePos.Value.z})");
+                    else
+                        Debug.LogWarning($"[AI·前压] {unit.name} → {bestTarget.name} FindAdvancePositionAlongPath 返回 null");
                     if (advancePos.HasValue && advancePos.Value != unit.gridPosition)
                     {
                         float hpPercent = GetHPPercent(unit);
