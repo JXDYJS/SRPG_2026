@@ -64,11 +64,56 @@ namespace GamePlay.AI
                 yield break;
             }
 
-            // ─── 1. 重建威胁图 ───
+            // ─── 1. 等待威胁图重建完成 ───
+            // TurnManager 的事件已在玩家回合结束时启动后台增量重建（UniTask 分帧）
+            // 此处用 WaitUntil 保证重建完成，若动画窗口足够则 0 帧等待；超时则同步补完
             float t1 = Time.realtimeSinceStartup;
+            int waitFrames = 0;
             if (TacticalMapManager.Instance != null)
             {
-                TacticalMapManager.Instance.RebuildThreatMapSnapshot();
+                var tmm = TacticalMapManager.Instance;
+
+                // 先检查：如果后台已完成，跳过 WaitUntil（省 1 帧开销）
+                if (!tmm.IsRebuildComplete)
+                {
+                    int entryBgDone = tmm.BackgroundProcessedCount;
+                    int entryTotal = tmm.TotalRebuildCount;
+                    Debug.Log($"[威胁图] 进入等待: 后台已处理 {entryBgDone}/{entryTotal}");
+
+                    float deadline = Time.realtimeSinceStartup + 0.5f;
+                    float tWaitStart = Time.realtimeSinceStartup;
+
+                    while (!tmm.IsRebuildComplete && Time.realtimeSinceStartup <= deadline)
+                    {
+                        yield return null;
+                        waitFrames++;
+                    }
+
+                    float tWaitEnd = Time.realtimeSinceStartup;
+                    float tWaitMs = (tWaitEnd - tWaitStart) * 1000f;
+                    int afterBgDone = tmm.BackgroundProcessedCount;
+
+                    Debug.Log($"[威胁图] 等待结束: 等了 {waitFrames} 帧 ({tWaitMs:F1}ms), " +
+                              $"后台 {entryBgDone}→{afterBgDone}/{entryTotal}");
+                }
+                else
+                {
+                    int bgDone = tmm.BackgroundProcessedCount;
+                    int total = tmm.TotalRebuildCount;
+                    Debug.Log($"[威胁图] 后台已全部完成 ({bgDone}/{total}), 跳过 WaitUntil");
+                }
+
+                // 同步补完剩余（通常为空操作）
+                float tCompleteStart = Time.realtimeSinceStartup;
+                int beforeComplete = tmm.BackgroundProcessedCount;
+                tmm.CompleteIncrementalRebuild();
+                int afterComplete = tmm.BackgroundProcessedCount;
+                float tCompleteMs = (Time.realtimeSinceStartup - tCompleteStart) * 1000f;
+
+                if (afterComplete > beforeComplete)
+                {
+                    Debug.Log($"[威胁图] 同步补完: {beforeComplete}→{afterComplete} ({tCompleteMs:F1}ms)");
+                }
             }
             float tRebuildThreat = (Time.realtimeSinceStartup - t1) * 1000f;
 
@@ -116,7 +161,7 @@ namespace GamePlay.AI
             // ─── 性能汇总 ───
             float tTotalPreExec = (Time.realtimeSinceStartup - tStart) * 1000f;
             Debug.Log($"[AITaskSystem·性能] ═══════════════════════════════════");
-            Debug.Log($"[AITaskSystem·性能]  威胁图重建: {tRebuildThreat:F1} ms");
+            Debug.Log($"[AITaskSystem·性能]  威胁图总耗时: {tRebuildThreat:F1} ms (等待{waitFrames}帧)");
             Debug.Log($"[AITaskSystem·性能]  预计算上下文: {tContext:F1} ms");
             Debug.Log($"[AITaskSystem·性能]  生成任务池: {tGenerateTasks:F1} ms ({taskPool.Count}个)");
             Debug.Log($"[AITaskSystem·性能]  任务竞价:   {tBidding:F1} ms");
