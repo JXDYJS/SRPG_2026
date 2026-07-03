@@ -1,17 +1,27 @@
 using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using GamePlay.Units;
 using GamePlay.Control;
 using Global;
 using Managers;
 using Command;
 using GamePlay.AI;
+using Grid;
 
 public class TurnManager : MonoBehaviour
 {
     public static TurnManager Instance;
-    
+
+    // ================ 全局回合事件 ================
+    /// <summary>单位回合结束前触发（单位仍为 ActiveUnit）</summary>
+    public static event Action<MapUnit> OnBeforeUnitTurnEnd;
+
+    /// <summary>单位回合结束后触发（已清理 ActiveUnit，CalculateNextAction 尚未调用）</summary>
+    public static event Action<MapUnit> OnUnitTurnEnded;
+
     // 记录目前是谁在行动
     public MapUnit ActiveUnit { get; private set; }
 
@@ -112,13 +122,19 @@ public class TurnManager : MonoBehaviour
     public void EndCurrentUnitTurn()
     {
         if (ActiveUnit == null) return;
-        
+
+        OnBeforeUnitTurnEnd?.Invoke(ActiveUnit);
+
         ActiveUnit.OnTurnEnd();
-        
+
         // 让他重新回到起点（AV变更事件由TimelinePanel自动响应）
         ActiveUnit.ResetActionValue();
-        
+
+        var endedUnit = ActiveUnit;
         ActiveUnit = null;
+
+        // 通知外部系统：一个单位的回合已结束
+        OnUnitTurnEnded?.Invoke(endedUnit);
 
         // 寻找下一个人
         CalculateNextAction();
@@ -141,5 +157,45 @@ public class TurnManager : MonoBehaviour
                 GamePlay.Control.BattleInputController.Instance.ChangeState(GamePlay.Control.InputState.Idle);
             }
         }
+    }
+
+    // ================ 威胁图后台增量重建 ================
+    // TurnManager 兼任时间管理器：在玩家单位回合结束后，
+    // 用 UniTask 分帧驱动 TacticalMapManager 的增量重建。
+
+    void OnEnable()  => OnUnitTurnEnded += HandleUnitTurnEnded;
+    void OnDisable() => OnUnitTurnEnded -= HandleUnitTurnEnded;
+
+    private void HandleUnitTurnEnded(MapUnit unit)
+    {
+        // 只有玩家单位结束时才需要重建威胁图（威胁图反映玩家状态）
+        if (unit == null || unit.Faction != FactionType.Player) return;
+
+        // 启动后台分帧重建（fire-and-forget）
+        RunThreatMapIncrementalRebuild().Forget();
+    }
+
+    private async UniTaskVoid RunThreatMapIncrementalRebuild()
+    {
+        var tmm = TacticalMapManager.Instance;
+        // 以最新玩家状态开始增量重建
+        tmm.BeginIncrementalRebuild();
+        int total = tmm.TotalRebuildCount;
+        Debug.Log($"[威胁图·后台] 开始增量重建, 共 {total} 个玩家单位");
+
+        // 分帧推进：每帧处理 1 个玩家单位，直到全部完成
+        while (!tmm.IsRebuildComplete)
+        {
+            float tickMs = Time.realtimeSinceStartup;
+            tmm.TickIncrementalRebuild();
+            tickMs = (Time.realtimeSinceStartup - tickMs) * 1000f;
+            Debug.Log($"[威胁图·后台] 处理 {tmm.BackgroundProcessedCount}/{total} " +
+                      $"(本帧 {tickMs:F1}ms)");
+
+            if (!tmm.IsRebuildComplete)
+                await UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate);
+        }
+
+        Debug.Log($"[威胁图·后台] 全部完成, 共 {tmm.BackgroundProcessedCount}/{total}");
     }
 }

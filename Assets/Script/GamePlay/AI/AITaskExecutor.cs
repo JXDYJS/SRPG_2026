@@ -7,6 +7,7 @@ using GamePlay.Skill;
 using GamePlay.Units;
 using Command;
 using Global;
+using Core.Data;
 
 namespace GamePlay.AI
 {
@@ -109,7 +110,7 @@ namespace GamePlay.AI
 
             MoveCommand moveCmd = new MoveCommand(unit, path);
             yield return Tool.WaitUntilCommandFinish(moveCmd);
-            yield return new WaitForSeconds(0.3f);
+            yield return new WaitForSeconds(Data.Config.AIConfig.moveExecuteDelaySeconds);
         }
 
         // ==============================================================
@@ -123,6 +124,12 @@ namespace GamePlay.AI
                 yield break;
             }
 
+            if (step.SkillData.Cost > 0 && !unit.Character.HasEnoughMP(step.SkillData.Cost))
+            {
+                Debug.LogWarning($"[AI] {unit.name} MP不足无法释放 {step.SkillData.SkillName}，需要 {step.SkillData.Cost}，当前 {unit.Character.MP}");
+                yield break;
+            }
+
             SkillTargetContext context = new SkillTargetContext(
                 step.SkillTarget.gridPosition,
                 new List<MapUnit> { step.SkillTarget }
@@ -130,7 +137,7 @@ namespace GamePlay.AI
 
             SkillCommand skillCmd = new SkillCommand(unit, step.SkillData, context);
             yield return Tool.WaitUntilCommandFinish(skillCmd);
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(Data.Config.AIConfig.skillExecuteDelaySeconds);
         }
 
         // ==============================================================

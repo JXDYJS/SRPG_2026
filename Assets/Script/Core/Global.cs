@@ -1,5 +1,7 @@
 using UnityEngine;
 using Character.data;
+using Unity.VisualScripting;
+using Unity.Mathematics;
 
 namespace Global
 {

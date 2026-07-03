@@ -43,7 +43,7 @@ namespace GamePlay.Visual
             bool wasActive = _cursorHighlightObj.activeSelf;
             _cursorHighlightObj.SetActive(true);
             _cursorHighlightObj.transform.position = MapManager.Instance.GetWorldPosition(gridPos) + Vector3.up * 0.02f;
-            Debug.Log($"[Cursor] ShowCursorAt({gridPos}) wasActive={wasActive}");
+            //Debug.Log($"[Cursor] ShowCursorAt({gridPos}) wasActive={wasActive}");
         }
 
         public void HideCursor()

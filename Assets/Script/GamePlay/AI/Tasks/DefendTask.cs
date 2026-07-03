@@ -107,7 +107,7 @@ namespace GamePlay.AI.Tasks
                 }
                 else
                 {
-                    plan.AddStep(AIPlanStep.Wait(0.5f));
+                    plan.AddStep(AIPlanStep.Wait(Data.Config.AIConfig.planStepWaitSeconds));
                 }
             }
 
@@ -166,6 +166,11 @@ namespace GamePlay.AI.Tasks
                 }
 
                 if (!IsDefensiveSkill(skill))
+                {
+                    continue;
+                }
+
+                if (skill.Cost > 0 && !unit.Character.HasEnoughMP(skill.Cost))
                 {
                     continue;
                 }

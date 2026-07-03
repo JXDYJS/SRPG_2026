@@ -13,7 +13,7 @@ namespace GamePlay.AI.Tasks
     public class SupportTask : AITask
     {
         public SkillDataSO Skill { get; private set; }
-        public MapUnit TargetUnit { get; private set; }
+        public override MapUnit TargetUnit { get; protected set; }
 
         public SupportTask(SkillDataSO skill, MapUnit target, float basePriority)
             : base(AITaskType.Support, basePriority)
@@ -50,6 +50,11 @@ namespace GamePlay.AI.Tasks
 
             // 同阵营才支援
             if (TargetUnit.Faction != unit.Faction)
+            {
+                return 0f;
+            }
+
+            if (Skill.Cost > 0 && !unit.Character.HasEnoughMP(Skill.Cost))
             {
                 return 0f;
             }
@@ -109,7 +114,7 @@ namespace GamePlay.AI.Tasks
 
             if (Skill == null || TargetUnit == null)
             {
-                plan.AddStep(AIPlanStep.Wait(0.5f));
+                plan.AddStep(AIPlanStep.Wait(Data.Config.AIConfig.planStepWaitSeconds));
                 return plan;
             }
 
@@ -130,11 +135,18 @@ namespace GamePlay.AI.Tasks
             // 3. 使用支援技能
             if (unit.CanAction)
             {
-                plan.AddStep(AIPlanStep.UseSkill(Skill, TargetUnit));
+                if (Skill.Cost > 0 && !unit.Character.HasEnoughMP(Skill.Cost))
+                {
+                    plan.AddStep(AIPlanStep.Wait(Data.Config.AIConfig.planStepWaitSeconds));
+                }
+                else
+                {
+                    plan.AddStep(AIPlanStep.UseSkill(Skill, TargetUnit));
+                }
             }
             else
             {
-                plan.AddStep(AIPlanStep.Wait(0.5f));
+                plan.AddStep(AIPlanStep.Wait(Data.Config.AIConfig.planStepWaitSeconds));
             }
 
             return plan;

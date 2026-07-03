@@ -925,6 +925,48 @@ namespace GamePlay.Units
             );
         }
 
+        /// <summary>
+        /// 技能发射点（世界坐标）— 方块顶面中心 + 胸部高度
+        /// skill 参数预留供自定义技能覆写发射点
+        /// </summary>
+        public Vector3 GetProjectileOrigin(SkillDataSO skill = null)
+        {
+            Vector3 worldPos = MapManager.Instance.GetWorldPosition(gridPosition);
+            float cellSize = _mapManager != null ? _mapManager.cellSize : 1f;
+            float halfCell = cellSize * 0.5f;
+            float halfHeight = Character.characterData.Height * cellSize * 0.5f;
+            if (skill != null)
+            {
+                // 预留：自定义技能可通过 skill.CustomBehavior 或 if 分支覆写
+            }
+            return new Vector3(worldPos.x, worldPos.y + halfHeight, worldPos.z);
+        }
+
+        /// <summary>
+        /// 受击点（世界坐标）— 与发射点用同一套计算，保证对称
+        /// </summary>
+        public Vector3 GetHitPoint()
+        {
+            Vector3 worldPos = MapManager.Instance.GetWorldPosition(gridPosition);
+            float cellSize = _mapManager != null ? _mapManager.cellSize : 1f;
+            float halfCell = cellSize * 0.5f;
+            float halfHeight = Character.characterData.Height * cellSize * 0.5f;
+            return new Vector3(worldPos.x , worldPos.y + halfHeight, worldPos.z );
+        }
+
+        /// <summary>
+        /// 从格子坐标获取受击点（静态版本，用于 AoE 或空地等没有 MapUnit 的目标）
+        /// </summary>
+        public static Vector3 GetGridHitPoint(Vector3Int gridPos)
+        {
+            Vector3 worldPos = MapManager.Instance.GetWorldPosition(gridPos);
+            float cellSize = MapManager.Instance?.cellSize ?? 1f;
+            float halfCell = cellSize * 0.5f;
+            // 静态版本没有 CharacterData，默认假设目标高度为 2
+            float defaultHalfHeight = cellSize;
+            return new Vector3(worldPos.x , worldPos.y + defaultHalfHeight, worldPos.z );
+        }
+
         public void SetGridPositionDirectly(Vector3Int pos)
         {
             UndoSystem.Instance.RegisterDirty(this);

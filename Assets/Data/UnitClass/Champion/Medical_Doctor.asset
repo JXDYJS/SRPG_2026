@@ -21,7 +21,7 @@ MonoBehaviour:
   moveRange: 0
   Aggressiveness: 0.5
   Supportiveness: 1.5
-  SelfPreservation: 1
+  SelfPreservation: 0.8
   atkRange: {x: 0, y: 10}
   atkThreat: 1
   defRange: {x: 0, y: 10}

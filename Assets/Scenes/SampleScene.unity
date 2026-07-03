@@ -1461,7 +1461,6 @@ GameObject:
   - component: {fileID: 348045453}
   - component: {fileID: 348045455}
   - component: {fileID: 348045456}
-  - component: {fileID: 348045457}
   - component: {fileID: 348045458}
   - component: {fileID: 348045459}
   - component: {fileID: 348045460}
@@ -1721,18 +1720,6 @@ MonoBehaviour:
   _enableDynamicGIUpdate: 1
   _refreshInterval: 1
   _skyboxMaterial: {fileID: 0}
---- !u!114 &348045457
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 348045437}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ca5ba3e41c6218b4e8fd29a1a2620439, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &348045458
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6204,7 +6191,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 22400762, guid: 67117722a812a2e46ab8cb8eafbf5f5e, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.000022888184
+      value: -0.00004196167
       objectReference: {fileID: 0}
     - target: {fileID: 22426080, guid: 67117722a812a2e46ab8cb8eafbf5f5e, type: 3}
       propertyPath: m_AnchorMax.x

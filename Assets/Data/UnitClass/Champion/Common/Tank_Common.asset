@@ -19,9 +19,9 @@ MonoBehaviour:
   BonusHP: 0
   NormalAttack: {fileID: 0}
   moveRange: 0
-  Aggressiveness: 0.5
-  Supportiveness: 1.5
-  SelfPreservation: 0.5
+  Aggressiveness: 0.6
+  Supportiveness: 0.3
+  SelfPreservation: 1.2
   atkRange: {x: 0, y: 10}
   atkThreat: 1
   defRange: {x: 0, y: 10}

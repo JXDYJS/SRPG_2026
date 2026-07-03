@@ -37,7 +37,7 @@ namespace GamePlay.Skill
 
             if (sequenceResult.Context != null && sequenceResult.Context.TargetPosition != caster.gridPosition)
             {
-                Vector3 targetWorldPos = MapManager.Instance.GetWorldPosition(sequenceResult.Context.TargetPosition) + Vector3.up;
+                Vector3 targetWorldPos = MapUnit.GetGridHitPoint(sequenceResult.Context.TargetPosition);
                 
                 await UniTask.Create(() => {
                     var tcs = new UniTaskCompletionSource();
@@ -189,14 +189,14 @@ namespace GamePlay.Skill
 
         private static async UniTask PerformProjectileTransit(MapUnit caster, Vector3Int targetPosition, SkillVisualData visual)
         {
-            Vector3 targetWorldPos = MapManager.Instance.GetWorldPosition(targetPosition) + Vector3.up;
-            
-            Vector3 launchDirection = targetWorldPos - (caster.transform.position + Vector3.up);
+            Vector3 targetWorldPos = MapUnit.GetGridHitPoint(targetPosition);
+
+            Vector3 launchDirection = targetWorldPos - caster.GetProjectileOrigin();
             launchDirection.Normalize();
-            
+
             Quaternion launchRotation = Quaternion.LookRotation(launchDirection);
-            
-            var handle = Addressables.InstantiateAsync(visual.ProjectilePrefab, caster.transform.position + Vector3.up, launchRotation);
+
+            var handle = Addressables.InstantiateAsync(visual.ProjectilePrefab, caster.GetProjectileOrigin(), launchRotation);
             await handle.Task;
             
             if (handle.Status != AsyncOperationStatus.Succeeded)

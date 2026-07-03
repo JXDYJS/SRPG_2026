@@ -5,6 +5,7 @@ using GamePlay.AI.Tasks;
 using GamePlay.Units;
 using Managers;
 using Grid;
+using Core.Data;
 
 namespace GamePlay.AI
 {
@@ -63,11 +64,63 @@ namespace GamePlay.AI
                 yield break;
             }
 
-            // ─── 1. 重建威胁图 ───
+            // ─── 1. 等待威胁图重建完成 ───
+            // TurnManager 的事件已在玩家回合结束时启动后台增量重建（UniTask 分帧）
+            // 此处用 WaitUntil 保证重建完成，若动画窗口足够则 0 帧等待；超时则同步补完
             float t1 = Time.realtimeSinceStartup;
+            int waitFrames = 0;
             if (TacticalMapManager.Instance != null)
             {
-                TacticalMapManager.Instance.RebuildThreatMapSnapshot();
+                var tmm = TacticalMapManager.Instance;
+
+                // 分支判断三种情况
+                if (tmm.TotalRebuildCount == 0)
+                {
+                    // 后台从未启动（如战斗开始第一个就是敌人），走同步重建
+                    Debug.Log("[威胁图] 后台从未启动，同步重建");
+                    tmm.RebuildThreatMapSnapshot();
+                }
+                else if (!tmm.IsRebuildComplete)
+                {
+                    // 后台已启动但未完成 → 等待
+                    int entryBgDone = tmm.BackgroundProcessedCount;
+                    int entryTotal = tmm.TotalRebuildCount;
+                    Debug.Log($"[威胁图] 进入等待: 后台已处理 {entryBgDone}/{entryTotal}");
+
+                    float deadline = Time.realtimeSinceStartup + 0.5f;
+                    float tWaitStart = Time.realtimeSinceStartup;
+
+                    while (!tmm.IsRebuildComplete && Time.realtimeSinceStartup <= deadline)
+                    {
+                        yield return null;
+                        waitFrames++;
+                    }
+
+                    float tWaitEnd = Time.realtimeSinceStartup;
+                    float tWaitMs = (tWaitEnd - tWaitStart) * 1000f;
+                    int afterBgDone = tmm.BackgroundProcessedCount;
+
+                    Debug.Log($"[威胁图] 等待结束: 等了 {waitFrames} 帧 ({tWaitMs:F1}ms), " +
+                              $"后台 {entryBgDone}→{afterBgDone}/{entryTotal}");
+
+                    // 同步补完剩余（等待结束后可能还差几个）
+                    float tCompleteStart = Time.realtimeSinceStartup;
+                    int beforeComplete = tmm.BackgroundProcessedCount;
+                    tmm.CompleteIncrementalRebuild();
+                    int afterComplete = tmm.BackgroundProcessedCount;
+                    float tCompleteMs = (Time.realtimeSinceStartup - tCompleteStart) * 1000f;
+
+                    if (afterComplete > beforeComplete)
+                    {
+                        Debug.Log($"[威胁图] 同步补完: {beforeComplete}→{afterComplete} ({tCompleteMs:F1}ms)");
+                    }
+                }
+                else
+                {
+                    int bgDone = tmm.BackgroundProcessedCount;
+                    int total = tmm.TotalRebuildCount;
+                    Debug.Log($"[威胁图] 后台已全部完成 ({bgDone}/{total}), 跳过 WaitUntil");
+                }
             }
             float tRebuildThreat = (Time.realtimeSinceStartup - t1) * 1000f;
 
@@ -75,6 +128,16 @@ namespace GamePlay.AI
             float t1_5 = Time.realtimeSinceStartup;
             AITaskContext ctx = new AITaskContext(unit);
             float tContext = (Time.realtimeSinceStartup - t1_5) * 1000f;
+
+            //--新增  重建可打击版
+            if (SharedTaskBoard.Instance)
+            {
+                SharedTaskBoard.Instance.RoundStart();
+            }
+            else
+            {
+                Debug.LogError("task board is null");
+            }
 
             // ─── 2. AIDirector 生成候选任务池 ───
             float t2 = Time.realtimeSinceStartup;
@@ -89,7 +152,7 @@ namespace GamePlay.AI
             if (bestTask == null)
             {
                 Debug.LogWarning($"[AITaskSystem] {unit.name} 没有可选任务，兜底待机");
-                yield return new WaitForSeconds(0.5f);
+                yield return new WaitForSeconds(Data.Config.AIConfig.planStepWaitSeconds);
                 TurnManager.Instance.EndCurrentUnitTurn();
                 yield break;
             }
@@ -105,7 +168,7 @@ namespace GamePlay.AI
             // ─── 性能汇总 ───
             float tTotalPreExec = (Time.realtimeSinceStartup - tStart) * 1000f;
             Debug.Log($"[AITaskSystem·性能] ═══════════════════════════════════");
-            Debug.Log($"[AITaskSystem·性能]  威胁图重建: {tRebuildThreat:F1} ms");
+            Debug.Log($"[AITaskSystem·性能]  威胁图总耗时: {tRebuildThreat:F1} ms (等待{waitFrames}帧)");
             Debug.Log($"[AITaskSystem·性能]  预计算上下文: {tContext:F1} ms");
             Debug.Log($"[AITaskSystem·性能]  生成任务池: {tGenerateTasks:F1} ms ({taskPool.Count}个)");
             Debug.Log($"[AITaskSystem·性能]  任务竞价:   {tBidding:F1} ms");
@@ -120,6 +183,23 @@ namespace GamePlay.AI
             float tTotal = (Time.realtimeSinceStartup - tStart) * 1000f;
             Debug.Log($"[AITaskSystem·性能]  计划执行:   {tExecute:F1} ms");
             Debug.Log($"[AITaskSystem·性能]  全部合计:   {tTotal:F1} ms");
+            if (SharedTaskBoard.Instance != null)
+            {
+                if (bestTask.TargetUnit != null)
+                {
+                    float estimatedDamage = 0f;
+                    if (bestTask is AttackTask atk)
+                    {
+                        estimatedDamage = atk.EstimatedDamage;
+                    }
+                    SharedTaskBoard.Instance.RegisterCommitment(
+                        bestTask.TargetUnit, bestTask.TaskType, estimatedDamage);
+                }
+            }
+            else
+            {
+                Debug.LogError("task board is null");
+            }
 
             // ─── 6. 结束回合 ───
             TurnManager.Instance.EndCurrentUnitTurn();
