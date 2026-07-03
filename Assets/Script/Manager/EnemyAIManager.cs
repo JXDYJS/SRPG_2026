@@ -20,22 +20,6 @@ namespace GamePlay.AI
             Instance = this;
         }
 
-        public void TakeControl(MapUnit enemyUnit)
-        {
-            if (enemyUnit == null)
-            {
-                Debug.LogError("TakeControl : enemyUnit is null");
-                return;
-            }
-            if (TacticalMapManager.Instance == null)
-            {
-                Debug.LogError("TakeControl : TacticalMapManager is null");
-                return;
-            }
-            TacticalMapManager.Instance.RebuildThreatMapSnapshot();
-            StartCoroutine(EnemyAILogic(enemyUnit));
-        }
-
         private IEnumerator EnemyAILogic(MapUnit enemyUnit)
         {
             Debug.Log($"[AI] {enemyUnit.name} 正在思考...");

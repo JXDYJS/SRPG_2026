@@ -167,7 +167,7 @@ namespace Managers
             var players = new List<MapUnit>();
             foreach(var unit in allUnits)
             {
-                if(unit.Faction == FactionType.Player)
+                if(unit.Faction == FactionType.Player && unit.CurrentState != UnitState.Dead)
                 {
                     players.Add(unit);
                 }
