@@ -73,9 +73,16 @@ namespace GamePlay.AI
             {
                 var tmm = TacticalMapManager.Instance;
 
-                // 先检查：如果后台已完成，跳过 WaitUntil（省 1 帧开销）
-                if (!tmm.IsRebuildComplete)
+                // 分支判断三种情况
+                if (tmm.TotalRebuildCount == 0)
                 {
+                    // 后台从未启动（如战斗开始第一个就是敌人），走同步重建
+                    Debug.Log("[威胁图] 后台从未启动，同步重建");
+                    tmm.RebuildThreatMapSnapshot();
+                }
+                else if (!tmm.IsRebuildComplete)
+                {
+                    // 后台已启动但未完成 → 等待
                     int entryBgDone = tmm.BackgroundProcessedCount;
                     int entryTotal = tmm.TotalRebuildCount;
                     Debug.Log($"[威胁图] 进入等待: 后台已处理 {entryBgDone}/{entryTotal}");
@@ -95,24 +102,24 @@ namespace GamePlay.AI
 
                     Debug.Log($"[威胁图] 等待结束: 等了 {waitFrames} 帧 ({tWaitMs:F1}ms), " +
                               $"后台 {entryBgDone}→{afterBgDone}/{entryTotal}");
+
+                    // 同步补完剩余（等待结束后可能还差几个）
+                    float tCompleteStart = Time.realtimeSinceStartup;
+                    int beforeComplete = tmm.BackgroundProcessedCount;
+                    tmm.CompleteIncrementalRebuild();
+                    int afterComplete = tmm.BackgroundProcessedCount;
+                    float tCompleteMs = (Time.realtimeSinceStartup - tCompleteStart) * 1000f;
+
+                    if (afterComplete > beforeComplete)
+                    {
+                        Debug.Log($"[威胁图] 同步补完: {beforeComplete}→{afterComplete} ({tCompleteMs:F1}ms)");
+                    }
                 }
                 else
                 {
                     int bgDone = tmm.BackgroundProcessedCount;
                     int total = tmm.TotalRebuildCount;
                     Debug.Log($"[威胁图] 后台已全部完成 ({bgDone}/{total}), 跳过 WaitUntil");
-                }
-
-                // 同步补完剩余（通常为空操作）
-                float tCompleteStart = Time.realtimeSinceStartup;
-                int beforeComplete = tmm.BackgroundProcessedCount;
-                tmm.CompleteIncrementalRebuild();
-                int afterComplete = tmm.BackgroundProcessedCount;
-                float tCompleteMs = (Time.realtimeSinceStartup - tCompleteStart) * 1000f;
-
-                if (afterComplete > beforeComplete)
-                {
-                    Debug.Log($"[威胁图] 同步补完: {beforeComplete}→{afterComplete} ({tCompleteMs:F1}ms)");
                 }
             }
             float tRebuildThreat = (Time.realtimeSinceStartup - t1) * 1000f;
