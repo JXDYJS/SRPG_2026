@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe202a631b15d92408ac5c92665ab130, type: 3}
   m_Name: NormalAttack
   m_EditorClassIdentifier: 
-  SkillName: "\u53F2\u8482\u592B\u7684\u653B\u51FB"
+  SkillName: NormalAttack
   Description: 
   Icon: {fileID: 0}
   TargetType: 7
@@ -67,5 +67,7 @@ MonoBehaviour:
       TargetAreaOffset: {x: 0, y: 8, z: 0}
       TargetAreaRotation: {x: 90, y: 0, z: 0}
       TargetAreaDuration: -1
+  AIBehavior: 0
+  AIPriority: 1
   isCustomSkill: 0
   CustomBehavior: {fileID: 0}

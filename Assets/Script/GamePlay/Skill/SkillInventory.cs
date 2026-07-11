@@ -134,6 +134,21 @@ namespace GamePlay.Skill
             return result;
         }
 
+        public List<RuntimeSkillSlot> GetAllSlots()
+        {
+            List<RuntimeSkillSlot> result = new List<RuntimeSkillSlot>();
+
+            foreach (var kvp in _slots)
+            {
+                if (kvp.Value.IsUnlocked && kvp.Value.CurrentSkill != null)
+                {
+                    result.Add(kvp.Value);
+                }
+            }
+
+            return result;
+        }
+
         public List<SkillDataSO> GetActiveSkills()
         {
             List<SkillDataSO> result = new List<SkillDataSO>();
