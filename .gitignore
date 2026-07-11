@@ -104,3 +104,4 @@ __pycache__/
 
 # Debug dumps
 console_dump.txt
+console_dump.txt.meta
