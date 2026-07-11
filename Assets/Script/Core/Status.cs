@@ -5,7 +5,8 @@ using Global;
 
 namespace Status
 {
-    namespace state{
+    namespace state
+    {
         using Character.data;
         public enum StatModType
         {
@@ -46,14 +47,14 @@ namespace Status
             {
                 float value = baseValue;
                 float percentMod = 0;
-                foreach(StatModifier mod
+                foreach (StatModifier mod
                  in modifiers)
                 {
-                    if(mod.Type == StatModType.Percent)
+                    if (mod.Type == StatModType.Percent)
                     {
                         percentMod += mod.Value;
                     }
-                    else if(mod.Type == StatModType.Flat)
+                    else if (mod.Type == StatModType.Flat)
                     {
                         value += mod.Value;
                     }
@@ -63,7 +64,7 @@ namespace Status
             }
             public float getValue()
             {
-                if(!isDirty)
+                if (!isDirty)
                 {
                     return cachedValue;
                 }
@@ -87,9 +88,9 @@ namespace Status
 
             public void SetBaseValue(float newValue)
             {
-                    baseValue = newValue;
-                    isDirty = true;
-                    OnValueChanged?.Invoke();
+                baseValue = newValue;
+                isDirty = true;
+                OnValueChanged?.Invoke();
             }
 
             public void MarkDirty()
@@ -178,7 +179,39 @@ namespace Status
                 moveRange.getValue();
                 maxMP.getValue();
             }
-            
+            /// <summary>
+            /// 在属性变化的时候触发
+            /// </summary>
+            /// <param name="action"></param>
+            public void onChanged(Action action)
+            {
+                Stat[] lists = { maxHP, ATK, DEF, RES, Speed, moveRange, maxMP };
+                foreach (var stat in lists)
+                {
+                    stat.OnValueChanged += () =>
+                    {
+                        action.Invoke();
+                    };
+                }
+            }
+            private List<(string, Stat)> _statList = null;
+            public List<(string, Stat)> statList
+            {
+                get
+                {
+                    if (_statList == null) _statList = new List<(string, Stat)>
+                    {
+                        ("MaxHP", maxHP),
+                        ("ATK",ATK ),
+                        ("DEF",DEF),
+                        ("RES",RES),
+                        ("Speed",Speed),
+                        ("MoveRange",moveRange),
+                        ("MaxMp",maxMP)
+                    };
+                    return _statList;
+                }
+            }
         }
     }
     namespace damage
@@ -195,7 +228,7 @@ namespace Status
             public CharacterInstance source;
             public CharacterInstance target;
             public DamageType damageType;
-            
+
             // 【新增】现场目击者 (用于获取藏品和Buff列表)
             public MapUnit sourceUnit;
             public MapUnit targetUnit;
@@ -227,7 +260,7 @@ namespace Status
                 }
 
                 float finalDamage = damageInfo.damage;
-                
+
                 var sourceMods = damageInfo.sourceUnit?.GetModifiers() ?? new List<CombatModifier>();
                 var targetMods = damageInfo.targetUnit?.GetModifiers() ?? new List<CombatModifier>();
 
@@ -256,7 +289,7 @@ namespace Status
                         effectiveDefense = damageInfo.target.statSystem.RES.getValue();
                         applyMitigation = true;
                         break;
-                        
+
                     // Fire, Poison, True
                     default:
                         applyMitigation = false;

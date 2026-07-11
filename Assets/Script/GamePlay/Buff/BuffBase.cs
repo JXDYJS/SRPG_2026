@@ -2,6 +2,7 @@
 using UnityEngine;
 using GamePlay.Units;
 using Modifier;
+using System;
 namespace GamePlay.Buff{
     public abstract class BuffBase : CombatModifier
     {
@@ -11,6 +12,7 @@ namespace GamePlay.Buff{
         public bool IsDebuff;    // 是增益还是减益（用于净化逻辑）
         public MapUnit Owner { get; protected set; }
         public bool isInit = false;
+        public Action _onChange;
 
         public virtual void Initialize(MapUnit owner)
         {
@@ -40,7 +42,10 @@ namespace GamePlay.Buff{
         /// 层数变化钩子，当层数发生实质性变化时调用
         /// 子类可以重写此方法来刷新属性修饰器（StatModifier）的数值
         /// </summary>
-        public virtual void OnStacksChanged() { }
+        public virtual void OnStacksChanged()
+        {
+            _onChange?.Invoke();
+        }
 
         // 供外部调用
         public void AddStacks(int amount)

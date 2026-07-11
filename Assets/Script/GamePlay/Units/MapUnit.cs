@@ -337,17 +337,17 @@ namespace GamePlay.Units
 
             UndoSystem.Instance.RegisterDirty(this);
             Character.statSystem.currentHP -= (int)info.damage;
-            Debug.Log($"{name} 受到 {info.damage} 点伤害 ({info.damageType})");
+            //Debug.Log($"{name} 受到 {info.damage} 点伤害 ({info.damageType})");
             
             // 处理仇恨
-            if(info.sourceUnit != null && info.sourceUnit != this)
-            {
-                if(!_personalEnemies.Contains(info.sourceUnit))
-                {
-                    _personalEnemies.Add(info.sourceUnit);
-                    Debug.Log($"{name} 被激怒了！将 {info.sourceUnit.name} 视为敌人！");
-                }
-            }
+            // if(info.sourceUnit != null && info.sourceUnit != this)
+            // {
+            //     if(!_personalEnemies.Contains(info.sourceUnit))
+            //     {
+            //         _personalEnemies.Add(info.sourceUnit);
+            //         Debug.Log($"{name} 被激怒了！将 {info.sourceUnit.name} 视为敌人！");
+            //     }
+            // }
 
             if (info.sourceUnit != null)
             {
@@ -1177,6 +1177,14 @@ namespace GamePlay.Units
         public string GetUnitName()
         {
             return Character.characterData.name;
+        }
+        /// <summary>
+        /// 传入事件  在属性变化时触发
+        /// </summary>
+        /// <param name="action"></param>
+        public void OnStatusChanged(Action action)
+        {
+            this.Character.statSystem.onChanged(action);
         }
     }
 }
