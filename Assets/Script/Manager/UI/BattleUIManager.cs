@@ -70,16 +70,28 @@ namespace Managers
             await _uiStack.Pop();
         }
 
+        // ====== 旧 AttributePanel（已废弃） ======
+        // public void ShowAttributePanel(MapUnit unit)
+        // {
+        //     var panel = UIManager.Instance.OpenPanel<AttributePanel>();
+        //     if (panel != null)
+        //         panel.Show(unit);
+        // }
+        // public void HideAttributePanel()
+        // {
+        //     UIManager.Instance.ClosePanel<AttributePanel>();
+        // }
+        // ====== 新 StatusPopWindow ======
         public void ShowAttributePanel(MapUnit unit)
         {
-            var panel = UIManager.Instance.OpenPanel<AttributePanel>();
+            var panel = UIManager.Instance.OpenPanel<StatusPopWindow>();
             if (panel != null)
-                panel.Show(unit);
+                panel.init(unit);
         }
 
         public void HideAttributePanel()
         {
-            UIManager.Instance.ClosePanel<AttributePanel>();
+            UIManager.Instance.ClosePanel<StatusPopWindow>();
         }
 
         public void OnSkillSelected(SkillDataSO skill)
