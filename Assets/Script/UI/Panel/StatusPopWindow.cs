@@ -57,8 +57,11 @@ namespace UI.Panel
             var statList = unit.Character.statSystem.statList;
             foreach (var (name, stat) in statList)
             {
+                var _name = name;
+                if(name == "MaxHP")_name = "HP";
+                if(name == "MaxMP")_name = "MP";//有几个特殊属性不能直接显示
                 var slot = Instantiate(StatSlotPerfab, StatsContent.gameObject.transform).GetComponent<UI.Slot.SimpleSlot>();
-                slot.Init(stat, unit, name);
+                slot.Init(stat, unit, _name);
             }
         }
         public void initSkill(MapUnit unit)

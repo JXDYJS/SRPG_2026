@@ -5,7 +5,6 @@ using Managers;
 using System.Collections.Generic;
 using GamePlay.Skill;
 using UnityEngine.AddressableAssets;
-using UnityEngine.ResourceManagement.ResourceLocations;
 using Cysharp.Threading.Tasks;
 using System;
 namespace Utils
