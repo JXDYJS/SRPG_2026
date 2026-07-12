@@ -4,6 +4,9 @@ using GamePlay.Units;
 using GamePlay.Buff;
 using UnityEngine.UI;
 using Managers;
+using Core.Data;
+using System.IO;
+using Cysharp.Threading.Tasks;
 namespace UI.Panel
 {
     [UIPanelResource("UI/Battle/StatusPopWindow")]
@@ -15,6 +18,7 @@ namespace UI.Panel
         public GameObject SimpleSlotPerfab;
         public GameObject StatSlotPerfab;
         public GameObject SkillSlotPerfab;
+        public VirtualCamera VirtualCamera;
         public Button BgBtn;
         public int RowCount = 3;
         public float SlotSize = 40f;
@@ -72,6 +76,31 @@ namespace UI.Panel
                 skillSlot.Init(runtimeSlot.CurrentSkill, unit);
             }
         }
+
+        public async UniTask initVirtualCamera(MapUnit unit)
+        {
+            var root = VirtualCamera.ShowRoot;
+            for(int i = root.transform.childCount - 1 ;i >= 0; i--)
+            {
+                Destroy(root.transform.GetChild(i).gameObject);
+            }
+            var unit_portraitMob = unit.portraitMob;
+            if(unit_portraitMob != null)
+            {
+                await unit_portraitMob.InstantiateAsync(root.gameObject.transform);
+                goto flag;
+            }
+            string name = unit.Character.characterData.CharacterName;
+            string path = Data.Config.ViewConfig.defaultPortraitMobRoot + "/" + name;
+            var go = await Utils.Utils.InstantiateAddressableAsync(path, root.transform);
+            if(go == null)
+            {
+                Debug.LogError($"加载角色立绘失败: {path}");
+                return;
+            }
+            flag:
+            return;
+        }
         
         public void OnEnable()
         {
@@ -101,6 +130,7 @@ namespace UI.Panel
             initBuffStatus(unit);
             initStats(unit);
             initSkill(unit);
+            initVirtualCamera(unit);
         }
         public void OnDisable()
         {

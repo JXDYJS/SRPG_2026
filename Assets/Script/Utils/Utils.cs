@@ -4,6 +4,10 @@ using GamePlay.Grid;
 using Managers;
 using System.Collections.Generic;
 using GamePlay.Skill;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.ResourceLocations;
+using Cysharp.Threading.Tasks;
+using System;
 namespace Utils
 {
     public static class Utils
@@ -37,6 +41,24 @@ namespace Utils
             type == SkillSlotType.Passive5) return "Passive";
             if (type == SkillSlotType.Ultimate) return "Ultimate";
             return "error type";
+        }
+
+
+        /// <summary>
+        /// 直接从 Addressables 加载并实例化资源到指定父级下
+        /// </summary>
+        public static async UniTask<GameObject> InstantiateAddressableAsync(string key, Transform parent)
+        {
+            var handle = Addressables.InstantiateAsync(key, parent);
+            try
+            {
+                return await handle;
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"实例化 Addressables 资源失败 '{key}': {e.Message}");
+                return null;
+            }
         }
     }
 
@@ -272,12 +294,12 @@ namespace Utils
         {
             if (DebugSystem.DebugGizmosHost.Instance != null) return;
 
-            var existing = Object.FindObjectOfType<DebugSystem.DebugGizmosHost>();
+            var existing = UnityEngine.Object.FindObjectOfType<DebugSystem.DebugGizmosHost>();
             if (existing != null) return;
 
             var go = new GameObject("[DebugGizmos]");
             if (Application.isPlaying)
-                Object.DontDestroyOnLoad(go);
+                UnityEngine.Object.DontDestroyOnLoad(go);
             go.AddComponent<DebugSystem.DebugGizmosHost>();
         }
 
