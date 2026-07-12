@@ -7,6 +7,7 @@ using Managers;
 using Core.Data;
 using System.IO;
 using Cysharp.Threading.Tasks;
+using System.Collections.Generic;
 namespace UI.Panel
 {
     [UIPanelResource("UI/Battle/StatusPopWindow")]
@@ -22,6 +23,7 @@ namespace UI.Panel
         public Button BgBtn;
         public int RowCount = 3;
         public float SlotSize = 40f;
+        public Shader targetShader;
         public void initBuffStatus(MapUnit unit)
         {
             int count = unit.ActiveBuffs.Count;
@@ -84,21 +86,43 @@ namespace UI.Panel
             {
                 Destroy(root.transform.GetChild(i).gameObject);
             }
-            var unit_portraitMob = unit.portraitMob;
-            if(unit_portraitMob != null)
+            var unit_portraitMob = unit.Character.characterData.portraitMob;
+            GameObject go = null;
+            string name = unit.Character.characterData.CharacterName.ToLower();
+            string path = Data.Config.ViewConfig.defaultPortraitMobRoot + "/" + name + ".prefab";
+            if(unit_portraitMob != null && unit_portraitMob.RuntimeKeyIsValid())
             {
-                await unit_portraitMob.InstantiateAsync(root.gameObject.transform);
+                go = await unit_portraitMob.InstantiateAsync(root.gameObject.transform);
                 goto flag;
             }
-            string name = unit.Character.characterData.CharacterName;
-            string path = Data.Config.ViewConfig.defaultPortraitMobRoot + "/" + name;
-            var go = await Utils.Utils.InstantiateAddressableAsync(path, root.transform);
+            go = await Utils.Utils.InstantiateAddressableAsync(path, root.transform);
+            flag:
+            //因为是直接展示  所以要使用unlit材质
             if(go == null)
             {
                 Debug.LogError($"加载角色立绘失败: {path}");
                 return;
             }
-            flag:
+            if(targetShader == null)return;
+            Stack<GameObject> s = new();
+            s.Push(go);
+            while(s.Count > 0)
+            {
+                var node = s.Pop();
+                
+                var renderer = node.GetComponent<Renderer>();
+                if(renderer != null)
+                {
+                    foreach(var mat in renderer.materials)
+                    {
+                        mat.shader = targetShader;
+                    }
+                }
+                for(int i = 0; i < node.transform.childCount; i++)
+                {
+                    s.Push(node.transform.GetChild(i).gameObject);
+                }
+            }
             return;
         }
         
