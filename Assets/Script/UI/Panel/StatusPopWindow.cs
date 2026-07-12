@@ -88,7 +88,7 @@ namespace UI.Panel
             }
             var unit_portraitMob = unit.Character.characterData.portraitMob;
             GameObject go = null;
-            string name = unit.Character.characterData.CharacterName.ToLower();
+            string name = unit.Character.characterData.CharacterName;
             string path = Data.Config.ViewConfig.defaultPortraitMobRoot + "/" + name + ".prefab";
             if(unit_portraitMob != null && unit_portraitMob.RuntimeKeyIsValid())
             {
