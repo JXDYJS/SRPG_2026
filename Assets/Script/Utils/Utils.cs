@@ -7,6 +7,7 @@ using GamePlay.Skill;
 using UnityEngine.AddressableAssets;
 using Cysharp.Threading.Tasks;
 using System;
+using DG.Tweening;
 namespace Utils
 {
     public static class Utils
@@ -58,6 +59,41 @@ namespace Utils
                 Debug.LogError($"实例化 Addressables 资源失败 '{key}': {e.Message}");
                 return null;
             }
+        }
+    }
+
+    public static class DT
+    {
+        private static void AddToSequence(Sequence seq, object item, bool isAppend)
+        {
+            if (isAppend)
+            {
+                if (item is Tween t) seq.Append(t);
+                else if (item is Sequence s) seq.Append(s);
+                else if (item is System.Action a) seq.AppendCallback(() => a());
+                else if(item is float f)seq.AppendInterval(f);
+            }
+            else
+            {
+                if (item is Tween t) seq.Join(t);
+                else if (item is Sequence s) seq.Join(s);
+                else if (item is System.Action a) seq.JoinCallback(() => a());
+                else if(item is float f)seq.AppendInterval(f);
+            }
+        }
+
+        public static Sequence Append(params object[] items)
+        {
+            Sequence seq = DOTween.Sequence();
+            foreach (var item in items) AddToSequence(seq, item, true);
+            return seq;
+        }
+
+        public static Sequence Join(params object[] items)
+        {
+            Sequence seq = DOTween.Sequence();
+            foreach (var item in items) AddToSequence(seq, item, false);
+            return seq;
         }
     }
 

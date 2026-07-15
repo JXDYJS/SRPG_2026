@@ -207,7 +207,7 @@ namespace Status
                         ("RES",RES),
                         ("Speed",Speed),
                         ("MoveRange",moveRange),
-                        ("MaxMp",maxMP)
+                        ("MaxMP",maxMP)
                     };
                     return _statList;
                 }

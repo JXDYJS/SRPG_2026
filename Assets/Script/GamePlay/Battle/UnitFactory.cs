@@ -17,7 +17,8 @@ namespace GamePlay.Battle
             UnitConfig config, 
             MapManager mapManager, 
             Transform parentTransform,
-            GamePlay.Skill.CharacterSkillConfig skillConfig = null)
+            GamePlay.Skill.CharacterSkillConfig skillConfig = null,
+            bool SetActive = true)
         {
             if (config == null || config.CharacterTemplate == null)
             {
@@ -36,6 +37,7 @@ namespace GamePlay.Battle
             }
 
             GameObject unitObj = handle.Result;
+            unitObj.SetActive(SetActive);
             MapUnit unit = unitObj.GetComponent<MapUnit>();
             
             if (unit == null)
@@ -76,7 +78,6 @@ namespace GamePlay.Battle
                     characterInstance.LevelUp();
                 }
             }
-
             return unit;
         }
 
