@@ -76,19 +76,17 @@ namespace GamePlay.Control
 
             if (currentState == InputState.ShowingAttribute)
             {
-                if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1))
-                {
-                    BattleUIManager.Instance.HideAttributePanel();
-                    ChangeState(InputState.Idle);
-                    return;
-                }
+                return;
             }
 
             if (activeUnit == null || activeUnit.Faction != FactionType.Player || activeUnit.IsBusy)
             {
-                if (currentState != InputState.Locked) ChangeState(InputState.Locked);
+                if (currentState != InputState.Locked)
+                {
+                    ChangeState(InputState.Locked);
+                    Debug.Log($"[BIC] Blocked: activeUnit null or not player (state={currentState})");
+                }
                 GridVisualManager.Instance.HideCursor();
-                Debug.Log($"[BIC] Blocked: activeUnit null or not player (state={currentState})");
                 return;
             }
 

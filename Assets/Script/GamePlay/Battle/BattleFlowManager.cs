@@ -12,6 +12,10 @@ using Global;
 using UI;
 using Character.data;
 using Character.instance;
+using Utils;
+using System;
+using Core.Data;
+using DG.Tweening;
 
 namespace GamePlay.Battle
 {
@@ -93,15 +97,27 @@ namespace GamePlay.Battle
                 // 2. 生成敌方/中立单位（部署阶段可见）
                 Debug.Log($"[FLOW] LoadLevelAsync: step 2 - spawning initial units (enemies)");
                 _spawnedUnits.Clear();
+                Sequence allSeq = DOTween.Sequence();
                 foreach (var config in CurrentLevel.InitialUnits)
                 {
                     MapUnit unit = await UnitFactory.CreateUnitAsync(
                         config,
                         MapManager.Instance,
                         MapManager.Instance.mapRoot,
-                        config.SkillConfig
+                        config.SkillConfig,
+                        false
                     );
-
+                    var oriGameObjPos = unit.gameObject.transform.position;
+                    var seq = DT.Append(
+                        (Action)(() =>
+                        {
+                            unit.gameObject.transform.position = new Vector3(oriGameObjPos.x, oriGameObjPos.y + Data.Config.ViewConfig.BattleStartUnitAnimationAscendingHeight, oriGameObjPos.z);
+                            unit.gameObject.SetActive(true);
+                        }),
+                        UnityEngine.Random.Range(0.0f, 0.2f),
+                        unit.gameObject.transform.DOMoveY(oriGameObjPos.y, 1).SetEase(Ease.OutQuad)
+                    );
+                    allSeq.Join(seq);
                     if (unit != null)
                     {
                         _spawnedUnits.Add(unit);
@@ -109,7 +125,7 @@ namespace GamePlay.Battle
                         Debug.Log($"生成单位: {unit.name} 在位置 {config.SpawnPosition}, faction={config.Faction}");
                     }
                 }
-
+                await allSeq.AsyncWaitForCompletion();
                 // 3. 进入部署阶段（不再跳过）
                 Debug.Log("[FLOW] LoadLevelAsync: step 3 - entering deployment phase");
                 await EnterDeploymentPhaseAsync();
@@ -156,7 +172,7 @@ namespace GamePlay.Battle
                 {
                     _previewAssetHandles.Add(loadHandle);
                     GameObject prefab = loadHandle.Result;
-                    GameObject obj = Object.Instantiate(prefab, hiddenPos, Quaternion.identity, MapManager.Instance.mapRoot);
+                    GameObject obj = UnityEngine.Object.Instantiate(prefab, hiddenPos, Quaternion.identity, MapManager.Instance.mapRoot);
                     MapUnit mu = obj.GetComponent<MapUnit>();
                     if (mu == null) mu = obj.AddComponent<MapUnit>();
                     mu.IsPreview = true;
@@ -203,7 +219,7 @@ namespace GamePlay.Battle
             Debug.Log($"[FLOW] Deployment confirmed with {slots.Count} slots");
 
             DeploymentController.Instance.OnDeploymentConfirmed -= OnDeploymentConfirmed;
-
+            Sequence allSeq = DOTween.Sequence();
             foreach (var slot in slots)
             {
                 if (slot.CharacterIndex < 0 || slot.CharacterIndex >= _characterMetas.Count)
@@ -232,9 +248,20 @@ namespace GamePlay.Battle
                     config,
                     MapManager.Instance,
                     MapManager.Instance.mapRoot,
-                    config.SkillConfig
+                    config.SkillConfig,
+                    false
                 );
-
+                var oriGameObjPos = unit.gameObject.transform.position;
+                var seq = DT.Append(
+                    (Action)(() =>
+                    {
+                        unit.gameObject.transform.position = new Vector3(oriGameObjPos.x,oriGameObjPos.y + Data.Config.ViewConfig.BattleStartUnitAnimationAscendingHeight,oriGameObjPos.z);
+                        unit.gameObject.SetActive(true);
+                    }),
+                    UnityEngine.Random.Range(0.0f,0.2f),
+                    unit.gameObject.transform.DOMoveY(oriGameObjPos.y,1).SetEase(Ease.OutQuad)
+                );
+                allSeq.Join(seq);
                 if (unit != null)
                 {
                     _spawnedUnits.Add(unit);
@@ -242,7 +269,7 @@ namespace GamePlay.Battle
                     Debug.Log($"生成玩家单位: {unit.name} 在位置 {slot.GridPosition}");
                 }
             }
-
+            await allSeq.AsyncWaitForCompletion();
             Debug.Log($"[FLOW] Total spawned units = {_spawnedUnits.Count}");
             ConfirmDeployment();
         }

@@ -1464,6 +1464,7 @@ GameObject:
   - component: {fileID: 348045458}
   - component: {fileID: 348045459}
   - component: {fileID: 348045460}
+  - component: {fileID: 348045461}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -1757,6 +1758,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mainCam: {fileID: 330585545}
+--- !u!114 &348045461
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 348045437}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e81630b67d34b04486bfd1cdf76353f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &395893897
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6191,7 +6204,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 22400762, guid: 67117722a812a2e46ab8cb8eafbf5f5e, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.00004196167
+      value: 0.00006866455
       objectReference: {fileID: 0}
     - target: {fileID: 22426080, guid: 67117722a812a2e46ab8cb8eafbf5f5e, type: 3}
       propertyPath: m_AnchorMax.x

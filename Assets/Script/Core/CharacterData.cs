@@ -3,8 +3,10 @@ using UnityEngine;
 using Global;
 using UnityEngine.AddressableAssets;
 using GamePlay.Skill;
-namespace Character{
-    namespace data{
+namespace Character
+{
+    namespace data
+    {
         [System.Serializable]
         [CreateAssetMenu(fileName = "NewCharacterData", menuName = "Character/CharacterData")]
         public class CharacterData : ScriptableObject
@@ -12,10 +14,12 @@ namespace Character{
             [Header("基本信息")]
             public string ID;
             public string CharacterName;
-            [TextArea] 
+            [TextArea]
             public string Description;
             public Sprite Icon;
             public AssetReferenceGameObject Prefab;
+            [Header("展示用perfab")]
+            public UnityEngine.AddressableAssets.AssetReferenceGameObject portraitMob;
 
             [Header("基础属性 (出厂设置)")]
             public int BaseMaxHP;

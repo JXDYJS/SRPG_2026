@@ -21,6 +21,11 @@ MonoBehaviour:
     m_SubObjectName: 
     m_SubObjectType: 
     m_EditorAssetChanged: 0
+  portraitMob:
+    m_AssetGUID: 
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
   BaseMaxHP: 20
   BaseATK: 2
   BaseDEF: 0
@@ -28,6 +33,7 @@ MonoBehaviour:
   MoveRange: 5
   Height: 0
   Speed: 80
+  BaseMaxMP: 100
   RangeType: 0
   Pattern: 0
   MinRange: 1

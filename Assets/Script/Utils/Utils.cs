@@ -3,26 +3,98 @@ using Global;
 using GamePlay.Grid;
 using Managers;
 using System.Collections.Generic;
+using GamePlay.Skill;
+using UnityEngine.AddressableAssets;
+using Cysharp.Threading.Tasks;
+using System;
+using DG.Tweening;
 namespace Utils
 {
     public static class Utils
     {
         public static byte getBlockTypeVal(BlockType type)
         {
-            if(type == BlockType.Air || type == BlockType.Liquid)
+            if (type == BlockType.Air || type == BlockType.Liquid)
             {
                 return 0;
             }
-            if(type == BlockType.Solid)
+            if (type == BlockType.Solid)
             {
                 return 1;
             }
-            if(type == BlockType.Stairs || type == BlockType.Slab)
+            if (type == BlockType.Stairs || type == BlockType.Slab)
             {
                 return 2;
             }
             return 255;
-        }        
+        }
+        public static string GetSkillSlotTypeString(SkillSlotType type)
+        {
+            if (type == SkillSlotType.NormalAttack) return "Attack";
+            if (type == SkillSlotType.Skill1 ||
+            type == SkillSlotType.Skill2 ||
+            type == SkillSlotType.Skill3) return "Skill";
+            if (type == SkillSlotType.Passive1 ||
+            type == SkillSlotType.Passive2 ||
+            type == SkillSlotType.Passive3 ||
+            type == SkillSlotType.Passive4 ||
+            type == SkillSlotType.Passive5) return "Passive";
+            if (type == SkillSlotType.Ultimate) return "Ultimate";
+            return "error type";
+        }
+
+
+        /// <summary>
+        /// 直接从 Addressables 加载并实例化资源到指定父级下
+        /// </summary>
+        public static async UniTask<GameObject> InstantiateAddressableAsync(string key, Transform parent)
+        {
+            var handle = Addressables.InstantiateAsync(key, parent);
+            try
+            {
+                return await handle;
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"实例化 Addressables 资源失败 '{key}': {e.Message}");
+                return null;
+            }
+        }
+    }
+
+    public static class DT
+    {
+        private static void AddToSequence(Sequence seq, object item, bool isAppend)
+        {
+            if (isAppend)
+            {
+                if (item is Tween t) seq.Append(t);
+                else if (item is Sequence s) seq.Append(s);
+                else if (item is System.Action a) seq.AppendCallback(() => a());
+                else if(item is float f)seq.AppendInterval(f);
+            }
+            else
+            {
+                if (item is Tween t) seq.Join(t);
+                else if (item is Sequence s) seq.Join(s);
+                else if (item is System.Action a) seq.JoinCallback(() => a());
+                else if(item is float f)seq.AppendInterval(f);
+            }
+        }
+
+        public static Sequence Append(params object[] items)
+        {
+            Sequence seq = DOTween.Sequence();
+            foreach (var item in items) AddToSequence(seq, item, true);
+            return seq;
+        }
+
+        public static Sequence Join(params object[] items)
+        {
+            Sequence seq = DOTween.Sequence();
+            foreach (var item in items) AddToSequence(seq, item, false);
+            return seq;
+        }
     }
 
     public static class GridOcclusionUtils
@@ -42,7 +114,8 @@ namespace Utils
             direction /= maxDistance;
 
             // 缓存射线倒数数据供 AABB 检测使用
-            RayData ray = new RayData {
+            RayData ray = new RayData
+            {
                 Origin = start,
                 DirInv = new Vector3(1f / direction.x, 1f / direction.y, 1f / direction.z)
             };
@@ -69,7 +142,7 @@ namespace Utils
             float tMaxZ = (stepZ > 0) ? (Mathf.Floor(start.z) + 1f - start.z) * tDeltaZ : ((stepZ < 0) ? (start.z - Mathf.Floor(start.z)) * tDeltaZ : float.MaxValue);
 
             float currentDistance = 0f;
-            int maxIterations = 200; 
+            int maxIterations = 200;
 
             // --- 2. 核心步进循环 ---
             for (int i = 0; i < maxIterations; i++)
@@ -79,11 +152,11 @@ namespace Utils
                 if (blockType != 0) // 0 是空气
                 {
                     // 情况A：如果是完整的全尺寸方块 (比如 blockType 1)
-                    if (blockType == 1) 
+                    if (blockType == 1)
                     {
                         return false; // 无脑阻挡
                     }
-                    
+
                     // 情况B：如果是半砖、自定义高度方块 (比如 blockType 2)
                     if (blockType == 2)
                     {
@@ -120,7 +193,7 @@ namespace Utils
 
                 if (currentDistance > maxDistance) return true;
             }
-            return true; 
+            return true;
         }
 
         /// <summary>
@@ -256,12 +329,12 @@ namespace Utils
         {
             if (DebugSystem.DebugGizmosHost.Instance != null) return;
 
-            var existing = Object.FindObjectOfType<DebugSystem.DebugGizmosHost>();
+            var existing = UnityEngine.Object.FindObjectOfType<DebugSystem.DebugGizmosHost>();
             if (existing != null) return;
 
             var go = new GameObject("[DebugGizmos]");
             if (Application.isPlaying)
-                Object.DontDestroyOnLoad(go);
+                UnityEngine.Object.DontDestroyOnLoad(go);
             go.AddComponent<DebugSystem.DebugGizmosHost>();
         }
 

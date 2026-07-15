@@ -98,4 +98,10 @@ InitTestScene*.unity*
 
 # Auto-generated scenes by play mode tests
 /[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
-.agent/skills/unity-skills~/scripts/__pycache__/
+# Python cache
+__pycache__/
+*.pyc
+
+# Debug dumps
+console_dump.txt
+console_dump.txt.meta
