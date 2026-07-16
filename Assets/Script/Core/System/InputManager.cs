@@ -18,8 +18,17 @@ namespace Core.System
 
         void Awake()
         {
-            Actions = new GameInput();
+            if (_instance != null && _instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+            if (Actions == null)
+            {
+                Actions = new GameInput();
+            }
             Actions.Gameplay.Enable();
+            Actions.Debug.Enable();
         }
 
         void OnDestroy()

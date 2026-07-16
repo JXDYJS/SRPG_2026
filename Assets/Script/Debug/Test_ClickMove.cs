@@ -5,9 +5,10 @@ using Character.data;
 using GamePlay.Units;
 using Managers;
 using Command;
-using GamePlay.Grid; // 引用 AStar
+using GamePlay.Grid;
 using Global;
-using GamePlay;
+using Core.System;
+using UnityEngine.InputSystem;
 
 namespace DebugSystem
 {
@@ -20,7 +21,7 @@ namespace DebugSystem
 
         [Header("调试开关")]
         public bool showPathGizmos = true;
-        private List<Vector3Int> currentDebugPath; // 改为 3D 路径
+        private List<Vector3Int> currentDebugPath;
 
         void Start()
         {
@@ -28,44 +29,52 @@ namespace DebugSystem
             Invoke(nameof(InitPlayer), 0.2f);
         }
 
+        void OnEnable()
+        {
+            var gameplay = InputManager.Actions.Gameplay;
+            gameplay.Confirm.performed += OnConfirm;
+            var debug = InputManager.Actions.Debug;
+            debug.Undo.performed += OnUndo;
+        }
+
+        void OnDisable()
+        {
+            var gameplay = InputManager.Actions.Gameplay;
+            gameplay.Confirm.performed -= OnConfirm;
+            var debug = InputManager.Actions.Debug;
+            debug.Undo.performed -= OnUndo;
+        }
+
         void InitPlayer()
         {
             if (playerUnit != null && mapManager != null)
             {
-                // 确保数据已初始化
                 CharacterData testData = ScriptableObject.CreateInstance<CharacterData>();
                 testData.CharacterName = "3D勇者";
-                testData.MoveRange = 10; // 跑远点测试
+                testData.MoveRange = 10;
                 testData.BaseMaxHP = 100;
                 testData.Height = 2;
 
                 CharacterInstance testCharacter = new CharacterInstance(testData);
                 
-                // 这里的出生点 (0,0,0) 假设 (0,0,0) 有方块
-                // 如果没有，你需要手动指定一个合法的 gridPosition
-                playerUnit.Setup(testCharacter, mapManager, 0, 1,0); 
-                // 注意：Setup 内部可能还需要适配 3D 坐标的重载，或者你手动 set
+                playerUnit.Setup(testCharacter, mapManager, 0, 1, 0); 
                 playerUnit.SetGridPosition(new Vector3Int(0, 1, 0)); 
 
                 Debug.Log($"测试玩家就绪，位于 {playerUnit.gridPosition}");
             }
         }
 
-        void Update()
+        private void OnConfirm(InputAction.CallbackContext ctx)
         {
-            if (Input.GetMouseButtonDown(0))
-            {
-                HandleClick();
-            }
+            HandleClick();
+        }
 
-            // 测试 Undo
-            if (Input.GetKeyDown(KeyCode.Z))
+        private void OnUndo(InputAction.CallbackContext ctx)
+        {
+            if (playerUnit != null && !playerUnit.isMoving)
             {
-                if (!playerUnit.isMoving)
-                {
-                    Debug.Log(">>> 撤销 3D 移动...");
-                    UndoSystem.Instance.Undo();
-                }
+                Debug.Log(">>> 撤销 3D 移动...");
+                UndoSystem.Instance.Undo();
             }
         }
 
@@ -73,10 +82,10 @@ namespace DebugSystem
         {
             if (mapManager == null || playerUnit == null || playerUnit.IsBusy) return;
 
-            Ray ray = mainCam.ScreenPointToRay(Input.mousePosition);
+            Vector2 mousePos = InputManager.Actions.Gameplay.Point.ReadValue<Vector2>();
+            Ray ray = mainCam.ScreenPointToRay(mousePos);
             if (Physics.Raycast(ray, out RaycastHit hit, 1000f))
             {
-                // 1. 计算点击的方块坐标 (目标脚底方块)
                 Vector3 hitPoint = hit.point - hit.normal * 0.01f;
                 int tx = Mathf.RoundToInt(hitPoint.x / mapManager.cellSize);
                 int ty = (int)(hitPoint.y / mapManager.cellSize);
@@ -84,11 +93,9 @@ namespace DebugSystem
                 
                 Vector3Int targetPos = new Vector3Int(tx, ty, tz);
 
-                // 2. 验证目标是否有效 (是不是空气?)
                 BlockType block = mapManager.logicalGrid.GetBlock(targetPos);
                 Debug.Log($"尝试寻路到: {targetPos} (类型: {block})");
 
-                // 3. 执行 3D A* 寻路
                 List<Vector3Int> path = AStar.FindPath(
                     playerUnit.gridPosition, 
                     targetPos, 
@@ -101,7 +108,6 @@ namespace DebugSystem
                     Debug.Log($"路径找到！长度: {path.Count}");
                     currentDebugPath = path;
 
-                    // 4. 发送 MoveCommand (确保 MoveCommand 构造函数接受 List<Vector3Int>)
                     var moveCmd = new MoveCommand(playerUnit, path);
                     moveCmd.Execute();
                 }
@@ -122,7 +128,6 @@ namespace DebugSystem
                 Vector3Int current = currentDebugPath[i];
                 Vector3Int next = currentDebugPath[i + 1];
                 
-                // 简单的可视化，高度加个 1.5 防止被埋在土里
                 Vector3 p1 = new Vector3(current.x, current.y + 1.2f, current.z) * mapManager.cellSize;
                 Vector3 p2 = new Vector3(next.x, next.y + 1.2f, next.z) * mapManager.cellSize;
                 

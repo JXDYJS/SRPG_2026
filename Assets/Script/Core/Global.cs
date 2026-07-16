@@ -2,6 +2,8 @@ using UnityEngine;
 using Character.data;
 using Unity.VisualScripting;
 using Unity.Mathematics;
+using Core.System;
+using UnityEngine.InputSystem;
 
 namespace Global
 {
@@ -219,10 +221,15 @@ namespace Global
             /// </summary>
             public static bool TryGetMouseGridPosition(Camera cam, out Vector3Int pos)
             {
+                return TryGetMouseGridPosition(cam, InputManager.Actions.Gameplay.Point.ReadValue<Vector2>(), out pos);
+            }
+
+            public static bool TryGetMouseGridPosition(Camera cam, Vector2 screenPos, out Vector3Int pos)
+            {
                 pos = Vector3Int.zero;
                 if (cam == null) return false;
 
-                Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+                Ray ray = cam.ScreenPointToRay(screenPos);
                 if (!Physics.Raycast(ray, out RaycastHit hit)) return false;
 
                 Vector3 worldPos = hit.point - hit.normal * 0.01f;

@@ -9,6 +9,8 @@ using Global;
 using UI.Panel;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using Core.System;
+using UnityEngine.InputSystem;
 namespace GamePlay.Battle
 {
     /// <summary>
@@ -49,12 +51,25 @@ namespace GamePlay.Battle
             if (mainCam == null) mainCam = Camera.main;
         }
 
+        void OnEnable()
+        {
+            var input = InputManager.Actions.Gameplay;
+            input.Confirm.performed += OnConfirm;
+            input.Cancel.performed += OnCancel;
+        }
+
+        void OnDisable()
+        {
+            var input = InputManager.Actions.Gameplay;
+            input.Confirm.performed -= OnConfirm;
+            input.Cancel.performed -= OnCancel;
+        }
+
         void Update()
         {
             if (!IsActive) return;
 
             HandleHover();
-            HandleInput();
         }
 
         public void StartDeployment(
@@ -124,28 +139,29 @@ namespace GamePlay.Battle
             }
         }
 
-        private void HandleInput()
+        private void OnConfirm(InputAction.CallbackContext ctx)
         {
-            if (Input.GetMouseButtonDown(0))
+            if (!IsActive) return;
+            if (InputUtil.IsPointerOverUI) return;
+
+            Vector2 mousePos = InputManager.Actions.Gameplay.Point.ReadValue<Vector2>();
+            if (!GridPositionTool.TryGetMouseGridPosition(mainCam, mousePos, out Vector3Int clickPos)) return;
+
+            if (_selectedCharacterIndex < 0) return;
+
+            if (IsValidDeployPosition(clickPos))
             {
-                if (InputUtil.IsPointerOverUI) return;
-
-                if (!GridPositionTool.TryGetMouseGridPosition(mainCam, out Vector3Int clickPos)) return;
-
-                if (_selectedCharacterIndex < 0) return;
-
-                if (IsValidDeployPosition(clickPos))
-                {
-                    PlaceCharacter(_selectedCharacterIndex, clickPos);
-                }
+                PlaceCharacter(_selectedCharacterIndex, clickPos);
             }
+        }
 
-            if (Input.GetMouseButtonDown(1))
+        private void OnCancel(InputAction.CallbackContext ctx)
+        {
+            if (!IsActive) return;
+
+            if (_selectedCharacterIndex >= 0)
             {
-                if (_selectedCharacterIndex >= 0)
-                {
-                    DeselectCharacter();
-                }
+                DeselectCharacter();
             }
         }
 

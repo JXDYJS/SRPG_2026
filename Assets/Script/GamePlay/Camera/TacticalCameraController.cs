@@ -24,9 +24,9 @@ namespace GamePlay.VirtualCamera
         [SerializeField] private float _rotationSpeed = 10f;
         
         [Header("缩放设置")]
-        [SerializeField] private float _zoomSpeed = 5f;
-        [SerializeField] private float _minZoomDistance = 5f;
-        [SerializeField] private float _maxZoomDistance = 30f;
+        [SerializeField] private float _zoomSpeed = 1f;
+        [SerializeField] private float _minZoomDistance = 1f;
+        [SerializeField] private float _maxZoomDistance = 6f;
         
         [Header("Blender视角预设")]
         [SerializeField] private float _viewTransitionSpeed = 10f;

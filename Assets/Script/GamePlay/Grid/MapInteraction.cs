@@ -2,6 +2,9 @@ using UnityEngine;
 using Managers;
 using GamePlay;
 using Global;
+using GamePlay.InputSystem;
+using Core.System;
+using UnityEngine.InputSystem;
 
 namespace GamePlay.Grid
 {
@@ -20,34 +23,51 @@ namespace GamePlay.Grid
             if (mainCam == null) mainCam = Camera.main;
         }
 
+        void OnEnable()
+        {
+            InputManager.Actions.Gameplay.Confirm.performed += OnConfirm;
+        }
+
+        void OnDisable()
+        {
+            InputManager.Actions.Gameplay.Confirm.performed -= OnConfirm;
+        }
+
         void Update()
         {
-            Ray ray = mainCam.ScreenPointToRay(Input.mousePosition);
+            Vector2 mousePos = InputManager.Actions.Gameplay.Point.ReadValue<Vector2>();
+            Ray ray = mainCam.ScreenPointToRay(mousePos);
             RaycastHit hit;
 
-            // 调试线
             Debug.DrawRay(ray.origin, ray.direction * 20f, Color.red); 
 
             if (Physics.Raycast(ray, out hit, 1000f))
             {
-                // 1. 计算精确的 3D 坐标
-                // 向法线反方向偏移一点点，确保点在方块内部而不是表面
                 Vector3 hitPoint = hit.point - hit.normal * 0.01f;
                 
                 int x = Mathf.RoundToInt(hitPoint.x / mapManager.cellSize);
-                int y = (int)(hitPoint.y / mapManager.cellSize); // 新增 Y 轴
+                int y = (int)(hitPoint.y / mapManager.cellSize);
                 int z = Mathf.RoundToInt(hitPoint.z / mapManager.cellSize);
 
                 Vector3Int clickPos = new Vector3Int(x, y, z);
                 
-                // 更新光标位置（吸附到格子中心）
                 currentCursorPos = new Vector3(x * mapManager.cellSize, y * mapManager.cellSize, z * mapManager.cellSize);
+            }
+        }
 
-                // 检测点击
-                if (Input.GetMouseButtonDown(0))
-                {
-                    OnTileClicked(clickPos);
-                }
+        private void OnConfirm(InputAction.CallbackContext ctx)
+        {
+            if (InputUtil.IsPointerOverUI) return;
+
+            Vector2 mousePos = InputManager.Actions.Gameplay.Point.ReadValue<Vector2>();
+            Ray ray = mainCam.ScreenPointToRay(mousePos);
+            if (Physics.Raycast(ray, out RaycastHit hit, 1000f))
+            {
+                Vector3 hitPoint = hit.point - hit.normal * 0.01f;
+                int x = Mathf.RoundToInt(hitPoint.x / mapManager.cellSize);
+                int y = (int)(hitPoint.y / mapManager.cellSize);
+                int z = Mathf.RoundToInt(hitPoint.z / mapManager.cellSize);
+                OnTileClicked(new Vector3Int(x, y, z));
             }
         }
 

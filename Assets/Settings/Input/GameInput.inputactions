@@ -515,7 +515,7 @@
                     "id": "2ca51c5e-cb5e-4f89-910c-3233b04d1761",
                     "path": "<Mouse>/scroll/y",
                     "interactions": "",
-                    "processors": "",
+                    "processors": "Scale(factor=0.001)",
                     "groups": "Keyboard&Mouse",
                     "action": "Zoom",
                     "isComposite": false,

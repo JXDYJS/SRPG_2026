@@ -1,7 +1,4 @@
-//CREATE BY GEMINI
-
 using UnityEngine;
-using UnityEngine.EventSystems;
 using System.Collections.Generic;
 using Managers;
 using GamePlay.InputSystem;
@@ -13,6 +10,8 @@ using GamePlay.Visual;
 using GamePlay.Skill;
 using GamePlay.Battle;
 using System.Collections;
+using Core.System;
+using UnityEngine.InputSystem;
 
 namespace GamePlay.Control
 {
@@ -66,18 +65,25 @@ namespace GamePlay.Control
             if (mainCam == null) mainCam = Camera.main;
         }
 
+        void OnEnable()
+        {
+            var input = InputManager.Actions.Gameplay;
+            input.Confirm.performed += OnConfirm;
+            input.Cancel.performed += OnCancel;
+        }
+
+        void OnDisable()
+        {
+            var input = InputManager.Actions.Gameplay;
+            input.Confirm.performed -= OnConfirm;
+            input.Cancel.performed -= OnCancel;
+        }
+
         void Update()
         {
-            // 输入锁激活时（部署阶段/过场等），交出控制权
-            if (InputLock.IsLocked)
-            {
-                return;
-            }
+            if (InputLock.IsLocked) return;
 
-            if (currentState == InputState.ShowingAttribute)
-            {
-                return;
-            }
+            if (currentState == InputState.ShowingAttribute) return;
 
             if (activeUnit == null || activeUnit.Faction != FactionType.Player || activeUnit.IsBusy)
             {
@@ -102,41 +108,51 @@ namespace GamePlay.Control
             {
                 GridVisualManager.Instance.ShowCursorAt(hoverPos);
             }
+        }
 
-            if (Input.GetMouseButtonDown(0))
+        private void OnConfirm(InputAction.CallbackContext ctx)
+        {
+            if (InputLock.IsLocked) return;
+            if (currentState == InputState.ShowingAttribute) return;
+            if (activeUnit == null || activeUnit.Faction != FactionType.Player) return;
+            if (InputUtil.IsPointerOverUI) return;
+
+            Vector2 mousePos = InputManager.Actions.Gameplay.Point.ReadValue<Vector2>();
+            if (!GridPositionTool.TryGetMouseGridPosition(mainCam, mousePos, out Vector3Int clickPos)) return;
+
+            HandleLeftClick(clickPos);
+        }
+
+        private void OnCancel(InputAction.CallbackContext ctx)
+        {
+            if (InputLock.IsLocked) return;
+            if (currentState == InputState.ShowingAttribute) return;
+            if (activeUnit == null || activeUnit.Faction != FactionType.Player) return;
+
+            Vector2 mousePos = InputManager.Actions.Gameplay.Point.ReadValue<Vector2>();
+            GridPositionTool.TryGetMouseGridPosition(mainCam, mousePos, out Vector3Int hoverPos);
+
+            Debug.Log($"[BIC] Cancel detected (state={currentState})");
+            if (currentState == InputState.TargetingMove ||
+                currentState == InputState.TargetingAttack ||
+                currentState == InputState.TargetingSkill)
             {
-                if (InputUtil.IsPointerOverUI)
-                {
-                    Debug.Log($"[BIC] LeftClick blocked by IsPointerOverUI (state={currentState})");
-                    return;
-                }
-                HandleLeftClick(hoverPos);
+                _selectedSkill = null;
+                ChangeState(InputState.MenuOpen);
+                BattleUIManager.Instance.ShowActionMenu(activeUnit);
             }
-
-            if (Input.GetMouseButtonDown(1))
+            else if (currentState == InputState.MenuOpen)
             {
-                Debug.Log($"[BIC] RightClick detected (state={currentState})");
-                if (currentState == InputState.TargetingMove || 
-                    currentState == InputState.TargetingAttack ||
-                    currentState == InputState.TargetingSkill)
+                ChangeState(InputState.Idle);
+                BattleUIManager.Instance.HideActionMenu();
+            }
+            else if (currentState == InputState.Idle)
+            {
+                MapUnit clickedUnit = UnitManager.Instance.GetUnitAt(hoverPos);
+                if (clickedUnit != null)
                 {
-                    _selectedSkill = null;
-                    ChangeState(InputState.MenuOpen);
-                    BattleUIManager.Instance.ShowActionMenu(activeUnit);
-                }
-                else if (currentState == InputState.MenuOpen)
-                {
-                    ChangeState(InputState.Idle);
-                    BattleUIManager.Instance.HideActionMenu();
-                }
-                else if (currentState == InputState.Idle)
-                {
-                    MapUnit clickedUnit = UnitManager.Instance.GetUnitAt(hoverPos);
-                    if (clickedUnit != null)
-                    {
-                        BattleUIManager.Instance.ShowAttributePanel(clickedUnit);
-                        ChangeState(InputState.ShowingAttribute);
-                    }
+                    BattleUIManager.Instance.ShowAttributePanel(clickedUnit);
+                    ChangeState(InputState.ShowingAttribute);
                 }
             }
         }
