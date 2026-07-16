@@ -15,8 +15,8 @@ namespace DebugSystem
 
         void OnDisable()
         {
+            if (InputManager.Actions == null) return;
             InputManager.Actions.Debug.Undo.performed -= OnUndo;
-            InputManager.Actions.Debug.Disable();
         }
 
         private void OnUndo(InputAction.CallbackContext ctx)

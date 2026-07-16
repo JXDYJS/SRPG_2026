@@ -39,6 +39,7 @@ namespace DebugSystem
 
         void OnDisable()
         {
+            if (InputManager.Actions == null) return;
             var gameplay = InputManager.Actions.Gameplay;
             gameplay.Confirm.performed -= OnConfirm;
             var debug = InputManager.Actions.Debug;

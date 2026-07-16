@@ -74,6 +74,7 @@ namespace GamePlay.Control
 
         void OnDisable()
         {
+            if (InputManager.Actions == null) return;
             var input = InputManager.Actions.Gameplay;
             input.Confirm.performed -= OnConfirm;
             input.Cancel.performed -= OnCancel;

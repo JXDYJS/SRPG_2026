@@ -34,16 +34,15 @@ namespace GamePlay.VirtualCamera
             gameplay.Confirm.performed += OnConfirm;
             var debug = InputManager.Actions.Debug;
             debug.ToggleCursor.performed += OnToggleCursor;
-            debug.Enable();
         }
 
         void OnDisable()
         {
+            if (InputManager.Actions == null) return;
             var gameplay = InputManager.Actions.Gameplay;
             gameplay.Confirm.performed -= OnConfirm;
             var debug = InputManager.Actions.Debug;
             debug.ToggleCursor.performed -= OnToggleCursor;
-            debug.Disable();
         }
 
         void Update()

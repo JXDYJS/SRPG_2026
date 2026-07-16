@@ -30,6 +30,7 @@ namespace GamePlay.Grid
 
         void OnDisable()
         {
+            if (InputManager.Actions == null) return;
             InputManager.Actions.Gameplay.Confirm.performed -= OnConfirm;
         }
 

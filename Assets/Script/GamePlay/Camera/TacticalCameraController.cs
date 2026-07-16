@@ -83,6 +83,7 @@ namespace GamePlay.VirtualCamera
 
         void OnDisable()
         {
+            if (InputManager.Actions == null) return;
             var input = InputManager.Actions.Gameplay;
             input.RotateLeft.performed -= OnRotateLeft;
             input.RotateRight.performed -= OnRotateRight;
