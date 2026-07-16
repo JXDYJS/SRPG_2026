@@ -1,6 +1,8 @@
 using UnityEngine;
 using Cinemachine;
 using Managers;
+using Core.System;
+using UnityEngine.InputSystem;
 
 namespace GamePlay.VirtualCamera
 {
@@ -29,7 +31,7 @@ namespace GamePlay.VirtualCamera
         [Header("Blender视角预设")]
         [SerializeField] private float _viewTransitionSpeed = 10f;
         [SerializeField] private Vector3 _defaultOffset = new Vector3(0f, 8f, -10f);
-        [SerializeField] private Vector3 _topDownOffset = new Vector3(0f, 18f, -5f); // 建议Z保持一点偏移而非完全为0
+        [SerializeField] private Vector3 _topDownOffset = new Vector3(0f, 18f, -5f);
         [SerializeField] private Vector3 _frontOffset = new Vector3(0f, 5f, -20f);
         [SerializeField] private Vector3 _rightOffset = new Vector3(20f, 5f, 0f);
 
@@ -55,7 +57,6 @@ namespace GamePlay.VirtualCamera
                 _transposer = _virtualCamera.GetCinemachineComponent<CinemachineTransposer>();
             }
             
-            // 规范化初始角度
             _targetRotationY = Mathf.DeltaAngle(0, transform.eulerAngles.y);
             _targetPosition = transform.position;
         }
@@ -69,13 +70,33 @@ namespace GamePlay.VirtualCamera
             }
         }
 
+        void OnEnable()
+        {
+            var input = InputManager.Actions.Gameplay;
+            input.RotateLeft.performed += OnRotateLeft;
+            input.RotateRight.performed += OnRotateRight;
+            input.ViewDefault.performed += OnViewDefault;
+            input.ViewTopDown.performed += OnViewTopDown;
+            input.ViewFront.performed += OnViewFront;
+            input.ViewRight.performed += OnViewRight;
+        }
+
+        void OnDisable()
+        {
+            var input = InputManager.Actions.Gameplay;
+            input.RotateLeft.performed -= OnRotateLeft;
+            input.RotateRight.performed -= OnRotateRight;
+            input.ViewDefault.performed -= OnViewDefault;
+            input.ViewTopDown.performed -= OnViewTopDown;
+            input.ViewFront.performed -= OnViewFront;
+            input.ViewRight.performed -= OnViewRight;
+        }
+
         void Update()
         {
             UpdateMapBounds();
             HandleMovement();
-            HandleRotation();
             HandleZoom();
-            HandleBlenderViews();
             ApplySmoothTransition();
         }
 
@@ -102,16 +123,10 @@ namespace GamePlay.VirtualCamera
 
         void HandleMovement()
         {
-            float h = Input.GetAxisRaw("Horizontal");
-            float v = Input.GetAxisRaw("Vertical");
-            
-            if (h == 0f && v == 0f)
-            {
-                h = Input.GetKey(KeyCode.LeftArrow) ? -1f : Input.GetKey(KeyCode.RightArrow) ? 1f : 0f;
-                v = Input.GetKey(KeyCode.UpArrow) ? 1f : Input.GetKey(KeyCode.DownArrow) ? -1f : 0f;
-            }
+            var gameplay = InputManager.Actions.Gameplay;
+            Vector2 move = gameplay.Move.ReadValue<Vector2>();
 
-            if (h != 0f || v != 0f)
+            if (move.sqrMagnitude > 0.01f)
             {
                 Camera mainCamera = Camera.main;
                 if (mainCamera != null)
@@ -124,41 +139,23 @@ namespace GamePlay.VirtualCamera
                     right.y = 0f;
                     right.Normalize();
                     
-                    Vector3 moveDirection = (forward * v + right * h).normalized;
+                    Vector3 moveDirection = (forward * move.y + right * move.x).normalized;
                     _targetPosition += moveDirection * _moveSpeed * Time.deltaTime;
                 }
             }
 
-            if (Input.GetKey(KeyCode.K))
+            if (gameplay.HeightUp.IsPressed())
                 _targetPosition.y += _heightSpeed * Time.deltaTime;
             
-            if (Input.GetKey(KeyCode.J))
+            if (gameplay.HeightDown.IsPressed())
                 _targetPosition.y -= _heightSpeed * Time.deltaTime;
             
             _targetPosition.y = Mathf.Clamp(_targetPosition.y, _minHeight, _maxHeight);
         }
 
-        void HandleRotation()
-        {
-            if (Input.GetKeyDown(KeyCode.Q))
-            {
-                _targetRotationY += 90f;
-                _targetPosition = new Vector3(_mapCenter.x, _targetPosition.y, _mapCenter.z);
-            }
-            
-            if (Input.GetKeyDown(KeyCode.E))
-            {
-                _targetRotationY -= 90f;
-                _targetPosition = new Vector3(_mapCenter.x, _targetPosition.y, _mapCenter.z);
-            }
-
-            // 保持目标角度在 -180 到 180 之间
-            _targetRotationY = Mathf.DeltaAngle(0, _targetRotationY);
-        }
-
         void HandleZoom()
         {
-            float scroll = Input.GetAxis("Mouse ScrollWheel");
+            float scroll = InputManager.Actions.Gameplay.Zoom.ReadValue<float>();
             
             if (Mathf.Abs(scroll) > 0.01f)
             {
@@ -170,20 +167,24 @@ namespace GamePlay.VirtualCamera
             }
         }
 
-        void HandleBlenderViews()
+        private void OnRotateLeft(InputAction.CallbackContext ctx)
         {
-            if (Input.GetKeyDown(KeyCode.Keypad7) || Input.GetKeyDown(KeyCode.Alpha7)) 
-                _targetFollowOffset = _topDownOffset;
-            
-            if (Input.GetKeyDown(KeyCode.Keypad1) || Input.GetKeyDown(KeyCode.Alpha1)) 
-                _targetFollowOffset = _frontOffset;
-            
-            if (Input.GetKeyDown(KeyCode.Keypad3) || Input.GetKeyDown(KeyCode.Alpha3)) 
-                _targetFollowOffset = _rightOffset;
-            
-            if (Input.GetKeyDown(KeyCode.Keypad5) || Input.GetKeyDown(KeyCode.Alpha5)) 
-                _targetFollowOffset = _defaultOffset;
+            _targetRotationY += 90f;
+            _targetPosition = new Vector3(_mapCenter.x, _targetPosition.y, _mapCenter.z);
+            _targetRotationY = Mathf.DeltaAngle(0, _targetRotationY);
         }
+
+        private void OnRotateRight(InputAction.CallbackContext ctx)
+        {
+            _targetRotationY -= 90f;
+            _targetPosition = new Vector3(_mapCenter.x, _targetPosition.y, _mapCenter.z);
+            _targetRotationY = Mathf.DeltaAngle(0, _targetRotationY);
+        }
+
+        private void OnViewDefault(InputAction.CallbackContext ctx) => _targetFollowOffset = _defaultOffset;
+        private void OnViewTopDown(InputAction.CallbackContext ctx) => _targetFollowOffset = _topDownOffset;
+        private void OnViewFront(InputAction.CallbackContext ctx) => _targetFollowOffset = _frontOffset;
+        private void OnViewRight(InputAction.CallbackContext ctx) => _targetFollowOffset = _rightOffset;
 
         void ApplySmoothTransition()
         {
@@ -212,8 +213,6 @@ namespace GamePlay.VirtualCamera
                 _moveSmoothTime * 10f * Time.deltaTime
             );
 
-            // --- 核心修复部分 ---
-            // 使用 DeltaAngle 确保旋转始终走最短路径，解决 0/180 度跳变问题
             float currentY = transform.eulerAngles.y;
             float nextY = Mathf.LerpAngle(currentY, _targetRotationY, _rotationSpeed * Time.deltaTime);
             
