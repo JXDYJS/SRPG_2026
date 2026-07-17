@@ -27,7 +27,7 @@ namespace Character
         public class LevelUpEntry
         {
             public int Level; 
-            public List<LevelReward> Rewards; 
+            public List<LevelReward> Rewards = new(); 
         }
         [CreateAssetMenu(fileName = "NewCharacter", menuName = "GameData/Character")]
 

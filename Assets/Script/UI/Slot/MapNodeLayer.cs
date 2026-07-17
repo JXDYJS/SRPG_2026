@@ -7,10 +7,10 @@ namespace UI.Slot
     public class MapNodeLayer : MonoBehaviour
     {
         public UnityEngine.UI.HorizontalLayoutGroup layout;
-        public List<MapNodeSlot> nodeSlots;
+        public List<MapNodeSlot> nodeSlots = new();
         public GameObject[] _nodes;
         public int MaxNodeCount = 6;
-        public List<BaseNode> ActivateNodes;
+        public List<BaseNode> ActivateNodes = new();
         public void Init(List<BaseNode> initNodes)
         {
             if(MaxNodeCount != _nodes.Length)
