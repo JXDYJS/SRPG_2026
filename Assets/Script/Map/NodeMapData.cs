@@ -2,6 +2,7 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 using Core.Data;
+using Newtonsoft.Json;
 using Random = UnityEngine.Random;
 
 namespace Map
@@ -23,6 +24,7 @@ namespace Map
         public List<string> connections { get; }
     }
 
+    [Serializable]
     public abstract class BaseNode : IMapNode
     {
         public string id { get; private set; }
@@ -31,7 +33,7 @@ namespace Map
         public int row { get; set; }
         public List<string> connections { get; private set; } = new();
         public bool visited = false;
-        public Action<bool> _onVisited;
+        [JsonIgnore] public Action<bool> _onVisited;
         protected BaseNode()
         {
             id = Guid.NewGuid().ToString("N");
@@ -43,6 +45,7 @@ namespace Map
         }
     }
 
+    [Serializable]
     public class BattleNode : BaseNode
     {
         public string level;
@@ -53,6 +56,7 @@ namespace Map
         }
     }
 
+    [Serializable]
     public class ShopNode : BaseNode
     {
         public ShopNode()
@@ -61,6 +65,7 @@ namespace Map
         }
     }
 
+    [Serializable]
     public class EventNode : BaseNode
     {
         public EventNode()
@@ -69,6 +74,7 @@ namespace Map
         }
     }
 
+    [Serializable]
     public class BossNode : BaseNode
     {
         public BossNode()

@@ -69,11 +69,14 @@ namespace Core.Data
         private static readonly string SavePath =
             global::System.IO.Path.Combine(Application.persistentDataPath, "SaveData.json");
 
+        private static readonly Newtonsoft.Json.JsonSerializerSettings _jsonSettings =
+            new() { TypeNameHandling = Newtonsoft.Json.TypeNameHandling.Auto };
+
         /// <summary>持久化存档到磁盘</summary>
         public void Save()
         {
             Data.saveTime = global::System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-            string json = Newtonsoft.Json.JsonConvert.SerializeObject(Data, Newtonsoft.Json.Formatting.Indented);
+            string json = Newtonsoft.Json.JsonConvert.SerializeObject(Data, Newtonsoft.Json.Formatting.Indented, _jsonSettings);
             global::System.IO.File.WriteAllText(SavePath, json);
             Debug.Log($"[PersistentData] Saved to {SavePath}");
         }
@@ -87,7 +90,7 @@ namespace Core.Data
                 return null;
             }
             string json = global::System.IO.File.ReadAllText(SavePath);
-            SaveData data = Newtonsoft.Json.JsonConvert.DeserializeObject<SaveData>(json);
+            SaveData data = Newtonsoft.Json.JsonConvert.DeserializeObject<SaveData>(json, _jsonSettings);
             Debug.Log($"[PersistentData] Loaded save: version={data.version}, stage={data.currentStageId}, party={data.party.Count}");
             return new PersistentData { Data = data };
         }
