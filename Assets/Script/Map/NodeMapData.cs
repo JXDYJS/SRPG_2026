@@ -1,6 +1,7 @@
 using UnityEngine;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Core.Data;
 using Newtonsoft.Json;
 using Random = UnityEngine.Random;
@@ -143,14 +144,24 @@ namespace Map
                     };
                     node.row = slotIndex;
                     node.col = i;
-
-                    if (i < layerCount - 1 && Random.value > 0.3f)
-                    {
-                        int nextRow = Random.Range(0, maxPerLayer);
-                        node.connections.Add($"{i + 1}_{nextRow}");
-                    }
-
                     mapData.layers[i].Add(node);
+                }
+            }
+
+            for (int i = 0; i < layerCount - 1; i++)
+            {
+                foreach (var src in mapData.layers[i])
+                {
+                    if (Random.value > 0.3f && mapData.layers[i + 1].Count > 0)
+                    {
+                        var near = mapData.layers[i + 1]
+                            .Where(t => Mathf.Abs(t.row - src.row) <= 1)
+                            .ToList();
+                        if (near.Count == 0)
+                            near = mapData.layers[i + 1];
+                        var tgt = near[Random.Range(0, near.Count)];
+                        src.connections.Add(tgt.id);
+                    }
                 }
             }
 

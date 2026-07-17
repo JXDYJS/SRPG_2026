@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Map;
 using UnityEngine;
@@ -11,6 +12,14 @@ namespace UI.Slot
         public GameObject[] _nodes;
         public int MaxNodeCount = 6;
         public List<BaseNode> ActivateNodes = new();
+
+        public event Action<MapNodeLayer> OnRecycle;
+
+        private void OnDisable()
+        {
+            OnRecycle?.Invoke(this);
+        }
+
         public void Init(List<BaseNode> initNodes)
         {
             if(MaxNodeCount != _nodes.Length)
