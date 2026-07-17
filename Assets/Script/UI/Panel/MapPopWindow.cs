@@ -127,6 +127,7 @@ namespace UI.Panel
 
             var lineTemplate = new GameObject("BezierLine_Template", typeof(RectTransform));
             lineTemplate.SetActive(false);
+            lineTemplate.AddComponent<CanvasRenderer>();
             lineTemplate.AddComponent<BezierLine>();
             var lt = lineTemplate.GetComponent<RectTransform>();
             lt.anchorMin = Vector2.zero;
