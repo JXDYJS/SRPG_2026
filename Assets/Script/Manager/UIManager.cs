@@ -170,6 +170,54 @@ namespace Managers
             }
         }
 
+        public BaseUIPanel OpenPanel(Type panelType, object data = null, UILayer layer = UILayer.Window)
+        {
+            if (_panelCache.TryGetValue(panelType, out BaseUIPanel cachedPanel))
+            {
+                if (cachedPanel != null)
+                {
+                    if (!cachedPanel.gameObject.activeSelf)
+                        cachedPanel.gameObject.SetActive(true);
+                    cachedPanel.OnOpen(data);
+                    return cachedPanel;
+                }
+                _panelCache.Remove(panelType);
+            }
+
+            string prefabPath = ResolvePanelResourcePath(panelType);
+            GameObject prefab = Resources.Load<GameObject>(prefabPath);
+
+            if (prefab == null)
+            {
+                Debug.LogError($"UIManager: 无法加载面板 Prefab — Resources/{prefabPath}");
+                return null;
+            }
+
+            Transform parent = GetLayerTransform(layer);
+            if (parent == null)
+            {
+                Debug.LogError($"UIManager: 层级 {layer} 的 Transform 为 null，检查 UIRoot 是否正确初始化");
+                return null;
+            }
+
+            GameObject instance = Instantiate(prefab, parent);
+            instance.name = panelType.Name;
+
+            BaseUIPanel panel = instance.GetComponent(panelType) as BaseUIPanel;
+            if (panel == null)
+            {
+                Debug.LogError($"UIManager: Prefab 上未找到组件 {panelType.Name}");
+                Destroy(instance);
+                return null;
+            }
+
+            panel.OnInit();
+            panel.OnOpen(data);
+
+            _panelCache[panelType] = panel;
+            return panel;
+        }
+
         public T OpenPanel<T>(object data = null, UILayer layer = UILayer.Window) where T : BaseUIPanel
         {
             Type type = typeof(T);

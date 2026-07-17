@@ -4,6 +4,9 @@ using Utils;
 using Grid;
 using IngameDebugConsole;
 using Core.Data;
+using System.Reflection;
+using System;
+using Managers;
 
 namespace DebugSystem
 {
@@ -78,6 +81,18 @@ namespace DebugSystem
         public static void OneShotKill(bool enable)
         {
             Data.CommandConfig.playerOneShotKill = enable;
+        }
+        [ConsoleMethod("openPanel","Open a Panel")]
+        public static void OpenPanel(string name)
+        {
+            string fullName = $"UI.Panel.{name}";
+            Type panelType = Type.GetType(fullName);
+            if(panelType == null)
+            {
+                Debug.LogError("not find panel");
+                return;
+            }
+            UIManager.Instance.OpenPanel(panelType);
         }
     }
 }
