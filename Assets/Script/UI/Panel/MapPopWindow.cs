@@ -109,6 +109,14 @@ namespace UI.Panel
             Refresh();
         }
 
+        public void OnEnable()
+        {
+            if (nodeMapData == null)
+            {
+                Init(NodeMapData.GenerateFakeDeepMap());
+            }
+        }
+
         public void OnDisable()
         {
             scroll.onValueChanged.RemoveListener(OnScrollChanged);

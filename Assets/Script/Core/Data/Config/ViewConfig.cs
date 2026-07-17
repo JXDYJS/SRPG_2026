@@ -9,5 +9,6 @@ namespace Core.Data
         public string defaultPortraitMob = "Assets/Perfob/mob_portrait/Steve";
         public string defaultPortraitMobRoot = "Assets/Perfob/mob_portrait";
         public float BattleStartUnitAnimationAscendingHeight = 10.0f;
+        public int mapNodeMaxPerLayer = 6;
     }
 }
