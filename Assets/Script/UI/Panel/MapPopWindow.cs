@@ -5,6 +5,7 @@ using Map;
 using UI.Component;
 using UI.Slot;
 using UnityEngine;
+using UnityEngine.UI;
 using Utils;
 
 namespace UI.Panel
@@ -104,6 +105,10 @@ namespace UI.Panel
                 var rect = layer.GetComponent<RectTransform>();
                 SetupRect(rect, y);
                 layer.Init(nodeMapData.layers[i]);
+                // HorizontalLayoutGroup 在下一帧 Canvas 更新阶段才摆放 slot，
+                // 同帧内 RefreshLines 读取 slot.Icon.transform.position 会拿到布局前的堆叠位置。
+                // 强制立即重建布局，让 slot 的世界坐标立刻可用。
+                LayoutRebuilder.ForceRebuildLayoutImmediate(rect);
                 _activeLayers.Add((layer, rect));
             }
 
@@ -117,22 +122,29 @@ namespace UI.Panel
         {
             _lineContainer = new GameObject("_lineContainer", typeof(RectTransform))
                 .GetComponent<RectTransform>();
-            _lineContainer.SetParent(Content);
+            _lineContainer.SetParent(Content, false);
             _lineContainer.SetAsFirstSibling();
-            _lineContainer.anchorMin = Vector2.zero;
-            _lineContainer.anchorMax = Vector2.zero;
-            _lineContainer.pivot = Vector2.zero;
+            // 完全复用 Content 的 anchor 结构：水平 stretch + 竖直单点锚 + pivot=(0.5,0)
+            // 这样 lc 矩形与 Content 矩形完全重合，lc-local 坐标系等价于 Content-local。
+            // 必须 sizeDelta.y > 0，否则 rect 退化被 RectMask2D cull，曲线不渲染。
+            _lineContainer.anchorMin = new Vector2(0, 0);
+            _lineContainer.anchorMax = new Vector2(1, 0);
+            _lineContainer.pivot = new Vector2(0.5f, 0f);
             _lineContainer.anchoredPosition = Vector2.zero;
-            _lineContainer.sizeDelta = Content.sizeDelta;
+            _lineContainer.sizeDelta = new Vector2(0, Content.sizeDelta.y);
 
             var lineTemplate = new GameObject("BezierLine_Template", typeof(RectTransform));
             lineTemplate.SetActive(false);
             lineTemplate.AddComponent<CanvasRenderer>();
             lineTemplate.AddComponent<BezierLine>();
             var lt = lineTemplate.GetComponent<RectTransform>();
+            lt.SetParent(_lineContainer, false);
+            // 填满 _lineContainer：anchorMin/Max 完全 stretch，pivot 与 lc 一致 (0.5,0)，
+            // 使 line-local (0,0) 与 lc-local (0,0) (= Content-local (0,0)) 重合。
+            // sizeDelta 为 0 即直接继承 lc 的矩形，足够大不会触发 RectMask2D cull。
             lt.anchorMin = Vector2.zero;
-            lt.anchorMax = Vector2.zero;
-            lt.pivot = Vector2.zero;
+            lt.anchorMax = Vector2.one;
+            lt.pivot = new Vector2(0.5f, 0f);
             lt.anchoredPosition = Vector2.zero;
             lt.sizeDelta = Vector2.zero;
 
