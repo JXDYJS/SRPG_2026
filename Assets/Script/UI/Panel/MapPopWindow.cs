@@ -21,7 +21,6 @@ namespace UI.Panel
         private GameObjectPool _linePool;
         private Dictionary<(int, int, int, int), BezierLine> _lineMap = new();
         private Dictionary<string, (int layer, int row)> _nodeIdLookup = new();
-        private float[] _slotXCache;
         public NodeMapData nodeMapData;
         public GameObject _layerPrefab;
         private float _layerHeight;
@@ -105,9 +104,6 @@ namespace UI.Panel
                 var rect = layer.GetComponent<RectTransform>();
                 SetupRect(rect, y);
                 layer.Init(nodeMapData.layers[i]);
-                // HorizontalLayoutGroup 在下一帧 Canvas 更新阶段才摆放 slot，
-                // 同帧内 RefreshLines 读取 slot.Icon.transform.position 会拿到布局前的堆叠位置。
-                // 强制立即重建布局，让 slot 的世界坐标立刻可用。
                 LayoutRebuilder.ForceRebuildLayoutImmediate(rect);
                 _activeLayers.Add((layer, rect));
             }
@@ -166,27 +162,8 @@ namespace UI.Panel
             }
         }
 
-        private void CacheSlotXFromLayer(MapNodeLayer layer)
-        {
-            _slotXCache = new float[layer.MaxNodeCount];
-            float canvasScale = Content.lossyScale.x;
-
-            for (int i = 0; i < layer.MaxNodeCount; i++)
-            {
-                if (layer.nodeSlots[i] != null && layer.nodeSlots[i].Icon != null)
-                {
-                    Vector3 worldPos = layer.nodeSlots[i].Icon.transform.position;
-                    Vector3 localPos = _lineContainer.InverseTransformPoint(worldPos);
-                    _slotXCache[i] = localPos.x;
-                }
-                else
-                {
-                    _slotXCache[i] = _lineContainer.rect.width * (i + 0.5f) / layer.MaxNodeCount;
-                }
-            }
-        }
-
-        private Vector2 GetNodeContentPos(int layerIdx, int row)
+        // 找到某 (layerIdx, row) 对应的 Icon Transform，找不到返回 null
+        private Transform GetNodeIconTransform(int layerIdx, int row)
         {
             for (int i = 0; i < _activeLayers.Count; i++)
             {
@@ -194,24 +171,19 @@ namespace UI.Panel
                     _activeLayers[i].rect.anchoredPosition.y / _layerHeight);
                 if (li == layerIdx)
                 {
-                    var slot = _activeLayers[i].layer.nodeSlots[row];
-                    if (slot != null && slot.Icon != null)
-                    {
-                        return _lineContainer.InverseTransformPoint(
-                            slot.Icon.transform.position);
-                    }
+                    var slots = _activeLayers[i].layer.nodeSlots;
+                    if (row < slots.Count && slots[row] != null && slots[row].Icon != null)
+                        return slots[row].Icon.transform;
+                    return null;
                 }
             }
-
-            float x = _slotXCache != null && row < _slotXCache.Length
-                ? _slotXCache[row] : row * 100f + 50f;
-            return new Vector2(x, layerIdx * _layerHeight);
+            return null;
         }
 
         private void RefreshLines(int firstIdx, int lastIdx)
         {
-            int rangeStart = Mathf.Max(0, firstIdx - bufferSize);
-            int rangeEnd = Mathf.Min(nodeMapData.layers.Count - 1, lastIdx + bufferSize);
+            int rangeStart = firstIdx;
+            int rangeEnd = lastIdx;
 
             var activeConns = new HashSet<(int, int, int, int)>();
             for (int i = rangeStart; i <= rangeEnd; i++)
@@ -242,19 +214,15 @@ namespace UI.Panel
             {
                 if (_lineMap.ContainsKey(conn)) continue;
 
+                Transform srcIcon = GetNodeIconTransform(conn.Item1, conn.Item2);
+                Transform tgtIcon = GetNodeIconTransform(conn.Item3, conn.Item4);
+                // 若起点或终点不在可见层的已激活 slot 中，跳过这条线，
+                // 等用户滚动到对应层、该 Icon 实例激活后再建立连接
+                if (srcIcon == null || tgtIcon == null) continue;
+
                 var go = _linePool.Get();
                 var bezier = go.GetComponent<BezierLine>();
-                var srcPos = GetNodeContentPos(conn.Item1, conn.Item2);
-                var tgtPos = GetNodeContentPos(conn.Item3, conn.Item4);
-                bezier.SetEndpoints(srcPos, tgtPos);
-
-                if (_slotXCache == null)
-                {
-                    var layer = _activeLayers.Find(l =>
-                        Mathf.RoundToInt(l.rect.anchoredPosition.y / _layerHeight) == conn.Item1);
-                    if (layer.layer != null)
-                        CacheSlotXFromLayer(layer.layer);
-                }
+                bezier.SetEndpoints(srcIcon, tgtIcon, _lineContainer);
 
                 _lineMap[conn] = bezier;
             }
