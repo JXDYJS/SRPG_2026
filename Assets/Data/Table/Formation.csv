@@ -1,0 +1,5 @@
+_className,*formation_id,slot_1,slot_2,slot_3,slot_4,bonus_hp,bonus_atk
+Formation,int,string,string,string,string,int,float
+,1,hero_001,,hero_003,,0,1.05
+,2,hero_001,hero_002,hero_003,hero_004,500,1.15
+,3,,hero_002,,,200,1.0
