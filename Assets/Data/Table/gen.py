@@ -416,6 +416,7 @@ def main():
             entries.append(entry)
 
         if is_dic == "true" or (is_dic is None and key_field is not None):
+            assert key_field is not None
             key_type = ftypes[fnames.index(key_field)]
             key_type_cs = key_type.replace("Dict<", "Dictionary<")
             field_code = f"        public readonly Dictionary<{key_type_cs}, {cname}> {tname} = new()\n        {{"
