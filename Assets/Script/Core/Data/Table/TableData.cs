@@ -98,22 +98,6 @@ namespace Core.Data
             public List<object> effectStay;
         }
 
-        public struct BlockConfig
-        {
-            public string id;
-            public string prefabAddress;
-            public Global.BlockType blockType;
-            public bool isWalkable;
-            public float xCellSize;
-            public float yCellSize;
-            public float zCellSize;
-            public float heightOffset;
-            public int threatScore;
-            public List<object> effectEnter;
-            public List<object> effectExit;
-            public List<object> effectStay;
-        }
-
         public struct Buff
         {
             public int id;

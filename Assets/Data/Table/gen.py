@@ -436,7 +436,8 @@ def main():
 
         fields_schema = dict(zip(fnames, ftypes))
         register_class(cname, fields_schema)
-        table_structs.append(genStructDefineCode(cname, fields_schema))
+        if cname not in schema_classes:
+            table_structs.append(genStructDefineCode(cname, fields_schema))
 
         entries = []
         for row_data in drows:
