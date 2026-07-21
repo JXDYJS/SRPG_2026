@@ -118,6 +118,7 @@ namespace Core.Data
             public int price;
             public float weight;
             public bool usable;
+            public Global.RarityType rarity;
         }
 
         public struct Monster
@@ -128,6 +129,7 @@ namespace Core.Data
             public float atk;
             public float def;
             public DropItem drop;
+            public Global.FactionType faction;
         }
 
         public struct Skill
@@ -163,20 +165,20 @@ namespace Core.Data
 
         public readonly List<Item> Items = new()
         {
-            new() { id = 1, name = "Potion", price = 50, weight = 0.5f, usable = true },
-            new() { id = 2, name = "Hi-Potion", price = 150, weight = 0.5f, usable = true },
-            new() { id = 3, name = "Antidote", price = 30, weight = 0.2f, usable = true },
-            new() { id = 4, name = "Elixir", price = 500, weight = 0.5f, usable = true },
-            new() { id = 5, name = "MegaElixir", price = 2000, weight = 0.5f, usable = true },
-            new() { id = 6, name = "KeyItem", price = 0, weight = 0.0f, usable = false }
+            new() { id = 1, name = "Potion", price = 50, weight = 0.5f, usable = true, rarity = Global.RarityType.Common },
+            new() { id = 2, name = "Hi-Potion", price = 150, weight = 0.5f, usable = true, rarity = Global.RarityType.Uncommon },
+            new() { id = 3, name = "Antidote", price = 30, weight = 0.2f, usable = true, rarity = Global.RarityType.Common },
+            new() { id = 4, name = "Elixir", price = 500, weight = 0.5f, usable = true, rarity = Global.RarityType.Rare },
+            new() { id = 5, name = "MegaElixir", price = 2000, weight = 0.5f, usable = true, rarity = Global.RarityType.Epic },
+            new() { id = 6, name = "KeyItem", price = 0, weight = 0.0f, usable = false, rarity = Global.RarityType.Common }
         };
 
         public readonly List<Monster> Monsters = new()
         {
-            new() { id = "mon_slime", name = "Slime", hp = 30, atk = 5.0f, def = 2.0f, drop = new() { id = "m1", name = "Slime Core", rate = 0.3f, count = 1 } },
-            new() { id = "mon_bat", name = "Bat", hp = 20, atk = 8.0f, def = 1.0f, drop = new() { id = "m2", name = "Bat Wing", rate = 0.5f, count = 2 } },
-            new() { id = "mon_dragon", name = "Dragon", hp = 500, atk = 50.0f, def = 30.0f, drop = new() { id = "m3", name = "Dragon Scale", rate = 0.05f, count = 1 } },
-            new() { id = "mon_boss", name = "Boss", hp = 2000, atk = 120.0f, def = 50.0f, drop = new() { id = "m4", name = "Boss Core", rate = 1.0f, count = 3 } }
+            new() { id = "mon_slime", name = "Slime", hp = 30, atk = 5.0f, def = 2.0f, drop = new() { id = "m1", name = "Slime Core", rate = 0.3f, count = 1 }, faction = Global.FactionType.Enemy },
+            new() { id = "mon_bat", name = "Bat", hp = 20, atk = 8.0f, def = 1.0f, drop = new() { id = "m2", name = "Bat Wing", rate = 0.5f, count = 2 }, faction = Global.FactionType.Enemy },
+            new() { id = "mon_dragon", name = "Dragon", hp = 500, atk = 50.0f, def = 30.0f, drop = new() { id = "m3", name = "Dragon Scale", rate = 0.05f, count = 1 }, faction = Global.FactionType.Enemy },
+            new() { id = "mon_boss", name = "Boss", hp = 2000, atk = 120.0f, def = 50.0f, drop = new() { id = "m4", name = "Boss Core", rate = 1.0f, count = 3 }, faction = Global.FactionType.Enemy }
         };
 
         public readonly Dictionary<int, Skill> Skills = new()

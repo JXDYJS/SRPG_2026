@@ -1,6 +1,6 @@
-_className,_tableName,_isDic,*id,name,hp,atk,def,drop
-Monster,Monsters,false,string,string,int,float,float,DropItem
-,,,mon_slime,Slime,30,5.0,2.0,"[""m1"", ""Slime Core"", 0.3, 1]"
-,,,mon_bat,Bat,20,8.0,1.0,"[""m2"", ""Bat Wing"", 0.5, 2]"
-,,,mon_dragon,Dragon,500,50.0,30.0,"[""m3"", ""Dragon Scale"", 0.05, 1]"
-,,,mon_boss,Boss,2000,120.0,50.0,"[""m4"", ""Boss Core"", 1.0, 3]"
+_className,_tableName,_isDic,*id,name,hp,atk,def,drop,faction
+Monster,Monsters,false,string,string,int,float,float,DropItem,Global.FactionType
+,,,mon_slime,Slime,30,5.0,2.0,"[""m1"", ""Slime Core"", 0.3, 1]",Enemy
+,,,mon_bat,Bat,20,8.0,1.0,"[""m2"", ""Bat Wing"", 0.5, 2]",Enemy
+,,,mon_dragon,Dragon,500,50.0,30.0,"[""m3"", ""Dragon Scale"", 0.05, 1]",Enemy
+,,,mon_boss,Boss,2000,120.0,50.0,"[""m4"", ""Boss Core"", 1.0, 3]",Enemy

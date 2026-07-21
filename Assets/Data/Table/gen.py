@@ -40,7 +40,19 @@ def parse_value(data: str, field_type: str) -> Tuple[bool, str]:
     if lower.startswith("dict<") or lower.startswith("dictionary<"):
         return handleDict(data, field_type)
 
-    return False, f"未知的类型: '{field_type}'"
+    # 外部 enum 引用（完全限定 C# enum 类型）
+    return handleEnum(data, field_type)
+
+
+def handleEnum(data: str, enum_type: str) -> Tuple[bool, str]:
+    clean_data = str(data).strip()
+    if not clean_data:
+        return False, "单元格内容为空"
+    # 纯数字 → 强转
+    if clean_data.isdigit() or (clean_data.startswith('-') and clean_data[1:].isdigit()):
+        return True, f"({enum_type}){clean_data}"
+    # 枚举成员名 → 全限定引用（编译期安全）
+    return True, f"{enum_type}.{clean_data}"
 
 
 def handleInt(data: str) -> Tuple[bool, str]:
