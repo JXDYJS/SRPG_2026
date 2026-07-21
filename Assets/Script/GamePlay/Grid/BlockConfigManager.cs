@@ -21,23 +21,26 @@ namespace GamePlay.Grid
         public List<TileEffectSO> OnStayEffects;
     }
 
-    public static class BlockConfigManager
+    public class BlockConfigManager : MonoBehaviour
     {
-        private static Dictionary<string, ResolvedBlockConfig> _cache;
-        private static bool _initialized;
+        public static BlockConfigManager Instance { get; private set; }
 
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-        private static void Initialize()
+        private Dictionary<string, ResolvedBlockConfig> _cache;
+
+        void Awake()
         {
+            Instance = this;
             _cache = new Dictionary<string, ResolvedBlockConfig>();
-            _initialized = true;
-            Debug.Log("[BlockConfigManager] initialized");
         }
 
-        public static ResolvedBlockConfig Get(string configId)
+        void OnDestroy()
         {
-            if (!_initialized) Initialize();
+            if (Instance == this)
+                Instance = null;
+        }
 
+        public ResolvedBlockConfig Get(string configId)
+        {
             if (string.IsNullOrEmpty(configId))
                 return null;
 
@@ -53,7 +56,7 @@ namespace GamePlay.Grid
             return Resolve(configId, raw);
         }
 
-        private static ResolvedBlockConfig Resolve(string configId, TableData.BlockConfig raw)
+        private ResolvedBlockConfig Resolve(string configId, TableData.BlockConfig raw)
         {
             var resolved = new ResolvedBlockConfig
             {
@@ -74,7 +77,7 @@ namespace GamePlay.Grid
             return resolved;
         }
 
-        private static List<TileEffectSO> ResolveEffects(List<object> rawEffects)
+        private List<TileEffectSO> ResolveEffects(List<object> rawEffects)
         {
             if (rawEffects == null || rawEffects.Count == 0)
                 return new List<TileEffectSO>();
@@ -95,7 +98,7 @@ namespace GamePlay.Grid
             var csvArgs = new List<object>();
             for (int i = 1; i < rawEffects.Count; i++)
             {
-                int paramIdx = 2 + (i - 1); // skip (MapUnit, MapObject) params
+                int paramIdx = 2 + (i - 1);
                 if (paramIdx < parameters.Length)
                 {
                     csvArgs.Add(ConvertParam(rawEffects[i], parameters[paramIdx].ParameterType));
@@ -107,7 +110,7 @@ namespace GamePlay.Grid
             return new List<TileEffectSO> { effect };
         }
 
-        private static object ConvertParam(object value, Type targetType)
+        private object ConvertParam(object value, Type targetType)
         {
             if (value == null) return null;
 

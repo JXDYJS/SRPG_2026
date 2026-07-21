@@ -30,7 +30,7 @@ namespace GamePlay.Units
         {
             if (string.IsNullOrEmpty(blockConfigId)) return;
 
-            var cfg = BlockConfigManager.Get(blockConfigId);
+            var cfg = BlockConfigManager.Instance?.Get(blockConfigId);
             if (cfg == null) return;
 
             type = cfg.Type;
