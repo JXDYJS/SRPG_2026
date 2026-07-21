@@ -53,7 +53,7 @@ namespace GamePlay.Grid
             return Resolve(configId, raw);
         }
 
-        private static ResolvedBlockConfig Resolve(string configId, BlockConfig raw)
+        private static ResolvedBlockConfig Resolve(string configId, TableData.BlockConfig raw)
         {
             var resolved = new ResolvedBlockConfig
             {
