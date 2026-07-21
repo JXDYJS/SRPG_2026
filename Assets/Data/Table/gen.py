@@ -25,6 +25,7 @@ def register():
     Method["list"] = lambda d: handleList(d, "List<string>")
     Method["dict"] = lambda d: handleDict(d, "Dictionary<string,string>")
     Method["dic"] = Method["dict"]
+    Method["object"] = handleObjectStr
 
 
 def parse_value(data: str, field_type: str) -> Tuple[bool, str]:
@@ -53,6 +54,39 @@ def handleEnum(data: str, enum_type: str) -> Tuple[bool, str]:
         return True, f"({enum_type}){clean_data}"
     # 枚举成员名 → 全限定引用（编译期安全）
     return True, f"{enum_type}.{clean_data}"
+
+
+def handleObjectStr(data: str) -> Tuple[bool, str]:
+    clean = str(data).strip()
+    if not clean:
+        return False, "数据为空"
+    try:
+        val = ast.literal_eval(clean)
+    except:
+        val = clean
+    return _format_object_lit(val)
+
+
+def _format_object_lit(val) -> Tuple[bool, str]:
+    if isinstance(val, bool):
+        return True, "true" if val else "false"
+    if isinstance(val, int):
+        return True, str(val)
+    if isinstance(val, float):
+        return True, f"{val}f"
+    if isinstance(val, str):
+        escaped = val.replace('\\', '\\\\').replace('"', '\\"')
+        return True, f'"{escaped}"'
+    if isinstance(val, (list, tuple)):
+        items = ", ".join(_format_object_lit(x)[1] for x in val)
+        return True, f"new object[] {{ {items} }}"
+    if isinstance(val, dict):
+        pairs = ", ".join(
+            f"{{ {_format_object_lit(k)[1]}, {_format_object_lit(v)[1]} }}"
+            for k, v in val.items()
+        )
+        return True, f"new Dictionary<object, object> {{ {pairs} }}"
+    return False, f"不支持的对象类型: {type(val).__name__}"
 
 
 def handleInt(data: str) -> Tuple[bool, str]:
@@ -168,7 +202,10 @@ def handleList(data: str, field_type: str) -> Tuple[bool, str]:
 
     converted_items = []
     for item in raw_list:
-        ok, res = parse_value(str(item), sub_type)
+        if sub_type.lower() == "object":
+            ok, res = _format_object_lit(item)
+        else:
+            ok, res = parse_value(str(item), sub_type)
         if not ok:
             return False, f"列表元素 [{item}] 解析失败 -> {res}"
         converted_items.append(res)
@@ -228,7 +265,10 @@ def handleDict(data: str, field_type: str) -> Tuple[bool, str]:
         ok_k, res_k = parse_value(str(k), key_type)
         if not ok_k:
             return False, f"字典 Key [{k}] 解析失败 -> {res_k}"
-        ok_v, res_v = parse_value(str(v), val_type)
+        if val_type.lower() == "object":
+            ok_v, res_v = _format_object_lit(v)
+        else:
+            ok_v, res_v = parse_value(str(v), val_type)
         if not ok_v:
             return False, f"字典 Value [{v}] 解析失败 -> {res_v}"
         kv_pairs.append(f"{{ {res_k}, {res_v} }}")

@@ -57,5 +57,19 @@
         "buffMap": "Dictionary<string, BuffEffect>",
         "scoreBoard": "Dictionary<int, List<float>>",
         "cube": "List<List<List<int>>>"
+    },
+    "BlockConfig": {
+        "id": "string",
+        "prefabAddress": "string",
+        "blockType": "Global.BlockType",
+        "isWalkable": "bool",
+        "xCellSize": "float",
+        "yCellSize": "float",
+        "zCellSize": "float",
+        "heightOffset": "float",
+        "threatScore": "int",
+        "effectEnter": "List<object>",
+        "effectExit": "List<object>",
+        "effectStay": "List<object>"
     }
 }
