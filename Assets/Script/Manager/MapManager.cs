@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -24,10 +25,8 @@ namespace Managers
     public string currentMapName = "Map_01";
     public MapDataSO currentLevelData;
 
-    [Header("资源索引 (ID -> Prefab)")]
-    // 你需要在 Inspector 里手动把预制体拖进去，或者写代码自动加载 Resources
-    public List<MapObject> prefabIndex; 
     public Dictionary<Vector3Int,MapObject> blocks;
+    private Dictionary<string, GameObject> _prefabCache;
     public VoxelGrid voxelGrid;
     // 运行时逻辑网格
     public LogicalGrid logicalGrid = new LogicalGrid();
@@ -48,9 +47,31 @@ namespace Managers
     private void Awake()
     {
         if (Instance == null)
-        {
             Instance = this;
+        InitPrefabCache();
+    }
+
+    private void InitPrefabCache()
+    {
+        _prefabCache = new Dictionary<string, GameObject>();
+        if (BlockConfigManager.Instance == null || Data.Table == null) return;
+
+        foreach (var kvp in Data.Table.BlockConfigs)
+        {
+            string address = kvp.Value.prefabAddress;
+            try
+            {
+                var handle = Addressables.LoadAssetAsync<GameObject>(address);
+                var prefab = handle.WaitForCompletion();
+                if (prefab != null)
+                    _prefabCache[kvp.Key] = prefab;
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogError($"[MapManager] Failed to load prefab '{address}': {ex.Message}");
+            }
         }
+        Debug.Log($"[MapManager] Cached {_prefabCache.Count} block prefabs");
     }
 
     string ResolveConfigId(MapBlockData block)
@@ -168,16 +189,15 @@ namespace Managers
         {
             foreach (var blockData in cellData.stack)
             {
-                MapObject prefab = prefabIndex.Find(p => p.prefabId == blockData.prefabId);
-                if (prefab != null)
+                string configId = LegacyPrefabMapping.TryGetValue(blockData.prefabId, out var mapped) ? mapped : blockData.prefabId;
+                if (!string.IsNullOrEmpty(configId) && _prefabCache.TryGetValue(configId, out var prefab))
                 {
                     Vector3 pos = new Vector3(cellData.x * cellSize, blockData.heightY, cellData.z * cellSize);
                     Quaternion rot = Quaternion.Euler(0, blockData.rotationY, 0);
 
-                    GameObject obj = Instantiate(prefab.gameObject, pos, rot, mapRoot);
+                    GameObject obj = Instantiate(prefab, pos, rot, mapRoot);
                     MapObject instanceMapObj = obj.GetComponent<MapObject>();
                     
-                    // 收集所有生成的物体
                     allObjects.Add(instanceMapObj);
                 }
             }
@@ -294,60 +314,51 @@ namespace Managers
             if (useNewSystem && configId != null)
                 resolvedCfg = BlockConfigManager.Instance.Get(configId);
 
-            MapObject prefab = null;
-            if (resolvedCfg != null)
-            {
-                prefab = prefabIndex.Find(p => p.blockConfigId == configId);
-                if (prefab == null)
-                    prefab = prefabIndex.Find(p => p.prefabId == block.prefabId);
-            }
-            else
-            {
-                prefab = prefabIndex.Find(p => p.prefabId == block.prefabId);
-            }
+            GameObject prefabGo = null;
+            if (configId != null)
+                _prefabCache.TryGetValue(configId, out prefabGo);
 
-            if (prefab)
-            {
-                Vector3 pos = new Vector3(block.position.x, block.position.y, block.position.z) * cellSize;
-                Quaternion rot = Quaternion.Euler(block.XRound, block.YRound, block.ZRound);
-
-                GameObject obj;
-#if UNITY_EDITOR
-                if (!Application.isPlaying)
-                {
-                    obj = (GameObject)UnityEditor.PrefabUtility.InstantiatePrefab(prefab.gameObject, mapRoot);
-                    obj.transform.position = pos;
-                    obj.transform.rotation = rot;
-                }
-                else
-#endif
-                {
-                    obj = Instantiate(prefab.gameObject, pos, rot, mapRoot);
-                }
-
-                MapObject mapObj = obj.GetComponent<MapObject>();
-
-                if (resolvedCfg != null)
-                {
-                    mapObj.blockConfigId = configId;
-                    mapObj.type = resolvedCfg.Type;
-                    mapObj.isWalkable = resolvedCfg.IsWalkable;
-                    mapObj.XCellSize = resolvedCfg.XCellSize;
-                    mapObj.YCellSize = resolvedCfg.YCellSize;
-                    mapObj.ZCellSize = resolvedCfg.ZCellSize;
-                    mapObj.heightOffset = resolvedCfg.HeightOffset;
-                    mapObj.OnEnterEffect = resolvedCfg.OnEnterEffects;
-                    mapObj.OnExitEffect = resolvedCfg.OnExitEffects;
-                    mapObj.OnStayEffect = resolvedCfg.OnStayEffects;
-                }
-
-                allObjects.Add(mapObj);
-                blocks.Add(Vector3Int.FloorToInt(pos), mapObj);
-            }
-            else
+            if (prefabGo == null)
             {
                 Debug.LogWarning($"找不到预制体: configId={configId}, prefabId={block.prefabId}");
+                continue;
             }
+
+            Vector3 pos = new Vector3(block.position.x, block.position.y, block.position.z) * cellSize;
+            Quaternion rot = Quaternion.Euler(block.XRound, block.YRound, block.ZRound);
+
+            GameObject obj;
+#if UNITY_EDITOR
+            if (!Application.isPlaying)
+            {
+                obj = (GameObject)UnityEditor.PrefabUtility.InstantiatePrefab(prefabGo, mapRoot);
+                obj.transform.position = pos;
+                obj.transform.rotation = rot;
+            }
+            else
+#endif
+            {
+                obj = Instantiate(prefabGo, pos, rot, mapRoot);
+            }
+
+            MapObject mapObj = obj.GetComponent<MapObject>();
+
+            if (resolvedCfg != null)
+            {
+                mapObj.blockConfigId = configId;
+                mapObj.type = resolvedCfg.Type;
+                mapObj.isWalkable = resolvedCfg.IsWalkable;
+                mapObj.XCellSize = resolvedCfg.XCellSize;
+                mapObj.YCellSize = resolvedCfg.YCellSize;
+                mapObj.ZCellSize = resolvedCfg.ZCellSize;
+                mapObj.heightOffset = resolvedCfg.HeightOffset;
+                mapObj.OnEnterEffect = resolvedCfg.OnEnterEffects;
+                mapObj.OnExitEffect = resolvedCfg.OnExitEffects;
+                mapObj.OnStayEffect = resolvedCfg.OnStayEffects;
+            }
+
+            allObjects.Add(mapObj);
+            blocks.Add(Vector3Int.FloorToInt(pos), mapObj);
         }
         
         logicalGrid.Build(allObjects);
