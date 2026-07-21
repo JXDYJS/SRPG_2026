@@ -86,6 +86,7 @@ namespace GamePlay.Battle
                 Debug.Log("[FLOW] LoadLevelAsync: step 1 - loading terrain");
                 if (CurrentLevel.MapData != null)
                 {
+                    MapManager.Instance.currentLevelData = CurrentLevel.MapData;
                     MapManager.Instance.LoadFromSO();
                     Debug.Log("地形加载完成");
                 }

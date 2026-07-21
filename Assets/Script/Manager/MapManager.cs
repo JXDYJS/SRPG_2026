@@ -35,12 +35,31 @@ namespace Managers
     // 路径
     string SavePath => Path.Combine(Application.streamingAssetsPath, currentMapName + ".json");
     public static MapManager Instance { get; private set; } = null;
+
+    static readonly Dictionary<string, string> LegacyPrefabMapping = new()
+    {
+        { "1", "grass" },
+        { "2", "dirt" },
+        { "3", "cobblestone" },
+        { "4", "cobbles_slab" },
+        { "5", "magma" },
+    };
+
     private void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
         }
+    }
+
+    string ResolveConfigId(MapBlockData block)
+    {
+        if (!string.IsNullOrEmpty(block.blockConfigId))
+            return block.blockConfigId;
+        if (!string.IsNullOrEmpty(block.prefabId) && LegacyPrefabMapping.TryGetValue(block.prefabId, out var mapped))
+            return mapped;
+        return null;
     }
     [ContextMenu("List All Maps (列出所有存档)")]
     public void ListAllMaps()
@@ -216,7 +235,7 @@ namespace Managers
                 {
                     position = pos,
                     prefabId = mapObj.prefabId,
-                    // 规范化旋转：保证只有 0, 1, 2, 3 四个值
+                    blockConfigId = mapObj.blockConfigId,
                     rotationIndex = Mathf.RoundToInt(child.eulerAngles.y / 90f) % 4,
                     XRound = mapObj.type == BlockType.Slab ? -90 : 0,
                     ZRound = mapObj.ZRound,
@@ -265,25 +284,37 @@ namespace Managers
 
         List<MapObject> allObjects = new List<MapObject>();
         Dictionary<Vector3Int,MapObject> blocks = new Dictionary<Vector3Int, MapObject>();
+        bool useNewSystem = BlockConfigManager.Instance != null;
+
         foreach (var block in currentLevelData.blocks)
         {
-            // 查找 ID 对应的预制体
-            // 注意：这里用 string ID 还是 int ID 取决于你的 MapDataSO 定义，假设是 int prefabId
-            MapObject prefab = prefabIndex.Find(p => p.prefabId == block.prefabId); // 假设 MapObject 有 int prefabId 字段
-            
-            // 如果你的 MapDataSO 用的是 string prefabId，请改为 p.prefabId == block.prefabId
-            
+            string configId = ResolveConfigId(block);
+            ResolvedBlockConfig resolvedCfg = null;
+
+            if (useNewSystem && configId != null)
+                resolvedCfg = BlockConfigManager.Instance.Get(configId);
+
+            MapObject prefab = null;
+            if (resolvedCfg != null)
+            {
+                prefab = prefabIndex.Find(p => p.blockConfigId == configId);
+                if (prefab == null)
+                    prefab = prefabIndex.Find(p => p.prefabId == block.prefabId);
+            }
+            else
+            {
+                prefab = prefabIndex.Find(p => p.prefabId == block.prefabId);
+            }
+
             if (prefab)
             {
                 Vector3 pos = new Vector3(block.position.x, block.position.y, block.position.z) * cellSize;
+                Quaternion rot = Quaternion.Euler(block.XRound, block.YRound, block.ZRound);
 
-                Quaternion rot = Quaternion.Euler(block.XRound,block.YRound,block.ZRound);
-                
                 GameObject obj;
 #if UNITY_EDITOR
                 if (!Application.isPlaying)
                 {
-                    // 编辑器下使用 PrefabUtility 可以保持预制体关联（变蓝）
                     obj = (GameObject)UnityEditor.PrefabUtility.InstantiatePrefab(prefab.gameObject, mapRoot);
                     obj.transform.position = pos;
                     obj.transform.rotation = rot;
@@ -291,23 +322,34 @@ namespace Managers
                 else
 #endif
                 {
-                    // 运行时直接生成
                     obj = Instantiate(prefab.gameObject, pos, rot, mapRoot);
                 }
 
                 MapObject mapObj = obj.GetComponent<MapObject>();
-                // 如果需要，可以在这里把保存时的某些额外属性赋回去
-                
+
+                if (resolvedCfg != null)
+                {
+                    mapObj.blockConfigId = configId;
+                    mapObj.type = resolvedCfg.Type;
+                    mapObj.isWalkable = resolvedCfg.IsWalkable;
+                    mapObj.XCellSize = resolvedCfg.XCellSize;
+                    mapObj.YCellSize = resolvedCfg.YCellSize;
+                    mapObj.ZCellSize = resolvedCfg.ZCellSize;
+                    mapObj.heightOffset = resolvedCfg.HeightOffset;
+                    mapObj.OnEnterEffect = resolvedCfg.OnEnterEffects;
+                    mapObj.OnExitEffect = resolvedCfg.OnExitEffects;
+                    mapObj.OnStayEffect = resolvedCfg.OnStayEffects;
+                }
+
                 allObjects.Add(mapObj);
-                blocks.Add(Vector3Int.FloorToInt(pos),mapObj);
+                blocks.Add(Vector3Int.FloorToInt(pos), mapObj);
             }
             else
             {
-                Debug.LogWarning($"找不到 ID 为 {block.prefabId} 的方块预制体！");
+                Debug.LogWarning($"找不到预制体: configId={configId}, prefabId={block.prefabId}");
             }
         }
         
-        // 构建逻辑网格
         logicalGrid.Build(allObjects);
         this.blocks = blocks;
         this.initVoxel();
