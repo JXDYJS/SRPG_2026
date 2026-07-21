@@ -8,6 +8,7 @@ using UnityEditor;
 using Global;
 using GamePlay.Grid;
 using Utils;
+using Core.Data;
 namespace Managers
 {
     using System;
@@ -72,6 +73,13 @@ namespace Managers
             }
         }
         Debug.Log($"[MapManager] Cached {_prefabCache.Count} block prefabs");
+    }
+
+    public GameObject GetFirstPrefab()
+    {
+        foreach (var kvp in _prefabCache)
+            return kvp.Value;
+        return null;
     }
 
     string ResolveConfigId(MapBlockData block)
