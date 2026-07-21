@@ -19,7 +19,7 @@ namespace Core.Data
         public static PersistentData Persistent { get; private set; }
 
         public static readonly CommandConfigData CommandConfig = new CommandConfigData();
-
+        public static readonly TableData Table = new();
         public static void CreateRuntime()
         {
             Runtime = new RuntimeData();
