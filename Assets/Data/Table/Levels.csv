@@ -1,0 +1,3 @@
+_className,_tableName,_isDic,*id,blockConfigId,playerDeployZones,maxDeployCount,unitIds,fallbackUnitIds
+LevelConfig,LevelConfigs,true,string,string,List<string>,int,List<string>,List<string>
+,,,lv_001,test1,"[""(2,0,2)"", ""(3,0,2)"", ""(2,0,3)"", ""(3,0,3)""]",4,"[""u_hero_01""]","[""u_fallback_01""]"

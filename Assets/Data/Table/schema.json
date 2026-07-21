@@ -12,5 +12,41 @@
         "effectEnter": "List<object>",
         "effectExit": "List<object>",
         "effectStay": "List<object>"
+    },
+    "NodeConfig": {
+        "id": "string",
+        "type": "Map.MapType"
+    },
+    "BattleNodeConfig": {
+        "id": "string",
+        "levelId": "string"
+    },
+    "ShopNodeConfig": {
+        "id": "string"
+    },
+    "EventNodeConfig": {
+        "id": "string"
+    },
+    "BossNodeConfig": {
+        "id": "string"
+    },
+    "LevelConfig": {
+        "id": "string",
+        "blockConfigId": "string",
+        "playerDeployZones": "List<string>",
+        "maxDeployCount": "int",
+        "unitIds": "List<string>",
+        "fallbackUnitIds": "List<string>"
+    },
+    "UnitConfig": {
+        "id": "string",
+        "characterDataId": "string",
+        "level": "int",
+        "faction": "Global.FactionType",
+        "facing": "Global.UnitFacing",
+        "hpBonusPercent": "float",
+        "atkBonusPercent": "float",
+        "defBonusPercent": "float",
+        "resBonusPercent": "float"
     }
 }

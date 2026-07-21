@@ -1,0 +1,3 @@
+_className,_tableName,_isDic,*id,levelId
+BattleNodeConfig,BattleNodeConfigs,true,string,string
+,,,n_001,lv_001
