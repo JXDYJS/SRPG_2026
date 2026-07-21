@@ -1,9 +1,9 @@
 _className,_tableName,_isDic,*id,prefabAddress,blockType,isWalkable,xCellSize,yCellSize,zCellSize,heightOffset,threatScore,effectEnter,effectExit,effectStay
-BlockConfig,BlockConfigs,true,string,string,Global.BlockType,bool,float,float,float,float,int,List<object>,List<object>,List<object>
-,,,grass,Block_Grass,Solid,true,1,1,1,0,0,[],[],[]
-,,,grass_,Block_Grass_,Solid,true,1,1,1,0,0,[],[],[]
-,,,dirt,Block_Dirt,Solid,true,1,1,1,0,0,[],[],[]
-,,,cobblestone,Block_Cobblestone,Solid,true,1,1,1,0,0,[],[],[]
-,,,cobbles_slab,Block_Cobbles_Slab,Slab,true,1,0.5,1,0,0,[],[],[]
-,,,iron,Block_Iron,Solid,true,1,1,1,0,0,[],[],[]
-,,,magma,Magma,Solid,false,1,1,1,0,5,[],[],"[""FireDamage"", 1, ""Fire""]"
+BlockConfig,BlockConfigs,TRUE,string,string,Global.BlockType,bool,float,float,float,float,int,List<object>,List<object>,List<object>
+,,,grass,Block_Grass,Solid,TRUE,1,1,1,0,0,[],[],[]
+,,,grass_,Block_Grass_,Solid,TRUE,1,1,1,0,0,[],[],[]
+,,,dirt,Block_Dirt,Solid,TRUE,1,1,1,0,0,[],[],[]
+,,,cobblestone,Block_Cobblestone,Solid,TRUE,1,1,1,0,0,[],[],[]
+,,,cobbles_slab,Block_Cobbles_Slab,Slab,TRUE,1,0.5,1,0,0,[],[],[]
+,,,iron,Block_Iron,Solid,TRUE,1,1,1,0,0,[],[],[]
+,,,magma,Magma,Solid,FALSE,1,1,1,0,5,[],[],"[""FireDamage"", 1, ""Fire""]"

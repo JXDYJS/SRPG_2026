@@ -112,14 +112,14 @@ namespace GamePlay.Battle
 
             if (InputUtil.IsPointerOverUI)
             {
-                Debug.Log("[Cursor] Hide: over UI");
+                //Debug.Log("[Cursor] Hide: over UI");
                 GridVisualManager.Instance.HideCursor();
                 return;
             }
 
             if (!GridPositionTool.TryGetMouseGridPosition(mainCam, out Vector3Int hoverPos))
             {
-                Debug.Log("[Cursor] Hide: raycast miss");
+                //Debug.Log("[Cursor] Hide: raycast miss");
                 GridVisualManager.Instance.HideCursor();
                 return;
             }
@@ -130,12 +130,12 @@ namespace GamePlay.Battle
 
             if (IsValidDeployPosition(hoverPos))
             {
-                Debug.Log($"[Cursor] Show at {hoverPos}");
+                //Debug.Log($"[Cursor] Show at {hoverPos}");
                 GridVisualManager.Instance.ShowCursorAt(hoverPos);
             }
             else
             {
-                Debug.Log($"[Cursor] Hide: pos {hoverPos} invalid (deployZones={_validDeployZones.Contains(hoverPos)}, canPut={GridVisualManager.CanPutOnGrid(hoverPos)}, unit={UnitManager.Instance.GetUnitAt(hoverPos) != null})");
+                //Debug.Log($"[Cursor] Hide: pos {hoverPos} invalid (deployZones={_validDeployZones.Contains(hoverPos)}, canPut={GridVisualManager.CanPutOnGrid(hoverPos)}, unit={UnitManager.Instance.GetUnitAt(hoverPos) != null})");
                 GridVisualManager.Instance.HideCursor();
             }
         }

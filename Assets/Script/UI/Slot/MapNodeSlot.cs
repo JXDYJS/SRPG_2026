@@ -16,7 +16,7 @@ namespace UI.Slot
             this.node = node;
             Icon.gameObject.SetActive(true);
             Icon.sprite = GetSprite(node.type);
-            Vector2 offset = new(UnityEngine.Random.Range(-10f,10f),UnityEngine.Random.Range(-10f,10f));
+            Vector2 offset = new(UnityEngine.Random.Range(-5f,5f),UnityEngine.Random.Range(-5f,5f));
             var oriPos = Icon.transform.position;
             Icon.transform.position = new(oriPos.x + offset.x,oriPos.y + offset.y,oriPos.z);
         }

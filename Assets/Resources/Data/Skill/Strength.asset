@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe202a631b15d92408ac5c92665ab130, type: 3}
-  m_Name: SteveAddBuff
+  m_Name: Strength
   m_EditorClassIdentifier: 
   SkillName: Strength
   Description: 
