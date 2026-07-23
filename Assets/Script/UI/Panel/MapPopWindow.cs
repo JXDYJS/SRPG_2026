@@ -27,6 +27,8 @@ namespace UI.Panel
         private float _layerHeight;
         public int bufferSize = 2;
         private GameObjectPool _pool;
+        public int playerLayer = 0;
+        public int playerRow = 0;
 
         public void Init(NodeMapData nodeMapData)
         {
@@ -35,16 +37,19 @@ namespace UI.Panel
 
             Content = scroll.content;
             ViewPort = scroll.viewport;
+            LayoutRebuilder.ForceRebuildLayoutImmediate(ViewPort);
             for(int i = Content.transform.childCount - 1; i >= 0; i--)
             {
                 Destroy(Content.transform.GetChild(i).gameObject);
             }
             var prefabRect = _layerPrefab.GetComponent<RectTransform>();
             _layerHeight = prefabRect.rect.height;
+            if (_layerHeight <= 0) _layerHeight = 100;
             Content.sizeDelta = new(Content.sizeDelta.x, _layerHeight * layerCount);
 
             int maxActive = Mathf.Min(layerCount,
                 Mathf.CeilToInt(ViewPort.rect.height / _layerHeight) + bufferSize * 2);
+            if (maxActive <= 0) maxActive = 1;
             _pool = new(_layerPrefab, Content.transform, maxActive, bufferSize);
             _activeLayers = new List<(MapNodeLayer, RectTransform)>(maxActive);
 
@@ -53,6 +58,7 @@ namespace UI.Panel
 
             scroll.onValueChanged.AddListener(OnScrollChanged);
             Refresh();
+            unLockFirstLayer();
         }
 
         private void SetupRect(RectTransform rect, float posY)
@@ -236,7 +242,10 @@ namespace UI.Panel
 
         public void OnEnable()
         {
-            Init(NodeMapData.GenerateFakeDeepMap());
+            if (IsInitialized)
+            {
+                Init(nodeMapData);
+            }
         }
 
         private void ClearAllLines()
@@ -256,6 +265,37 @@ namespace UI.Panel
         {
             _lineMap.Clear();
             scroll.onValueChanged.RemoveListener(OnScrollChanged);
+        }
+        public void NextLevel()
+        {
+            var node = _activeLayers[playerLayer].layer.ActivateNodes[playerRow];
+            if(node == null)
+            {
+                Debug.LogError("node is null");
+                return;
+            }
+            node.isLock = true;
+            foreach(var conn in node.connections)
+            {
+                var nextNodeLayerRow = _nodeIdLookup[conn];
+                var nextNode = _activeLayers[nextNodeLayerRow.layer].layer.ActivateNodes[nextNodeLayerRow.row];
+                if(nextNode != null)
+                {
+                    nextNode.isLock = false;
+                }
+                else
+                {
+                    Debug.LogError("node is null");
+                }
+            }
+        }
+        public void unLockFirstLayer()
+        {
+            Debug.LogError($"Count:{_activeLayers.Count}");
+            foreach(var node in _activeLayers[0].layer.ActivateNodes)
+            {
+                node.isLock = false;
+            }
         }
     }
 }

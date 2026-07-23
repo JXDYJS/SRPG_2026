@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using GamePlay.Units;
 using Managers;
 using GamePlay.Battle;
+using GamePlay.Grid;
 using GamePlay.Visual;
 using Cysharp.Threading.Tasks;
 using UnityEngine.AddressableAssets;
@@ -16,6 +17,7 @@ using Utils;
 using System;
 using Core.Data;
 using DG.Tweening;
+using UI.Panel;
 
 namespace GamePlay.Battle
 {
@@ -31,8 +33,8 @@ namespace GamePlay.Battle
     {
         public static BattleFlowManager Instance { get; private set; }
 
-        [Header("关卡配置")]
-        public BattleLevelSO CurrentLevel;
+        [Header("关卡配置（配表驱动）")]
+        private TableData.LevelConfig _currentLevelConfig;
 
         [Header("运行时状态")]
         [SerializeField]
@@ -56,22 +58,41 @@ namespace GamePlay.Battle
 
         async void Start()
         {
-            Debug.Log("[FLOW] BattleFlowManager.Start() entered");
-            if (CurrentLevel == null)
-            {
-                Debug.LogError("[FLOW] 未指定关卡数据, aborting");
-                return;
-            }
+            // Debug.Log("[FLOW] BattleFlowManager.Start() entered");
+            // if (CurrentLevel == null)
+            // {
+            //     Debug.LogError("[FLOW] 未指定关卡数据, aborting");
+            //     return;
+            // }
 
-            try
+            // try
+            // {
+            //     await LoadLevelAsync();
+            //     Debug.Log("[FLOW] LoadLevelAsync completed");
+            // }
+            // catch (System.Exception e)
+            // {
+            //     Debug.LogError($"[FLOW] LoadLevelAsync threw: {e.GetType().Name}: {e.Message}\n{e.StackTrace}");
+            // }
+            UnitManager.Instance.onUnitDead += () =>
             {
-                await LoadLevelAsync();
-                Debug.Log("[FLOW] LoadLevelAsync completed");
-            }
-            catch (System.Exception e)
+                if (isLevelEnd())
+                {
+                    //todo  判断输赢做出不同选择
+                    EndLevel();
+                }  
+            };
+        }
+
+        public async UniTask LoadLevelAsync(TableData.LevelConfig level)
+        {
+            _currentLevelConfig = level;
+            var mapData = Addressables.LoadAssetAsync<MapDataSO>(level.mapAddress).WaitForCompletion();
+            if (mapData != null)
             {
-                Debug.LogError($"[FLOW] LoadLevelAsync threw: {e.GetType().Name}: {e.Message}\n{e.StackTrace}");
+                MapManager.Instance.currentLevelData = mapData;
             }
+            await LoadLevelAsync();
         }
 
         private async UniTask LoadLevelAsync()
@@ -82,11 +103,10 @@ namespace GamePlay.Battle
                 Debug.Log("开始加载关卡...");
                 SwitchState(BattleFlowState.Loading);
 
-                // 1. 加载地形
+                // 1. 加载地形 & 启动时间轴
                 Debug.Log("[FLOW] LoadLevelAsync: step 1 - loading terrain");
-                if (CurrentLevel.MapData != null)
+                if (MapManager.Instance.currentLevelData != null)
                 {
-                    MapManager.Instance.currentLevelData = CurrentLevel.MapData;
                     MapManager.Instance.LoadFromSO();
                     Debug.Log("地形加载完成");
                 }
@@ -94,13 +114,42 @@ namespace GamePlay.Battle
                 {
                     Debug.Log("[FLOW] MapData is null, skipping terrain");
                 }
+                UIManager.Instance.OpenPanel<TimelinePanel>(null, UILayer.Background);
 
-                // 2. 生成敌方/中立单位（部署阶段可见）
-                Debug.Log($"[FLOW] LoadLevelAsync: step 2 - spawning initial units (enemies)");
+                // 2. 从配表生成敌方/中立单位
+                Debug.Log($"[FLOW] LoadLevelAsync: step 2 - spawning initial units from table");
                 _spawnedUnits.Clear();
                 Sequence allSeq = DOTween.Sequence();
-                foreach (var config in CurrentLevel.InitialUnits)
+                foreach (var unitId in _currentLevelConfig.unitIds)
                 {
+                    if (!Data.Table.UnitConfigs.TryGetValue(unitId, out var unitCfg))
+                    {
+                        Debug.LogWarning($"无法找到单位配置: {unitId}");
+                        continue;
+                    }
+
+                    CharacterData cd = CharacterData.LoadByID(unitCfg.characterDataId);
+                    if (cd == null)
+                    {
+                        Debug.LogWarning($"无法加载角色数据: characterDataId={unitCfg.characterDataId}");
+                        continue;
+                    }
+
+                    var spawnPos = ParseVector3Int(unitCfg.spawnPosition);
+                    UnitConfig config = new UnitConfig
+                    {
+                        CharacterTemplate = cd,
+                        SkillConfig = cd.skillConfig,
+                        SpawnPosition = spawnPos,
+                        InitialFacing = unitCfg.facing,
+                        Faction = unitCfg.faction,
+                        InitialLevel = unitCfg.level > 0 ? unitCfg.level : 1,
+                        HPBonusPercent = unitCfg.hpBonusPercent,
+                        ATKBonusPercent = unitCfg.atkBonusPercent,
+                        DEFBonusPercent = unitCfg.defBonusPercent,
+                        RESBonusPercent = unitCfg.resBonusPercent
+                    };
+
                     MapUnit unit = await UnitFactory.CreateUnitAsync(
                         config,
                         MapManager.Instance,
@@ -123,11 +172,11 @@ namespace GamePlay.Battle
                     {
                         _spawnedUnits.Add(unit);
                         UnitManager.Instance.RegisterUnit(unit);
-                        Debug.Log($"生成单位: {unit.name} 在位置 {config.SpawnPosition}, faction={config.Faction}");
+                        Debug.Log($"生成单位: {unit.name} 在位置 {spawnPos}, faction={config.Faction}");
                     }
                 }
                 await allSeq.AsyncWaitForCompletion();
-                // 3. 进入部署阶段（不再跳过）
+                // 3. 进入部署阶段
                 Debug.Log("[FLOW] LoadLevelAsync: step 3 - entering deployment phase");
                 await EnterDeploymentPhaseAsync();
             }
@@ -207,8 +256,8 @@ namespace GamePlay.Battle
             DeploymentController.Instance.StartDeployment(
                 availableData,
                 _previewUnits,
-                CurrentLevel.PlayerDeployZones,
-                CurrentLevel.MaxDeployCount
+                ParseDeployZones(_currentLevelConfig.playerDeployZones),
+                _currentLevelConfig.maxDeployCount
             );
         }
 
@@ -256,11 +305,11 @@ namespace GamePlay.Battle
                 var seq = DT.Append(
                     (Action)(() =>
                     {
-                        unit.gameObject.transform.position = new Vector3(oriGameObjPos.x,oriGameObjPos.y + Data.Config.ViewConfig.BattleStartUnitAnimationAscendingHeight,oriGameObjPos.z);
+                        unit.gameObject.transform.position = new Vector3(oriGameObjPos.x, oriGameObjPos.y + Data.Config.ViewConfig.BattleStartUnitAnimationAscendingHeight, oriGameObjPos.z);
                         unit.gameObject.SetActive(true);
                     }),
-                    UnityEngine.Random.Range(0.0f,0.2f),
-                    unit.gameObject.transform.DOMoveY(oriGameObjPos.y,1).SetEase(Ease.OutQuad)
+                    UnityEngine.Random.Range(0.0f, 0.2f),
+                    unit.gameObject.transform.DOMoveY(oriGameObjPos.y, 1).SetEase(Ease.OutQuad)
                 );
                 allSeq.Join(seq);
                 if (unit != null)
@@ -300,25 +349,7 @@ namespace GamePlay.Battle
                 return;
             }
 
-            if (CurrentLevel.FallbackPlayerCharacters != null && CurrentLevel.FallbackPlayerCharacters.Count > 0)
-            {
-                foreach (CharacterData cd in CurrentLevel.FallbackPlayerCharacters)
-                {
-                    _characterMetas.Add(new CharacterMeta
-                    {
-                        Data = cd,
-                        Level = 1,
-                        BonusHp = 0,
-                        BonusAtk = 0,
-                        BonusDef = 0,
-                        BonusRes = 0
-                    });
-                }
-                Debug.Log($"[FLOW] 使用 FallbackPlayerCharacters: {_characterMetas.Count} 个角色");
-                return;
-            }
-
-            Debug.LogWarning("[FLOW] FallbackPlayerCharacters 为空，尝试自动扫描 Resources/Data/Character/");
+            Debug.Log("[FLOW] RunManager.MyTeam 为空，尝试自动扫描 Resources/Data/Character/");
 
             List<CharacterData> allFromResources = CharacterData.LoadAll();
             if (allFromResources.Count > 0)
@@ -422,6 +453,49 @@ namespace GamePlay.Battle
             MapManager.Instance.ClearMap();
 
             SwitchState(BattleFlowState.Loading);
+        }
+        public void EndLevel()
+        {
+            CleanupLevel();
+            UIManager.Instance.ClosePanel<TimelinePanel>();
+            var mapPopWindow = UIManager.Instance.OpenPanel<MapPopWindow>();
+            mapPopWindow.NextLevel();
+        }
+        public bool isLevelEnd()
+        {
+            int playAlive = 0;
+            int enemyAlive = 0;
+            foreach (var unit in UnitManager.Instance.GetAllAliveUnit())
+            {
+                if (unit.Faction == FactionType.Player) playAlive++;
+                else if (unit.Faction == FactionType.Enemy) enemyAlive++;
+            }
+            return playAlive == 0 || enemyAlive == 0;
+        }
+        public bool isPlayWin()
+        {
+            if (!isLevelEnd()) return false;
+            int enemyAlive = 0;
+            foreach (var unit in UnitManager.Instance.GetAllAliveUnit())
+            {
+                if (unit.Faction == FactionType.Enemy) enemyAlive++;
+            }
+            return enemyAlive == 0;
+        }
+
+        private static Vector3Int ParseVector3Int(string s)
+        {
+            if (string.IsNullOrEmpty(s)) return Vector3Int.zero;
+            var parts = s.Trim('(', ')').Split(',');
+            if (parts.Length < 3) return Vector3Int.zero;
+            return new Vector3Int(int.Parse(parts[0]), int.Parse(parts[1]), int.Parse(parts[2]));
+        }
+
+        private static List<Vector3Int> ParseDeployZones(List<string> zones)
+        {
+            var result = new List<Vector3Int>(zones.Count);
+            foreach (var z in zones) result.Add(ParseVector3Int(z));
+            return result;
         }
     }
 }

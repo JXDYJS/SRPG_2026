@@ -51,7 +51,7 @@ namespace Core.Data
         public struct LevelConfig
         {
             public string id;
-            public string blockConfigId;
+            public string mapAddress;
             public List<string> playerDeployZones;
             public int maxDeployCount;
             public List<string> unitIds;
@@ -62,6 +62,7 @@ namespace Core.Data
         {
             public string id;
             public string characterDataId;
+            public string spawnPosition;
             public int level;
             public Global.FactionType faction;
             public Global.UnitFacing facing;
@@ -73,7 +74,9 @@ namespace Core.Data
 
         public readonly Dictionary<string, BattleNodeConfig> BattleNodeConfigs = new()
         {
-            { "n_001", new() { id = "n_001", levelId = "lv_001" } }
+            { "n_001", new() { id = "n_001", levelId = "lv_001" } },
+            { "n_002", new() { id = "n_002", levelId = "lv_002" } },
+            { "n_003", new() { id = "n_003", levelId = "lv_001" } }
         };
 
         public readonly Dictionary<string, BlockConfig> BlockConfigs = new()
@@ -97,7 +100,8 @@ namespace Core.Data
 
         public readonly Dictionary<string, LevelConfig> LevelConfigs = new()
         {
-            { "lv_001", new() { id = "lv_001", blockConfigId = "test1", playerDeployZones = new() { "(2,0,2)", "(3,0,2)", "(2,0,3)", "(3,0,3)" }, maxDeployCount = 4, unitIds = new() { "u_hero_01" }, fallbackUnitIds = new() { "u_fallback_01" } } }
+            { "lv_001", new() { id = "lv_001", mapAddress = "Test2", playerDeployZones = new() { "(0,0,0)", "(1,0,0)", "(2,0,0)", "(3,0,0)", "(4,0,0)", "(5,0,0)" }, maxDeployCount = 4, unitIds = new() { "u_enemy_zombie_01", "u_enemy_skeleton_01", "u_enemy_zombie_02" }, fallbackUnitIds = new() { "u_fallback_01" } } },
+            { "lv_002", new() { id = "lv_002", mapAddress = "TallMap", playerDeployZones = new() { "(0,0,0)", "(1,0,0)", "(2,0,0)", "(3,0,0)", "(4,0,0)", "(5,0,0)" }, maxDeployCount = 4, unitIds = new() { "u_enemy_zombie_01", "u_enemy_skeleton_01", "u_enemy_zombie_02" }, fallbackUnitIds = new() { "u_fallback_01" } } }
         };
 
         public readonly Dictionary<string, NodeConfig> NodeConfigs = new()
@@ -113,9 +117,11 @@ namespace Core.Data
 
         public readonly Dictionary<string, UnitConfig> UnitConfigs = new()
         {
-            { "u_hero_01", new() { id = "u_hero_01", characterDataId = "IronSword", level = 1, faction = Global.FactionType.Player, facing = Global.UnitFacing.North, hpBonusPercent = 0.0f, atkBonusPercent = 0.0f, defBonusPercent = 0.0f, resBonusPercent = 0.0f } },
-            { "u_enemy_01", new() { id = "u_enemy_01", characterDataId = "Slime", level = 1, faction = Global.FactionType.Enemy, facing = Global.UnitFacing.South, hpBonusPercent = 0.0f, atkBonusPercent = 0.0f, defBonusPercent = 0.0f, resBonusPercent = 0.0f } },
-            { "u_fallback_01", new() { id = "u_fallback_01", characterDataId = "IronSword", level = 1, faction = Global.FactionType.Player, facing = Global.UnitFacing.North, hpBonusPercent = 0.0f, atkBonusPercent = 0.0f, defBonusPercent = 0.0f, resBonusPercent = 0.0f } }
+            { "u_hero_01", new() { id = "u_hero_01", characterDataId = "1", spawnPosition = "", level = 1, faction = Global.FactionType.Player, facing = Global.UnitFacing.North, hpBonusPercent = 0.0f, atkBonusPercent = 0.0f, defBonusPercent = 0.0f, resBonusPercent = 0.0f } },
+            { "u_enemy_zombie_01", new() { id = "u_enemy_zombie_01", characterDataId = "2", spawnPosition = "(6,1,3)", level = 0, faction = Global.FactionType.Enemy, facing = Global.UnitFacing.North, hpBonusPercent = 0.0f, atkBonusPercent = 0.0f, defBonusPercent = 0.0f, resBonusPercent = 0.0f } },
+            { "u_enemy_skeleton_01", new() { id = "u_enemy_skeleton_01", characterDataId = "3", spawnPosition = "(1,3,3)", level = 0, faction = Global.FactionType.Enemy, facing = Global.UnitFacing.North, hpBonusPercent = 2.0f, atkBonusPercent = 0.0f, defBonusPercent = 0.0f, resBonusPercent = 0.0f } },
+            { "u_enemy_zombie_02", new() { id = "u_enemy_zombie_02", characterDataId = "2", spawnPosition = "(6,1,4)", level = 0, faction = Global.FactionType.Enemy, facing = Global.UnitFacing.North, hpBonusPercent = 0.0f, atkBonusPercent = 0.0f, defBonusPercent = 0.0f, resBonusPercent = 0.0f } },
+            { "u_fallback_01", new() { id = "u_fallback_01", characterDataId = "1", spawnPosition = "", level = 1, faction = Global.FactionType.Player, facing = Global.UnitFacing.North, hpBonusPercent = 0.0f, atkBonusPercent = 0.0f, defBonusPercent = 0.0f, resBonusPercent = 0.0f } }
         };
     }
 }

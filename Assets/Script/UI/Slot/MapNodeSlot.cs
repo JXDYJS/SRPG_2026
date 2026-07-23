@@ -1,8 +1,16 @@
 using UnityEngine;
 using Map;
+using UnityEngine.UI;
+using Core.Data;
+using GamePlay.Battle;
+using Cysharp.Threading.Tasks;
+using Managers;
+using UI.Panel;
+using System;
+using Unity.VisualScripting;
 namespace UI.Slot
 {
-    public class MapNodeSlot:MonoBehaviour
+    public class MapNodeSlot : MonoBehaviour
     {
         public UnityEngine.UI.Image Icon;
         public Sprite BattleIcon;
@@ -10,15 +18,18 @@ namespace UI.Slot
         public Sprite EventIcon;
         public Sprite BossIcon;
         public BaseNode node;
+        public Button button;
+        public Color maskColor;
 
         public void Init(BaseNode node)
         {
             this.node = node;
             Icon.gameObject.SetActive(true);
             Icon.sprite = GetSprite(node.type);
-            Vector2 offset = new(UnityEngine.Random.Range(-5f,5f),UnityEngine.Random.Range(-5f,5f));
+            Vector2 offset = new(UnityEngine.Random.Range(-5f, 5f), UnityEngine.Random.Range(-5f, 5f));
             var oriPos = Icon.transform.position;
-            Icon.transform.position = new(oriPos.x + offset.x,oriPos.y + offset.y,oriPos.z);
+            Icon.transform.position = new(oriPos.x + offset.x, oriPos.y + offset.y, oriPos.z);
+            addEvent();
         }
 
         private Sprite GetSprite(MapType type)
@@ -36,6 +47,72 @@ namespace UI.Slot
         public void Reset()
         {
             Icon.gameObject.SetActive(false);
+        }
+        public void addEvent()
+        {
+            if (this.node == null || this.button == null)
+            {
+                Debug.LogError("node or btn is null");
+                return;
+            }
+            this.button.onClick.AddListener(() =>
+            {
+                UIManager.Instance.ClosePanel<MapPopWindow>();
+                if (node is BattleNode battleNode)
+                {
+                    var level = battleNode.level;
+                    if (Data.Table.LevelConfigs.TryGetValue(battleNode.level, out var levelConfig))
+                    {
+                        BattleFlowManager.Instance.LoadLevelAsync(levelConfig).Forget();
+                    }
+                    else
+                    {
+                        Debug.Log("levelConfig not found");
+                    }
+                }
+                node._onEnterNode.Invoke();
+            });
+
+            if (this.node._onLockChange != null)
+            {
+                this.node._onLockChange += updateMask;
+            }
+        }
+        public void OnDestroy()
+        {
+            if (this.button)
+            {
+                this.button.onClick.RemoveAllListeners();
+            }
+            if (this.node != null && this.node._onLockChange != null)
+            {
+                this.node._onLockChange -= updateMask;
+            }
+        }
+
+        public void OnDisable()
+        {
+            if (this.button)
+            {
+                this.button.onClick.RemoveAllListeners();
+            }
+            if (this.node != null && this.node._onLockChange != null)
+            {
+                this.node._onLockChange -= updateMask;
+            }
+        }
+        public void updateMask(bool isLock)
+        {
+            if (isLock)
+            {
+                button.interactable = false;
+                Icon.color = maskColor;
+            }
+            else
+            {
+                button.interactable = true;
+                Icon.color = new(1.0f, 1.0f, 1.0f, 1.0f);
+            }
         }
     }
 }
