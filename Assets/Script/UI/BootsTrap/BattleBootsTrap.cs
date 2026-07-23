@@ -25,6 +25,7 @@ namespace UI.BootsTrap
             }
             MapPopWindow = UIManager.Instance.OpenPanel<MapPopWindow>();
             MapPopWindow.Init(NodeMapData.GenerateFakeData()); // todo: generate real data
+            MapPopWindow.unLockFirstLayer();
         }
     }
 }

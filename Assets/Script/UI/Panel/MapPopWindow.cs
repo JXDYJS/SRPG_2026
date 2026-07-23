@@ -46,6 +46,7 @@ namespace UI.Panel
             _layerHeight = prefabRect.rect.height;
             if (_layerHeight <= 0) _layerHeight = 100;
             Content.sizeDelta = new(Content.sizeDelta.x, _layerHeight * layerCount);
+            LayoutRebuilder.ForceRebuildLayoutImmediate(Content);
 
             int maxActive = Mathf.Min(layerCount,
                 Mathf.CeilToInt(ViewPort.rect.height / _layerHeight) + bufferSize * 2);
@@ -58,7 +59,6 @@ namespace UI.Panel
 
             scroll.onValueChanged.AddListener(OnScrollChanged);
             Refresh();
-            unLockFirstLayer();
         }
 
         private void SetupRect(RectTransform rect, float posY)
@@ -268,30 +268,25 @@ namespace UI.Panel
         }
         public void NextLevel()
         {
-            var node = _activeLayers[playerLayer].layer.ActivateNodes[playerRow];
-            if(node == null)
-            {
-                Debug.LogError("node is null");
-                return;
-            }
+            if (nodeMapData == null || playerLayer >= nodeMapData.layers.Count) return;
+            var nodes = nodeMapData.layers[playerLayer];
+            var node = nodes.Find(n => n.col == playerLayer && n.row == playerRow);
+            if (node == null) return;
+
             node.isLock = true;
-            foreach(var conn in node.connections)
+            foreach (var conn in node.connections)
             {
-                var nextNodeLayerRow = _nodeIdLookup[conn];
-                var nextNode = _activeLayers[nextNodeLayerRow.layer].layer.ActivateNodes[nextNodeLayerRow.row];
-                if(nextNode != null)
-                {
-                    nextNode.isLock = false;
-                }
-                else
-                {
-                    Debug.LogError("node is null");
-                }
+                if (!_nodeIdLookup.TryGetValue(conn, out var nextNodeLayerRow)) continue;
+                var nextLayer = nodeMapData.layers[nextNodeLayerRow.layer];
+                var nextNode = nextLayer.Find(n => n.id == conn);
+                if (nextNode == null) continue;
+                nextNode.isLock = false;
             }
+            Refresh();
         }
         public void unLockFirstLayer()
         {
-            Debug.LogError($"Count:{_activeLayers.Count}");
+            if (_activeLayers.Count == 0) return;
             foreach(var node in _activeLayers[0].layer.ActivateNodes)
             {
                 node.isLock = false;

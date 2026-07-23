@@ -152,13 +152,13 @@ namespace GamePlay.View
 
             float elapsed = 0f;
             float timeout = Data.Config.ViewConfig.deathAnimationStateTimeout;
-            while (elapsed < timeout && !_animator.GetCurrentAnimatorStateInfo(0).IsName(animName))
+            while (elapsed < timeout && _animator != null && !_animator.GetCurrentAnimatorStateInfo(0).IsName(animName))
             {
                 await UniTask.Yield();
                 elapsed += Time.deltaTime;
             }
 
-            float clipLength = _animator.GetCurrentAnimatorStateInfo(0).IsName(animName)
+            float clipLength = _animator != null && _animator.GetCurrentAnimatorStateInfo(0).IsName(animName)
                 ? _animator.GetCurrentAnimatorStateInfo(0).length
                 : Data.Config.ViewConfig.deathAnimationDefaultClipLength;
 

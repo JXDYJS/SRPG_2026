@@ -93,7 +93,7 @@ namespace GamePlay.Control
                     ChangeState(InputState.Locked);
                     Debug.Log($"[BIC] Blocked: activeUnit null or not player (state={currentState})");
                 }
-                GridVisualManager.Instance.HideCursor();
+                if (GridVisualManager.Instance != null) GridVisualManager.Instance.HideCursor();
                 return;
             }
 

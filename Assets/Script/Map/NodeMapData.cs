@@ -40,7 +40,6 @@ namespace Map
             get => _isLock;
             set
             {
-                if (_isLock == value) return;
                 _isLock = value;
                 _onLockChange?.Invoke(value);
             }
@@ -49,11 +48,15 @@ namespace Map
         [JsonIgnore] public Action _onEnterNode;
         protected BaseNode() : this(null)
         {
-            isLock = true;
         }
         protected BaseNode(string id)
         {
             this.id = id ?? Guid.NewGuid().ToString("N");
+            isLock = true;
+            _onEnterNode += () =>
+            {
+                this.isLock = true;
+            };
         }
     }
 

@@ -30,6 +30,7 @@ namespace UI.Slot
             var oriPos = Icon.transform.position;
             Icon.transform.position = new(oriPos.x + offset.x, oriPos.y + offset.y, oriPos.z);
             addEvent();
+            updateMask(node.isLock);
         }
 
         private Sprite GetSprite(MapType type)
@@ -57,6 +58,12 @@ namespace UI.Slot
             }
             this.button.onClick.AddListener(() =>
             {
+                var win = UIManager.Instance.GetPanel<MapPopWindow>();
+                if (win != null)
+                {
+                    win.playerLayer = node.col;
+                    win.playerRow = node.row;
+                }
                 UIManager.Instance.ClosePanel<MapPopWindow>();
                 if (node is BattleNode battleNode)
                 {
@@ -73,10 +80,7 @@ namespace UI.Slot
                 node._onEnterNode.Invoke();
             });
 
-            if (this.node._onLockChange != null)
-            {
-                this.node._onLockChange += updateMask;
-            }
+            this.node._onLockChange += updateMask;
         }
         public void OnDestroy()
         {
@@ -103,6 +107,7 @@ namespace UI.Slot
         }
         public void updateMask(bool isLock)
         {
+            Debug.LogError($"node Layer{node.col} node row{node.row} isLock{node.isLock}");
             if (isLock)
             {
                 button.interactable = false;
