@@ -78,6 +78,8 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
                 float _Smoothness;
             CBUFFER_END
 
+            float _WaterSurfaceHeight;
+
             TEXTURE2D(_NoiseTex); SAMPLER(sampler_NoiseTex);
             TEXTURE2D(_SSPR_ReflectionTexture); SAMPLER(sampler_SSPR_ReflectionTexture);
             
@@ -136,7 +138,8 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
                 float3 uT = uA + uS;
                 transmittance = exp(-uT * d);
                 float3 scatteringAlbedo = uS * rcp(max(uT, 0.0001));
-                return originLight * (1.0 - transmittance) * scatteringAlbedo * phase;
+                //return originLight * (1.0 - transmittance) * scatteringAlbedo * (phase + rcp(4*PI) * (uS / uT));
+                return originLight * (1.0 - transmittance) * scatteringAlbedo * (phase);
             }
 
             Varyings vert(Attributes input) {
@@ -157,6 +160,8 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
                 float sceneZ = LinearEyeDepth(rawDepth, _ZBufferParams);
                 float surfaceZ = LinearEyeDepth(input.positionCS.z, _ZBufferParams);
                 float totalRayLength = min(_MaxRayLength, sceneZ - surfaceZ);
+                bool hasBackScene = sceneZ - surfaceZ <= 2 * _MaxRayLength && rawDepth > 1e-5;
+                float distanceToBackScene = hasBackScene ? sceneZ - surfaceZ : 1e5;
                 float thickness = saturate(totalRayLength / _MaxRayLength);
 
                 float step_size = 0.1;
@@ -185,6 +190,9 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
                 float expStep = pow(_ExpFactor, rcpCount);
                 float dither = InterleavedGradientNoise(input.positionCS.xy, _Time.y % 1000) * _DitherStrength;
                 float currentExp = pow(_ExpFactor, dither * rcpCount);
+                float3 sceneInScattering = 0.0.xxx;
+                float2 distortedUV = screenUV + N.xz * 0.02;
+                float3 sceneColor = SampleSceneColor(distortedUV);
 
                 float3 scatteredLight = 0;
                 float3 accumTransmittance = 1.0;
@@ -202,10 +210,13 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
                     float3 stepTrans;
                     float3 scatterPhase = CalculateScatterPhase(cosTheta, _PhaseG);
                     float3 effectivePhase = lerp(scatterPhase, float3(1,1,1)/(4.0*PI), saturate(Luminance(uS/uT) * 0.5));
-                    float3 stepS = CalculateScatteredLight(mainLight.color * shadow, uA, uS, dd * totalRayLength, effectivePhase, stepTrans);
+                    float  distanceToLight = max(((_WaterSurfaceHeight - sampleWS.y) / max(L.y,0.001)),0.001 );
+                    float3 LightTransmittance = exp(-uT * distanceToLight);
+                    float3 stepS = CalculateScatteredLight(mainLight.color * shadow * LightTransmittance, uA, uS, dd * totalRayLength, effectivePhase, stepTrans);
                     
                     scatteredLight += stepS * accumTransmittance;
                     accumTransmittance *= stepTrans;
+                    sceneInScattering += sceneColor * LightTransmittance * uS * (dd * totalRayLength) * effectivePhase * exp(-uT * distanceToBackScene);
                     currentExp *= expStep;
                 }
 
@@ -224,10 +235,8 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
                 float P_backlit = HenyeyPhase(dot(V, -L), 0.998);
                 float3 backlitTrans = mainLight.color * G_backlit * T_backlit * P_backlit * lastShadow;
 
-                float2 distortedUV = screenUV + N.xz * 0.02;
                 float3 T_exit = 1.0 - F_Schlick(_Fresnel0, saturate(dot(N, V)));
-                float3 sceneColor = SampleSceneColor(distortedUV);
-                float3 sceneInScattering = sceneColor * accumTransmittance * uS * totalRayLength * Luminance(mainLight.color);
+                //sceneInScattering = sceneColor * accumTransmittance * uS * totalRayLength * Luminance(mainLight.color);
 
                 float3 H = SafeNormalize(L + V);
                 float NoH = saturate(dot(N, H));
@@ -277,6 +286,7 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
                 
                 finalColor = lerp(fogColor, finalColor, transmittance);
                 //finalColor = transmittance;
+                //finalColor = hasBackScene ? float3(1.0,1.0,1.0) : float3(0.0,0.0,0.0);
                 return half4(finalColor,1.0);
             }
             ENDHLSL
