@@ -100,8 +100,12 @@ InitTestScene*.unity*
 /[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
 # Python cache
 __pycache__/
+__pycache__.meta
 *.pyc
 
 # Debug dumps
 console_dump.txt
 console_dump.txt.meta
+
+# AI agent temp files
+.opencode/temp/
