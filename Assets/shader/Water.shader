@@ -216,7 +216,7 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
                     
                     scatteredLight += stepS * accumTransmittance;
                     accumTransmittance *= stepTrans;
-                    sceneInScattering += sceneColor * LightTransmittance * uS * (dd * totalRayLength) * effectivePhase * exp(-uT * distanceToBackScene);
+                    sceneInScattering += sceneColor * LightTransmittance * uS * (dd * totalRayLength) * CalculateScatterPhase(1, _PhaseG) * exp(-uT * distanceToBackScene);
                     currentExp *= expStep;
                 }
 
