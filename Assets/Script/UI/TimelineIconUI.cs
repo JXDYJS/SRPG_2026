@@ -72,8 +72,17 @@ namespace UI
         {
             if (_targetUnit == null) return;
             
-            // 计算进度：CurrentActionValue / 100，但限制在0-1之间
-            float progress = Mathf.Clamp01(_targetUnit.CurrentActionValue / 100f);
+            // 动态计算最大AV作为归一化除数（兼容任意Speed范围）
+            float divisor = 100f;
+            var tm = TurnManager.Instance;
+            if (tm != null && tm.ActionQueue != null && tm.ActionQueue.Count > 0)
+            {
+                float maxAV = 1f;
+                for (int i = 0; i < tm.ActionQueue.Count; i++)
+                    if (tm.ActionQueue[i].CurrentActionValue > maxAV) maxAV = tm.ActionQueue[i].CurrentActionValue;
+                divisor = maxAV;
+            }
+            float progress = Mathf.Clamp01(_targetUnit.CurrentActionValue / divisor);
             
             // 计算目标X坐标：从右向左移动
             // 最右端 (X = trackWidth) 代表 AV = 100
