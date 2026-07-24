@@ -124,6 +124,7 @@ namespace GamePlay.VirtualCamera
 
         void HandleMovement()
         {
+            if (InputManager.Actions == null) return;
             var gameplay = InputManager.Actions.Gameplay;
             Vector2 move = gameplay.Move.ReadValue<Vector2>();
 

@@ -10,25 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 79a2e9171b9b9db489bd6f61796a188d, type: 3}
-  m_Name: Zombie
+  m_Name: Skeleton
   m_EditorClassIdentifier: 
-  CharacterID: 2
+  CharacterID: 1
   SkillSlots:
   - SlotType: 0
     SlotDisplayName: Attack
     EvolutionChain:
     - RequiredLevel: 0
-      SkillData:
-        m_AssetGUID: 6fb59d90faeb4ec4bafc349e12ac6c46
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_EditorAssetChanged: 0
+      SkillData: {fileID: 11400000, guid: 88ce9ef18dd3bfc4ba922b718235a47f, type: 2}
   - SlotType: 2
+    SlotDisplayName: ArrowRain
+    EvolutionChain:
+    - RequiredLevel: 0
+      SkillData: {fileID: 11400000, guid: 5edf37868f4bccf40962f0af0a49905a, type: 2}
+  - SlotType: 1
     SlotDisplayName: Weak
     EvolutionChain:
     - RequiredLevel: 0
-      SkillData:
-        m_AssetGUID: d7f2347b739af785aa327ab061a7d02b
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_EditorAssetChanged: 0
+      SkillData: {fileID: 11400000, guid: d7f2347b739af785aa327ab061a7d02b, type: 2}

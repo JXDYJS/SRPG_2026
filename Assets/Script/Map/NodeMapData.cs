@@ -23,6 +23,7 @@ namespace Map
         public MapType type { get; }
         public int row { get; set; }
         public List<string> connections { get; }
+        public bool isLock{get;set;}
     }
 
     [Serializable]
@@ -33,16 +34,29 @@ namespace Map
         public int col{get;set;}
         public int row { get; set; }
         public List<string> connections { get; private set; } = new();
-        public bool visited = false;
-        [JsonIgnore] public Action<bool> _onVisited;
-        protected BaseNode()
+        private bool _isLock;
+        public bool isLock
         {
-            id = Guid.NewGuid().ToString("N");
+            get => _isLock;
+            set
+            {
+                _isLock = value;
+                _onLockChange?.Invoke(value);
+            }
         }
-        public void setVisited(bool val)
+        [JsonIgnore] public Action<bool> _onLockChange;
+        [JsonIgnore] public Action _onEnterNode;
+        protected BaseNode() : this(null)
         {
-            visited = val;
-            _onVisited.Invoke(val);
+        }
+        protected BaseNode(string id)
+        {
+            this.id = id ?? Guid.NewGuid().ToString("N");
+            isLock = true;
+            _onEnterNode += () =>
+            {
+                this.isLock = true;
+            };
         }
     }
 
@@ -51,7 +65,12 @@ namespace Map
     {
         public string level;
 
-        public BattleNode()
+        public BattleNode() : base()
+        {
+            type = MapType.Battle;
+        }
+
+        public BattleNode(string id) : base(id)
         {
             type = MapType.Battle;
         }
@@ -60,7 +79,12 @@ namespace Map
     [Serializable]
     public class ShopNode : BaseNode
     {
-        public ShopNode()
+        public ShopNode() : base()
+        {
+            type = MapType.Shop;
+        }
+
+        public ShopNode(string id) : base(id)
         {
             type = MapType.Shop;
         }
@@ -69,7 +93,12 @@ namespace Map
     [Serializable]
     public class EventNode : BaseNode
     {
-        public EventNode()
+        public EventNode() : base()
+        {
+            type = MapType.Event;
+        }
+
+        public EventNode(string id) : base(id)
         {
             type = MapType.Event;
         }
@@ -78,7 +107,12 @@ namespace Map
     [Serializable]
     public class BossNode : BaseNode
     {
-        public BossNode()
+        public BossNode() : base()
+        {
+            type = MapType.Boss;
+        }
+
+        public BossNode(string id) : base(id)
         {
             type = MapType.Boss;
         }
@@ -105,9 +139,9 @@ namespace Map
         {
             NodeMapData mapData = new(3);
 
-            BattleNode node1 = new() { level = "test1", row = 0,col = 0 };
-            BattleNode node2 = new() { level = "test1", row = 1,col = 1 };
-            BattleNode node3 = new() { level = "test1", row = 0 ,col = 2};
+            BattleNode node1 = new("n_001") { level = "lv_001", row = 0, col = 0 };
+            BattleNode node2 = new("n_002") { level = "lv_002", row = 1, col = 1 };
+            BattleNode node3 = new("n_003") { level = "lv_001", row = 0, col = 2 };
 
             node1.connections.Add(node2.id);
             node2.connections.Add(node3.id);

@@ -1,6 +1,0 @@
-_className,_tableName,_isDic,*id,data
-Hero,Heroes,true,string,SimpleTypes
-,,,hero_001,"[1, ""Iron Sword"", 150.0, 3.5, True, 10, 0]"
-,,,hero_002,"[2, ""Health Potion"", 50.0, 0.25, True, 99, 2592000]"
-,,,hero_003,"[3, ""Legend Blade"", 9999.99, 8.0, True, 1, 0]"
-,,,hero_004,"[4, ""Broken Shield"", 0.0, 2.0, False, 0, -1]"

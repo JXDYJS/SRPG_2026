@@ -8,6 +8,7 @@ namespace GamePlay.Units
     public class MapObject : MonoBehaviour,ITileEventHandler
     {
         public int Priority{get;}
+        public string blockConfigId;
         public string prefabId;
         public BlockType type = BlockType.Solid;
         public bool isWalkable = true;
@@ -24,6 +25,24 @@ namespace GamePlay.Units
         public List<TileEffectSO> OnEnterEffect;
         public List<TileEffectSO> OnExitEffect;
         public List<TileEffectSO> OnStayEffect;
+
+        void Awake()
+        {
+            if (string.IsNullOrEmpty(blockConfigId)) return;
+
+            var cfg = BlockConfigManager.Instance?.Get(blockConfigId);
+            if (cfg == null) return;
+
+            type = cfg.Type;
+            isWalkable = cfg.IsWalkable;
+            XCellSize = cfg.XCellSize;
+            YCellSize = cfg.YCellSize;
+            ZCellSize = cfg.ZCellSize;
+            heightOffset = cfg.HeightOffset;
+            OnEnterEffect = cfg.OnEnterEffects;
+            OnExitEffect = cfg.OnExitEffects;
+            OnStayEffect = cfg.OnStayEffects;
+        }
 
         // ==================== ITileEventHandler 默认实现 ====================
 

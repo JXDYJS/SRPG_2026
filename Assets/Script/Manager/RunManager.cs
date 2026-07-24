@@ -9,6 +9,13 @@ using Cysharp.Threading.Tasks;
 
 namespace Managers
 {
+    enum GameFlowType
+    {
+        MapSelection,
+        BattleLoading,
+        Battle,
+        BattleEnd
+    }
     public class RunManager : MonoBehaviour
     {
         public static RunManager Instance { get; private set; }

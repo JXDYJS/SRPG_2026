@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Global;
 
@@ -33,6 +34,15 @@ namespace Status
             public float baseValue = 0;
             private readonly List<StatModifier> modifiers = new List<StatModifier>();
 
+            // ================ 独立乘区系统 ================
+            private class ModifierZone
+            {
+                public int priority;
+                public List<StatModifier> modifiers = new List<StatModifier>();
+            }
+            private Dictionary<string, ModifierZone> _zones = new Dictionary<string, ModifierZone>();
+            private const int DEFAULT_ZONE_PRIORITY = 0;
+
             public bool isDirty = true;
             public float cachedValue = 0;
 
@@ -46,20 +56,34 @@ namespace Status
             public virtual float calValue()
             {
                 float value = baseValue;
-                float percentMod = 0;
-                foreach (StatModifier mod
-                 in modifiers)
+
+                // 1. 按 priority 升序处理独立乘区
+                foreach (var zone in _zones.Values.OrderBy(z => z.priority))
                 {
-                    if (mod.Type == StatModType.Percent)
+                    float flatSum = 0;
+                    float percentSum = 0;
+                    foreach (var mod in zone.modifiers)
                     {
-                        percentMod += mod.Value;
+                        if (mod.Type == StatModType.Flat)
+                            flatSum += mod.Value;
+                        else if (mod.Type == StatModType.Percent)
+                            percentSum += mod.Value;
                     }
-                    else if (mod.Type == StatModType.Flat)
-                    {
-                        value += mod.Value;
-                    }
+                    value = (value + flatSum) * (1 + percentSum);
                 }
-                value *= 1 + percentMod;
+
+                // 2. 默认乘区（最后生效）
+                float legacyFlat = 0;
+                float legacyPercent = 0;
+                foreach (var mod in modifiers)
+                {
+                    if (mod.Type == StatModType.Flat)
+                        legacyFlat += mod.Value;
+                    else if (mod.Type == StatModType.Percent)
+                        legacyPercent += mod.Value;
+                }
+                value = (value + legacyFlat) * (1 + legacyPercent);
+
                 return value;
             }
             public float getValue()
@@ -79,11 +103,49 @@ namespace Status
                 modifiers.Add(mod);
                 isDirty = true;
             }
-
             public void removeModifier(StatModifier mod)
             {
                 modifiers.Remove(mod);
                 isDirty = true;
+            }
+
+            /// <summary>
+            /// 设置/更新乘区优先级。乘区不存在则自动创建。
+            /// </summary>
+            public void SetZonePriority(string zoneName, int priority)
+            {
+                if (!_zones.TryGetValue(zoneName, out var zone))
+                {
+                    zone = new ModifierZone();
+                    _zones[zoneName] = zone;
+                }
+                zone.priority = priority;
+            }
+
+            /// <summary>
+            /// 向指定乘区添加修饰器。乘区不存在则自动创建（默认 priority=0）。
+            /// </summary>
+            public void addModifier(StatModifier mod, string zoneName)
+            {
+                if (!_zones.TryGetValue(zoneName, out var zone))
+                {
+                    zone = new ModifierZone { priority = DEFAULT_ZONE_PRIORITY };
+                    _zones[zoneName] = zone;
+                }
+                zone.modifiers.Add(mod);
+                isDirty = true;
+            }
+
+            /// <summary>
+            /// 从指定乘区移除修饰器。
+            /// </summary>
+            public void removeModifier(StatModifier mod, string zoneName)
+            {
+                if (_zones.TryGetValue(zoneName, out var zone))
+                {
+                    zone.modifiers.Remove(mod);
+                    isDirty = true;
+                }
             }
 
             public void SetBaseValue(float newValue)

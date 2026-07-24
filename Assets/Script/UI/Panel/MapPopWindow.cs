@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Core.Data;
 using Map;
 using UI.Component;
 using UI.Slot;
@@ -26,6 +27,8 @@ namespace UI.Panel
         private float _layerHeight;
         public int bufferSize = 2;
         private GameObjectPool _pool;
+        public int playerLayer = 0;
+        public int playerRow = 0;
 
         public void Init(NodeMapData nodeMapData)
         {
@@ -34,16 +37,20 @@ namespace UI.Panel
 
             Content = scroll.content;
             ViewPort = scroll.viewport;
+            LayoutRebuilder.ForceRebuildLayoutImmediate(ViewPort);
             for(int i = Content.transform.childCount - 1; i >= 0; i--)
             {
                 Destroy(Content.transform.GetChild(i).gameObject);
             }
             var prefabRect = _layerPrefab.GetComponent<RectTransform>();
             _layerHeight = prefabRect.rect.height;
+            if (_layerHeight <= 0) _layerHeight = 100;
             Content.sizeDelta = new(Content.sizeDelta.x, _layerHeight * layerCount);
+            LayoutRebuilder.ForceRebuildLayoutImmediate(Content);
 
             int maxActive = Mathf.Min(layerCount,
                 Mathf.CeilToInt(ViewPort.rect.height / _layerHeight) + bufferSize * 2);
+            if (maxActive <= 0) maxActive = 1;
             _pool = new(_layerPrefab, Content.transform, maxActive, bufferSize);
             _activeLayers = new List<(MapNodeLayer, RectTransform)>(maxActive);
 
@@ -235,7 +242,10 @@ namespace UI.Panel
 
         public void OnEnable()
         {
-            Init(NodeMapData.GenerateFakeDeepMap());
+            if (IsInitialized)
+            {
+                Init(nodeMapData);
+            }
         }
 
         private void ClearAllLines()
@@ -255,6 +265,32 @@ namespace UI.Panel
         {
             _lineMap.Clear();
             scroll.onValueChanged.RemoveListener(OnScrollChanged);
+        }
+        public void NextLevel()
+        {
+            if (nodeMapData == null || playerLayer >= nodeMapData.layers.Count) return;
+            var nodes = nodeMapData.layers[playerLayer];
+            var node = nodes.Find(n => n.col == playerLayer && n.row == playerRow);
+            if (node == null) return;
+
+            node.isLock = true;
+            foreach (var conn in node.connections)
+            {
+                if (!_nodeIdLookup.TryGetValue(conn, out var nextNodeLayerRow)) continue;
+                var nextLayer = nodeMapData.layers[nextNodeLayerRow.layer];
+                var nextNode = nextLayer.Find(n => n.id == conn);
+                if (nextNode == null) continue;
+                nextNode.isLock = false;
+            }
+            Refresh();
+        }
+        public void unLockFirstLayer()
+        {
+            if (_activeLayers.Count == 0) return;
+            foreach(var node in _activeLayers[0].layer.ActivateNodes)
+            {
+                node.isLock = false;
+            }
         }
     }
 }

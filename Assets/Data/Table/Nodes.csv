@@ -1,0 +1,5 @@
+_className,_tableName,_isDic,*id,type
+NodeConfig,NodeConfigs,true,string,Map.MapType
+,,,n_001,Battle
+,,,n_002,Shop
+,,,n_003,Event

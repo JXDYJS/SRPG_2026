@@ -8,8 +8,9 @@ namespace GamePlay.Grid
     [System.Serializable]
     public class MapBlockData
     {
-        public Vector3Int position; // 直接存整数坐标
-        public string prefabId;        // 对应 MapManager 的 prefabIndex
+        public Vector3Int position;
+        public string prefabId;           // 旧系统数值 ID（向后兼容）
+        public string blockConfigId;      // 新系统语义 ID
         public int rotationIndex;   // 0=0, 1=90, 2=180, 3=270
         public int XRound = 0;
         public int ZRound = 0;

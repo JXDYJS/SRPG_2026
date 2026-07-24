@@ -23,17 +23,6 @@ namespace GamePlay.Grid
             if (mainCam == null) mainCam = Camera.main;
         }
 
-        void OnEnable()
-        {
-            InputManager.Actions.Gameplay.Confirm.performed += OnConfirm;
-        }
-
-        void OnDisable()
-        {
-            if (InputManager.Actions == null) return;
-            InputManager.Actions.Gameplay.Confirm.performed -= OnConfirm;
-        }
-
         void Update()
         {
             Vector2 mousePos = InputManager.Actions.Gameplay.Point.ReadValue<Vector2>();
@@ -54,21 +43,19 @@ namespace GamePlay.Grid
                 
                 currentCursorPos = new Vector3(x * mapManager.cellSize, y * mapManager.cellSize, z * mapManager.cellSize);
             }
-        }
 
-        private void OnConfirm(InputAction.CallbackContext ctx)
-        {
-            if (InputUtil.IsPointerOverUI) return;
-
-            Vector2 mousePos = InputManager.Actions.Gameplay.Point.ReadValue<Vector2>();
-            Ray ray = mainCam.ScreenPointToRay(mousePos);
-            if (Physics.Raycast(ray, out RaycastHit hit, 1000f))
+            if (InputManager.Actions.Gameplay.Confirm.WasPressedThisFrame())
             {
-                Vector3 hitPoint = hit.point - hit.normal * 0.01f;
-                int x = Mathf.RoundToInt(hitPoint.x / mapManager.cellSize);
-                int y = (int)(hitPoint.y / mapManager.cellSize);
-                int z = Mathf.RoundToInt(hitPoint.z / mapManager.cellSize);
-                OnTileClicked(new Vector3Int(x, y, z));
+                if (InputUtil.IsPointerOverUI) return;
+
+                if (Physics.Raycast(ray, out hit, 1000f))
+                {
+                    Vector3 hitPoint = hit.point - hit.normal * 0.01f;
+                    int x = Mathf.RoundToInt(hitPoint.x / mapManager.cellSize);
+                    int y = (int)(hitPoint.y / mapManager.cellSize);
+                    int z = Mathf.RoundToInt(hitPoint.z / mapManager.cellSize);
+                    OnTileClicked(new Vector3Int(x, y, z));
+                }
             }
         }
 

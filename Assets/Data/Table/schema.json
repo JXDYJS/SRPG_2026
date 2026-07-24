@@ -1,61 +1,53 @@
 {
-    "SimpleTypes": {
-        "id": "int",
-        "name": "string",
-        "price": "float",
-        "weight": "double",
-        "usable": "bool",
-        "maxStack": "uint",
-        "expiry": "long"
-    },
-    "Vec2": {
-        "x": "float",
-        "y": "float"
-    },
-    "DropItem": {
+    "BlockConfig": {
         "id": "string",
-        "name": "string",
-        "rate": "float",
-        "count": "int"
+        "prefabAddress": "string",
+        "blockType": "Global.BlockType",
+        "isWalkable": "bool",
+        "xCellSize": "float",
+        "yCellSize": "float",
+        "zCellSize": "float",
+        "heightOffset": "float",
+        "threatScore": "int",
+        "effectEnter": "List<object>",
+        "effectExit": "List<object>",
+        "effectStay": "List<object>"
     },
-    "BuffEffect": {
-        "type": "string",
-        "value": "float",
-        "duration": "double",
-        "stackable": "bool"
+    "NodeConfig": {
+        "id": "string",
+        "type": "Map.MapType"
     },
-    "RewardGroup": {
-        "gold": "int",
-        "exp": "long",
-        "drops": "List<DropItem>",
-        "buffs": "List<BuffEffect>",
-        "rates": "List<float>"
+    "BattleNodeConfig": {
+        "id": "string",
+        "levelId": "string"
     },
-    "StatGrowth": {
-        "hp": "List<int>",
-        "atk": "List<float>",
-        "skills": "List<string>"
+    "ShopNodeConfig": {
+        "id": "string"
     },
-    "Matrix2D": {
-        "rows": "List<List<float>>"
+    "EventNodeConfig": {
+        "id": "string"
     },
-    "TagCollection": {
-        "tags": "Dictionary<string, string>",
-        "scores": "Dictionary<string, float>",
-        "stats": "Dictionary<int, int>"
+    "BossNodeConfig": {
+        "id": "string"
     },
-    "DeepNested": {
-        "id": "int",
-        "name": "string",
-        "active": "bool",
-        "pos": "Vec2",
-        "growth": "StatGrowth",
-        "mat": "Matrix2D",
-        "tags": "TagCollection",
-        "reward": "RewardGroup",
-        "drops": "List<DropItem>",
-        "buffMap": "Dictionary<string, BuffEffect>",
-        "scoreBoard": "Dictionary<int, List<float>>",
-        "cube": "List<List<List<int>>>"
+    "LevelConfig": {
+        "id": "string",
+        "mapAddress": "string",
+        "playerDeployZones": "List<string>",
+        "maxDeployCount": "int",
+        "unitIds": "List<string>",
+        "fallbackUnitIds": "List<string>"
+    },
+    "UnitConfig": {
+        "id": "string",
+        "characterDataId": "string",
+        "spawnPosition": "string",
+        "level": "int",
+        "faction": "Global.FactionType",
+        "facing": "Global.UnitFacing",
+        "hpBonusPercent": "float",
+        "atkBonusPercent": "float",
+        "defBonusPercent": "float",
+        "resBonusPercent": "float"
     }
 }

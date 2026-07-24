@@ -1,7 +1,0 @@
-id,name,icon,type,value,duration,max_stack,description
-int,string,int,string,float,double,int,string
-1,Attack Up,101,buff,15.0,30.0,3,"Increases ATK by 15"
-2,Defense Up,102,buff,10.0,30.0,3,"Increases DEF by 10"
-3,Poison,201,debuff,5.0,10.0,1,"Take 5 DMG per turn"
-4,Regen,301,buff,8.0,15.0,1,"Restore 8 HP per turn"
-5,Stun,401,debuff,0.0,2.0,1,"Unable to act"
