@@ -17,8 +17,18 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: 3e5ad2ec646d1944e922585ee27e5ba0
   m_SerializeEntries:
+  - m_GUID: 2e1ffed7ba73dc14ba85100cd83b0f60
+    m_Address: Block_Iron
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 348122e827ab26a4589e778262c39785
     m_Address: Block_Cobblestone
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 76d193c8c06210f48ab89fcfede3d461
+    m_Address: Magma
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

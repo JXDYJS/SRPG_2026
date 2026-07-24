@@ -71,14 +71,14 @@ namespace Utils
                 if (item is Tween t) seq.Append(t);
                 else if (item is Sequence s) seq.Append(s);
                 else if (item is System.Action a) seq.AppendCallback(() => a());
-                else if(item is float f)seq.AppendInterval(f);
+                else if (item is float f) seq.AppendInterval(f);
             }
             else
             {
                 if (item is Tween t) seq.Join(t);
                 else if (item is Sequence s) seq.Join(s);
                 else if (item is System.Action a) seq.JoinCallback(() => a());
-                else if(item is float f)seq.AppendInterval(f);
+                else if (item is float f) seq.AppendInterval(f);
             }
         }
 
@@ -412,5 +412,78 @@ namespace Utils
 
         public static void Clear() => _highlights.Clear();
         public static int Count => _highlights.Count;
+    }
+    public class GameObjectPool
+    {
+        private Stack<GameObject> _pool;
+        private HashSet<GameObject> _inUse;
+        private GameObject _prefab;
+        private Transform _parent;
+        private int _addSize;
+
+        public int maxAddOnFrame { get; set; } = 20;
+
+        public GameObjectPool(GameObject prefab, Transform parent, int initSize = 16, int addSize = 16)
+        {
+            _prefab = prefab;
+            _parent = parent;
+            _addSize = addSize > 0 ? addSize : 16;
+            _pool = new Stack<GameObject>(initSize);
+            _inUse = new HashSet<GameObject>();
+
+            if (initSize <= 0)
+            {
+                Debug.LogError("GameObjectPool: initSize <= 0, default to 16");
+                initSize = 16;
+            }
+            Fill(initSize);
+        }
+
+        public GameObject Get()
+        {
+            if (_pool.Count == 0)
+            {
+                int batch = Mathf.Min(_addSize, maxAddOnFrame);
+                Fill(batch);
+            }
+
+            var item = _pool.Pop();
+            item.SetActive(true);
+            _inUse.Add(item);
+            return item;
+        }
+
+        public void Return(GameObject item)
+        {
+            item.SetActive(false);
+            _inUse.Remove(item);
+            _pool.Push(item);
+        }
+
+        public async UniTask PrewarmAsync(int count)
+        {
+            int remaining = count;
+            while (remaining > 0)
+            {
+                int batch = Mathf.Min(remaining, maxAddOnFrame);
+                Fill(batch);
+                remaining -= batch;
+                if (remaining > 0)
+                    await UniTask.NextFrame();
+            }
+        }
+
+        private void Fill(int count)
+        {
+            for (int i = 0; i < count; i++)
+            {
+                var item = GameObject.Instantiate(_prefab, _parent);
+                item.SetActive(false);
+                _pool.Push(item);
+            }
+        }
+
+        public int available => _pool.Count;
+        public int inUse => _inUse.Count;
     }
 }

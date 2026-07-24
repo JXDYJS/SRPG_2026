@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Global;
-
+using System;
 namespace Managers
 {
     using GamePlay.Units;
@@ -14,7 +14,8 @@ namespace Managers
         
         // 坐标 -> 单位 的快速查找字典 (用于碰撞检测：我想去的格子上有没有人？)
         private Dictionary<Vector3Int, MapUnit> unitPositions = new Dictionary<Vector3Int, MapUnit>();
-
+        public Action onUnitDead;
+        
         void Awake()
         {
             if (Instance == null) Instance = this;

@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 
 namespace GamePlay.Skill
 {
@@ -11,7 +10,7 @@ namespace GamePlay.Skill
         public int RequiredLevel = 1;
         
         [Tooltip("该等级对应的技能数据")]
-        public AssetReferenceT<SkillDataSO> SkillData;
+        public SkillDataSO SkillData;
     }
 
     [System.Serializable]

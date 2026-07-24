@@ -3,6 +3,8 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Core.System;
+using UnityEngine.InputSystem;
 
 namespace DebugSystem
 {
@@ -44,12 +46,20 @@ namespace DebugSystem
             }
         }
 
-        void Update()
+        void OnEnable()
         {
-            if (Input.GetMouseButtonDown(0))
-            {
-                HandleCanvasClick();
-            }
+            InputManager.Actions.Gameplay.Confirm.performed += OnConfirm;
+        }
+
+        void OnDisable()
+        {
+            if (InputManager.Actions == null) return;
+            InputManager.Actions.Gameplay.Confirm.performed -= OnConfirm;
+        }
+
+        private void OnConfirm(InputAction.CallbackContext ctx)
+        {
+            HandleCanvasClick();
         }
 
         void HandleCanvasClick()
@@ -60,9 +70,10 @@ namespace DebugSystem
                 return;
             }
 
+            Vector2 mousePos = InputManager.Actions.Gameplay.Point.ReadValue<Vector2>();
             _pointerEventData = new PointerEventData(_eventSystem)
             {
-                position = Input.mousePosition
+                position = mousePos
             };
 
             _results.Clear();
@@ -92,7 +103,8 @@ namespace DebugSystem
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"[CanvasClick] === 射线检测结果 (共 {_results.Count} 个) ===");
-            sb.AppendLine($"[CanvasClick] 点击位置: {Input.mousePosition}");
+            Vector2 mousePos = InputManager.Actions.Gameplay.Point.ReadValue<Vector2>();
+            sb.AppendLine($"[CanvasClick] 点击位置: {mousePos}");
 
             for (int i = 0; i < _results.Count; i++)
             {

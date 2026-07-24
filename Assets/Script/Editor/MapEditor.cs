@@ -93,10 +93,13 @@ public class MapEditor : Editor
 
     void PlaceBlock(Vector3Int pos)
     {
-        // 简单的生成逻辑，实际要关联 PrefabIndex
-        if (_target.prefabIndex.Count == 0) return;
+        GameObject prefab = _target.GetFirstPrefab();
+        if (prefab == null)
+        {
+            Debug.LogError("[MapEditor] 没有可用方块，请确保 BlockConfigManager 已配置");
+            return;
+        }
         
-        GameObject prefab = _target.prefabIndex[0].gameObject; // 默认用第一个
         Vector3 worldPos = new Vector3(pos.x, pos.y, pos.z) * _target.cellSize;
         
         GameObject obj = (GameObject)PrefabUtility.InstantiatePrefab(prefab, _target.mapRoot);

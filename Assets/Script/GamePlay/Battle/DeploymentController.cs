@@ -9,6 +9,8 @@ using Global;
 using UI.Panel;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using Core.System;
+using UnityEngine.InputSystem;
 namespace GamePlay.Battle
 {
     /// <summary>
@@ -49,12 +51,26 @@ namespace GamePlay.Battle
             if (mainCam == null) mainCam = Camera.main;
         }
 
+        void OnEnable()
+        {
+            var input = InputManager.Actions.Gameplay;
+            input.Confirm.performed += OnConfirm;
+            input.Cancel.performed += OnCancel;
+        }
+
+        void OnDisable()
+        {
+            if (InputManager.Actions == null) return;
+            var input = InputManager.Actions.Gameplay;
+            input.Confirm.performed -= OnConfirm;
+            input.Cancel.performed -= OnCancel;
+        }
+
         void Update()
         {
             if (!IsActive) return;
 
             HandleHover();
-            HandleInput();
         }
 
         public void StartDeployment(
@@ -96,14 +112,14 @@ namespace GamePlay.Battle
 
             if (InputUtil.IsPointerOverUI)
             {
-                Debug.Log("[Cursor] Hide: over UI");
+                //Debug.Log("[Cursor] Hide: over UI");
                 GridVisualManager.Instance.HideCursor();
                 return;
             }
 
             if (!GridPositionTool.TryGetMouseGridPosition(mainCam, out Vector3Int hoverPos))
             {
-                Debug.Log("[Cursor] Hide: raycast miss");
+                //Debug.Log("[Cursor] Hide: raycast miss");
                 GridVisualManager.Instance.HideCursor();
                 return;
             }
@@ -114,38 +130,39 @@ namespace GamePlay.Battle
 
             if (IsValidDeployPosition(hoverPos))
             {
-                Debug.Log($"[Cursor] Show at {hoverPos}");
+                //Debug.Log($"[Cursor] Show at {hoverPos}");
                 GridVisualManager.Instance.ShowCursorAt(hoverPos);
             }
             else
             {
-                Debug.Log($"[Cursor] Hide: pos {hoverPos} invalid (deployZones={_validDeployZones.Contains(hoverPos)}, canPut={GridVisualManager.CanPutOnGrid(hoverPos)}, unit={UnitManager.Instance.GetUnitAt(hoverPos) != null})");
+                //Debug.Log($"[Cursor] Hide: pos {hoverPos} invalid (deployZones={_validDeployZones.Contains(hoverPos)}, canPut={GridVisualManager.CanPutOnGrid(hoverPos)}, unit={UnitManager.Instance.GetUnitAt(hoverPos) != null})");
                 GridVisualManager.Instance.HideCursor();
             }
         }
 
-        private void HandleInput()
+        private void OnConfirm(InputAction.CallbackContext ctx)
         {
-            if (Input.GetMouseButtonDown(0))
+            if (!IsActive) return;
+            if (InputUtil.IsPointerOverUI) return;
+
+            Vector2 mousePos = InputManager.Actions.Gameplay.Point.ReadValue<Vector2>();
+            if (!GridPositionTool.TryGetMouseGridPosition(mainCam, mousePos, out Vector3Int clickPos)) return;
+
+            if (_selectedCharacterIndex < 0) return;
+
+            if (IsValidDeployPosition(clickPos))
             {
-                if (InputUtil.IsPointerOverUI) return;
-
-                if (!GridPositionTool.TryGetMouseGridPosition(mainCam, out Vector3Int clickPos)) return;
-
-                if (_selectedCharacterIndex < 0) return;
-
-                if (IsValidDeployPosition(clickPos))
-                {
-                    PlaceCharacter(_selectedCharacterIndex, clickPos);
-                }
+                PlaceCharacter(_selectedCharacterIndex, clickPos);
             }
+        }
 
-            if (Input.GetMouseButtonDown(1))
+        private void OnCancel(InputAction.CallbackContext ctx)
+        {
+            if (!IsActive) return;
+
+            if (_selectedCharacterIndex >= 0)
             {
-                if (_selectedCharacterIndex >= 0)
-                {
-                    DeselectCharacter();
-                }
+                DeselectCharacter();
             }
         }
 

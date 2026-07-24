@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Map;
 
 namespace Core.Data.Persistent
 {
@@ -12,6 +13,8 @@ namespace Core.Data.Persistent
     ///   - relics：已收集藏品 ID 列表
     ///   - gold / highestClearedStage：进度数据
     ///   - currentStageId：当前关卡 ID
+    ///   - seed：地图随机种子
+    ///   - nodeMapData：节点地图数据
     ///
     /// 扩展方式：直接在本类添加字段即可，旧存档自动用默认值
     /// </summary>
@@ -27,5 +30,8 @@ namespace Core.Data.Persistent
 
         public int gold;
         public int highestClearedStage;
+
+        public int seed;
+        public NodeMapData nodeMapData;
     }
 }

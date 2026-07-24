@@ -1,0 +1,4 @@
+_className,_tableName,_isDic,*id,mapAddress,playerDeployZones,maxDeployCount,unitIds,fallbackUnitIds
+LevelConfig,LevelConfigs,true,string,string,List<string>,int,List<string>,List<string>
+,,,lv_001,Test2,"[""(0,0,0)"", ""(1,0,0)"", ""(2,0,0)"", ""(3,0,0)"", ""(4,0,0)"", ""(5,0,0)""]",4,"[""u_enemy_zombie_01"", ""u_enemy_skeleton_01"", ""u_enemy_zombie_02""]","[""u_fallback_01""]"
+,,,lv_002,TallMap,"[""(0,0,0)"", ""(1,0,0)"", ""(2,0,0)"", ""(3,0,0)"", ""(4,0,0)"", ""(5,0,0)""]",4,"[""u_enemy_zombie_01"", ""u_enemy_skeleton_01"", ""u_enemy_zombie_02""]","[""u_fallback_01""]"

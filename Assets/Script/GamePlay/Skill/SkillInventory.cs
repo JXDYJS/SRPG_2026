@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
-using UnityEngine.AddressableAssets;
-using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace GamePlay.Skill
 {
@@ -85,21 +83,11 @@ namespace GamePlay.Skill
             {
                 var entry = slotConfig.EvolutionChain[newIndex];
                 
-                if (entry.SkillData != null && entry.SkillData.RuntimeKeyIsValid())
+                if (entry.SkillData != null)
                 {
-                    var handle = Addressables.LoadAssetAsync<SkillDataSO>(entry.SkillData);
-                    await handle.Task;
-
-                    if (handle.Status == AsyncOperationStatus.Succeeded)
-                    {
-                        slot.CurrentSkill = handle.Result;
-                        slot.SkillLevelIndex = newIndex;
-                        Debug.Log($"SkillInventory: Loaded skill '{slot.CurrentSkill.SkillName}' for slot {slotConfig.SlotType} at level {level}");
-                    }
-                    else
-                    {
-                        Debug.LogError($"SkillInventory: Failed to load skill for slot {slotConfig.SlotType}");
-                    }
+                    slot.CurrentSkill = entry.SkillData;
+                    slot.SkillLevelIndex = newIndex;
+                    Debug.Log($"SkillInventory: Loaded skill '{slot.CurrentSkill.SkillName}' for slot {slotConfig.SlotType} at level {level}");
                 }
             }
         }

@@ -634,11 +634,15 @@ namespace GamePlay.Units
             Debug.Log($"{name} has died.");
             UndoSystem.Instance.RegisterDirty(this);
             UnitManager.Instance.UnregisterUnit(this);
+            UnitManager.Instance.onUnitDead();
             
             // 交给 View 播放死亡动画并自动隐藏；无 View 时（如环境伤害）立即隐藏
             if (View != null)
             {
-                _ = View.PlayDeathAnimation(() => View.HideModel());
+                _ = View.PlayDeathAnimation(() =>
+                {
+                    if (this != null) View.HideModel();
+                });
             }
             else
             {
