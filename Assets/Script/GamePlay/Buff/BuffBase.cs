@@ -10,6 +10,7 @@ namespace GamePlay.Buff{
         public int Stacks;       // 当前层数
         public int MaxStacks;    // 最大层数限制
         public bool IsDebuff;    // 是增益还是减益（用于净化逻辑）
+        public bool IsHidden;    // 被动技能等隐藏Buff，不在UI显示
         public MapUnit Owner { get; protected set; }
         public bool isInit = false;
         public Action _onChange;

@@ -222,6 +222,7 @@ namespace GamePlay.Units
             
             // 初始化时清空旧 Buff，并强制重刷缓存
             ActiveBuffs.Clear();
+            ApplyPassiveBuffs();
             SetModifiersDirty();
         }
 
@@ -231,6 +232,45 @@ namespace GamePlay.Units
         public void SetModifiersDirty()
         {
             _isModifiersDirty = true;
+        }
+
+        // ================== Passive Skill Auto-Loading ==================
+
+        private void ApplyPassiveBuffs()
+        {
+            if (Character?.SkillInventory == null) return;
+
+            var passiveSlots = new[]
+            {
+                SkillSlotType.Passive1,
+                SkillSlotType.Passive2,
+                SkillSlotType.Passive3,
+                SkillSlotType.Passive4,
+                SkillSlotType.Passive5
+            };
+
+            foreach (var slot in passiveSlots)
+            {
+                var skill = Character.SkillInventory.GetSkill(slot);
+                if (skill == null) continue;
+
+                foreach (var phase in skill.Phases)
+                {
+                    foreach (var effect in phase.Effects)
+                    {
+                        if (effect.EffectType == GamePlay.Skill.EffectType.AddBuff)
+                        {
+                            var buff = BuffManager.CreateBuffFromID(effect.BuffID, effect.BuffStacks);
+                            if (buff != null)
+                            {
+                                buff.IsHidden = true;
+                                AddBuff(buff);
+                                Debug.Log($"{GetUnitName()} 加载被动技能: {skill.SkillName} → Buff: {effect.BuffID}");
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         // ================== Buff Management ==================
