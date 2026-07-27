@@ -34,18 +34,15 @@ namespace GamePlay.AI
             if (_roundPrepared) return;
             _roundPrepared = true;
 
-            // 清除旧回合累积的承诺数据（上一轮从未调用 RoundEnd）
-            _committedDamage.Clear();
-            _attackCounts.Clear();
-            _skillCounts.Clear();
-            _supportCounts.Clear();
-
+            // 承诺数据（committedDamage / 认领计数）跨回合持久携带
+            // 只有单位阵亡时 TargetDied() 才会清理对应条目
+            // 这里只刷新可变的覆盖率和战略评分
             RefreshCoverage();
             RefreshStrategicScores();
         }
 
         /// <summary>
-        /// 敌方阶段结束，允许下一轮 RoundStart 重新初始化
+        /// 敌方阶段结束，允许下一轮 RoundStart 刷新覆盖率和战略评分
         /// </summary>
         public void OnPlayerTurnStart()
         {

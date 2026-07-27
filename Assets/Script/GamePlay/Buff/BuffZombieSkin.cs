@@ -20,6 +20,9 @@ namespace GamePlay.Buff
             Initialize(owner);
         }
 
+        // 被动技能不掉层，直接跳过基类的 OnTurnStart 防呆
+        public override void OnTurnStart(MapUnit owner) { }
+
         public override void OnIncomingDamage(ref float damage, DamageInfo damageInfo)
         {
             if (Owner == null) return;
