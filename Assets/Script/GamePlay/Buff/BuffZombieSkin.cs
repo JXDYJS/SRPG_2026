@@ -4,17 +4,20 @@ using Status.damage;
 
 namespace GamePlay.Buff
 {
-    [CreateAssetMenu(fileName = "ZombieSkin", menuName = "Buff/僵尸皮肤")]
     public class BuffZombieSkin : BuffBase
     {
-        [Header("减伤配置")]
         [SerializeField] private int damageReduction = 2;
+
+        public BuffZombieSkin()
+        {
+            MaxStacks = 1;
+            DecayAtTurnStart = false;
+        }
 
         public override void OnApply(MapUnit owner)
         {
             base.OnApply(owner);
             Initialize(owner);
-            DecayAtTurnStart = false;
         }
 
         public override void OnIncomingDamage(ref float damage, DamageInfo damageInfo)

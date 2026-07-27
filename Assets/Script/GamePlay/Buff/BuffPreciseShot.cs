@@ -4,18 +4,21 @@ using Status.damage;
 
 namespace GamePlay.Buff
 {
-    [CreateAssetMenu(fileName = "PreciseShot", menuName = "Buff/精准射击")]
     public class BuffPreciseShot : BuffBase
     {
-        [Header("狙击配置")]
         [SerializeField] private int minDistance = 2;
         [SerializeField] private int bonusDamage = 2;
+
+        public BuffPreciseShot()
+        {
+            MaxStacks = 1;
+            DecayAtTurnStart = false;
+        }
 
         public override void OnApply(MapUnit owner)
         {
             base.OnApply(owner);
             Initialize(owner);
-            DecayAtTurnStart = false;
         }
 
         public override void OnOutgoingDamage(ref float damage, DamageInfo damageInfo)
