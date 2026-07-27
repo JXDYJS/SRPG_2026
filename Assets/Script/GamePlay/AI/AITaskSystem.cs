@@ -182,6 +182,10 @@ namespace GamePlay.AI
             float tExecute = (Time.realtimeSinceStartup - t5) * 1000f;
             float tTotal = (Time.realtimeSinceStartup - tStart) * 1000f;
             Debug.Log($"[AITaskSystem·性能]  计划执行:   {tExecute:F1} ms");
+            if (tExecute > 3000f)
+            {
+                Debug.LogError($"[AITaskSystem·异常] {unit.name} 计划执行耗时 {tExecute:F0}ms！超过 3s 阈值。计划共 {plan.Steps.Count} 步");
+            }
             Debug.Log($"[AITaskSystem·性能]  全部合计:   {tTotal:F1} ms");
             if (SharedTaskBoard.Instance != null)
             {

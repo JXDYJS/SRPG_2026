@@ -46,7 +46,13 @@ namespace GamePlay.AI
                     yield break;
                 }
 
+                float stepStart = Time.realtimeSinceStartup;
                 yield return ExecuteStep(unit, step);
+                float stepElapsed = (Time.realtimeSinceStartup - stepStart) * 1000f;
+                if (stepElapsed > 3000f)
+                {
+                    Debug.LogError($"[AI·异常] {unit.name} 步骤[{i}]{step.Type} 执行耗时 {stepElapsed:F0}ms，超过 3s 阈值！");
+                }
 
                 if (_planAborted)
                 {

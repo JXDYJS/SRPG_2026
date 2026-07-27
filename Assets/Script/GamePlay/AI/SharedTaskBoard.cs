@@ -33,8 +33,23 @@ namespace GamePlay.AI
         {
             if (_roundPrepared) return;
             _roundPrepared = true;
+
+            // 清除旧回合累积的承诺数据（上一轮从未调用 RoundEnd）
+            _committedDamage.Clear();
+            _attackCounts.Clear();
+            _skillCounts.Clear();
+            _supportCounts.Clear();
+
             RefreshCoverage();
             RefreshStrategicScores();
+        }
+
+        /// <summary>
+        /// 敌方阶段结束，允许下一轮 RoundStart 重新初始化
+        /// </summary>
+        public void OnPlayerTurnStart()
+        {
+            _roundPrepared = false;
         }
 
         public void RoundEnd()

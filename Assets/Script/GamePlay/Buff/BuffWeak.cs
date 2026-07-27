@@ -28,7 +28,6 @@ namespace GamePlay.Buff
         }
 
         public bool DecayAtTurnEnd = true;
-        public new bool DecayAtTurnStart = false;
 
         public override void OnTurnEnd(MapUnit owner)
         {
