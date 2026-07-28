@@ -5,94 +5,101 @@ using GamePlay.Skill;
 [CustomPropertyDrawer(typeof(SkillPhase))]
 public class SkillPhaseDrawer : PropertyDrawer
 {
+    private SerializedProperty GetProp(SerializedProperty root, string name)
+    {
+        return root.FindPropertyRelative(name);
+    }
+
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
     {
         EditorGUI.BeginProperty(position, label, property);
 
-        var phaseName = property.FindPropertyRelative("PhaseName");
-        var castRangeMode = property.FindPropertyRelative("CastRangeMode");
-        var executeMode = property.FindPropertyRelative("ExecuteMode");
-        var castRangeFunc = property.FindPropertyRelative("CastRangeFuncName");
-        var executeFunc = property.FindPropertyRelative("ExecuteFuncName");
-
         float y = position.y;
-        float lineHeight = EditorGUIUtility.singleLineHeight + 2;
-        float width = position.width;
+        float w = position.width;
 
-        EditorGUI.PropertyField(new Rect(position.x, y, width, lineHeight), phaseName);
-        y += lineHeight;
-
-        EditorGUI.PropertyField(new Rect(position.x, y, width, lineHeight), castRangeMode);
-        y += lineHeight;
-
-        if (castRangeMode.enumValueIndex == (int)SkillPhaseCastRangeMode.Script)
+        System.Func<string, float> draw = (name) =>
         {
-            EditorGUI.PropertyField(new Rect(position.x, y, width, lineHeight), castRangeFunc);
-            y += lineHeight;
-        }
+            var prop = GetProp(property, name);
+            float h = EditorGUI.GetPropertyHeight(prop);
+            EditorGUI.PropertyField(new Rect(position.x, y, w, h), prop, true);
+            y += h + 2;
+            return h + 2;
+        };
 
-        EditorGUI.PropertyField(new Rect(position.x, y, width, lineHeight), executeMode);
-        y += lineHeight;
+        draw("PhaseName");
+        draw("CastRangeMode");
 
-        if (executeMode.enumValueIndex == (int)SkillPhaseExecuteMode.Script)
+        if (GetProp(property, "CastRangeMode").enumValueIndex == (int)SkillPhaseCastRangeMode.Script)
+            draw("CastRangeFuncName");
+
+        draw("ExecuteMode");
+
+        if (GetProp(property, "ExecuteMode").enumValueIndex == (int)SkillPhaseExecuteMode.Script)
+            draw("ExecuteFuncName");
+
+        bool stdCast = GetProp(property, "CastRangeMode").enumValueIndex == (int)SkillPhaseCastRangeMode.Standard;
+        bool stdExec = GetProp(property, "ExecuteMode").enumValueIndex == (int)SkillPhaseExecuteMode.Standard;
+
+        if (stdCast || stdExec)
         {
-            EditorGUI.PropertyField(new Rect(position.x, y, width, lineHeight), executeFunc);
-            y += lineHeight;
-        }
-
-        bool showStandardCastRange = castRangeMode.enumValueIndex == (int)SkillPhaseCastRangeMode.Standard;
-        bool showStandardExecute = executeMode.enumValueIndex == (int)SkillPhaseExecuteMode.Standard;
-
-        if (showStandardCastRange || showStandardExecute)
-        {
-            if (showStandardCastRange)
+            if (stdCast)
             {
-                EditorGUI.PropertyField(new Rect(position.x, y, width, lineHeight),
-                    property.FindPropertyRelative("TargetType")); y += lineHeight;
-                EditorGUI.PropertyField(new Rect(position.x, y, width, lineHeight),
-                    property.FindPropertyRelative("AoEPattern")); y += lineHeight;
-                EditorGUI.PropertyField(new Rect(position.x, y, width, lineHeight),
-                    property.FindPropertyRelative("AoERadius")); y += lineHeight;
-                EditorGUI.PropertyField(new Rect(position.x, y, width, lineHeight),
-                    property.FindPropertyRelative("AoEVerticalRange")); y += lineHeight;
-                EditorGUI.PropertyField(new Rect(position.x, y, width, lineHeight),
-                    property.FindPropertyRelative("OriginType")); y += lineHeight;
+                draw("TargetType");
+                draw("AoEPattern");
+                draw("AoERadius");
+                draw("AoEVerticalRange");
+                draw("OriginType");
             }
-
-            if (showStandardExecute)
-            {
-                EditorGUI.PropertyField(new Rect(position.x, y, width, lineHeight),
-                    property.FindPropertyRelative("Effects")); y += lineHeight;
-            }
+            if (stdExec)
+                draw("Effects");
         }
 
-        EditorGUI.PropertyField(new Rect(position.x, y, width, lineHeight),
-            property.FindPropertyRelative("VisualData"));
+        draw("VisualData");
 
         EditorGUI.EndProperty();
     }
 
     public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
     {
-        float lines = 4;
-        var castRangeMode = property.FindPropertyRelative("CastRangeMode");
-        var executeMode = property.FindPropertyRelative("ExecuteMode");
+        float total = 0;
 
-        if (castRangeMode.enumValueIndex == (int)SkillPhaseCastRangeMode.Script)
-            lines += 1;
-
-        if (executeMode.enumValueIndex == (int)SkillPhaseExecuteMode.Script)
-            lines += 1;
-
-        if (castRangeMode.enumValueIndex == (int)SkillPhaseCastRangeMode.Standard
-            || executeMode.enumValueIndex == (int)SkillPhaseExecuteMode.Standard)
+        System.Func<string, float> h = (name) =>
         {
-            if (castRangeMode.enumValueIndex == (int)SkillPhaseCastRangeMode.Standard)
-                lines += 5;
-            if (executeMode.enumValueIndex == (int)SkillPhaseExecuteMode.Standard)
-                lines += 1;
+            float ph = EditorGUI.GetPropertyHeight(GetProp(property, name));
+            total += ph + 2;
+            return ph;
+        };
+
+        h("PhaseName");
+        h("CastRangeMode");
+
+        if (GetProp(property, "CastRangeMode").enumValueIndex == (int)SkillPhaseCastRangeMode.Script)
+            h("CastRangeFuncName");
+
+        h("ExecuteMode");
+
+        if (GetProp(property, "ExecuteMode").enumValueIndex == (int)SkillPhaseExecuteMode.Script)
+            h("ExecuteFuncName");
+
+        bool stdCast = GetProp(property, "CastRangeMode").enumValueIndex == (int)SkillPhaseCastRangeMode.Standard;
+        bool stdExec = GetProp(property, "ExecuteMode").enumValueIndex == (int)SkillPhaseExecuteMode.Standard;
+
+        if (stdCast || stdExec)
+        {
+            if (stdCast)
+            {
+                h("TargetType");
+                h("AoEPattern");
+                h("AoERadius");
+                h("AoEVerticalRange");
+                h("OriginType");
+            }
+            if (stdExec)
+                h("Effects");
         }
 
-        return lines * (EditorGUIUtility.singleLineHeight + 2) + 10;
+        h("VisualData");
+
+        return total;
     }
 }
