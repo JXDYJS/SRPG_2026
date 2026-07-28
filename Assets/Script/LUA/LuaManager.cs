@@ -21,6 +21,7 @@ namespace Lua
                     return cls.__isBuffBase == true
                 end
             ");
+            LuaEnv.DoString(@"require('Skills.SampleSkill')");
         }
 
         private static byte[] Loader(ref string filepath)

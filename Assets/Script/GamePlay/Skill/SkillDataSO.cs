@@ -226,6 +226,12 @@ namespace GamePlay.Skill
                     phaseClone.Effects.Add(effectClone);
                 }
                 
+                // 复制 Script 模式字段
+                phaseClone.CastRangeMode = originalPhase.CastRangeMode;
+                phaseClone.ExecuteMode = originalPhase.ExecuteMode;
+                phaseClone.CastRangeFuncName = originalPhase.CastRangeFuncName;
+                phaseClone.ExecuteFuncName = originalPhase.ExecuteFuncName;
+                
                 // 复制VisualData (都是值类型和引用，不需要深层复制引用对象)
                 if (originalPhase.VisualData != null)
                 {

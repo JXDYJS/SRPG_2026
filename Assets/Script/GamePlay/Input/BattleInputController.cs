@@ -12,6 +12,7 @@ using GamePlay.Battle;
 using System.Collections;
 using Core.System;
 using UnityEngine.InputSystem;
+using Lua;
 
 namespace GamePlay.Control
 {
@@ -243,24 +244,34 @@ namespace GamePlay.Control
 
             GridPositionTool.TryGetMouseGridPosition(mainCam, out Vector3Int hoverPos);
 
-            // 使用新的双层范围系统
-            var (castTiles, aoeTiles) = AttackRangeSystem.GetSkillRangesForUI(
-                activeUnit.gridPosition,
-                hoverPos,
-                _selectedSkill
-            );
+            List<Vector3Int> castTiles = null;
+            List<Vector3Int> aoeTiles = null;
+
+            if (_selectedSkill.Phases.Count > 0)
+            {
+                var firstPhase = _selectedSkill.Phases[0];
+                if (firstPhase.CastRangeMode == SkillPhaseCastRangeMode.Script
+                    && !string.IsNullOrEmpty(firstPhase.CastRangeFuncName))
+                {
+                    var ctx = new SkillEvalContext(activeUnit, hoverPos, _selectedSkill);
+                    var tiles = ScriptFunctionResolver.Invoke<List<Vector3Int>>(firstPhase.CastRangeFuncName, ctx);
+                    if (tiles != null)
+                        castTiles = tiles;
+                }
+            }
+
+            if (castTiles == null)
+            {
+                var (cTiles, aTiles) = AttackRangeSystem.GetSkillRangesForUI(
+                    activeUnit.gridPosition, hoverPos, _selectedSkill);
+                castTiles = cTiles;
+                aoeTiles = aTiles;
+            }
 
             _highlightTiles = new HashSet<Vector3Int>(castTiles);
             _validTargetTiles = new HashSet<Vector3Int>(castTiles);
 
-            // 显示施法范围（蓝色）和AoE范围（红色）
             GridVisualManager.Instance.ShowTilesHighlight(_highlightTiles, Color.blue);
-            
-            // 如果有AoE范围，用红色显示
-            // if (aoeTiles.Count > 0)
-            // {
-            //     GridVisualManager.Instance.ShowTilesHighlight(aoeTiles, Color.red);
-            // }
         }
 
         void HandleLeftClick(Vector3Int clickPos)
@@ -356,18 +367,21 @@ namespace GamePlay.Control
 
             List<MapUnit> targets = new List<MapUnit>();
 
-            // 使用新的AoE范围计算
             if (_selectedSkill.Phases.Count > 0)
             {
-                SkillPhase firstPhase = _selectedSkill.Phases[0];
-                List<Vector3Int> aoeRange = AttackRangeSystem.GetAoERange3D(activeUnit.gridPosition, targetPos, firstPhase);
+                var firstPhase = _selectedSkill.Phases[0];
 
-                foreach (Vector3Int pos in aoeRange)
+                if (firstPhase.ExecuteMode == SkillPhaseExecuteMode.Standard)
                 {
-                    MapUnit unit = UnitManager.Instance.GetUnitAt(pos);
-                    if (unit != null && AttackRangeSystem.IsTargetValidForPhase(unit, firstPhase, activeUnit.Faction))
+                    List<Vector3Int> aoeRange = AttackRangeSystem.GetAoERange3D(activeUnit.gridPosition, targetPos, firstPhase);
+
+                    foreach (Vector3Int pos in aoeRange)
                     {
-                        targets.Add(unit);
+                        MapUnit unit = UnitManager.Instance.GetUnitAt(pos);
+                        if (unit != null && AttackRangeSystem.IsTargetValidForPhase(unit, firstPhase, activeUnit.Faction))
+                        {
+                            targets.Add(unit);
+                        }
                     }
                 }
             }
