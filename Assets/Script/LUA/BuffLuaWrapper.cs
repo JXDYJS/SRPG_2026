@@ -52,6 +52,7 @@ namespace Lua
 
         public override void OnTurnStart(MapUnit owner)
         {
+            base.OnTurnStart(owner);
             _onTurnStart?.Call(LuaInstance, owner);
         }
 
