@@ -1,0 +1,1 @@
+python Assets\Data\Table\gen.py

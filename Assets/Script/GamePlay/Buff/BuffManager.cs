@@ -4,6 +4,8 @@ using System.Reflection;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using GamePlay.Units;
+using Lua;
+using XLua;
 
 namespace GamePlay.Buff
 {
@@ -30,7 +32,11 @@ namespace GamePlay.Buff
             instance = TryFromReflection(key, buffID, stacks);
             if (instance != null) return instance;
 
-            Debug.LogError($"BuffManager: 无法加载 Buff '{buffID}' — 反射和 Addressables 均失败");
+            // 3. Fallback to Lua (runtime-extensible buffs: battle_cry, fortitude, etc.)
+            instance = TryFromLua(buffID, stacks);
+            if (instance != null) return instance;
+
+            Debug.LogError($"BuffManager: 无法加载 Buff '{buffID}' — 反射、Addressables 和 Lua 均失败");
             return null;
         }
 
@@ -85,6 +91,61 @@ namespace GamePlay.Buff
                 instance.Stacks = Mathf.Max(1, stacks);
             }
             return instance;
+        }
+
+        private static BuffBase TryFromLua(string buffID, int stacks)
+        {
+            string className = "Buff" + ToPascalCase(buffID);
+            string module = "Buffs." + className;
+
+            LuaTable cls;
+            try
+            {
+                object[] ret = LuaManager.Instance.LuaEnv.DoString(
+                    "return require('" + module + "')");
+                if (ret == null || ret.Length == 0) return null;
+                cls = ret[0] as LuaTable;
+                if (cls == null) return null;
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning($"[BuffManager] Lua require '{buffID}' 失败: {e.Message}");
+                return null;
+            }
+
+            if (!InheritsFromBuffBase(cls)) return null;
+
+            // 通过 __call 元方法创建实例: cls(stacks)
+            object[] ret2;
+            try
+            {
+                var env = LuaManager.Instance.LuaEnv;
+                env.Global.SetInPath("__tmp_stacks", stacks);
+                ret2 = env.DoString(
+                    "return require('" + module + "')(__tmp_stacks)");
+                env.Global.Set<object, object>("__tmp_stacks", null);
+                if (ret2 == null || ret2.Length == 0) return null;
+            }
+            catch
+            {
+                return null;
+            }
+
+            LuaTable instance = ret2[0] as LuaTable;
+            if (instance == null) return null;
+
+            BuffLuaWrapper wrapper = ScriptableObject.CreateInstance<BuffLuaWrapper>();
+            wrapper.ID = buffID;
+            wrapper.Bind(instance);
+            return wrapper;
+        }
+
+        private static bool InheritsFromBuffBase(LuaTable cls)
+        {
+            LuaFunction check = LuaManager.Instance.LuaEnv.Global.Get<LuaFunction>("_isBuffBase");
+            if (check == null) return false;
+            object[] ret = check.Call(cls);
+            return ret != null && ret.Length > 0 && (bool)ret[0];
         }
 
         private static string ToPascalCase(string snakeCase)

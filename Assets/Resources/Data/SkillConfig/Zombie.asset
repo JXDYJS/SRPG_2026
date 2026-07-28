@@ -18,9 +18,9 @@ MonoBehaviour:
     SlotDisplayName: Attack
     EvolutionChain:
     - RequiredLevel: 0
-      SkillData: {fileID: 11400000, guid: 31f1ac8c14e3542478363a0ec53dfe02, type: 2}
-  - SlotType: 2
-    SlotDisplayName: Weak
+      SkillData: {fileID: 11400000, guid: 6fb59d90faeb4ec4bafc349e12ac6c46, type: 2}
+  - SlotType: 5
+    SlotDisplayName: ZombieSkin
     EvolutionChain:
     - RequiredLevel: 0
-      SkillData: {fileID: 11400000, guid: d7f2347b739af785aa327ab061a7d02b, type: 2}
+      SkillData: {fileID: 11400000, guid: bf3719a12789410488f68cf2dfaeda69, type: 2}
