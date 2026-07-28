@@ -305,10 +305,21 @@ namespace GamePlay.Skill
         {
             UndoSystem.Instance.RegisterDirty(caster);
 
+            Vector3Int moveDir = new Vector3Int(
+                targetPosition.x - caster.gridPosition.x,
+                0,
+                targetPosition.z - caster.gridPosition.z
+            );
+            if (moveDir != Vector3Int.zero)
+            {
+                caster.SetFacingToDirection(moveDir);
+            }
+
             Vector3Int oldPos = caster.gridPosition;
             caster.gridPosition = targetPosition;
-
             UnitManager.Instance.UpdateUnitPosition(caster, oldPos);
+
+            caster.RestoreRecordedFacing();
 
             phaseResult.CasterMoved = true;
             phaseResult.CasterEndPosition = targetPosition;
