@@ -252,7 +252,8 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
                 float D = roughness2 / (d_denom * d_denom);
                 float specularTerm = D / (max(0.1, LoH * LoH) * (roughness * 4.0 + 2.0));
                 specularTerm = clamp(specularTerm, 0.0, 1000.0);
-                float3 directSpecular = specularTerm * mainLight.color * F_Schlick(_Fresnel0, NoH);
+                float3 directSpecular = specularTerm * mainLight.color * F_Schlick(_Fresnel0, saturate(dot(H, V)));
+                //float3 directSpecular = specularTerm * mainLight.color * _Fresnel0;
 
                 // === 间接高光 (Indirect Specular) 采样动态天空图 ===
                 float3 R = reflect(-V, N);
@@ -270,8 +271,8 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
 
                 float F = F_Schlick(_Fresnel0, saturate(dot(N, V)));
                 
-                float3 finalColor = (G_entry * T_entry * scatteredLight + thinLayerSSS + backlitTrans + sceneInScattering) * T_exit 
-                                  + (sceneColor * accumTransmittance * lastLightTransmittance) * T_exit + finalReflection * (1.0 - T_exit) + directSpecular;
+                float3 finalColor = (G_entry * T_entry * scatteredLight + thinLayerSSS + backlitTrans + sceneInScattering + sceneColor * accumTransmittance * lastLightTransmittance) * T_exit 
+                                  + (finalReflection + directSpecular) * (1.0 - T_exit);
                 
                 // === 远景雾 (Fog) 采样动态天空图 ===
                 float transmittance = get_border_fog(view_dist, 150.0);
@@ -290,6 +291,8 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
                 //finalColor = transmittance;
                 //finalColor = hasBackScene ? float3(1.0,1.0,1.0) : float3(0.0,0.0,0.0);
                 //finalColor = sceneInScattering;
+                //finalColor = directSpecular;
+                //finalColor = T_exit;
                 return half4(finalColor,1.0);
             }
             ENDHLSL
