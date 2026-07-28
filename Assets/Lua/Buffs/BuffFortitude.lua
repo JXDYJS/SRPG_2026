@@ -12,40 +12,20 @@ function BuffFortitude:ctor(stacks)
     self.HpThreshold = 0.5
 end
 
-function BuffFortitude:OnApply(owner)
-    self._defMod = CS.Lua.LuaStatHelper.NewStatModifier(0, 0)
-    owner.Character.statSystem.DEF:addModifier(self._defMod)
-    self:UpdateDefense()
-end
+---@param damageInfo Status.damage.DamageInfo
+function BuffFortitude:OnBeHurt(damageInfo)
+    local unit = damageInfo.targetUnit
+    if unit == nil or CS.UnityEngine.Object.Equals(unit, nil) then return end
 
-function BuffFortitude:UpdateDefense()
-    if not self._Owner or not self._Owner.Character then return end
-    local currentHP = self._Owner.Character.statSystem.currentHP
-    local maxHP = self._Owner.Character.statSystem.maxHP.getValue()
-    if maxHP <= 0 then return end
+    local maxHp = unit.Character.statSystem.maxHP:getValue()
+    if maxHp <= 0 then return end
+    local hp = unit.Character.statSystem.currentHP
 
-    local hpPercent = currentHP / maxHP
-    local newValue = 0
-    if hpPercent <= self.HpThreshold then
-        newValue = self.Stacks * self.DefBonus
-    end
-
-    if self._defMod.Value ~= newValue then
-        self._defMod.Value = newValue
-        self._Owner.Character.statSystem.DEF:MarkDirty()
-    end
-end
-
-function BuffFortitude:OnIncomingDamage(damage, info)
-    self:UpdateDefense()
-    return damage
-end
-
-function BuffFortitude:OnRemove(owner)
-    if self._defMod and owner.Character and owner.Character.statSystem.DEF then
-        owner.Character.statSystem.DEF:removeModifier(self._defMod)
-        owner.Character.statSystem.DEF:MarkDirty()
-        self._defMod = nil
+    if hp <= maxHp * self.HpThreshold then
+        CS.GamePlay.Buff.BuffManager.ApplyBuffToUnit(unit, "DefPlus", self.DefBonus)
+        if self._Wrapper then
+            unit:RemoveBuff(self._Wrapper)
+        end
     end
 end
 

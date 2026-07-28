@@ -16,18 +16,21 @@ namespace Lua
         private LuaFunction _onTurnStart;
         private LuaFunction _onOutgoingDamage;
         private LuaFunction _onIncomingDamage;
+        private LuaFunction _onBeHurt;
         private LuaFunction _onStacksChanged;
 
         public void Bind(LuaTable instance)
         {
             LuaInstance = instance;
             LuaInstance.Set("_Owner", (object)null);
+            LuaInstance.Set("_Wrapper", this);
 
             _onApply = instance.Get<LuaFunction>("OnApply");
             _onRemove = instance.Get<LuaFunction>("OnRemove");
             _onTurnStart = instance.Get<LuaFunction>("OnTurnStart");
             _onOutgoingDamage = instance.Get<LuaFunction>("OnOutgoingDamage");
             _onIncomingDamage = instance.Get<LuaFunction>("OnIncomingDamage");
+            _onBeHurt = instance.Get<LuaFunction>("OnBeHurt");
             _onStacksChanged = instance.Get<LuaFunction>("OnStacksChanged");
 
             Stacks = LuaInstance.Get<int>("Stacks");
@@ -74,6 +77,11 @@ namespace Lua
                 if (ret != null && ret.Length > 0)
                     damage = Convert.ToSingle(ret[0]);
             }
+        }
+
+        public override void OnBeHurt(DamageInfo damageInfo)
+        {
+            _onBeHurt?.Call(LuaInstance, damageInfo);
         }
 
         public override void OnStacksChanged()
