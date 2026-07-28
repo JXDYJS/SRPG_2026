@@ -61,9 +61,8 @@ namespace GamePlay.Skill
             //         return sequenceResult;
             //     }
             // }
-            bool hasScriptCastRange = skillData.Phases.Count > 0
-                && skillData.Phases[0].CastRangeMode == SkillPhaseCastRangeMode.Script
-                && !string.IsNullOrEmpty(skillData.Phases[0].CastRangeFuncName);
+            bool hasScriptCastRange = skillData.CastRangeMode == SkillPhaseCastRangeMode.Script
+                && !string.IsNullOrEmpty(skillData.CastRangeFuncName);
 
             if (!hasScriptCastRange && skillData.CastPattern == CastPatternType.Line && skillData.StopsAtFirstHit)
             {

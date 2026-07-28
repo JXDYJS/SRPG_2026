@@ -5,7 +5,7 @@ using GamePlay.Skill;
 [CustomPropertyDrawer(typeof(SkillPhase))]
 public class SkillPhaseDrawer : PropertyDrawer
 {
-    private SerializedProperty GetProp(SerializedProperty root, string name)
+    private SerializedProperty P(SerializedProperty root, string name)
     {
         return root.FindPropertyRelative(name);
     }
@@ -17,9 +17,9 @@ public class SkillPhaseDrawer : PropertyDrawer
         float y = position.y;
         float w = position.width;
 
-        System.Func<string, float> draw = (name) =>
+        System.Func<string, float> draw = (n) =>
         {
-            var prop = GetProp(property, name);
+            var prop = P(property, n);
             float h = EditorGUI.GetPropertyHeight(prop);
             EditorGUI.PropertyField(new Rect(position.x, y, w, h), prop, true);
             y += h + 2;
@@ -27,31 +27,21 @@ public class SkillPhaseDrawer : PropertyDrawer
         };
 
         draw("PhaseName");
-        draw("CastRangeMode");
-
-        if (GetProp(property, "CastRangeMode").enumValueIndex == (int)SkillPhaseCastRangeMode.Script)
-            draw("CastRangeFuncName");
-
         draw("ExecuteMode");
 
-        if (GetProp(property, "ExecuteMode").enumValueIndex == (int)SkillPhaseExecuteMode.Script)
+        if (P(property, "ExecuteMode").enumValueIndex == (int)SkillPhaseExecuteMode.Script)
             draw("ExecuteFuncName");
 
-        bool stdCast = GetProp(property, "CastRangeMode").enumValueIndex == (int)SkillPhaseCastRangeMode.Standard;
-        bool stdExec = GetProp(property, "ExecuteMode").enumValueIndex == (int)SkillPhaseExecuteMode.Standard;
+        bool stdExec = P(property, "ExecuteMode").enumValueIndex == (int)SkillPhaseExecuteMode.Standard;
 
-        if (stdCast || stdExec)
+        if (stdExec)
         {
-            if (stdCast)
-            {
-                draw("TargetType");
-                draw("AoEPattern");
-                draw("AoERadius");
-                draw("AoEVerticalRange");
-                draw("OriginType");
-            }
-            if (stdExec)
-                draw("Effects");
+            draw("TargetType");
+            draw("AoEPattern");
+            draw("AoERadius");
+            draw("AoEVerticalRange");
+            draw("OriginType");
+            draw("Effects");
         }
 
         draw("VisualData");
@@ -63,39 +53,29 @@ public class SkillPhaseDrawer : PropertyDrawer
     {
         float total = 0;
 
-        System.Func<string, float> h = (name) =>
+        System.Func<string, float> h = (n) =>
         {
-            float ph = EditorGUI.GetPropertyHeight(GetProp(property, name));
+            float ph = EditorGUI.GetPropertyHeight(P(property, n));
             total += ph + 2;
             return ph;
         };
 
         h("PhaseName");
-        h("CastRangeMode");
-
-        if (GetProp(property, "CastRangeMode").enumValueIndex == (int)SkillPhaseCastRangeMode.Script)
-            h("CastRangeFuncName");
-
         h("ExecuteMode");
 
-        if (GetProp(property, "ExecuteMode").enumValueIndex == (int)SkillPhaseExecuteMode.Script)
+        if (P(property, "ExecuteMode").enumValueIndex == (int)SkillPhaseExecuteMode.Script)
             h("ExecuteFuncName");
 
-        bool stdCast = GetProp(property, "CastRangeMode").enumValueIndex == (int)SkillPhaseCastRangeMode.Standard;
-        bool stdExec = GetProp(property, "ExecuteMode").enumValueIndex == (int)SkillPhaseExecuteMode.Standard;
+        bool stdExec = P(property, "ExecuteMode").enumValueIndex == (int)SkillPhaseExecuteMode.Standard;
 
-        if (stdCast || stdExec)
+        if (stdExec)
         {
-            if (stdCast)
-            {
-                h("TargetType");
-                h("AoEPattern");
-                h("AoERadius");
-                h("AoEVerticalRange");
-                h("OriginType");
-            }
-            if (stdExec)
-                h("Effects");
+            h("TargetType");
+            h("AoEPattern");
+            h("AoERadius");
+            h("AoEVerticalRange");
+            h("OriginType");
+            h("Effects");
         }
 
         h("VisualData");

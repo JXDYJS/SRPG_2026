@@ -247,17 +247,13 @@ namespace GamePlay.Control
             List<Vector3Int> castTiles = null;
             List<Vector3Int> aoeTiles = null;
 
-            if (_selectedSkill.Phases.Count > 0)
+            if (_selectedSkill.CastRangeMode == SkillPhaseCastRangeMode.Script
+                && !string.IsNullOrEmpty(_selectedSkill.CastRangeFuncName))
             {
-                var firstPhase = _selectedSkill.Phases[0];
-                if (firstPhase.CastRangeMode == SkillPhaseCastRangeMode.Script
-                    && !string.IsNullOrEmpty(firstPhase.CastRangeFuncName))
-                {
-                    var ctx = new SkillEvalContext(activeUnit, hoverPos, _selectedSkill);
-                    var tiles = ScriptFunctionResolver.Invoke<List<Vector3Int>>(firstPhase.CastRangeFuncName, ctx);
-                    if (tiles != null)
-                        castTiles = tiles;
-                }
+                var ctx = new SkillEvalContext(activeUnit, hoverPos, _selectedSkill);
+                var tiles = ScriptFunctionResolver.Invoke<List<Vector3Int>>(_selectedSkill.CastRangeFuncName, ctx);
+                if (tiles != null)
+                    castTiles = tiles;
             }
 
             if (castTiles == null)

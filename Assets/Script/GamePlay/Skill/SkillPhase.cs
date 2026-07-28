@@ -36,13 +36,9 @@ namespace GamePlay.Skill
         public SkillVisualData VisualData;
 
         [Header("模式配置")]
-        public SkillPhaseCastRangeMode CastRangeMode = SkillPhaseCastRangeMode.Standard;
         public SkillPhaseExecuteMode ExecuteMode = SkillPhaseExecuteMode.Standard;
 
         [Header("Script 模式配置")]
-        [Tooltip("CastRangeMode=Script 时，返回 List<Vector3Int> 的 Lua/C# 函数名")]
-        public string CastRangeFuncName = "";
-
         [Tooltip("ExecuteMode=Script 时，返回 PhaseResult 的 Lua/C# 函数名")]
         public string ExecuteFuncName = "";
 
@@ -51,7 +47,6 @@ namespace GamePlay.Skill
             this.PhaseName = phaseName;
             this.TargetType = targetType;
             this.Effects = new List<SkillEffect>();
-            this.CastRangeMode = SkillPhaseCastRangeMode.Standard;
             this.ExecuteMode = SkillPhaseExecuteMode.Standard;
         }
     }
