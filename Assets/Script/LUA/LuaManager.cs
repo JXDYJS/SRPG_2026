@@ -22,6 +22,7 @@ namespace Lua
                 end
             ");
             LuaEnv.DoString(@"require('Skills.SampleSkill')");
+            LuaEnv.DoString(@"require('Skills.SteveSkill')");
         }
 
         private static byte[] Loader(ref string filepath)

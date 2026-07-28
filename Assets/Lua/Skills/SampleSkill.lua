@@ -1,5 +1,7 @@
 -- 全局表
 Skills = Skills or {}
+Skills.Teleport = Skills.Teleport or {}
+Skills.FireSlash = Skills.FireSlash or {}
 
 -- 瞬移技能：返回周围 2 格内的空地
 function Skills.Teleport.Phase0_GetCastTiles(ctx)
