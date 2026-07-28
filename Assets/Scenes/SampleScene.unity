@@ -1652,12 +1652,6 @@ MonoBehaviour:
   cellSize: 1
   currentMapName: AStar_Test2
   currentLevelData: {fileID: 11400000, guid: e81757d17b70fdf45945b3f891d1b682, type: 2}
-  prefabIndex:
-  - {fileID: 7045432208922537515, guid: 76d193c8c06210f48ab89fcfede3d461, type: 3}
-  - {fileID: 1120884119465796305, guid: 348122e827ab26a4589e778262c39785, type: 3}
-  - {fileID: 5108962719708787155, guid: a18ef909c9618f747afe6f00d27123a2, type: 3}
-  - {fileID: 4058184246811349863, guid: 837001858a6555c41ba50d3f93a11a7c, type: 3}
-  - {fileID: -4016716145556228915, guid: e507b5994683ecd48b0b6c8732ae80ac, type: 3}
 --- !u!4 &348045440
 Transform:
   m_ObjectHideFlags: 0
@@ -1835,7 +1829,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 871549bde3b5c7942a1be368d9ecd18b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CurrentLevel: {fileID: 11400000, guid: 0e0761d8f6c094d48ba1883dba1cc779, type: 2}
   currentState: 0
 --- !u!114 &348045455
 MonoBehaviour:
@@ -1864,6 +1857,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af4fa591d56b83040a7677da2135a55d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _waterSurfaceHeight: 0.5
   _enableDynamicGIUpdate: 1
   _refreshInterval: 1
   _skyboxMaterial: {fileID: 0}
@@ -2031,6 +2025,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9be201fc0b7a5dd48ae12a73fea37416, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MapPopWindow: {fileID: 0}
 --- !u!4 &476165049
 Transform:
   m_ObjectHideFlags: 0
@@ -6668,7 +6663,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 22400762, guid: 67117722a812a2e46ab8cb8eafbf5f5e, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.0000038146973
+      value: -0.000015258789
       objectReference: {fileID: 0}
     - target: {fileID: 22426080, guid: 67117722a812a2e46ab8cb8eafbf5f5e, type: 3}
       propertyPath: m_AnchorMax.x

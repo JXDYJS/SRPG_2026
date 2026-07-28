@@ -26,13 +26,13 @@ MonoBehaviour:
     m_SubObjectName: 
     m_SubObjectType: 
     m_EditorAssetChanged: 0
-  BaseMaxHP: 20
-  BaseATK: 2
-  BaseDEF: 1
+  BaseMaxHP: 22
+  BaseATK: 9
+  BaseDEF: 3
   BaseRES: 0
-  MoveRange: 5
-  Height: 0
-  Speed: 100
+  MoveRange: 3
+  Height: 2
+  Speed: 60
   BaseMaxMP: 100
   RangeType: 0
   Pattern: 0

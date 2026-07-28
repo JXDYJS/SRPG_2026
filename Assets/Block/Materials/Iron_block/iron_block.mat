@@ -25,7 +25,7 @@ Material:
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
-  - _BRDFDEBUG_OFF
+  - _BRDFDEBUG_SPECULAR
   - _METALLICSPECGLOSSMAP
   - _NORMALMAP
   m_InvalidKeywords: []
@@ -104,7 +104,7 @@ Material:
     m_Floats:
     - _AlphaClip: 0
     - _AlphaToMask: 0
-    - _BRDFDebug: 0
+    - _BRDFDebug: 4
     - _BacklitPathScale: 15
     - _Blend: 0
     - _BlendModePreserveSpecular: 1

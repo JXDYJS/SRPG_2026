@@ -7,6 +7,7 @@ using Core.Data;
 using System.Reflection;
 using System;
 using Managers;
+using Global;
 
 namespace DebugSystem
 {
@@ -93,6 +94,21 @@ namespace DebugSystem
                 return;
             }
             UIManager.Instance.OpenPanel(panelType);
+        }
+        [ConsoleMethod("KillAllEnemy","kill all enemy")]
+        public static void KillAllEnemy()
+        {
+            foreach(var unit in UnitManager.Instance.GetAllAliveUnit())
+            {
+                if(unit.Faction == Global.FactionType.Enemy)
+                {
+                    unit.TakeDamage(new(999999999f,
+                        new(),
+                        unit,
+                        DamageType.True,
+                        DamageMethod.Normal));
+                }
+            }
         }
     }
 }
