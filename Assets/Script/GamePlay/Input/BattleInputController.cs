@@ -9,6 +9,7 @@ using GamePlay.Grid;
 using GamePlay.Visual;
 using GamePlay.Skill;
 using GamePlay.Battle;
+using GamePlay.AI;
 using System.Collections;
 using Core.System;
 using UnityEngine.InputSystem;
@@ -53,6 +54,7 @@ namespace GamePlay.Control
         private HashSet<Vector3Int> _validTargetTiles = new HashSet<Vector3Int>();
         private HashSet<Vector3Int> _highlightTiles = new HashSet<Vector3Int>();
         private SkillDataSO _selectedSkill;
+        private static readonly Color TauntHighlightColor = new Color(1f, 0.55f, 0f, 0.8f);
 
         public SkillDataSO SelectedSkill => _selectedSkill;
 
@@ -231,6 +233,13 @@ namespace GamePlay.Control
                     _validTargetTiles.Add(pos);
                 }
             }
+
+            // 嘲讽过滤：普攻永远单体，范围内存在嘲讽目标 → 只保留嘲讽目标格
+            if (ApplyTauntFilter())
+            {
+                return;
+            }
+
             GridVisualManager.Instance.ShowTilesHighlight(_validTargetTiles, Color.red);
         }
 
@@ -267,7 +276,35 @@ namespace GamePlay.Control
             _highlightTiles = new HashSet<Vector3Int>(castTiles);
             _validTargetTiles = new HashSet<Vector3Int>(castTiles);
 
+            // 嘲讽过滤：仅"单体进攻型"技能受嘲讽约束（AoE/Global/辅助豁免）。
+            // 注：此处过滤作用于 castTiles 之后——脚本/标准施法范围层保持纯净，嘲讽只是收窄选择窗口。
+            if (TauntSystem.IsSingleTargetOffensiveSkill(_selectedSkill) && ApplyTauntFilter())
+            {
+                return;
+            }
+
             GridVisualManager.Instance.ShowTilesHighlight(_highlightTiles, Color.blue);
+        }
+
+        /// <summary>
+        /// 嘲讽过滤：可选格中存在嘲讽目标时，把可点选范围收窄到嘲讽目标所在格，并高亮为橙色。
+        /// 返回 true 表示已施加过滤并完成高亮。
+        /// </summary>
+        private bool ApplyTauntFilter()
+        {
+            List<MapUnit> taunters = TauntSystem.GetTauntingTargetsInTiles(activeUnit, _validTargetTiles);
+            if (taunters.Count == 0) return false;
+
+            _validTargetTiles.Clear();
+            _highlightTiles.Clear();
+            foreach (MapUnit taunter in taunters)
+            {
+                _validTargetTiles.Add(taunter.gridPosition);
+                _highlightTiles.Add(taunter.gridPosition);
+            }
+
+            GridVisualManager.Instance.ShowTilesHighlight(_highlightTiles, TauntHighlightColor);
+            return true;
         }
 
         void HandleLeftClick(Vector3Int clickPos)
