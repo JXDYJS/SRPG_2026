@@ -7,6 +7,7 @@ local BuffDefPlus = BuffBase.extends(BuffBase)
 ---不衰减的加防buff
 function BuffDefPlus:ctor(stacks)
     self.super.ctor(self, stacks or 1)
+    self.Name = "防御强化"
     self.MaxStacks = 999
     self.DecayAtTurnStart = false
 end

@@ -6,6 +6,7 @@ local BuffBattleCry = BuffBase.extends(BuffBase)
 
 function BuffBattleCry:ctor(stacks)
     self.super.ctor(self, stacks or 3)
+    self.Name = "战吼"
     self.MaxStacks = 5
     self.DecayAtTurnStart = true
 end

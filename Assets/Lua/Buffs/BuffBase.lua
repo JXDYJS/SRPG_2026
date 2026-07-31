@@ -8,6 +8,9 @@ BuffBase.__isBuffBase = true
 ---@type string
 BuffBase.ID = ""
 
+---@type string
+BuffBase.Name = ""
+
 ---@type number
 BuffBase.Stacks = 1
 

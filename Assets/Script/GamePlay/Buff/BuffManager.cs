@@ -77,6 +77,7 @@ namespace GamePlay.Buff
             BuffBase instance = UnityEngine.Object.Instantiate(template);
             instance.ID = buffID;
             instance.Stacks = Mathf.Max(1, stacks);
+            if (string.IsNullOrEmpty(instance.Name)) instance.Name = buffID;
             return instance;
         }
 
@@ -122,6 +123,7 @@ namespace GamePlay.Buff
             {
                 instance.ID = buffID;
                 instance.Stacks = Mathf.Max(1, stacks);
+                if (string.IsNullOrEmpty(instance.Name)) instance.Name = buffID;
             }
             return instance;
         }

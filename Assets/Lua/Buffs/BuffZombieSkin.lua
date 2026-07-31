@@ -6,6 +6,7 @@ local BuffZombieSkin = BuffBase.extends(BuffBase)
 
 function BuffZombieSkin:ctor(stacks)
     self.super.ctor(self, stacks or 1)
+    self.Name = "僵尸皮肤"
     self.MaxStacks = 1
     self.DecayAtTurnStart = false
     self.DamageReduction = 2

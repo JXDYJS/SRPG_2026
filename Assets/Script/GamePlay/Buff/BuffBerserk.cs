@@ -11,6 +11,11 @@ namespace GamePlay.Buff
         [SerializeField] private int bonusDamagePerStack = 2;
         [SerializeField] private float hpThreshold = 0.5f;
 
+        private void OnEnable()
+        {
+            if (string.IsNullOrEmpty(Name)) Name = "狂暴";
+        }
+
         public override void OnApply(MapUnit owner)
         {
             base.OnApply(owner);

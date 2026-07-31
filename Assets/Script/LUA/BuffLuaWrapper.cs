@@ -37,6 +37,10 @@ namespace Lua
             MaxStacks = LuaInstance.Get<int>("MaxStacks");
             IsDebuff = LuaInstance.Get<bool>("IsDebuff");
             DecayAtTurnStart = LuaInstance.Get<bool>("DecayAtTurnStart");
+
+            // 优先使用 Lua 侧配置的展示名，缺省回退到 BuffID
+            string luaName = LuaInstance.Get<string>("Name");
+            Name = string.IsNullOrEmpty(luaName) ? ID : luaName;
         }
 
         public override void OnApply(MapUnit owner)

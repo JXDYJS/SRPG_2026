@@ -1,4 +1,5 @@
 local BuffBase = require("Buffs.BuffBase")
+local log = require("Logger")
 
 ---@class BuffFortitude : BuffBase
 ---@diagnostic disable-next-line: undefined-field
@@ -6,6 +7,7 @@ local BuffFortitude = BuffBase.extends(BuffBase)
 
 function BuffFortitude:ctor(stacks)
     self.super.ctor(self, stacks or 1)
+    self.Name = "铁骨"
     self.MaxStacks = 1
     self.DecayAtTurnStart = false
     self.DefBonus = 2

@@ -13,6 +13,11 @@ namespace GamePlay.Buff
 
         private static bool _isReflecting = false;
 
+        private void OnEnable()
+        {
+            if (string.IsNullOrEmpty(Name)) Name = "惩戒";
+        }
+
         public override void OnApply(MapUnit owner)
         {
             base.OnApply(owner);

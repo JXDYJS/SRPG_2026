@@ -9,6 +9,11 @@ namespace GamePlay.Buff
     {
         private StatModifier _atkMod;
 
+        private void OnEnable()
+        {
+            if (string.IsNullOrEmpty(Name)) Name = "虚弱";
+        }
+
         public override void OnApply(MapUnit owner)
         {
             base.OnApply(owner);

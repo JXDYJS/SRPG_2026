@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: BuffWeak
   m_EditorClassIdentifier: 
   ID: weak
-  Name: weak
+  Name: "\u865A\u5F31"
   Icon: {fileID: 0}
-  Description: 
+  Description: "\u964D\u4F4E\u653B\u51FB\u529B"
   Stacks: 0
   MaxStacks: 9999
   IsDebuff: 1

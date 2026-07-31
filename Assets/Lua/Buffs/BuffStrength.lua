@@ -6,8 +6,9 @@ local BuffStrength = BuffBase.extends(BuffBase)
 
 function BuffStrength:ctor(stacks)
     self.super.ctor(self, stacks or 1)
-    self.MaxStacks = 5
-    self.DecayAtTurnStart = false
+    self.Name = "力量增益"
+    self.MaxStacks = 999
+    self.DecayAtTurnStart = true
 end
 
 function BuffStrength:OnApply(owner)

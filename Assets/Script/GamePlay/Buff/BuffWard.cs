@@ -10,6 +10,11 @@ namespace GamePlay.Buff
         [Header("减伤配置")]
         [SerializeField] private float damageReductionPerStack = 3f;
 
+        private void OnEnable()
+        {
+            if (string.IsNullOrEmpty(Name)) Name = "守护";
+        }
+
         public override void OnApply(MapUnit owner)
         {
             base.OnApply(owner);
