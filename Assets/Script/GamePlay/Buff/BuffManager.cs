@@ -50,6 +50,8 @@ namespace GamePlay.Buff
             }
             else
             {
+                if (!IsBuffKeyRegistered(key)) return null;
+
                 try
                 {
                     var handle = Addressables.LoadAssetAsync<BuffBase>(key);
@@ -76,6 +78,29 @@ namespace GamePlay.Buff
             instance.ID = buffID;
             instance.Stacks = Mathf.Max(1, stacks);
             return instance;
+        }
+
+        // 预检 key 是否注册在 Addressables 中，避免 LoadAssetAsync 对缺失 key
+        // 内部直接 Debug.LogError(InvalidKeyException) 造成控制台噪音。
+        // 只有纯 Lua/反射 Buff（如 precise_shot、fortitude、power 等）会走到这一步。
+        private static bool IsBuffKeyRegistered(string key)
+        {
+            var locators = Addressables.ResourceLocators;
+            if (locators == null) return true; // 极端情况，保守走原逻辑
+
+            bool hasLocator = false;
+            foreach (var locator in locators)
+            {
+                hasLocator = true; // 至少一个 locator → Addressables 已初始化
+                if (locator.Locate(key, typeof(BuffBase), out var locations))
+                {
+                    return locations != null && locations.Count > 0;
+                }
+            }
+
+            // locators 为空（Addressables 尚未初始化）时保守返回 true，
+            // 让 LoadAssetAsync 自动初始化并配合 try-catch 兜底。
+            return !hasLocator;
         }
 
         private static BuffBase TryFromReflection(string key, string buffID, int stacks)
