@@ -20,9 +20,11 @@ MonoBehaviour:
   CastMaxRange: 1
   CastMinRange: 1
   CastVerticalRange: 255
+  CastRangeMode: 0
+  CastRangeFuncName: 
   Trajectory: 2
   StopsAtFirstHit: 0
-  Cost: 0
+  Cost: 16
   Phases:
   - PhaseName: 1
     TargetType: 7
@@ -33,7 +35,7 @@ MonoBehaviour:
     Effects:
     - EffectType: 0
       FlatBonus: 0
-      Multiplier: 1
+      Multiplier: 0.7
       Constant: 0
       DamageType: 0
       BuffID: 
@@ -41,7 +43,7 @@ MonoBehaviour:
       RemoveMode: 0
     - EffectType: 0
       FlatBonus: 0
-      Multiplier: 1
+      Multiplier: 0.2
       Constant: 0
       DamageType: 5
       BuffID: 
@@ -75,6 +77,8 @@ MonoBehaviour:
       TargetAreaOffset: {x: 0, y: 8, z: 0}
       TargetAreaRotation: {x: 90, y: 0, z: 0}
       TargetAreaDuration: 3
+    ExecuteMode: 0
+    ExecuteFuncName: 
   AIBehavior: 1
   AIPriority: 1
   isCustomSkill: 0

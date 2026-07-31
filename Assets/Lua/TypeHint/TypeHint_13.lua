@@ -1,5 +1,605 @@
 ---@meta
 
+---@return UnityEngine.Timeline.SignalEmitter
+function UnityEngine.Timeline.SignalEmitter.New() end
+
+---@class UnityEngine.Timeline.SignalReceiver : UnityEngine.MonoBehaviour
+UnityEngine.Timeline.SignalReceiver = {}
+---@alias CS.UnityEngine.Timeline.SignalReceiver UnityEngine.Timeline.SignalReceiver
+CS.UnityEngine.Timeline.SignalReceiver = UnityEngine.Timeline.SignalReceiver
+
+---@param origin UnityEngine.Playables.Playable
+---@param notification UnityEngine.Playables.INotification
+---@param context System.Object
+function UnityEngine.Timeline.SignalReceiver:OnNotify(origin, notification, context) end
+---@param asset UnityEngine.Timeline.SignalAsset
+---@param reaction UnityEngine.Events.UnityEvent
+function UnityEngine.Timeline.SignalReceiver:AddReaction(asset, reaction) end
+---@param reaction UnityEngine.Events.UnityEvent
+---@return number
+function UnityEngine.Timeline.SignalReceiver:AddEmptyReaction(reaction) end
+---@param asset UnityEngine.Timeline.SignalAsset
+function UnityEngine.Timeline.SignalReceiver:Remove(asset) end
+---@return System.Collections.Generic.IEnumerable
+function UnityEngine.Timeline.SignalReceiver:GetRegisteredSignals() end
+---@param key UnityEngine.Timeline.SignalAsset
+---@return UnityEngine.Events.UnityEvent
+function UnityEngine.Timeline.SignalReceiver:GetReaction(key) end
+---@return number
+function UnityEngine.Timeline.SignalReceiver:Count() end
+---@param idx number
+---@param newKey UnityEngine.Timeline.SignalAsset
+function UnityEngine.Timeline.SignalReceiver:ChangeSignalAtIndex(idx, newKey) end
+---@param idx number
+function UnityEngine.Timeline.SignalReceiver:RemoveAtIndex(idx) end
+---@param idx number
+---@param reaction UnityEngine.Events.UnityEvent
+function UnityEngine.Timeline.SignalReceiver:ChangeReactionAtIndex(idx, reaction) end
+---@param idx number
+---@return UnityEngine.Events.UnityEvent
+function UnityEngine.Timeline.SignalReceiver:GetReactionAtIndex(idx) end
+---@param idx number
+---@return UnityEngine.Timeline.SignalAsset
+function UnityEngine.Timeline.SignalReceiver:GetSignalAssetAtIndex(idx) end
+
+---@class UnityEngine.Timeline.SignalTrack : UnityEngine.Timeline.MarkerTrack
+UnityEngine.Timeline.SignalTrack = {}
+---@alias CS.UnityEngine.Timeline.SignalTrack UnityEngine.Timeline.SignalTrack
+CS.UnityEngine.Timeline.SignalTrack = UnityEngine.Timeline.SignalTrack
+
+---@return UnityEngine.Timeline.SignalTrack
+function UnityEngine.Timeline.SignalTrack.New() end
+
+---@class UnityEngine.Timeline.TrackAssetExtensions : System.Object
+UnityEngine.Timeline.TrackAssetExtensions = {}
+---@alias CS.UnityEngine.Timeline.TrackAssetExtensions UnityEngine.Timeline.TrackAssetExtensions
+CS.UnityEngine.Timeline.TrackAssetExtensions = UnityEngine.Timeline.TrackAssetExtensions
+
+---@param asset UnityEngine.Timeline.TrackAsset
+---@return UnityEngine.Timeline.GroupTrack
+function UnityEngine.Timeline.TrackAssetExtensions.GetGroup(asset) end
+---@param asset UnityEngine.Timeline.TrackAsset
+---@param group UnityEngine.Timeline.GroupTrack
+function UnityEngine.Timeline.TrackAssetExtensions.SetGroup(asset, group) end
+
+---@class UnityEngine.Timeline.GroupTrack : UnityEngine.Timeline.TrackAsset
+---@field outputs System.Collections.Generic.IEnumerable
+UnityEngine.Timeline.GroupTrack = {}
+---@alias CS.UnityEngine.Timeline.GroupTrack UnityEngine.Timeline.GroupTrack
+CS.UnityEngine.Timeline.GroupTrack = UnityEngine.Timeline.GroupTrack
+
+---@return UnityEngine.Timeline.GroupTrack
+function UnityEngine.Timeline.GroupTrack.New() end
+
+---@class UnityEngine.Timeline.ILayerable
+UnityEngine.Timeline.ILayerable = {}
+---@alias CS.UnityEngine.Timeline.ILayerable UnityEngine.Timeline.ILayerable
+CS.UnityEngine.Timeline.ILayerable = UnityEngine.Timeline.ILayerable
+
+---@param graph UnityEngine.Playables.PlayableGraph
+---@param go UnityEngine.GameObject
+---@param inputCount number
+---@return UnityEngine.Playables.Playable
+function UnityEngine.Timeline.ILayerable:CreateLayerMixer(graph, go, inputCount) end
+
+---@class UnityEngine.Timeline.ActivationControlPlayable : UnityEngine.Playables.PlayableBehaviour
+---@field gameObject UnityEngine.GameObject
+---@field postPlayback UnityEngine.Timeline.ActivationControlPlayable.PostPlaybackState
+UnityEngine.Timeline.ActivationControlPlayable = {}
+---@alias CS.UnityEngine.Timeline.ActivationControlPlayable UnityEngine.Timeline.ActivationControlPlayable
+CS.UnityEngine.Timeline.ActivationControlPlayable = UnityEngine.Timeline.ActivationControlPlayable
+
+---@return UnityEngine.Timeline.ActivationControlPlayable
+function UnityEngine.Timeline.ActivationControlPlayable.New() end
+---@param graph UnityEngine.Playables.PlayableGraph
+---@param gameObject UnityEngine.GameObject
+---@param postPlaybackState UnityEngine.Timeline.ActivationControlPlayable.PostPlaybackState
+---@return UnityEngine.Playables.ScriptPlayable
+function UnityEngine.Timeline.ActivationControlPlayable.Create(graph, gameObject, postPlaybackState) end
+---@param playable UnityEngine.Playables.Playable
+---@param info UnityEngine.Playables.FrameData
+function UnityEngine.Timeline.ActivationControlPlayable:OnBehaviourPlay(playable, info) end
+---@param playable UnityEngine.Playables.Playable
+---@param info UnityEngine.Playables.FrameData
+function UnityEngine.Timeline.ActivationControlPlayable:OnBehaviourPause(playable, info) end
+---@param playable UnityEngine.Playables.Playable
+---@param info UnityEngine.Playables.FrameData
+---@param userData System.Object
+function UnityEngine.Timeline.ActivationControlPlayable:ProcessFrame(playable, info, userData) end
+---@param playable UnityEngine.Playables.Playable
+function UnityEngine.Timeline.ActivationControlPlayable:OnGraphStart(playable) end
+---@param playable UnityEngine.Playables.Playable
+function UnityEngine.Timeline.ActivationControlPlayable:OnPlayableDestroy(playable) end
+
+---@class UnityEngine.Timeline.BasicPlayableBehaviour : UnityEngine.ScriptableObject
+---@field duration number
+---@field outputs System.Collections.Generic.IEnumerable
+UnityEngine.Timeline.BasicPlayableBehaviour = {}
+---@alias CS.UnityEngine.Timeline.BasicPlayableBehaviour UnityEngine.Timeline.BasicPlayableBehaviour
+CS.UnityEngine.Timeline.BasicPlayableBehaviour = UnityEngine.Timeline.BasicPlayableBehaviour
+
+---@return UnityEngine.Timeline.BasicPlayableBehaviour
+function UnityEngine.Timeline.BasicPlayableBehaviour.New() end
+---@param playable UnityEngine.Playables.Playable
+function UnityEngine.Timeline.BasicPlayableBehaviour:OnGraphStart(playable) end
+---@param playable UnityEngine.Playables.Playable
+function UnityEngine.Timeline.BasicPlayableBehaviour:OnGraphStop(playable) end
+---@param playable UnityEngine.Playables.Playable
+function UnityEngine.Timeline.BasicPlayableBehaviour:OnPlayableCreate(playable) end
+---@param playable UnityEngine.Playables.Playable
+function UnityEngine.Timeline.BasicPlayableBehaviour:OnPlayableDestroy(playable) end
+---@param playable UnityEngine.Playables.Playable
+---@param info UnityEngine.Playables.FrameData
+function UnityEngine.Timeline.BasicPlayableBehaviour:OnBehaviourPlay(playable, info) end
+---@param playable UnityEngine.Playables.Playable
+---@param info UnityEngine.Playables.FrameData
+function UnityEngine.Timeline.BasicPlayableBehaviour:OnBehaviourPause(playable, info) end
+---@param playable UnityEngine.Playables.Playable
+---@param info UnityEngine.Playables.FrameData
+function UnityEngine.Timeline.BasicPlayableBehaviour:PrepareFrame(playable, info) end
+---@param playable UnityEngine.Playables.Playable
+---@param info UnityEngine.Playables.FrameData
+---@param playerData System.Object
+function UnityEngine.Timeline.BasicPlayableBehaviour:ProcessFrame(playable, info, playerData) end
+---@param graph UnityEngine.Playables.PlayableGraph
+---@param owner UnityEngine.GameObject
+---@return UnityEngine.Playables.Playable
+function UnityEngine.Timeline.BasicPlayableBehaviour:CreatePlayable(graph, owner) end
+
+---@class UnityEngine.Timeline.DirectorControlPlayable : UnityEngine.Playables.PlayableBehaviour
+---@field director UnityEngine.Playables.PlayableDirector
+UnityEngine.Timeline.DirectorControlPlayable = {}
+---@alias CS.UnityEngine.Timeline.DirectorControlPlayable UnityEngine.Timeline.DirectorControlPlayable
+CS.UnityEngine.Timeline.DirectorControlPlayable = UnityEngine.Timeline.DirectorControlPlayable
+
+---@return UnityEngine.Timeline.DirectorControlPlayable
+function UnityEngine.Timeline.DirectorControlPlayable.New() end
+---@param graph UnityEngine.Playables.PlayableGraph
+---@param director UnityEngine.Playables.PlayableDirector
+---@return UnityEngine.Playables.ScriptPlayable
+function UnityEngine.Timeline.DirectorControlPlayable.Create(graph, director) end
+---@param playable UnityEngine.Playables.Playable
+function UnityEngine.Timeline.DirectorControlPlayable:OnPlayableDestroy(playable) end
+---@param playable UnityEngine.Playables.Playable
+---@param info UnityEngine.Playables.FrameData
+function UnityEngine.Timeline.DirectorControlPlayable:PrepareFrame(playable, info) end
+---@param playable UnityEngine.Playables.Playable
+---@param info UnityEngine.Playables.FrameData
+function UnityEngine.Timeline.DirectorControlPlayable:OnBehaviourPlay(playable, info) end
+---@param playable UnityEngine.Playables.Playable
+---@param info UnityEngine.Playables.FrameData
+function UnityEngine.Timeline.DirectorControlPlayable:OnBehaviourPause(playable, info) end
+---@param playable UnityEngine.Playables.Playable
+---@param info UnityEngine.Playables.FrameData
+---@param playerData System.Object
+function UnityEngine.Timeline.DirectorControlPlayable:ProcessFrame(playable, info, playerData) end
+
+---@class UnityEngine.Timeline.ITimeControl
+UnityEngine.Timeline.ITimeControl = {}
+---@alias CS.UnityEngine.Timeline.ITimeControl UnityEngine.Timeline.ITimeControl
+CS.UnityEngine.Timeline.ITimeControl = UnityEngine.Timeline.ITimeControl
+
+---@param time number
+function UnityEngine.Timeline.ITimeControl:SetTime(time) end
+function UnityEngine.Timeline.ITimeControl:OnControlTimeStart() end
+function UnityEngine.Timeline.ITimeControl:OnControlTimeStop() end
+
+---@class UnityEngine.Timeline.NotificationFlags
+---@field TriggerInEditMode UnityEngine.Timeline.NotificationFlags
+---@field Retroactive UnityEngine.Timeline.NotificationFlags
+---@field TriggerOnce UnityEngine.Timeline.NotificationFlags
+UnityEngine.Timeline.NotificationFlags = {}
+---@alias CS.UnityEngine.Timeline.NotificationFlags UnityEngine.Timeline.NotificationFlags
+CS.UnityEngine.Timeline.NotificationFlags = UnityEngine.Timeline.NotificationFlags
+
+
+---@class UnityEngine.Timeline.ParticleControlPlayable : UnityEngine.Playables.PlayableBehaviour
+---@field particleSystem UnityEngine.ParticleSystem
+UnityEngine.Timeline.ParticleControlPlayable = {}
+---@alias CS.UnityEngine.Timeline.ParticleControlPlayable UnityEngine.Timeline.ParticleControlPlayable
+CS.UnityEngine.Timeline.ParticleControlPlayable = UnityEngine.Timeline.ParticleControlPlayable
+
+---@return UnityEngine.Timeline.ParticleControlPlayable
+function UnityEngine.Timeline.ParticleControlPlayable.New() end
+---@param graph UnityEngine.Playables.PlayableGraph
+---@param component UnityEngine.ParticleSystem
+---@param randomSeed number
+---@return UnityEngine.Playables.ScriptPlayable
+function UnityEngine.Timeline.ParticleControlPlayable.Create(graph, component, randomSeed) end
+---@param ps UnityEngine.ParticleSystem
+---@param randomSeed number
+function UnityEngine.Timeline.ParticleControlPlayable:Initialize(ps, randomSeed) end
+---@param playable UnityEngine.Playables.Playable
+function UnityEngine.Timeline.ParticleControlPlayable:OnPlayableDestroy(playable) end
+---@param playable UnityEngine.Playables.Playable
+---@param data UnityEngine.Playables.FrameData
+function UnityEngine.Timeline.ParticleControlPlayable:PrepareFrame(playable, data) end
+---@param playable UnityEngine.Playables.Playable
+---@param info UnityEngine.Playables.FrameData
+function UnityEngine.Timeline.ParticleControlPlayable:OnBehaviourPlay(playable, info) end
+---@param playable UnityEngine.Playables.Playable
+---@param info UnityEngine.Playables.FrameData
+function UnityEngine.Timeline.ParticleControlPlayable:OnBehaviourPause(playable, info) end
+
+---@class UnityEngine.Timeline.PrefabControlPlayable : UnityEngine.Playables.PlayableBehaviour
+---@field prefabInstance UnityEngine.GameObject
+UnityEngine.Timeline.PrefabControlPlayable = {}
+---@alias CS.UnityEngine.Timeline.PrefabControlPlayable UnityEngine.Timeline.PrefabControlPlayable
+CS.UnityEngine.Timeline.PrefabControlPlayable = UnityEngine.Timeline.PrefabControlPlayable
+
+---@return UnityEngine.Timeline.PrefabControlPlayable
+function UnityEngine.Timeline.PrefabControlPlayable.New() end
+---@param graph UnityEngine.Playables.PlayableGraph
+---@param prefabGameObject UnityEngine.GameObject
+---@param parentTransform UnityEngine.Transform
+---@return UnityEngine.Playables.ScriptPlayable
+function UnityEngine.Timeline.PrefabControlPlayable.Create(graph, prefabGameObject, parentTransform) end
+---@param prefabGameObject UnityEngine.GameObject
+---@param parentTransform UnityEngine.Transform
+---@return UnityEngine.GameObject
+function UnityEngine.Timeline.PrefabControlPlayable:Initialize(prefabGameObject, parentTransform) end
+---@param playable UnityEngine.Playables.Playable
+function UnityEngine.Timeline.PrefabControlPlayable:OnPlayableDestroy(playable) end
+---@param playable UnityEngine.Playables.Playable
+---@param info UnityEngine.Playables.FrameData
+function UnityEngine.Timeline.PrefabControlPlayable:OnBehaviourPlay(playable, info) end
+---@param playable UnityEngine.Playables.Playable
+---@param info UnityEngine.Playables.FrameData
+function UnityEngine.Timeline.PrefabControlPlayable:OnBehaviourPause(playable, info) end
+
+---@class UnityEngine.Timeline.TimeControlPlayable : UnityEngine.Playables.PlayableBehaviour
+UnityEngine.Timeline.TimeControlPlayable = {}
+---@alias CS.UnityEngine.Timeline.TimeControlPlayable UnityEngine.Timeline.TimeControlPlayable
+CS.UnityEngine.Timeline.TimeControlPlayable = UnityEngine.Timeline.TimeControlPlayable
+
+---@return UnityEngine.Timeline.TimeControlPlayable
+function UnityEngine.Timeline.TimeControlPlayable.New() end
+---@param graph UnityEngine.Playables.PlayableGraph
+---@param timeControl UnityEngine.Timeline.ITimeControl
+---@return UnityEngine.Playables.ScriptPlayable
+function UnityEngine.Timeline.TimeControlPlayable.Create(graph, timeControl) end
+---@param timeControl UnityEngine.Timeline.ITimeControl
+function UnityEngine.Timeline.TimeControlPlayable:Initialize(timeControl) end
+---@param playable UnityEngine.Playables.Playable
+---@param info UnityEngine.Playables.FrameData
+function UnityEngine.Timeline.TimeControlPlayable:PrepareFrame(playable, info) end
+---@param playable UnityEngine.Playables.Playable
+---@param info UnityEngine.Playables.FrameData
+function UnityEngine.Timeline.TimeControlPlayable:OnBehaviourPlay(playable, info) end
+---@param playable UnityEngine.Playables.Playable
+---@param info UnityEngine.Playables.FrameData
+function UnityEngine.Timeline.TimeControlPlayable:OnBehaviourPause(playable, info) end
+
+---@class UnityEngine.Timeline.TimeNotificationBehaviour : UnityEngine.Playables.PlayableBehaviour
+---@field timeSource UnityEngine.Playables.Playable
+UnityEngine.Timeline.TimeNotificationBehaviour = {}
+---@alias CS.UnityEngine.Timeline.TimeNotificationBehaviour UnityEngine.Timeline.TimeNotificationBehaviour
+CS.UnityEngine.Timeline.TimeNotificationBehaviour = UnityEngine.Timeline.TimeNotificationBehaviour
+
+---@return UnityEngine.Timeline.TimeNotificationBehaviour
+function UnityEngine.Timeline.TimeNotificationBehaviour.New() end
+---@param graph UnityEngine.Playables.PlayableGraph
+---@param duration number
+---@param loopMode UnityEngine.Playables.DirectorWrapMode
+---@return UnityEngine.Playables.ScriptPlayable
+function UnityEngine.Timeline.TimeNotificationBehaviour.Create(graph, duration, loopMode) end
+---@param time number
+---@param payload UnityEngine.Playables.INotification
+---@param flags UnityEngine.Timeline.NotificationFlags
+function UnityEngine.Timeline.TimeNotificationBehaviour:AddNotification(time, payload, flags) end
+---@param playable UnityEngine.Playables.Playable
+function UnityEngine.Timeline.TimeNotificationBehaviour:OnGraphStart(playable) end
+---@param playable UnityEngine.Playables.Playable
+---@param info UnityEngine.Playables.FrameData
+function UnityEngine.Timeline.TimeNotificationBehaviour:OnBehaviourPause(playable, info) end
+---@param playable UnityEngine.Playables.Playable
+---@param info UnityEngine.Playables.FrameData
+function UnityEngine.Timeline.TimeNotificationBehaviour:PrepareFrame(playable, info) end
+
+---@class UnityEngine.Timeline.PlayableTrack : UnityEngine.Timeline.TrackAsset
+UnityEngine.Timeline.PlayableTrack = {}
+---@alias CS.UnityEngine.Timeline.PlayableTrack UnityEngine.Timeline.PlayableTrack
+CS.UnityEngine.Timeline.PlayableTrack = UnityEngine.Timeline.PlayableTrack
+
+---@return UnityEngine.Timeline.PlayableTrack
+function UnityEngine.Timeline.PlayableTrack.New() end
+
+---@class UnityEngine.Timeline.TrackMediaType : System.Attribute
+---@field m_MediaType UnityEngine.Timeline.TimelineAsset.MediaType
+UnityEngine.Timeline.TrackMediaType = {}
+---@alias CS.UnityEngine.Timeline.TrackMediaType UnityEngine.Timeline.TrackMediaType
+CS.UnityEngine.Timeline.TrackMediaType = UnityEngine.Timeline.TrackMediaType
+
+---@param mt UnityEngine.Timeline.TimelineAsset.MediaType
+---@return UnityEngine.Timeline.TrackMediaType
+function UnityEngine.Timeline.TrackMediaType.New(mt) end
+
+---@class UnityEngine.Timeline.TrackClipTypeAttribute : System.Attribute
+---@field inspectedType System.Type
+---@field allowAutoCreate boolean
+UnityEngine.Timeline.TrackClipTypeAttribute = {}
+---@alias CS.UnityEngine.Timeline.TrackClipTypeAttribute UnityEngine.Timeline.TrackClipTypeAttribute
+CS.UnityEngine.Timeline.TrackClipTypeAttribute = UnityEngine.Timeline.TrackClipTypeAttribute
+
+---@overload fun(clipClass: System.Type) : UnityEngine.Timeline.TrackClipTypeAttribute
+---@param clipClass System.Type
+---@param allowAutoCreate boolean
+---@return UnityEngine.Timeline.TrackClipTypeAttribute
+function UnityEngine.Timeline.TrackClipTypeAttribute.New(clipClass, allowAutoCreate) end
+
+---@class UnityEngine.Timeline.NotKeyableAttribute : System.Attribute
+UnityEngine.Timeline.NotKeyableAttribute = {}
+---@alias CS.UnityEngine.Timeline.NotKeyableAttribute UnityEngine.Timeline.NotKeyableAttribute
+CS.UnityEngine.Timeline.NotKeyableAttribute = UnityEngine.Timeline.NotKeyableAttribute
+
+---@return UnityEngine.Timeline.NotKeyableAttribute
+function UnityEngine.Timeline.NotKeyableAttribute.New() end
+
+---@class UnityEngine.Timeline.TrackBindingFlags
+---@field None UnityEngine.Timeline.TrackBindingFlags
+---@field AllowCreateComponent UnityEngine.Timeline.TrackBindingFlags
+---@field All UnityEngine.Timeline.TrackBindingFlags
+UnityEngine.Timeline.TrackBindingFlags = {}
+---@alias CS.UnityEngine.Timeline.TrackBindingFlags UnityEngine.Timeline.TrackBindingFlags
+CS.UnityEngine.Timeline.TrackBindingFlags = UnityEngine.Timeline.TrackBindingFlags
+
+
+---@class UnityEngine.Timeline.TrackBindingTypeAttribute : System.Attribute
+---@field type System.Type
+---@field flags UnityEngine.Timeline.TrackBindingFlags
+UnityEngine.Timeline.TrackBindingTypeAttribute = {}
+---@alias CS.UnityEngine.Timeline.TrackBindingTypeAttribute UnityEngine.Timeline.TrackBindingTypeAttribute
+CS.UnityEngine.Timeline.TrackBindingTypeAttribute = UnityEngine.Timeline.TrackBindingTypeAttribute
+
+---@overload fun(type: System.Type) : UnityEngine.Timeline.TrackBindingTypeAttribute
+---@param type System.Type
+---@param flags UnityEngine.Timeline.TrackBindingFlags
+---@return UnityEngine.Timeline.TrackBindingTypeAttribute
+function UnityEngine.Timeline.TrackBindingTypeAttribute.New(type, flags) end
+
+---@class UnityEngine.Timeline.SupportsChildTracksAttribute : System.Attribute
+---@field childType System.Type
+---@field levels number
+UnityEngine.Timeline.SupportsChildTracksAttribute = {}
+---@alias CS.UnityEngine.Timeline.SupportsChildTracksAttribute UnityEngine.Timeline.SupportsChildTracksAttribute
+CS.UnityEngine.Timeline.SupportsChildTracksAttribute = UnityEngine.Timeline.SupportsChildTracksAttribute
+
+---@param childType System.Type
+---@param levels number
+---@return UnityEngine.Timeline.SupportsChildTracksAttribute
+function UnityEngine.Timeline.SupportsChildTracksAttribute.New(childType, levels) end
+
+---@class UnityEngine.Timeline.IgnoreOnPlayableTrackAttribute : System.Attribute
+UnityEngine.Timeline.IgnoreOnPlayableTrackAttribute = {}
+---@alias CS.UnityEngine.Timeline.IgnoreOnPlayableTrackAttribute UnityEngine.Timeline.IgnoreOnPlayableTrackAttribute
+CS.UnityEngine.Timeline.IgnoreOnPlayableTrackAttribute = UnityEngine.Timeline.IgnoreOnPlayableTrackAttribute
+
+---@return UnityEngine.Timeline.IgnoreOnPlayableTrackAttribute
+function UnityEngine.Timeline.IgnoreOnPlayableTrackAttribute.New() end
+
+---@class UnityEngine.Timeline.TimeFieldAttribute : UnityEngine.PropertyAttribute
+---@field useEditMode UnityEngine.Timeline.TimeFieldAttribute.UseEditMode
+UnityEngine.Timeline.TimeFieldAttribute = {}
+---@alias CS.UnityEngine.Timeline.TimeFieldAttribute UnityEngine.Timeline.TimeFieldAttribute
+CS.UnityEngine.Timeline.TimeFieldAttribute = UnityEngine.Timeline.TimeFieldAttribute
+
+---@param useEditMode UnityEngine.Timeline.TimeFieldAttribute.UseEditMode
+---@return UnityEngine.Timeline.TimeFieldAttribute
+function UnityEngine.Timeline.TimeFieldAttribute.New(useEditMode) end
+
+---@class UnityEngine.Timeline.FrameRateFieldAttribute : UnityEngine.PropertyAttribute
+UnityEngine.Timeline.FrameRateFieldAttribute = {}
+---@alias CS.UnityEngine.Timeline.FrameRateFieldAttribute UnityEngine.Timeline.FrameRateFieldAttribute
+CS.UnityEngine.Timeline.FrameRateFieldAttribute = UnityEngine.Timeline.FrameRateFieldAttribute
+
+---@return UnityEngine.Timeline.FrameRateFieldAttribute
+function UnityEngine.Timeline.FrameRateFieldAttribute.New() end
+
+---@class UnityEngine.Timeline.HideInMenuAttribute : System.Attribute
+UnityEngine.Timeline.HideInMenuAttribute = {}
+---@alias CS.UnityEngine.Timeline.HideInMenuAttribute UnityEngine.Timeline.HideInMenuAttribute
+CS.UnityEngine.Timeline.HideInMenuAttribute = UnityEngine.Timeline.HideInMenuAttribute
+
+---@return UnityEngine.Timeline.HideInMenuAttribute
+function UnityEngine.Timeline.HideInMenuAttribute.New() end
+
+---@class UnityEngine.Timeline.CustomStyleAttribute : System.Attribute
+---@field ussStyle string
+UnityEngine.Timeline.CustomStyleAttribute = {}
+---@alias CS.UnityEngine.Timeline.CustomStyleAttribute UnityEngine.Timeline.CustomStyleAttribute
+CS.UnityEngine.Timeline.CustomStyleAttribute = UnityEngine.Timeline.CustomStyleAttribute
+
+---@param ussStyle string
+---@return UnityEngine.Timeline.CustomStyleAttribute
+function UnityEngine.Timeline.CustomStyleAttribute.New(ussStyle) end
+
+---@class UnityEngine.Timeline.MenuCategoryAttribute : System.Attribute
+---@field category string
+UnityEngine.Timeline.MenuCategoryAttribute = {}
+---@alias CS.UnityEngine.Timeline.MenuCategoryAttribute UnityEngine.Timeline.MenuCategoryAttribute
+CS.UnityEngine.Timeline.MenuCategoryAttribute = UnityEngine.Timeline.MenuCategoryAttribute
+
+---@param category string
+---@return UnityEngine.Timeline.MenuCategoryAttribute
+function UnityEngine.Timeline.MenuCategoryAttribute.New(category) end
+
+---@class UnityEngine.Timeline.ITimelineClipAsset
+---@field clipCaps UnityEngine.Timeline.ClipCaps
+UnityEngine.Timeline.ITimelineClipAsset = {}
+---@alias CS.UnityEngine.Timeline.ITimelineClipAsset UnityEngine.Timeline.ITimelineClipAsset
+CS.UnityEngine.Timeline.ITimelineClipAsset = UnityEngine.Timeline.ITimelineClipAsset
+
+
+---@class UnityEngine.Timeline.ITimelineEvaluateCallback
+UnityEngine.Timeline.ITimelineEvaluateCallback = {}
+---@alias CS.UnityEngine.Timeline.ITimelineEvaluateCallback UnityEngine.Timeline.ITimelineEvaluateCallback
+CS.UnityEngine.Timeline.ITimelineEvaluateCallback = UnityEngine.Timeline.ITimelineEvaluateCallback
+
+function UnityEngine.Timeline.ITimelineEvaluateCallback:Evaluate() end
+
+---@class UnityEngine.Timeline.IntervalTreeRebalancer : System.Object
+UnityEngine.Timeline.IntervalTreeRebalancer = {}
+---@alias CS.UnityEngine.Timeline.IntervalTreeRebalancer UnityEngine.Timeline.IntervalTreeRebalancer
+CS.UnityEngine.Timeline.IntervalTreeRebalancer = UnityEngine.Timeline.IntervalTreeRebalancer
+
+---@param tree UnityEngine.Timeline.IntervalTree
+---@return UnityEngine.Timeline.IntervalTreeRebalancer
+function UnityEngine.Timeline.IntervalTreeRebalancer.New(tree) end
+---@return boolean
+function UnityEngine.Timeline.IntervalTreeRebalancer:Rebalance() end
+
+---@class UnityEngine.Timeline.TimelinePlayable : UnityEngine.Playables.PlayableBehaviour
+UnityEngine.Timeline.TimelinePlayable = {}
+---@alias CS.UnityEngine.Timeline.TimelinePlayable UnityEngine.Timeline.TimelinePlayable
+CS.UnityEngine.Timeline.TimelinePlayable = UnityEngine.Timeline.TimelinePlayable
+
+---@return UnityEngine.Timeline.TimelinePlayable
+function UnityEngine.Timeline.TimelinePlayable.New() end
+---@param graph UnityEngine.Playables.PlayableGraph
+---@param tracks System.Collections.Generic.IEnumerable
+---@param go UnityEngine.GameObject
+---@param autoRebalance boolean
+---@param createOutputs boolean
+---@return UnityEngine.Playables.ScriptPlayable
+function UnityEngine.Timeline.TimelinePlayable.Create(graph, tracks, go, autoRebalance, createOutputs) end
+---@param graph UnityEngine.Playables.PlayableGraph
+---@param timelinePlayable UnityEngine.Playables.Playable
+---@param tracks System.Collections.Generic.IEnumerable
+---@param go UnityEngine.GameObject
+---@param autoRebalance boolean
+---@param createOutputs boolean
+function UnityEngine.Timeline.TimelinePlayable:Compile(graph, timelinePlayable, tracks, go, autoRebalance, createOutputs) end
+---@param playable UnityEngine.Playables.Playable
+---@param info UnityEngine.Playables.FrameData
+function UnityEngine.Timeline.TimelinePlayable:PrepareFrame(playable, info) end
+
+---@class UnityEngine.Timeline.AnimationPreviewUtilities : System.Object
+UnityEngine.Timeline.AnimationPreviewUtilities = {}
+---@alias CS.UnityEngine.Timeline.AnimationPreviewUtilities UnityEngine.Timeline.AnimationPreviewUtilities
+CS.UnityEngine.Timeline.AnimationPreviewUtilities = UnityEngine.Timeline.AnimationPreviewUtilities
+
+function UnityEngine.Timeline.AnimationPreviewUtilities.ClearCaches() end
+---@param animatorRoot UnityEngine.GameObject
+---@param clips System.Collections.Generic.IEnumerable
+---@return UnityEditor.EditorCurveBinding[]
+function UnityEngine.Timeline.AnimationPreviewUtilities.GetBindings(animatorRoot, clips) end
+---@param clips System.Collections.Generic.List
+---@return number
+function UnityEngine.Timeline.AnimationPreviewUtilities.GetClipHash(clips) end
+---@param animatorRoot UnityEngine.GameObject
+---@param keys System.Collections.Generic.IEnumerable
+function UnityEngine.Timeline.AnimationPreviewUtilities.PreviewFromCurves(animatorRoot, keys) end
+---@param animatorRoot UnityEngine.GameObject
+---@param keys System.Collections.Generic.IEnumerable
+---@return UnityEngine.AnimationClip
+function UnityEngine.Timeline.AnimationPreviewUtilities.CreateDefaultClip(animatorRoot, keys) end
+---@param binding UnityEditor.EditorCurveBinding
+---@return boolean
+function UnityEngine.Timeline.AnimationPreviewUtilities.IsRootMotion(binding) end
+
+---@class UnityEngine.Timeline.AnimatorBindingCache : System.Object
+---@field TRPlaceHolder string
+---@field ScalePlaceholder string
+UnityEngine.Timeline.AnimatorBindingCache = {}
+---@alias CS.UnityEngine.Timeline.AnimatorBindingCache UnityEngine.Timeline.AnimatorBindingCache
+CS.UnityEngine.Timeline.AnimatorBindingCache = UnityEngine.Timeline.AnimatorBindingCache
+
+---@return UnityEngine.Timeline.AnimatorBindingCache
+function UnityEngine.Timeline.AnimatorBindingCache.New() end
+---@param gameObject UnityEngine.GameObject
+---@return UnityEditor.EditorCurveBinding[]
+function UnityEngine.Timeline.AnimatorBindingCache:GetAnimatorBindings(gameObject) end
+---@param clip UnityEngine.AnimationClip
+---@return UnityEditor.EditorCurveBinding[]
+function UnityEngine.Timeline.AnimatorBindingCache:GetCurveBindings(clip) end
+function UnityEngine.Timeline.AnimatorBindingCache:Clear() end
+
+---@class UnityEngine.Timeline.Extrapolation : System.Object
+UnityEngine.Timeline.Extrapolation = {}
+---@alias CS.UnityEngine.Timeline.Extrapolation UnityEngine.Timeline.Extrapolation
+CS.UnityEngine.Timeline.Extrapolation = UnityEngine.Timeline.Extrapolation
+
+
+---@class UnityEngine.Timeline.HashUtility : System.Object
+UnityEngine.Timeline.HashUtility = {}
+---@alias CS.UnityEngine.Timeline.HashUtility UnityEngine.Timeline.HashUtility
+CS.UnityEngine.Timeline.HashUtility = UnityEngine.Timeline.HashUtility
+
+---@overload fun(h1: number, h2: number) : number
+---@overload fun(h1: number, h2: number, h3: number) : number
+---@overload fun(h1: number, h2: number, h3: number, h4: number) : number
+---@overload fun(h1: number, h2: number, h3: number, h4: number, h5: number) : number
+---@overload fun(h1: number, h2: number, h3: number, h4: number, h5: number, h6: number) : number
+---@overload fun(h1: number, h2: number, h3: number, h4: number, h5: number, h6: number, h7: number) : number
+---@param hashes System.Int32[]
+---@return number
+function UnityEngine.Timeline.HashUtility.CombineHash(hashes) end
+
+---@class UnityEngine.Timeline.IPropertyCollector
+UnityEngine.Timeline.IPropertyCollector = {}
+---@alias CS.UnityEngine.Timeline.IPropertyCollector UnityEngine.Timeline.IPropertyCollector
+CS.UnityEngine.Timeline.IPropertyCollector = UnityEngine.Timeline.IPropertyCollector
+
+---@param gameObject UnityEngine.GameObject
+function UnityEngine.Timeline.IPropertyCollector:PushActiveGameObject(gameObject) end
+function UnityEngine.Timeline.IPropertyCollector:PopActiveGameObject() end
+---@overload fun(self: UnityEngine.Timeline.IPropertyCollector, clip: UnityEngine.AnimationClip)
+---@param obj UnityEngine.GameObject
+---@param clip UnityEngine.AnimationClip
+function UnityEngine.Timeline.IPropertyCollector:AddFromClip(obj, clip) end
+---@overload fun(self: UnityEngine.Timeline.IPropertyCollector, clips: System.Collections.Generic.IEnumerable)
+---@param obj UnityEngine.GameObject
+---@param clips System.Collections.Generic.IEnumerable
+function UnityEngine.Timeline.IPropertyCollector:AddFromClips(obj, clips) end
+---@overload fun(self: UnityEngine.Timeline.IPropertyCollector, name: string)
+---@overload fun(self: UnityEngine.Timeline.IPropertyCollector, obj: UnityEngine.GameObject, name: string)
+---@param component UnityEngine.Component
+---@param name string
+function UnityEngine.Timeline.IPropertyCollector:AddFromName(component, name) end
+---@param obj UnityEngine.GameObject
+---@param component UnityEngine.Component
+function UnityEngine.Timeline.IPropertyCollector:AddFromComponent(obj, component) end
+---@param obj UnityEngine.Object
+---@param clip UnityEngine.AnimationClip
+function UnityEngine.Timeline.IPropertyCollector:AddObjectProperties(obj, clip) end
+
+---@class UnityEngine.Timeline.IPropertyPreview
+UnityEngine.Timeline.IPropertyPreview = {}
+---@alias CS.UnityEngine.Timeline.IPropertyPreview UnityEngine.Timeline.IPropertyPreview
+CS.UnityEngine.Timeline.IPropertyPreview = UnityEngine.Timeline.IPropertyPreview
+
+---@param director UnityEngine.Playables.PlayableDirector
+---@param driver UnityEngine.Timeline.IPropertyCollector
+function UnityEngine.Timeline.IPropertyPreview:GatherProperties(director, driver) end
+
+---@class UnityEngine.Timeline.NotificationUtilities : System.Object
+UnityEngine.Timeline.NotificationUtilities = {}
+---@alias CS.UnityEngine.Timeline.NotificationUtilities UnityEngine.Timeline.NotificationUtilities
+CS.UnityEngine.Timeline.NotificationUtilities = UnityEngine.Timeline.NotificationUtilities
+
+---@overload fun(graph: UnityEngine.Playables.PlayableGraph, markers: System.Collections.Generic.IEnumerable, director: UnityEngine.Playables.PlayableDirector) : UnityEngine.Playables.ScriptPlayable
+---@param graph UnityEngine.Playables.PlayableGraph
+---@param markers System.Collections.Generic.IEnumerable
+---@param timelineAsset UnityEngine.Timeline.TimelineAsset
+---@return UnityEngine.Playables.ScriptPlayable
+function UnityEngine.Timeline.NotificationUtilities.CreateNotificationsPlayable(graph, markers, timelineAsset) end
+---@param type System.Type
+---@return boolean
+function UnityEngine.Timeline.NotificationUtilities.TrackTypeSupportsNotifications(type) end
+
+---@class UnityEngine.Timeline.TimelineClipExtensions : System.Object
+UnityEngine.Timeline.TimelineClipExtensions = {}
+---@alias CS.UnityEngine.Timeline.TimelineClipExtensions UnityEngine.Timeline.TimelineClipExtensions
+CS.UnityEngine.Timeline.TimelineClipExtensions = UnityEngine.Timeline.TimelineClipExtensions
+
+---@param clip UnityEngine.Timeline.TimelineClip
+---@param destinationTrack UnityEngine.Timeline.TrackAsset
+function UnityEngine.Timeline.TimelineClipExtensions.MoveToTrack(clip, destinationTrack) end
+---@param clip UnityEngine.Timeline.TimelineClip
+---@param destinationTrack UnityEngine.Timeline.TrackAsset
+---@return boolean
+function UnityEngine.Timeline.TimelineClipExtensions.TryMoveToTrack(clip, destinationTrack) end
+
 ---@class UnityEngine.Timeline.TimelineCreateUtilities : System.Object
 UnityEngine.Timeline.TimelineCreateUtilities = {}
 ---@alias CS.UnityEngine.Timeline.TimelineCreateUtilities UnityEngine.Timeline.TimelineCreateUtilities
@@ -19403,624 +20003,3 @@ CS.CinemachineMixer.ScrubbingCacheHelper.ClipObjects = CinemachineMixer.Scrubbin
 AutoBuildCacheUtility = {}
 ---@alias CS.AutoBuildCacheUtility AutoBuildCacheUtility
 CS.AutoBuildCacheUtility = AutoBuildCacheUtility
-
----@return AutoBuildCacheUtility
-function AutoBuildCacheUtility.New() end
-function AutoBuildCacheUtility:Dispose() end
-
----@class BuildCacheUtility : System.Object
-BuildCacheUtility = {}
----@alias CS.BuildCacheUtility BuildCacheUtility
-CS.BuildCacheUtility = BuildCacheUtility
-
----@param content UnityEditor.Build.Pipeline.Interfaces.IBuildContent
-function BuildCacheUtility.SetCurrentBuildContent(content) end
----@overload fun(asset: UnityEditor.GUID, version: number) : UnityEditor.Build.Pipeline.Utilities.CacheEntry
----@overload fun(path: string, version: number) : UnityEditor.Build.Pipeline.Utilities.CacheEntry
----@overload fun(type: System.Type, version: number) : UnityEditor.Build.Pipeline.Utilities.CacheEntry
----@param objectID UnityEditor.Build.Content.ObjectIdentifier
----@param version number
----@return UnityEditor.Build.Pipeline.Utilities.CacheEntry
-function BuildCacheUtility.GetCacheEntry(objectID, version) end
----@param objectId UnityEditor.Build.Content.ObjectIdentifier
----@return System.Type
-function BuildCacheUtility.GetMainTypeForObject(objectId) end
----@param objectIds System.Collections.Generic.IEnumerable
----@return System.Type[]
-function BuildCacheUtility.GetMainTypeForObjects(objectIds) end
----@param objectId UnityEditor.Build.Content.ObjectIdentifier
----@return System.Type[]
-function BuildCacheUtility.GetSortedUniqueTypesForObject(objectId) end
----@param objectIds System.Collections.Generic.IEnumerable
----@return System.Type[]
-function BuildCacheUtility.GetSortedUniqueTypesForObjects(objectIds) end
----@param pairs System.Collections.Generic.IEnumerable
-function BuildCacheUtility.SetTypeForObjects(pairs) end
----@param typeDB UnityEditor.Build.Player.TypeDB
-function BuildCacheUtility.SetTypeDB(typeDB) end
-
----@class HashingHelpers : System.Object
-HashingHelpers = {}
----@alias CS.HashingHelpers HashingHelpers
-CS.HashingHelpers = HashingHelpers
-
----@overload fun(info: UnityEditor.Build.Content.SerializationInfo) : UnityEngine.Hash128
----@overload fun(info: UnityEditor.Build.Content.PreloadInfo) : UnityEngine.Hash128
----@overload fun(info: UnityEditor.Build.Content.AssetBundleInfo) : UnityEngine.Hash128
----@overload fun(info: UnityEditor.Build.Content.SceneBundleInfo) : UnityEngine.Hash128
----@overload fun(info: UnityEditor.Build.Content.AssetLoadInfo) : UnityEngine.Hash128
----@overload fun(cmd: UnityEditor.Build.Content.WriteCommand) : UnityEngine.Hash128
----@param settings UnityEditor.Build.Content.BuildSettings
----@return UnityEngine.Hash128
-function HashingHelpers.GetHash128(settings) end
-
----@class StreamHasher : System.Object
----@field Writer System.IO.BinaryWriter
-StreamHasher = {}
----@alias CS.StreamHasher StreamHasher
-CS.StreamHasher = StreamHasher
-
----@return StreamHasher
-function StreamHasher.New() end
----@return UnityEngine.Hash128
-function StreamHasher:GetHash() end
-
----@class ThreadingManager : System.Object
-ThreadingManager = {}
----@alias CS.ThreadingManager ThreadingManager
-CS.ThreadingManager = ThreadingManager
-
-
----@class UnitySourceGeneratedAssemblyMonoScriptTypes_v1 : System.Object
-UnitySourceGeneratedAssemblyMonoScriptTypes_v1 = {}
----@alias CS.UnitySourceGeneratedAssemblyMonoScriptTypes_v1 UnitySourceGeneratedAssemblyMonoScriptTypes_v1
-CS.UnitySourceGeneratedAssemblyMonoScriptTypes_v1 = UnitySourceGeneratedAssemblyMonoScriptTypes_v1
-
----@return UnitySourceGeneratedAssemblyMonoScriptTypes_v1
-function UnitySourceGeneratedAssemblyMonoScriptTypes_v1.New() end
-
----@class ThreadingManager.ThreadQueues
----@field SaveQueue ThreadingManager.ThreadQueues
----@field UploadQueue ThreadingManager.ThreadQueues
----@field PruneQueue ThreadingManager.ThreadQueues
----@field TotalQueues ThreadingManager.ThreadQueues
-ThreadingManager.ThreadQueues = {}
----@alias CS.ThreadingManager.ThreadQueues ThreadingManager.ThreadQueues
-CS.ThreadingManager.ThreadQueues = ThreadingManager.ThreadQueues
-
-
----@class UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData : System.ValueType
----@field FilePathsData System.Byte[]
----@field TypesData System.Byte[]
----@field TotalTypes number
----@field TotalFiles number
----@field IsEditorOnly boolean
-UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData = {}
----@alias CS.UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData
-CS.UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData = UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData
-
-
----@class UnitySourceGeneratedAssemblyMonoScriptTypes_v1 : System.Object
-UnitySourceGeneratedAssemblyMonoScriptTypes_v1 = {}
----@alias CS.UnitySourceGeneratedAssemblyMonoScriptTypes_v1 UnitySourceGeneratedAssemblyMonoScriptTypes_v1
-CS.UnitySourceGeneratedAssemblyMonoScriptTypes_v1 = UnitySourceGeneratedAssemblyMonoScriptTypes_v1
-
----@return UnitySourceGeneratedAssemblyMonoScriptTypes_v1
-function UnitySourceGeneratedAssemblyMonoScriptTypes_v1.New() end
-
----@class UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData : System.ValueType
----@field FilePathsData System.Byte[]
----@field TypesData System.Byte[]
----@field TotalTypes number
----@field TotalFiles number
----@field IsEditorOnly boolean
-UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData = {}
----@alias CS.UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData
-CS.UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData = UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData
-
-
----@class PackedPlayModeBuildLogs : System.Object
----@field RuntimeBuildLogs System.Collections.Generic.List
-PackedPlayModeBuildLogs = {}
----@alias CS.PackedPlayModeBuildLogs PackedPlayModeBuildLogs
-CS.PackedPlayModeBuildLogs = PackedPlayModeBuildLogs
-
----@return PackedPlayModeBuildLogs
-function PackedPlayModeBuildLogs.New() end
-
----@class UnitySourceGeneratedAssemblyMonoScriptTypes_v1 : System.Object
-UnitySourceGeneratedAssemblyMonoScriptTypes_v1 = {}
----@alias CS.UnitySourceGeneratedAssemblyMonoScriptTypes_v1 UnitySourceGeneratedAssemblyMonoScriptTypes_v1
-CS.UnitySourceGeneratedAssemblyMonoScriptTypes_v1 = UnitySourceGeneratedAssemblyMonoScriptTypes_v1
-
----@return UnitySourceGeneratedAssemblyMonoScriptTypes_v1
-function UnitySourceGeneratedAssemblyMonoScriptTypes_v1.New() end
-
----@class UnityEngine.AssetReferenceUIRestriction : System.Attribute
-UnityEngine.AssetReferenceUIRestriction = {}
----@alias CS.UnityEngine.AssetReferenceUIRestriction UnityEngine.AssetReferenceUIRestriction
-CS.UnityEngine.AssetReferenceUIRestriction = UnityEngine.AssetReferenceUIRestriction
-
----@return UnityEngine.AssetReferenceUIRestriction
-function UnityEngine.AssetReferenceUIRestriction.New() end
----@overload fun(self: UnityEngine.AssetReferenceUIRestriction, obj: UnityEngine.Object) : boolean
----@param path string
----@return boolean
-function UnityEngine.AssetReferenceUIRestriction:ValidateAsset(path) end
-
----@class UnityEngine.AssetReferenceUILabelRestriction : UnityEngine.AssetReferenceUIRestriction
----@field m_AllowedLabels System.String[]
----@field m_CachedToString string
-UnityEngine.AssetReferenceUILabelRestriction = {}
----@alias CS.UnityEngine.AssetReferenceUILabelRestriction UnityEngine.AssetReferenceUILabelRestriction
-CS.UnityEngine.AssetReferenceUILabelRestriction = UnityEngine.AssetReferenceUILabelRestriction
-
----@param allowedLabels System.String[]
----@return UnityEngine.AssetReferenceUILabelRestriction
-function UnityEngine.AssetReferenceUILabelRestriction.New(allowedLabels) end
----@overload fun(self: UnityEngine.AssetReferenceUILabelRestriction, obj: UnityEngine.Object) : boolean
----@param path string
----@return boolean
-function UnityEngine.AssetReferenceUILabelRestriction:ValidateAsset(path) end
----@return string
-function UnityEngine.AssetReferenceUILabelRestriction:ToString() end
-
----@class UnityEngine.ResourceManagement.AsyncOperations.InitalizationObjectsOperation : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationBase
----@field Result UnityEngine.ResourceManagement.AsyncOperations.InitalizationObjectsOperation -- infered from UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationBase`1[System.Boolean]
-UnityEngine.ResourceManagement.AsyncOperations.InitalizationObjectsOperation = {}
----@alias CS.UnityEngine.ResourceManagement.AsyncOperations.InitalizationObjectsOperation UnityEngine.ResourceManagement.AsyncOperations.InitalizationObjectsOperation
-CS.UnityEngine.ResourceManagement.AsyncOperations.InitalizationObjectsOperation = UnityEngine.ResourceManagement.AsyncOperations.InitalizationObjectsOperation
-
----@return UnityEngine.ResourceManagement.AsyncOperations.InitalizationObjectsOperation
-function UnityEngine.ResourceManagement.AsyncOperations.InitalizationObjectsOperation.New() end
----@param rtdOp UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
----@param addressables UnityEngine.AddressableAssets.AddressablesImpl
-function UnityEngine.ResourceManagement.AsyncOperations.InitalizationObjectsOperation:Init(rtdOp, addressables) end
-
----@class UnityEngine.AddressableAssets.ResourceLocatorInfo : System.Object
----@field Locator UnityEngine.AddressableAssets.ResourceLocators.IResourceLocator
----@field LocalHash string
----@field CatalogLocation UnityEngine.ResourceManagement.ResourceLocations.IResourceLocation
----@field HashLocation UnityEngine.ResourceManagement.ResourceLocations.IResourceLocation
----@field CanUpdateContent boolean
-UnityEngine.AddressableAssets.ResourceLocatorInfo = {}
----@alias CS.UnityEngine.AddressableAssets.ResourceLocatorInfo UnityEngine.AddressableAssets.ResourceLocatorInfo
-CS.UnityEngine.AddressableAssets.ResourceLocatorInfo = UnityEngine.AddressableAssets.ResourceLocatorInfo
-
----@param loc UnityEngine.AddressableAssets.ResourceLocators.IResourceLocator
----@param localHash string
----@param remoteCatalogLocation UnityEngine.ResourceManagement.ResourceLocations.IResourceLocation
----@return UnityEngine.AddressableAssets.ResourceLocatorInfo
-function UnityEngine.AddressableAssets.ResourceLocatorInfo.New(loc, localHash, remoteCatalogLocation) end
-
----@class UnityEngine.AddressableAssets.InvalidKeyException : System.Exception
----@field Key System.Object
----@field Type System.Type
----@field MergeMode System.Nullable
----@field Message string
-UnityEngine.AddressableAssets.InvalidKeyException = {}
----@alias CS.UnityEngine.AddressableAssets.InvalidKeyException UnityEngine.AddressableAssets.InvalidKeyException
-CS.UnityEngine.AddressableAssets.InvalidKeyException = UnityEngine.AddressableAssets.InvalidKeyException
-
----@overload fun(key: System.Object) : UnityEngine.AddressableAssets.InvalidKeyException
----@overload fun(key: System.Object, type: System.Type) : UnityEngine.AddressableAssets.InvalidKeyException
----@overload fun(key: System.Object, type: System.Type, mergeMode: UnityEngine.AddressableAssets.Addressables.MergeMode) : UnityEngine.AddressableAssets.InvalidKeyException
----@overload fun() : UnityEngine.AddressableAssets.InvalidKeyException
----@overload fun(message: string) : UnityEngine.AddressableAssets.InvalidKeyException
----@param message string
----@param innerException System.Exception
----@return UnityEngine.AddressableAssets.InvalidKeyException
-function UnityEngine.AddressableAssets.InvalidKeyException.New(message, innerException) end
-
----@class UnityEngine.AddressableAssets.Addressables : System.Object
----@field kAddressablesRuntimeDataPath string
----@field kAddressablesRuntimeBuildLogPath string
----@field LibraryPath string
----@field BuildReportPath string
----@field Version string
----@field ResourceManager UnityEngine.ResourceManagement.ResourceManager
----@field InstanceProvider UnityEngine.ResourceManagement.ResourceProviders.IInstanceProvider
----@field InternalIdTransformFunc System.Func
----@field WebRequestOverride System.Action
----@field StreamingAssetsSubFolder string
----@field BuildPath string
----@field PlayerBuildDataPath string
----@field RuntimePath string
----@field ResourceLocators System.Collections.Generic.IEnumerable
-UnityEngine.AddressableAssets.Addressables = {}
----@alias CS.UnityEngine.AddressableAssets.Addressables UnityEngine.AddressableAssets.Addressables
-CS.UnityEngine.AddressableAssets.Addressables = UnityEngine.AddressableAssets.Addressables
-
----@param id string
----@return string
-function UnityEngine.AddressableAssets.Addressables.ResolveInternalId(id) end
----@param msg string
-function UnityEngine.AddressableAssets.Addressables.Log(msg) end
----@param format string
----@param args System.Object[]
-function UnityEngine.AddressableAssets.Addressables.LogFormat(format, args) end
----@param msg string
-function UnityEngine.AddressableAssets.Addressables.LogWarning(msg) end
----@param format string
----@param args System.Object[]
-function UnityEngine.AddressableAssets.Addressables.LogWarningFormat(format, args) end
----@param msg string
-function UnityEngine.AddressableAssets.Addressables.LogError(msg) end
----@overload fun(op: UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle, ex: System.Exception)
----@param ex System.Exception
-function UnityEngine.AddressableAssets.Addressables.LogException(ex) end
----@param format string
----@param args System.Object[]
-function UnityEngine.AddressableAssets.Addressables.LogErrorFormat(format, args) end
----@overload fun() : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
----@param autoReleaseHandle boolean
----@return UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
-function UnityEngine.AddressableAssets.Addressables.InitializeAsync(autoReleaseHandle) end
----@overload fun(catalogPath: string, providerSuffix: string) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
----@param catalogPath string
----@param autoReleaseHandle boolean
----@param providerSuffix string
----@return UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
-function UnityEngine.AddressableAssets.Addressables.LoadContentCatalogAsync(catalogPath, autoReleaseHandle, providerSuffix) end
----@overload fun(keys: System.Collections.IEnumerable, mode: UnityEngine.AddressableAssets.Addressables.MergeMode, type: System.Type) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
----@param key System.Object
----@param type System.Type
----@return UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
-function UnityEngine.AddressableAssets.Addressables.LoadResourceLocationsAsync(key, type) end
----@param handle UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
-function UnityEngine.AddressableAssets.Addressables.Release(handle) end
----@overload fun(instance: UnityEngine.GameObject) : boolean
----@overload fun(handle: UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle) : boolean
----@param handle UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
----@return boolean
-function UnityEngine.AddressableAssets.Addressables.ReleaseInstance(handle) end
----@overload fun(key: System.Object) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
----@overload fun(key: string) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
----@param keys System.Collections.IEnumerable
----@return UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
-function UnityEngine.AddressableAssets.Addressables.GetDownloadSizeAsync(keys) end
----@overload fun(key: System.Object, autoReleaseHandle: boolean) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
----@overload fun(locations: System.Collections.Generic.IList, autoReleaseHandle: boolean) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
----@param keys System.Collections.IEnumerable
----@param mode UnityEngine.AddressableAssets.Addressables.MergeMode
----@param autoReleaseHandle boolean
----@return UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
-function UnityEngine.AddressableAssets.Addressables.DownloadDependenciesAsync(keys, mode, autoReleaseHandle) end
----@overload fun(key: System.Object)
----@overload fun(locations: System.Collections.Generic.IList)
----@overload fun(keys: System.Collections.IEnumerable)
----@overload fun(key: string)
----@overload fun(key: System.Object, autoReleaseHandle: boolean) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
----@overload fun(locations: System.Collections.Generic.IList, autoReleaseHandle: boolean) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
----@overload fun(keys: System.Collections.IEnumerable, autoReleaseHandle: boolean) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
----@param key string
----@param autoReleaseHandle boolean
----@return UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
-function UnityEngine.AddressableAssets.Addressables.ClearDependencyCacheAsync(key, autoReleaseHandle) end
----@overload fun(locatorId: string) : UnityEngine.AddressableAssets.ResourceLocatorInfo
----@param locator UnityEngine.AddressableAssets.ResourceLocators.IResourceLocator
----@return UnityEngine.AddressableAssets.ResourceLocatorInfo
-function UnityEngine.AddressableAssets.Addressables.GetLocatorInfo(locator) end
----@overload fun(location: UnityEngine.ResourceManagement.ResourceLocations.IResourceLocation, parent: UnityEngine.Transform, instantiateInWorldSpace: boolean, trackHandle: boolean) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
----@overload fun(location: UnityEngine.ResourceManagement.ResourceLocations.IResourceLocation, position: UnityEngine.Vector3, rotation: UnityEngine.Quaternion, parent: UnityEngine.Transform, trackHandle: boolean) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
----@overload fun(key: System.Object, parent: UnityEngine.Transform, instantiateInWorldSpace: boolean, trackHandle: boolean) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
----@overload fun(key: System.Object, position: UnityEngine.Vector3, rotation: UnityEngine.Quaternion, parent: UnityEngine.Transform, trackHandle: boolean) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
----@overload fun(key: System.Object, instantiateParameters: UnityEngine.ResourceManagement.ResourceProviders.InstantiationParameters, trackHandle: boolean) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
----@param location UnityEngine.ResourceManagement.ResourceLocations.IResourceLocation
----@param instantiateParameters UnityEngine.ResourceManagement.ResourceProviders.InstantiationParameters
----@param trackHandle boolean
----@return UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
-function UnityEngine.AddressableAssets.Addressables.InstantiateAsync(location, instantiateParameters, trackHandle) end
----@overload fun(key: System.Object, loadMode: UnityEngine.SceneManagement.LoadSceneMode, activateOnLoad: boolean, priority: number) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
----@overload fun(key: System.Object, loadSceneParameters: UnityEngine.SceneManagement.LoadSceneParameters, activateOnLoad: boolean, priority: number) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
----@overload fun(location: UnityEngine.ResourceManagement.ResourceLocations.IResourceLocation, loadMode: UnityEngine.SceneManagement.LoadSceneMode, activateOnLoad: boolean, priority: number) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
----@param location UnityEngine.ResourceManagement.ResourceLocations.IResourceLocation
----@param loadSceneParameters UnityEngine.SceneManagement.LoadSceneParameters
----@param activateOnLoad boolean
----@param priority number
----@return UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
-function UnityEngine.AddressableAssets.Addressables.LoadSceneAsync(location, loadSceneParameters, activateOnLoad, priority) end
----@overload fun(scene: UnityEngine.ResourceManagement.ResourceProviders.SceneInstance, unloadOptions: UnityEngine.SceneManagement.UnloadSceneOptions, autoReleaseHandle: boolean) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
----@overload fun(handle: UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle, unloadOptions: UnityEngine.SceneManagement.UnloadSceneOptions, autoReleaseHandle: boolean) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
----@overload fun(scene: UnityEngine.ResourceManagement.ResourceProviders.SceneInstance, autoReleaseHandle: boolean) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
----@overload fun(handle: UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle, autoReleaseHandle: boolean) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
----@param handle UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
----@param autoReleaseHandle boolean
----@return UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
-function UnityEngine.AddressableAssets.Addressables.UnloadSceneAsync(handle, autoReleaseHandle) end
----@param autoReleaseHandle boolean
----@return UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
-function UnityEngine.AddressableAssets.Addressables.CheckForCatalogUpdates(autoReleaseHandle) end
----@overload fun(catalogs: System.Collections.Generic.IEnumerable, autoReleaseHandle: boolean) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
----@param autoCleanBundleCache boolean
----@param catalogs System.Collections.Generic.IEnumerable
----@param autoReleaseHandle boolean
----@return UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
-function UnityEngine.AddressableAssets.Addressables.UpdateCatalogs(autoCleanBundleCache, catalogs, autoReleaseHandle) end
----@param locator UnityEngine.AddressableAssets.ResourceLocators.IResourceLocator
----@param localCatalogHash string
----@param remoteCatalogLocation UnityEngine.ResourceManagement.ResourceLocations.IResourceLocation
-function UnityEngine.AddressableAssets.Addressables.AddResourceLocator(locator, localCatalogHash, remoteCatalogLocation) end
----@param locator UnityEngine.AddressableAssets.ResourceLocators.IResourceLocator
-function UnityEngine.AddressableAssets.Addressables.RemoveResourceLocator(locator) end
-function UnityEngine.AddressableAssets.Addressables.ClearResourceLocators() end
----@param catalogsIds System.Collections.Generic.IEnumerable
----@return UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
-function UnityEngine.AddressableAssets.Addressables.CleanBundleCache(catalogsIds) end
-
----@class UnityEngine.AddressableAssets.AddressablesImpl : System.Object
----@field SceneProvider UnityEngine.ResourceManagement.ResourceProviders.ISceneProvider
----@field InstanceProvider UnityEngine.ResourceManagement.ResourceProviders.IInstanceProvider
----@field ResourceManager UnityEngine.ResourceManagement.ResourceManager
----@field CatalogRequestsTimeout number
----@field InternalIdTransformFunc System.Func
----@field WebRequestOverride System.Action
----@field ChainOperation UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
----@field StreamingAssetsSubFolder string
----@field BuildPath string
----@field PlayerBuildDataPath string
----@field RuntimePath string
----@field ResourceLocators System.Collections.Generic.IEnumerable
-UnityEngine.AddressableAssets.AddressablesImpl = {}
----@alias CS.UnityEngine.AddressableAssets.AddressablesImpl UnityEngine.AddressableAssets.AddressablesImpl
-CS.UnityEngine.AddressableAssets.AddressablesImpl = UnityEngine.AddressableAssets.AddressablesImpl
-
----@param alloc UnityEngine.ResourceManagement.Util.IAllocationStrategy
----@return UnityEngine.AddressableAssets.AddressablesImpl
-function UnityEngine.AddressableAssets.AddressablesImpl.New(alloc) end
----@param msg string
-function UnityEngine.AddressableAssets.AddressablesImpl:Log(msg) end
----@param format string
----@param args System.Object[]
-function UnityEngine.AddressableAssets.AddressablesImpl:LogFormat(format, args) end
----@param msg string
-function UnityEngine.AddressableAssets.AddressablesImpl:LogWarning(msg) end
----@param format string
----@param args System.Object[]
-function UnityEngine.AddressableAssets.AddressablesImpl:LogWarningFormat(format, args) end
----@param msg string
-function UnityEngine.AddressableAssets.AddressablesImpl:LogError(msg) end
----@overload fun(self: UnityEngine.AddressableAssets.AddressablesImpl, op: UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle, ex: System.Exception)
----@param ex System.Exception
-function UnityEngine.AddressableAssets.AddressablesImpl:LogException(ex) end
----@param format string
----@param args System.Object[]
-function UnityEngine.AddressableAssets.AddressablesImpl:LogErrorFormat(format, args) end
----@param id string
----@return string
-function UnityEngine.AddressableAssets.AddressablesImpl:ResolveInternalId(id) end
----@param loc UnityEngine.AddressableAssets.ResourceLocators.IResourceLocator
----@param localCatalogHash string
----@param remoteCatalogLocation UnityEngine.ResourceManagement.ResourceLocations.IResourceLocation
-function UnityEngine.AddressableAssets.AddressablesImpl:AddResourceLocator(loc, localCatalogHash, remoteCatalogLocation) end
----@param loc UnityEngine.AddressableAssets.ResourceLocators.IResourceLocator
-function UnityEngine.AddressableAssets.AddressablesImpl:RemoveResourceLocator(loc) end
-function UnityEngine.AddressableAssets.AddressablesImpl:ClearResourceLocators() end
----@overload fun(self: UnityEngine.AddressableAssets.AddressablesImpl, runtimeDataPath: string, providerSuffix: string, autoReleaseHandle: boolean) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
----@overload fun() : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
----@param autoReleaseHandle boolean
----@return UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
-function UnityEngine.AddressableAssets.AddressablesImpl:InitializeAsync(autoReleaseHandle) end
----@param catalogPath string
----@param autoReleaseHandle boolean
----@param providerSuffix string
----@return UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
-function UnityEngine.AddressableAssets.AddressablesImpl:LoadContentCatalogAsync(catalogPath, autoReleaseHandle, providerSuffix) end
----@overload fun(self: UnityEngine.AddressableAssets.AddressablesImpl, dep: UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle, keys: System.Collections.IEnumerable, mode: UnityEngine.AddressableAssets.Addressables.MergeMode, type: System.Type) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
----@param dep UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
----@param key System.Object
----@param type System.Type
----@return UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
-function UnityEngine.AddressableAssets.AddressablesImpl:LoadResourceLocationsWithChain(dep, key, type) end
----@overload fun(self: UnityEngine.AddressableAssets.AddressablesImpl, keys: System.Collections.IEnumerable, mode: UnityEngine.AddressableAssets.Addressables.MergeMode, type: System.Type) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
----@param key System.Object
----@param type System.Type
----@return UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
-function UnityEngine.AddressableAssets.AddressablesImpl:LoadResourceLocationsAsync(key, type) end
----@param handle UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
-function UnityEngine.AddressableAssets.AddressablesImpl:Release(handle) end
----@overload fun(self: UnityEngine.AddressableAssets.AddressablesImpl, key: System.Object) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
----@param keys System.Collections.IEnumerable
----@return UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
-function UnityEngine.AddressableAssets.AddressablesImpl:GetDownloadSizeAsync(keys) end
----@overload fun(self: UnityEngine.AddressableAssets.AddressablesImpl, key: System.Object, autoReleaseHandle: boolean) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
----@overload fun(self: UnityEngine.AddressableAssets.AddressablesImpl, locations: System.Collections.Generic.IList, autoReleaseHandle: boolean) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
----@param keys System.Collections.IEnumerable
----@param mode UnityEngine.AddressableAssets.Addressables.MergeMode
----@param autoReleaseHandle boolean
----@return UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
-function UnityEngine.AddressableAssets.AddressablesImpl:DownloadDependenciesAsync(keys, mode, autoReleaseHandle) end
----@overload fun(self: UnityEngine.AddressableAssets.AddressablesImpl, key: System.Object, autoReleaseHandle: boolean) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
----@overload fun(self: UnityEngine.AddressableAssets.AddressablesImpl, locations: System.Collections.Generic.IList, autoReleaseHandle: boolean) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
----@param keys System.Collections.IEnumerable
----@param autoReleaseHandle boolean
----@return UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
-function UnityEngine.AddressableAssets.AddressablesImpl:ClearDependencyCacheAsync(keys, autoReleaseHandle) end
----@overload fun(self: UnityEngine.AddressableAssets.AddressablesImpl, location: UnityEngine.ResourceManagement.ResourceLocations.IResourceLocation, parent: UnityEngine.Transform, instantiateInWorldSpace: boolean, trackHandle: boolean) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
----@overload fun(self: UnityEngine.AddressableAssets.AddressablesImpl, location: UnityEngine.ResourceManagement.ResourceLocations.IResourceLocation, position: UnityEngine.Vector3, rotation: UnityEngine.Quaternion, parent: UnityEngine.Transform, trackHandle: boolean) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
----@overload fun(self: UnityEngine.AddressableAssets.AddressablesImpl, key: System.Object, parent: UnityEngine.Transform, instantiateInWorldSpace: boolean, trackHandle: boolean) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
----@overload fun(self: UnityEngine.AddressableAssets.AddressablesImpl, key: System.Object, position: UnityEngine.Vector3, rotation: UnityEngine.Quaternion, parent: UnityEngine.Transform, trackHandle: boolean) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
----@overload fun(self: UnityEngine.AddressableAssets.AddressablesImpl, key: System.Object, instantiateParameters: UnityEngine.ResourceManagement.ResourceProviders.InstantiationParameters, trackHandle: boolean) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
----@param location UnityEngine.ResourceManagement.ResourceLocations.IResourceLocation
----@param instantiateParameters UnityEngine.ResourceManagement.ResourceProviders.InstantiationParameters
----@param trackHandle boolean
----@return UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
-function UnityEngine.AddressableAssets.AddressablesImpl:InstantiateAsync(location, instantiateParameters, trackHandle) end
----@param instance UnityEngine.GameObject
----@return boolean
-function UnityEngine.AddressableAssets.AddressablesImpl:ReleaseInstance(instance) end
----@overload fun(self: UnityEngine.AddressableAssets.AddressablesImpl, key: System.Object) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
----@overload fun(self: UnityEngine.AddressableAssets.AddressablesImpl, key: System.Object, loadSceneParameters: UnityEngine.SceneManagement.LoadSceneParameters, activateOnLoad: boolean, priority: number, trackHandle: boolean) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
----@overload fun(self: UnityEngine.AddressableAssets.AddressablesImpl, location: UnityEngine.ResourceManagement.ResourceLocations.IResourceLocation) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
----@overload fun(self: UnityEngine.AddressableAssets.AddressablesImpl, location: UnityEngine.ResourceManagement.ResourceLocations.IResourceLocation, loadMode: UnityEngine.SceneManagement.LoadSceneMode, activateOnLoad: boolean, priority: number, trackHandle: boolean) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
----@param location UnityEngine.ResourceManagement.ResourceLocations.IResourceLocation
----@param loadSceneParameters UnityEngine.SceneManagement.LoadSceneParameters
----@param activateOnLoad boolean
----@param priority number
----@param trackHandle boolean
----@return UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
-function UnityEngine.AddressableAssets.AddressablesImpl:LoadSceneAsync(location, loadSceneParameters, activateOnLoad, priority, trackHandle) end
----@overload fun(self: UnityEngine.AddressableAssets.AddressablesImpl, scene: UnityEngine.ResourceManagement.ResourceProviders.SceneInstance, unloadOptions: UnityEngine.SceneManagement.UnloadSceneOptions, autoReleaseHandle: boolean) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
----@overload fun(self: UnityEngine.AddressableAssets.AddressablesImpl, handle: UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle, unloadOptions: UnityEngine.SceneManagement.UnloadSceneOptions, autoReleaseHandle: boolean) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
----@param handle UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
----@param unloadOptions UnityEngine.SceneManagement.UnloadSceneOptions
----@param autoReleaseHandle boolean
----@return UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
-function UnityEngine.AddressableAssets.AddressablesImpl:UnloadSceneAsync(handle, unloadOptions, autoReleaseHandle) end
----@param c string
----@return UnityEngine.AddressableAssets.ResourceLocatorInfo
-function UnityEngine.AddressableAssets.AddressablesImpl:GetLocatorInfo(c) end
----@param x UnityEngine.ResourceManagement.ResourceLocations.IResourceLocation
----@param y UnityEngine.ResourceManagement.ResourceLocations.IResourceLocation
----@return boolean
-function UnityEngine.AddressableAssets.AddressablesImpl:Equals(x, y) end
----@param loc UnityEngine.ResourceManagement.ResourceLocations.IResourceLocation
----@return number
-function UnityEngine.AddressableAssets.AddressablesImpl:GetHashCode(loc) end
-
----@class UnityEngine.AddressableAssets.AssetLabelReference : System.Object
----@field labelString string
----@field RuntimeKey System.Object
-UnityEngine.AddressableAssets.AssetLabelReference = {}
----@alias CS.UnityEngine.AddressableAssets.AssetLabelReference UnityEngine.AddressableAssets.AssetLabelReference
-CS.UnityEngine.AddressableAssets.AssetLabelReference = UnityEngine.AddressableAssets.AssetLabelReference
-
----@return UnityEngine.AddressableAssets.AssetLabelReference
-function UnityEngine.AddressableAssets.AssetLabelReference.New() end
----@return boolean
-function UnityEngine.AddressableAssets.AssetLabelReference:RuntimeKeyIsValid() end
----@return number
-function UnityEngine.AddressableAssets.AssetLabelReference:GetHashCode() end
-
----@class UnityEngine.AddressableAssets.AssetReferenceT : UnityEngine.AddressableAssets.AssetReference
----@field editorAsset TObject
-UnityEngine.AddressableAssets.AssetReferenceT = {}
----@alias CS.UnityEngine.AddressableAssets.AssetReferenceT UnityEngine.AddressableAssets.AssetReferenceT
-CS.UnityEngine.AddressableAssets.AssetReferenceT = UnityEngine.AddressableAssets.AssetReferenceT
-
----@param guid string
----@return UnityEngine.AddressableAssets.AssetReferenceT
-function UnityEngine.AddressableAssets.AssetReferenceT.New(guid) end
----@return UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle[TObject]
-function UnityEngine.AddressableAssets.AssetReferenceT:LoadAssetAsync() end
----@overload fun(self: UnityEngine.AddressableAssets.AssetReferenceT, obj: UnityEngine.Object) : boolean
----@param mainAssetPath string
----@return boolean
-function UnityEngine.AddressableAssets.AssetReferenceT:ValidateAsset(mainAssetPath) end
-
----@class UnityEngine.AddressableAssets.AssetReferenceGameObject : UnityEngine.AddressableAssets.AssetReferenceT
----@field editorAsset UnityEngine.AddressableAssets.AssetReferenceGameObject -- infered from UnityEngine.AddressableAssets.AssetReferenceT`1[UnityEngine.GameObject]
-UnityEngine.AddressableAssets.AssetReferenceGameObject = {}
----@alias CS.UnityEngine.AddressableAssets.AssetReferenceGameObject UnityEngine.AddressableAssets.AssetReferenceGameObject
-CS.UnityEngine.AddressableAssets.AssetReferenceGameObject = UnityEngine.AddressableAssets.AssetReferenceGameObject
-
----@param guid string
----@return UnityEngine.AddressableAssets.AssetReferenceGameObject
-function UnityEngine.AddressableAssets.AssetReferenceGameObject.New(guid) end
-
----@class UnityEngine.AddressableAssets.AssetReferenceTexture : UnityEngine.AddressableAssets.AssetReferenceT
----@field editorAsset UnityEngine.AddressableAssets.AssetReferenceTexture -- infered from UnityEngine.AddressableAssets.AssetReferenceT`1[UnityEngine.Texture]
-UnityEngine.AddressableAssets.AssetReferenceTexture = {}
----@alias CS.UnityEngine.AddressableAssets.AssetReferenceTexture UnityEngine.AddressableAssets.AssetReferenceTexture
-CS.UnityEngine.AddressableAssets.AssetReferenceTexture = UnityEngine.AddressableAssets.AssetReferenceTexture
-
----@param guid string
----@return UnityEngine.AddressableAssets.AssetReferenceTexture
-function UnityEngine.AddressableAssets.AssetReferenceTexture.New(guid) end
-
----@class UnityEngine.AddressableAssets.AssetReferenceTexture2D : UnityEngine.AddressableAssets.AssetReferenceT
----@field editorAsset UnityEngine.AddressableAssets.AssetReferenceTexture2D -- infered from UnityEngine.AddressableAssets.AssetReferenceT`1[UnityEngine.Texture2D]
-UnityEngine.AddressableAssets.AssetReferenceTexture2D = {}
----@alias CS.UnityEngine.AddressableAssets.AssetReferenceTexture2D UnityEngine.AddressableAssets.AssetReferenceTexture2D
-CS.UnityEngine.AddressableAssets.AssetReferenceTexture2D = UnityEngine.AddressableAssets.AssetReferenceTexture2D
-
----@param guid string
----@return UnityEngine.AddressableAssets.AssetReferenceTexture2D
-function UnityEngine.AddressableAssets.AssetReferenceTexture2D.New(guid) end
-
----@class UnityEngine.AddressableAssets.AssetReferenceTexture3D : UnityEngine.AddressableAssets.AssetReferenceT
----@field editorAsset UnityEngine.AddressableAssets.AssetReferenceTexture3D -- infered from UnityEngine.AddressableAssets.AssetReferenceT`1[UnityEngine.Texture3D]
-UnityEngine.AddressableAssets.AssetReferenceTexture3D = {}
----@alias CS.UnityEngine.AddressableAssets.AssetReferenceTexture3D UnityEngine.AddressableAssets.AssetReferenceTexture3D
-CS.UnityEngine.AddressableAssets.AssetReferenceTexture3D = UnityEngine.AddressableAssets.AssetReferenceTexture3D
-
----@param guid string
----@return UnityEngine.AddressableAssets.AssetReferenceTexture3D
-function UnityEngine.AddressableAssets.AssetReferenceTexture3D.New(guid) end
-
----@class UnityEngine.AddressableAssets.AssetReferenceSprite : UnityEngine.AddressableAssets.AssetReferenceT
----@field editorAsset UnityEngine.Object
----@field editorAsset UnityEngine.AddressableAssets.AssetReferenceSprite -- infered from UnityEngine.AddressableAssets.AssetReferenceT`1[UnityEngine.Sprite]
-UnityEngine.AddressableAssets.AssetReferenceSprite = {}
----@alias CS.UnityEngine.AddressableAssets.AssetReferenceSprite UnityEngine.AddressableAssets.AssetReferenceSprite
-CS.UnityEngine.AddressableAssets.AssetReferenceSprite = UnityEngine.AddressableAssets.AssetReferenceSprite
-
----@param guid string
----@return UnityEngine.AddressableAssets.AssetReferenceSprite
-function UnityEngine.AddressableAssets.AssetReferenceSprite.New(guid) end
----@param path string
----@return boolean
-function UnityEngine.AddressableAssets.AssetReferenceSprite:ValidateAsset(path) end
-
----@class UnityEngine.AddressableAssets.AssetReferenceAtlasedSprite : UnityEngine.AddressableAssets.AssetReferenceT
----@field editorAsset UnityEngine.U2D.SpriteAtlas
----@field editorAsset UnityEngine.AddressableAssets.AssetReferenceAtlasedSprite -- infered from UnityEngine.AddressableAssets.AssetReferenceT`1[UnityEngine.Sprite]
-UnityEngine.AddressableAssets.AssetReferenceAtlasedSprite = {}
----@alias CS.UnityEngine.AddressableAssets.AssetReferenceAtlasedSprite UnityEngine.AddressableAssets.AssetReferenceAtlasedSprite
-CS.UnityEngine.AddressableAssets.AssetReferenceAtlasedSprite = UnityEngine.AddressableAssets.AssetReferenceAtlasedSprite
-
----@param guid string
----@return UnityEngine.AddressableAssets.AssetReferenceAtlasedSprite
-function UnityEngine.AddressableAssets.AssetReferenceAtlasedSprite.New(guid) end
----@overload fun(self: UnityEngine.AddressableAssets.AssetReferenceAtlasedSprite, obj: UnityEngine.Object) : boolean
----@param path string
----@return boolean
-function UnityEngine.AddressableAssets.AssetReferenceAtlasedSprite:ValidateAsset(path) end
-
----@class UnityEngine.AddressableAssets.AssetReference : System.Object
----@field OperationHandle UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
----@field RuntimeKey System.Object
----@field AssetGUID string
----@field SubObjectName string
----@field IsDone boolean
----@field Asset UnityEngine.Object
----@field editorAsset UnityEngine.Object
-UnityEngine.AddressableAssets.AssetReference = {}
----@alias CS.UnityEngine.AddressableAssets.AssetReference UnityEngine.AddressableAssets.AssetReference
-CS.UnityEngine.AddressableAssets.AssetReference = UnityEngine.AddressableAssets.AssetReference
-
----@overload fun() : UnityEngine.AddressableAssets.AssetReference
----@param guid string
----@return UnityEngine.AddressableAssets.AssetReference
-function UnityEngine.AddressableAssets.AssetReference.New(guid) end
----@return boolean
-function UnityEngine.AddressableAssets.AssetReference:IsValid() end
----@return string
-function UnityEngine.AddressableAssets.AssetReference:ToString() end
----@param loadMode UnityEngine.SceneManagement.LoadSceneMode
----@param activateOnLoad boolean
----@param priority number
----@return UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
-function UnityEngine.AddressableAssets.AssetReference:LoadSceneAsync(loadMode, activateOnLoad, priority) end
----@return UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
-function UnityEngine.AddressableAssets.AssetReference:UnLoadScene() end
----@overload fun(self: UnityEngine.AddressableAssets.AssetReference, position: UnityEngine.Vector3, rotation: UnityEngine.Quaternion, parent: UnityEngine.Transform) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
----@param parent UnityEngine.Transform
----@param instantiateInWorldSpace boolean
----@return UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
-function UnityEngine.AddressableAssets.AssetReference:InstantiateAsync(parent, instantiateInWorldSpace) end
----@return boolean
-function UnityEngine.AddressableAssets.AssetReference:RuntimeKeyIsValid() end
-function UnityEngine.AddressableAssets.AssetReference:ReleaseAsset() end
----@param obj UnityEngine.GameObject
-function UnityEngine.AddressableAssets.AssetReference:ReleaseInstance(obj) end
----@overload fun(self: UnityEngine.AddressableAssets.AssetReference, obj: UnityEngine.Object) : boolean
----@param path string
----@return boolean
-function UnityEngine.AddressableAssets.AssetReference:ValidateAsset(path) end
----@param value UnityEngine.Object
----@return boolean
-function UnityEngine.AddressableAssets.AssetReference:SetEditorAsset(value) end
----@param value UnityEngine.Object
----@return boolean
-function UnityEngine.AddressableAssets.AssetReference:SetEditorSubObject(value) end

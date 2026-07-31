@@ -10,36 +10,36 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe202a631b15d92408ac5c92665ab130, type: 3}
-  m_Name: HeavySlash
+  m_Name: Fortitude
   m_EditorClassIdentifier: 
-  SkillName: HeavySlash
-  Description: HeavySlash 1.8ATK
+  SkillName: Fortitude
+  Description: hp < 50% +2DEF
   Icon: {fileID: 0}
-  TargetType: 7
+  TargetType: 2
   CastPattern: 0
-  CastMaxRange: 2
+  CastMaxRange: 1
   CastMinRange: 1
   CastVerticalRange: 1
   CastRangeMode: 0
   CastRangeFuncName: 
-  Trajectory: 3
+  Trajectory: 0
   StopsAtFirstHit: 1
-  Cost: 12
+  Cost: 0
   Phases:
-  - PhaseName: Main
-    TargetType: 7
+  - PhaseName: 
+    TargetType: 2
     AoEPattern: 0
     AoERadius: 0
     AoEVerticalRange: 0
-    OriginType: 0
+    OriginType: 1
     Effects:
-    - EffectType: 0
+    - EffectType: 2
       FlatBonus: 0
-      Multiplier: 1.8
+      Multiplier: 0
       Constant: 0
       DamageType: 0
-      BuffID: 
-      BuffStacks: 0
+      BuffID: Fortitude
+      BuffStacks: 1
       RemoveMode: 0
     VisualData:
       CastAnimTrigger: 

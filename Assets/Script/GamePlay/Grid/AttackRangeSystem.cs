@@ -595,10 +595,10 @@ namespace GamePlay.Grid
         /// </summary>
         public static bool IsValidTargetForCast(Vector3Int targetPos, SkillDataSO skill, FactionType casterFaction)
         {
-            // 如果技能允许位置目标（如传送技能），直接返回true
+            // 如果技能允许位置目标（如传送技能
             if (skill.TargetType == TargetType.Position)
             {
-                return true;
+                return !UnitManager.Instance.GetUnitAt(targetPos);
             }
 
             // 获取目标位置上的单位

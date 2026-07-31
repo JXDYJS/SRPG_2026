@@ -9,7 +9,7 @@ function Skills.Steve.FearlessCharge_Phase2(ctx)
     local sourcePos = sourceUnit.gridPosition
     local faceDir = CS.Global.FacingTool.FacingToDirection(sourceUnit.CurrentFacing)
     local towardPos = sourcePos + faceDir
-    log.loge("towardPos:"..tostring(towardPos));
+    ---log.loge("towardPos:"..tostring(towardPos));
     local unitAtPos = CS.Managers.UnitManager.Instance:GetUnitAt(towardPos)
 
     local res = CS.GamePlay.Skill.PhaseResult(sourceUnit, ctx.TargetPosition)
@@ -31,5 +31,15 @@ function Skills.Steve.FearlessCharge_Phase2(ctx)
         res.TargetResults:Add(tr)
     end
 
+    return res
+end
+---@param ctx Lua.SkillEvalContext
+---@return GamePlay.Skill.PhaseResult
+function Skills.Steve.BattleCry_Phase2(ctx)
+    local sourceUnit = ctx.Caster
+    local res = CS.GamePlay.Skill.PhaseResult(sourceUnit, ctx.TargetPosition)
+    if sourceUnit ~= nil and not CS.UnityEngine.Object.Equals(sourceUnit,nil) then
+        sourceUnit.actionPoints = sourceUnit.actionPoints + 1;
+    end
     return res
 end

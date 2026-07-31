@@ -1,5 +1,626 @@
 ---@meta
 
+---@return AutoBuildCacheUtility
+function AutoBuildCacheUtility.New() end
+function AutoBuildCacheUtility:Dispose() end
+
+---@class BuildCacheUtility : System.Object
+BuildCacheUtility = {}
+---@alias CS.BuildCacheUtility BuildCacheUtility
+CS.BuildCacheUtility = BuildCacheUtility
+
+---@param content UnityEditor.Build.Pipeline.Interfaces.IBuildContent
+function BuildCacheUtility.SetCurrentBuildContent(content) end
+---@overload fun(asset: UnityEditor.GUID, version: number) : UnityEditor.Build.Pipeline.Utilities.CacheEntry
+---@overload fun(path: string, version: number) : UnityEditor.Build.Pipeline.Utilities.CacheEntry
+---@overload fun(type: System.Type, version: number) : UnityEditor.Build.Pipeline.Utilities.CacheEntry
+---@param objectID UnityEditor.Build.Content.ObjectIdentifier
+---@param version number
+---@return UnityEditor.Build.Pipeline.Utilities.CacheEntry
+function BuildCacheUtility.GetCacheEntry(objectID, version) end
+---@param objectId UnityEditor.Build.Content.ObjectIdentifier
+---@return System.Type
+function BuildCacheUtility.GetMainTypeForObject(objectId) end
+---@param objectIds System.Collections.Generic.IEnumerable
+---@return System.Type[]
+function BuildCacheUtility.GetMainTypeForObjects(objectIds) end
+---@param objectId UnityEditor.Build.Content.ObjectIdentifier
+---@return System.Type[]
+function BuildCacheUtility.GetSortedUniqueTypesForObject(objectId) end
+---@param objectIds System.Collections.Generic.IEnumerable
+---@return System.Type[]
+function BuildCacheUtility.GetSortedUniqueTypesForObjects(objectIds) end
+---@param pairs System.Collections.Generic.IEnumerable
+function BuildCacheUtility.SetTypeForObjects(pairs) end
+---@param typeDB UnityEditor.Build.Player.TypeDB
+function BuildCacheUtility.SetTypeDB(typeDB) end
+
+---@class HashingHelpers : System.Object
+HashingHelpers = {}
+---@alias CS.HashingHelpers HashingHelpers
+CS.HashingHelpers = HashingHelpers
+
+---@overload fun(info: UnityEditor.Build.Content.SerializationInfo) : UnityEngine.Hash128
+---@overload fun(info: UnityEditor.Build.Content.PreloadInfo) : UnityEngine.Hash128
+---@overload fun(info: UnityEditor.Build.Content.AssetBundleInfo) : UnityEngine.Hash128
+---@overload fun(info: UnityEditor.Build.Content.SceneBundleInfo) : UnityEngine.Hash128
+---@overload fun(info: UnityEditor.Build.Content.AssetLoadInfo) : UnityEngine.Hash128
+---@overload fun(cmd: UnityEditor.Build.Content.WriteCommand) : UnityEngine.Hash128
+---@param settings UnityEditor.Build.Content.BuildSettings
+---@return UnityEngine.Hash128
+function HashingHelpers.GetHash128(settings) end
+
+---@class StreamHasher : System.Object
+---@field Writer System.IO.BinaryWriter
+StreamHasher = {}
+---@alias CS.StreamHasher StreamHasher
+CS.StreamHasher = StreamHasher
+
+---@return StreamHasher
+function StreamHasher.New() end
+---@return UnityEngine.Hash128
+function StreamHasher:GetHash() end
+
+---@class ThreadingManager : System.Object
+ThreadingManager = {}
+---@alias CS.ThreadingManager ThreadingManager
+CS.ThreadingManager = ThreadingManager
+
+
+---@class UnitySourceGeneratedAssemblyMonoScriptTypes_v1 : System.Object
+UnitySourceGeneratedAssemblyMonoScriptTypes_v1 = {}
+---@alias CS.UnitySourceGeneratedAssemblyMonoScriptTypes_v1 UnitySourceGeneratedAssemblyMonoScriptTypes_v1
+CS.UnitySourceGeneratedAssemblyMonoScriptTypes_v1 = UnitySourceGeneratedAssemblyMonoScriptTypes_v1
+
+---@return UnitySourceGeneratedAssemblyMonoScriptTypes_v1
+function UnitySourceGeneratedAssemblyMonoScriptTypes_v1.New() end
+
+---@class ThreadingManager.ThreadQueues
+---@field SaveQueue ThreadingManager.ThreadQueues
+---@field UploadQueue ThreadingManager.ThreadQueues
+---@field PruneQueue ThreadingManager.ThreadQueues
+---@field TotalQueues ThreadingManager.ThreadQueues
+ThreadingManager.ThreadQueues = {}
+---@alias CS.ThreadingManager.ThreadQueues ThreadingManager.ThreadQueues
+CS.ThreadingManager.ThreadQueues = ThreadingManager.ThreadQueues
+
+
+---@class UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData : System.ValueType
+---@field FilePathsData System.Byte[]
+---@field TypesData System.Byte[]
+---@field TotalTypes number
+---@field TotalFiles number
+---@field IsEditorOnly boolean
+UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData = {}
+---@alias CS.UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData
+CS.UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData = UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData
+
+
+---@class UnitySourceGeneratedAssemblyMonoScriptTypes_v1 : System.Object
+UnitySourceGeneratedAssemblyMonoScriptTypes_v1 = {}
+---@alias CS.UnitySourceGeneratedAssemblyMonoScriptTypes_v1 UnitySourceGeneratedAssemblyMonoScriptTypes_v1
+CS.UnitySourceGeneratedAssemblyMonoScriptTypes_v1 = UnitySourceGeneratedAssemblyMonoScriptTypes_v1
+
+---@return UnitySourceGeneratedAssemblyMonoScriptTypes_v1
+function UnitySourceGeneratedAssemblyMonoScriptTypes_v1.New() end
+
+---@class UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData : System.ValueType
+---@field FilePathsData System.Byte[]
+---@field TypesData System.Byte[]
+---@field TotalTypes number
+---@field TotalFiles number
+---@field IsEditorOnly boolean
+UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData = {}
+---@alias CS.UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData
+CS.UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData = UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData
+
+
+---@class PackedPlayModeBuildLogs : System.Object
+---@field RuntimeBuildLogs System.Collections.Generic.List
+PackedPlayModeBuildLogs = {}
+---@alias CS.PackedPlayModeBuildLogs PackedPlayModeBuildLogs
+CS.PackedPlayModeBuildLogs = PackedPlayModeBuildLogs
+
+---@return PackedPlayModeBuildLogs
+function PackedPlayModeBuildLogs.New() end
+
+---@class UnitySourceGeneratedAssemblyMonoScriptTypes_v1 : System.Object
+UnitySourceGeneratedAssemblyMonoScriptTypes_v1 = {}
+---@alias CS.UnitySourceGeneratedAssemblyMonoScriptTypes_v1 UnitySourceGeneratedAssemblyMonoScriptTypes_v1
+CS.UnitySourceGeneratedAssemblyMonoScriptTypes_v1 = UnitySourceGeneratedAssemblyMonoScriptTypes_v1
+
+---@return UnitySourceGeneratedAssemblyMonoScriptTypes_v1
+function UnitySourceGeneratedAssemblyMonoScriptTypes_v1.New() end
+
+---@class UnityEngine.AssetReferenceUIRestriction : System.Attribute
+UnityEngine.AssetReferenceUIRestriction = {}
+---@alias CS.UnityEngine.AssetReferenceUIRestriction UnityEngine.AssetReferenceUIRestriction
+CS.UnityEngine.AssetReferenceUIRestriction = UnityEngine.AssetReferenceUIRestriction
+
+---@return UnityEngine.AssetReferenceUIRestriction
+function UnityEngine.AssetReferenceUIRestriction.New() end
+---@overload fun(self: UnityEngine.AssetReferenceUIRestriction, obj: UnityEngine.Object) : boolean
+---@param path string
+---@return boolean
+function UnityEngine.AssetReferenceUIRestriction:ValidateAsset(path) end
+
+---@class UnityEngine.AssetReferenceUILabelRestriction : UnityEngine.AssetReferenceUIRestriction
+---@field m_AllowedLabels System.String[]
+---@field m_CachedToString string
+UnityEngine.AssetReferenceUILabelRestriction = {}
+---@alias CS.UnityEngine.AssetReferenceUILabelRestriction UnityEngine.AssetReferenceUILabelRestriction
+CS.UnityEngine.AssetReferenceUILabelRestriction = UnityEngine.AssetReferenceUILabelRestriction
+
+---@param allowedLabels System.String[]
+---@return UnityEngine.AssetReferenceUILabelRestriction
+function UnityEngine.AssetReferenceUILabelRestriction.New(allowedLabels) end
+---@overload fun(self: UnityEngine.AssetReferenceUILabelRestriction, obj: UnityEngine.Object) : boolean
+---@param path string
+---@return boolean
+function UnityEngine.AssetReferenceUILabelRestriction:ValidateAsset(path) end
+---@return string
+function UnityEngine.AssetReferenceUILabelRestriction:ToString() end
+
+---@class UnityEngine.ResourceManagement.AsyncOperations.InitalizationObjectsOperation : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationBase
+---@field Result UnityEngine.ResourceManagement.AsyncOperations.InitalizationObjectsOperation -- infered from UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationBase`1[System.Boolean]
+UnityEngine.ResourceManagement.AsyncOperations.InitalizationObjectsOperation = {}
+---@alias CS.UnityEngine.ResourceManagement.AsyncOperations.InitalizationObjectsOperation UnityEngine.ResourceManagement.AsyncOperations.InitalizationObjectsOperation
+CS.UnityEngine.ResourceManagement.AsyncOperations.InitalizationObjectsOperation = UnityEngine.ResourceManagement.AsyncOperations.InitalizationObjectsOperation
+
+---@return UnityEngine.ResourceManagement.AsyncOperations.InitalizationObjectsOperation
+function UnityEngine.ResourceManagement.AsyncOperations.InitalizationObjectsOperation.New() end
+---@param rtdOp UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+---@param addressables UnityEngine.AddressableAssets.AddressablesImpl
+function UnityEngine.ResourceManagement.AsyncOperations.InitalizationObjectsOperation:Init(rtdOp, addressables) end
+
+---@class UnityEngine.AddressableAssets.ResourceLocatorInfo : System.Object
+---@field Locator UnityEngine.AddressableAssets.ResourceLocators.IResourceLocator
+---@field LocalHash string
+---@field CatalogLocation UnityEngine.ResourceManagement.ResourceLocations.IResourceLocation
+---@field HashLocation UnityEngine.ResourceManagement.ResourceLocations.IResourceLocation
+---@field CanUpdateContent boolean
+UnityEngine.AddressableAssets.ResourceLocatorInfo = {}
+---@alias CS.UnityEngine.AddressableAssets.ResourceLocatorInfo UnityEngine.AddressableAssets.ResourceLocatorInfo
+CS.UnityEngine.AddressableAssets.ResourceLocatorInfo = UnityEngine.AddressableAssets.ResourceLocatorInfo
+
+---@param loc UnityEngine.AddressableAssets.ResourceLocators.IResourceLocator
+---@param localHash string
+---@param remoteCatalogLocation UnityEngine.ResourceManagement.ResourceLocations.IResourceLocation
+---@return UnityEngine.AddressableAssets.ResourceLocatorInfo
+function UnityEngine.AddressableAssets.ResourceLocatorInfo.New(loc, localHash, remoteCatalogLocation) end
+
+---@class UnityEngine.AddressableAssets.InvalidKeyException : System.Exception
+---@field Key System.Object
+---@field Type System.Type
+---@field MergeMode System.Nullable
+---@field Message string
+UnityEngine.AddressableAssets.InvalidKeyException = {}
+---@alias CS.UnityEngine.AddressableAssets.InvalidKeyException UnityEngine.AddressableAssets.InvalidKeyException
+CS.UnityEngine.AddressableAssets.InvalidKeyException = UnityEngine.AddressableAssets.InvalidKeyException
+
+---@overload fun(key: System.Object) : UnityEngine.AddressableAssets.InvalidKeyException
+---@overload fun(key: System.Object, type: System.Type) : UnityEngine.AddressableAssets.InvalidKeyException
+---@overload fun(key: System.Object, type: System.Type, mergeMode: UnityEngine.AddressableAssets.Addressables.MergeMode) : UnityEngine.AddressableAssets.InvalidKeyException
+---@overload fun() : UnityEngine.AddressableAssets.InvalidKeyException
+---@overload fun(message: string) : UnityEngine.AddressableAssets.InvalidKeyException
+---@param message string
+---@param innerException System.Exception
+---@return UnityEngine.AddressableAssets.InvalidKeyException
+function UnityEngine.AddressableAssets.InvalidKeyException.New(message, innerException) end
+
+---@class UnityEngine.AddressableAssets.Addressables : System.Object
+---@field kAddressablesRuntimeDataPath string
+---@field kAddressablesRuntimeBuildLogPath string
+---@field LibraryPath string
+---@field BuildReportPath string
+---@field Version string
+---@field ResourceManager UnityEngine.ResourceManagement.ResourceManager
+---@field InstanceProvider UnityEngine.ResourceManagement.ResourceProviders.IInstanceProvider
+---@field InternalIdTransformFunc System.Func
+---@field WebRequestOverride System.Action
+---@field StreamingAssetsSubFolder string
+---@field BuildPath string
+---@field PlayerBuildDataPath string
+---@field RuntimePath string
+---@field ResourceLocators System.Collections.Generic.IEnumerable
+UnityEngine.AddressableAssets.Addressables = {}
+---@alias CS.UnityEngine.AddressableAssets.Addressables UnityEngine.AddressableAssets.Addressables
+CS.UnityEngine.AddressableAssets.Addressables = UnityEngine.AddressableAssets.Addressables
+
+---@param id string
+---@return string
+function UnityEngine.AddressableAssets.Addressables.ResolveInternalId(id) end
+---@param msg string
+function UnityEngine.AddressableAssets.Addressables.Log(msg) end
+---@param format string
+---@param args System.Object[]
+function UnityEngine.AddressableAssets.Addressables.LogFormat(format, args) end
+---@param msg string
+function UnityEngine.AddressableAssets.Addressables.LogWarning(msg) end
+---@param format string
+---@param args System.Object[]
+function UnityEngine.AddressableAssets.Addressables.LogWarningFormat(format, args) end
+---@param msg string
+function UnityEngine.AddressableAssets.Addressables.LogError(msg) end
+---@overload fun(op: UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle, ex: System.Exception)
+---@param ex System.Exception
+function UnityEngine.AddressableAssets.Addressables.LogException(ex) end
+---@param format string
+---@param args System.Object[]
+function UnityEngine.AddressableAssets.Addressables.LogErrorFormat(format, args) end
+---@overload fun() : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+---@param autoReleaseHandle boolean
+---@return UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+function UnityEngine.AddressableAssets.Addressables.InitializeAsync(autoReleaseHandle) end
+---@overload fun(catalogPath: string, providerSuffix: string) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+---@param catalogPath string
+---@param autoReleaseHandle boolean
+---@param providerSuffix string
+---@return UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+function UnityEngine.AddressableAssets.Addressables.LoadContentCatalogAsync(catalogPath, autoReleaseHandle, providerSuffix) end
+---@overload fun(keys: System.Collections.IEnumerable, mode: UnityEngine.AddressableAssets.Addressables.MergeMode, type: System.Type) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+---@param key System.Object
+---@param type System.Type
+---@return UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+function UnityEngine.AddressableAssets.Addressables.LoadResourceLocationsAsync(key, type) end
+---@param handle UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+function UnityEngine.AddressableAssets.Addressables.Release(handle) end
+---@overload fun(instance: UnityEngine.GameObject) : boolean
+---@overload fun(handle: UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle) : boolean
+---@param handle UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+---@return boolean
+function UnityEngine.AddressableAssets.Addressables.ReleaseInstance(handle) end
+---@overload fun(key: System.Object) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+---@overload fun(key: string) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+---@param keys System.Collections.IEnumerable
+---@return UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+function UnityEngine.AddressableAssets.Addressables.GetDownloadSizeAsync(keys) end
+---@overload fun(key: System.Object, autoReleaseHandle: boolean) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+---@overload fun(locations: System.Collections.Generic.IList, autoReleaseHandle: boolean) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+---@param keys System.Collections.IEnumerable
+---@param mode UnityEngine.AddressableAssets.Addressables.MergeMode
+---@param autoReleaseHandle boolean
+---@return UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+function UnityEngine.AddressableAssets.Addressables.DownloadDependenciesAsync(keys, mode, autoReleaseHandle) end
+---@overload fun(key: System.Object)
+---@overload fun(locations: System.Collections.Generic.IList)
+---@overload fun(keys: System.Collections.IEnumerable)
+---@overload fun(key: string)
+---@overload fun(key: System.Object, autoReleaseHandle: boolean) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+---@overload fun(locations: System.Collections.Generic.IList, autoReleaseHandle: boolean) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+---@overload fun(keys: System.Collections.IEnumerable, autoReleaseHandle: boolean) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+---@param key string
+---@param autoReleaseHandle boolean
+---@return UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+function UnityEngine.AddressableAssets.Addressables.ClearDependencyCacheAsync(key, autoReleaseHandle) end
+---@overload fun(locatorId: string) : UnityEngine.AddressableAssets.ResourceLocatorInfo
+---@param locator UnityEngine.AddressableAssets.ResourceLocators.IResourceLocator
+---@return UnityEngine.AddressableAssets.ResourceLocatorInfo
+function UnityEngine.AddressableAssets.Addressables.GetLocatorInfo(locator) end
+---@overload fun(location: UnityEngine.ResourceManagement.ResourceLocations.IResourceLocation, parent: UnityEngine.Transform, instantiateInWorldSpace: boolean, trackHandle: boolean) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+---@overload fun(location: UnityEngine.ResourceManagement.ResourceLocations.IResourceLocation, position: UnityEngine.Vector3, rotation: UnityEngine.Quaternion, parent: UnityEngine.Transform, trackHandle: boolean) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+---@overload fun(key: System.Object, parent: UnityEngine.Transform, instantiateInWorldSpace: boolean, trackHandle: boolean) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+---@overload fun(key: System.Object, position: UnityEngine.Vector3, rotation: UnityEngine.Quaternion, parent: UnityEngine.Transform, trackHandle: boolean) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+---@overload fun(key: System.Object, instantiateParameters: UnityEngine.ResourceManagement.ResourceProviders.InstantiationParameters, trackHandle: boolean) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+---@param location UnityEngine.ResourceManagement.ResourceLocations.IResourceLocation
+---@param instantiateParameters UnityEngine.ResourceManagement.ResourceProviders.InstantiationParameters
+---@param trackHandle boolean
+---@return UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+function UnityEngine.AddressableAssets.Addressables.InstantiateAsync(location, instantiateParameters, trackHandle) end
+---@overload fun(key: System.Object, loadMode: UnityEngine.SceneManagement.LoadSceneMode, activateOnLoad: boolean, priority: number) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+---@overload fun(key: System.Object, loadSceneParameters: UnityEngine.SceneManagement.LoadSceneParameters, activateOnLoad: boolean, priority: number) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+---@overload fun(location: UnityEngine.ResourceManagement.ResourceLocations.IResourceLocation, loadMode: UnityEngine.SceneManagement.LoadSceneMode, activateOnLoad: boolean, priority: number) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+---@param location UnityEngine.ResourceManagement.ResourceLocations.IResourceLocation
+---@param loadSceneParameters UnityEngine.SceneManagement.LoadSceneParameters
+---@param activateOnLoad boolean
+---@param priority number
+---@return UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+function UnityEngine.AddressableAssets.Addressables.LoadSceneAsync(location, loadSceneParameters, activateOnLoad, priority) end
+---@overload fun(scene: UnityEngine.ResourceManagement.ResourceProviders.SceneInstance, unloadOptions: UnityEngine.SceneManagement.UnloadSceneOptions, autoReleaseHandle: boolean) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+---@overload fun(handle: UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle, unloadOptions: UnityEngine.SceneManagement.UnloadSceneOptions, autoReleaseHandle: boolean) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+---@overload fun(scene: UnityEngine.ResourceManagement.ResourceProviders.SceneInstance, autoReleaseHandle: boolean) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+---@overload fun(handle: UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle, autoReleaseHandle: boolean) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+---@param handle UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+---@param autoReleaseHandle boolean
+---@return UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+function UnityEngine.AddressableAssets.Addressables.UnloadSceneAsync(handle, autoReleaseHandle) end
+---@param autoReleaseHandle boolean
+---@return UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+function UnityEngine.AddressableAssets.Addressables.CheckForCatalogUpdates(autoReleaseHandle) end
+---@overload fun(catalogs: System.Collections.Generic.IEnumerable, autoReleaseHandle: boolean) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+---@param autoCleanBundleCache boolean
+---@param catalogs System.Collections.Generic.IEnumerable
+---@param autoReleaseHandle boolean
+---@return UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+function UnityEngine.AddressableAssets.Addressables.UpdateCatalogs(autoCleanBundleCache, catalogs, autoReleaseHandle) end
+---@param locator UnityEngine.AddressableAssets.ResourceLocators.IResourceLocator
+---@param localCatalogHash string
+---@param remoteCatalogLocation UnityEngine.ResourceManagement.ResourceLocations.IResourceLocation
+function UnityEngine.AddressableAssets.Addressables.AddResourceLocator(locator, localCatalogHash, remoteCatalogLocation) end
+---@param locator UnityEngine.AddressableAssets.ResourceLocators.IResourceLocator
+function UnityEngine.AddressableAssets.Addressables.RemoveResourceLocator(locator) end
+function UnityEngine.AddressableAssets.Addressables.ClearResourceLocators() end
+---@param catalogsIds System.Collections.Generic.IEnumerable
+---@return UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+function UnityEngine.AddressableAssets.Addressables.CleanBundleCache(catalogsIds) end
+
+---@class UnityEngine.AddressableAssets.AddressablesImpl : System.Object
+---@field SceneProvider UnityEngine.ResourceManagement.ResourceProviders.ISceneProvider
+---@field InstanceProvider UnityEngine.ResourceManagement.ResourceProviders.IInstanceProvider
+---@field ResourceManager UnityEngine.ResourceManagement.ResourceManager
+---@field CatalogRequestsTimeout number
+---@field InternalIdTransformFunc System.Func
+---@field WebRequestOverride System.Action
+---@field ChainOperation UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+---@field StreamingAssetsSubFolder string
+---@field BuildPath string
+---@field PlayerBuildDataPath string
+---@field RuntimePath string
+---@field ResourceLocators System.Collections.Generic.IEnumerable
+UnityEngine.AddressableAssets.AddressablesImpl = {}
+---@alias CS.UnityEngine.AddressableAssets.AddressablesImpl UnityEngine.AddressableAssets.AddressablesImpl
+CS.UnityEngine.AddressableAssets.AddressablesImpl = UnityEngine.AddressableAssets.AddressablesImpl
+
+---@param alloc UnityEngine.ResourceManagement.Util.IAllocationStrategy
+---@return UnityEngine.AddressableAssets.AddressablesImpl
+function UnityEngine.AddressableAssets.AddressablesImpl.New(alloc) end
+---@param msg string
+function UnityEngine.AddressableAssets.AddressablesImpl:Log(msg) end
+---@param format string
+---@param args System.Object[]
+function UnityEngine.AddressableAssets.AddressablesImpl:LogFormat(format, args) end
+---@param msg string
+function UnityEngine.AddressableAssets.AddressablesImpl:LogWarning(msg) end
+---@param format string
+---@param args System.Object[]
+function UnityEngine.AddressableAssets.AddressablesImpl:LogWarningFormat(format, args) end
+---@param msg string
+function UnityEngine.AddressableAssets.AddressablesImpl:LogError(msg) end
+---@overload fun(self: UnityEngine.AddressableAssets.AddressablesImpl, op: UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle, ex: System.Exception)
+---@param ex System.Exception
+function UnityEngine.AddressableAssets.AddressablesImpl:LogException(ex) end
+---@param format string
+---@param args System.Object[]
+function UnityEngine.AddressableAssets.AddressablesImpl:LogErrorFormat(format, args) end
+---@param id string
+---@return string
+function UnityEngine.AddressableAssets.AddressablesImpl:ResolveInternalId(id) end
+---@param loc UnityEngine.AddressableAssets.ResourceLocators.IResourceLocator
+---@param localCatalogHash string
+---@param remoteCatalogLocation UnityEngine.ResourceManagement.ResourceLocations.IResourceLocation
+function UnityEngine.AddressableAssets.AddressablesImpl:AddResourceLocator(loc, localCatalogHash, remoteCatalogLocation) end
+---@param loc UnityEngine.AddressableAssets.ResourceLocators.IResourceLocator
+function UnityEngine.AddressableAssets.AddressablesImpl:RemoveResourceLocator(loc) end
+function UnityEngine.AddressableAssets.AddressablesImpl:ClearResourceLocators() end
+---@overload fun(self: UnityEngine.AddressableAssets.AddressablesImpl, runtimeDataPath: string, providerSuffix: string, autoReleaseHandle: boolean) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+---@overload fun() : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+---@param autoReleaseHandle boolean
+---@return UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+function UnityEngine.AddressableAssets.AddressablesImpl:InitializeAsync(autoReleaseHandle) end
+---@param catalogPath string
+---@param autoReleaseHandle boolean
+---@param providerSuffix string
+---@return UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+function UnityEngine.AddressableAssets.AddressablesImpl:LoadContentCatalogAsync(catalogPath, autoReleaseHandle, providerSuffix) end
+---@overload fun(self: UnityEngine.AddressableAssets.AddressablesImpl, dep: UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle, keys: System.Collections.IEnumerable, mode: UnityEngine.AddressableAssets.Addressables.MergeMode, type: System.Type) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+---@param dep UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+---@param key System.Object
+---@param type System.Type
+---@return UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+function UnityEngine.AddressableAssets.AddressablesImpl:LoadResourceLocationsWithChain(dep, key, type) end
+---@overload fun(self: UnityEngine.AddressableAssets.AddressablesImpl, keys: System.Collections.IEnumerable, mode: UnityEngine.AddressableAssets.Addressables.MergeMode, type: System.Type) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+---@param key System.Object
+---@param type System.Type
+---@return UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+function UnityEngine.AddressableAssets.AddressablesImpl:LoadResourceLocationsAsync(key, type) end
+---@param handle UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+function UnityEngine.AddressableAssets.AddressablesImpl:Release(handle) end
+---@overload fun(self: UnityEngine.AddressableAssets.AddressablesImpl, key: System.Object) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+---@param keys System.Collections.IEnumerable
+---@return UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+function UnityEngine.AddressableAssets.AddressablesImpl:GetDownloadSizeAsync(keys) end
+---@overload fun(self: UnityEngine.AddressableAssets.AddressablesImpl, key: System.Object, autoReleaseHandle: boolean) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+---@overload fun(self: UnityEngine.AddressableAssets.AddressablesImpl, locations: System.Collections.Generic.IList, autoReleaseHandle: boolean) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+---@param keys System.Collections.IEnumerable
+---@param mode UnityEngine.AddressableAssets.Addressables.MergeMode
+---@param autoReleaseHandle boolean
+---@return UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+function UnityEngine.AddressableAssets.AddressablesImpl:DownloadDependenciesAsync(keys, mode, autoReleaseHandle) end
+---@overload fun(self: UnityEngine.AddressableAssets.AddressablesImpl, key: System.Object, autoReleaseHandle: boolean) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+---@overload fun(self: UnityEngine.AddressableAssets.AddressablesImpl, locations: System.Collections.Generic.IList, autoReleaseHandle: boolean) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+---@param keys System.Collections.IEnumerable
+---@param autoReleaseHandle boolean
+---@return UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+function UnityEngine.AddressableAssets.AddressablesImpl:ClearDependencyCacheAsync(keys, autoReleaseHandle) end
+---@overload fun(self: UnityEngine.AddressableAssets.AddressablesImpl, location: UnityEngine.ResourceManagement.ResourceLocations.IResourceLocation, parent: UnityEngine.Transform, instantiateInWorldSpace: boolean, trackHandle: boolean) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+---@overload fun(self: UnityEngine.AddressableAssets.AddressablesImpl, location: UnityEngine.ResourceManagement.ResourceLocations.IResourceLocation, position: UnityEngine.Vector3, rotation: UnityEngine.Quaternion, parent: UnityEngine.Transform, trackHandle: boolean) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+---@overload fun(self: UnityEngine.AddressableAssets.AddressablesImpl, key: System.Object, parent: UnityEngine.Transform, instantiateInWorldSpace: boolean, trackHandle: boolean) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+---@overload fun(self: UnityEngine.AddressableAssets.AddressablesImpl, key: System.Object, position: UnityEngine.Vector3, rotation: UnityEngine.Quaternion, parent: UnityEngine.Transform, trackHandle: boolean) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+---@overload fun(self: UnityEngine.AddressableAssets.AddressablesImpl, key: System.Object, instantiateParameters: UnityEngine.ResourceManagement.ResourceProviders.InstantiationParameters, trackHandle: boolean) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+---@param location UnityEngine.ResourceManagement.ResourceLocations.IResourceLocation
+---@param instantiateParameters UnityEngine.ResourceManagement.ResourceProviders.InstantiationParameters
+---@param trackHandle boolean
+---@return UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+function UnityEngine.AddressableAssets.AddressablesImpl:InstantiateAsync(location, instantiateParameters, trackHandle) end
+---@param instance UnityEngine.GameObject
+---@return boolean
+function UnityEngine.AddressableAssets.AddressablesImpl:ReleaseInstance(instance) end
+---@overload fun(self: UnityEngine.AddressableAssets.AddressablesImpl, key: System.Object) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+---@overload fun(self: UnityEngine.AddressableAssets.AddressablesImpl, key: System.Object, loadSceneParameters: UnityEngine.SceneManagement.LoadSceneParameters, activateOnLoad: boolean, priority: number, trackHandle: boolean) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+---@overload fun(self: UnityEngine.AddressableAssets.AddressablesImpl, location: UnityEngine.ResourceManagement.ResourceLocations.IResourceLocation) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+---@overload fun(self: UnityEngine.AddressableAssets.AddressablesImpl, location: UnityEngine.ResourceManagement.ResourceLocations.IResourceLocation, loadMode: UnityEngine.SceneManagement.LoadSceneMode, activateOnLoad: boolean, priority: number, trackHandle: boolean) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+---@param location UnityEngine.ResourceManagement.ResourceLocations.IResourceLocation
+---@param loadSceneParameters UnityEngine.SceneManagement.LoadSceneParameters
+---@param activateOnLoad boolean
+---@param priority number
+---@param trackHandle boolean
+---@return UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+function UnityEngine.AddressableAssets.AddressablesImpl:LoadSceneAsync(location, loadSceneParameters, activateOnLoad, priority, trackHandle) end
+---@overload fun(self: UnityEngine.AddressableAssets.AddressablesImpl, scene: UnityEngine.ResourceManagement.ResourceProviders.SceneInstance, unloadOptions: UnityEngine.SceneManagement.UnloadSceneOptions, autoReleaseHandle: boolean) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+---@overload fun(self: UnityEngine.AddressableAssets.AddressablesImpl, handle: UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle, unloadOptions: UnityEngine.SceneManagement.UnloadSceneOptions, autoReleaseHandle: boolean) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+---@param handle UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+---@param unloadOptions UnityEngine.SceneManagement.UnloadSceneOptions
+---@param autoReleaseHandle boolean
+---@return UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+function UnityEngine.AddressableAssets.AddressablesImpl:UnloadSceneAsync(handle, unloadOptions, autoReleaseHandle) end
+---@param c string
+---@return UnityEngine.AddressableAssets.ResourceLocatorInfo
+function UnityEngine.AddressableAssets.AddressablesImpl:GetLocatorInfo(c) end
+---@param x UnityEngine.ResourceManagement.ResourceLocations.IResourceLocation
+---@param y UnityEngine.ResourceManagement.ResourceLocations.IResourceLocation
+---@return boolean
+function UnityEngine.AddressableAssets.AddressablesImpl:Equals(x, y) end
+---@param loc UnityEngine.ResourceManagement.ResourceLocations.IResourceLocation
+---@return number
+function UnityEngine.AddressableAssets.AddressablesImpl:GetHashCode(loc) end
+
+---@class UnityEngine.AddressableAssets.AssetLabelReference : System.Object
+---@field labelString string
+---@field RuntimeKey System.Object
+UnityEngine.AddressableAssets.AssetLabelReference = {}
+---@alias CS.UnityEngine.AddressableAssets.AssetLabelReference UnityEngine.AddressableAssets.AssetLabelReference
+CS.UnityEngine.AddressableAssets.AssetLabelReference = UnityEngine.AddressableAssets.AssetLabelReference
+
+---@return UnityEngine.AddressableAssets.AssetLabelReference
+function UnityEngine.AddressableAssets.AssetLabelReference.New() end
+---@return boolean
+function UnityEngine.AddressableAssets.AssetLabelReference:RuntimeKeyIsValid() end
+---@return number
+function UnityEngine.AddressableAssets.AssetLabelReference:GetHashCode() end
+
+---@class UnityEngine.AddressableAssets.AssetReferenceT : UnityEngine.AddressableAssets.AssetReference
+---@field editorAsset TObject
+UnityEngine.AddressableAssets.AssetReferenceT = {}
+---@alias CS.UnityEngine.AddressableAssets.AssetReferenceT UnityEngine.AddressableAssets.AssetReferenceT
+CS.UnityEngine.AddressableAssets.AssetReferenceT = UnityEngine.AddressableAssets.AssetReferenceT
+
+---@param guid string
+---@return UnityEngine.AddressableAssets.AssetReferenceT
+function UnityEngine.AddressableAssets.AssetReferenceT.New(guid) end
+---@return UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle[TObject]
+function UnityEngine.AddressableAssets.AssetReferenceT:LoadAssetAsync() end
+---@overload fun(self: UnityEngine.AddressableAssets.AssetReferenceT, obj: UnityEngine.Object) : boolean
+---@param mainAssetPath string
+---@return boolean
+function UnityEngine.AddressableAssets.AssetReferenceT:ValidateAsset(mainAssetPath) end
+
+---@class UnityEngine.AddressableAssets.AssetReferenceGameObject : UnityEngine.AddressableAssets.AssetReferenceT
+---@field editorAsset UnityEngine.AddressableAssets.AssetReferenceGameObject -- infered from UnityEngine.AddressableAssets.AssetReferenceT`1[UnityEngine.GameObject]
+UnityEngine.AddressableAssets.AssetReferenceGameObject = {}
+---@alias CS.UnityEngine.AddressableAssets.AssetReferenceGameObject UnityEngine.AddressableAssets.AssetReferenceGameObject
+CS.UnityEngine.AddressableAssets.AssetReferenceGameObject = UnityEngine.AddressableAssets.AssetReferenceGameObject
+
+---@param guid string
+---@return UnityEngine.AddressableAssets.AssetReferenceGameObject
+function UnityEngine.AddressableAssets.AssetReferenceGameObject.New(guid) end
+
+---@class UnityEngine.AddressableAssets.AssetReferenceTexture : UnityEngine.AddressableAssets.AssetReferenceT
+---@field editorAsset UnityEngine.AddressableAssets.AssetReferenceTexture -- infered from UnityEngine.AddressableAssets.AssetReferenceT`1[UnityEngine.Texture]
+UnityEngine.AddressableAssets.AssetReferenceTexture = {}
+---@alias CS.UnityEngine.AddressableAssets.AssetReferenceTexture UnityEngine.AddressableAssets.AssetReferenceTexture
+CS.UnityEngine.AddressableAssets.AssetReferenceTexture = UnityEngine.AddressableAssets.AssetReferenceTexture
+
+---@param guid string
+---@return UnityEngine.AddressableAssets.AssetReferenceTexture
+function UnityEngine.AddressableAssets.AssetReferenceTexture.New(guid) end
+
+---@class UnityEngine.AddressableAssets.AssetReferenceTexture2D : UnityEngine.AddressableAssets.AssetReferenceT
+---@field editorAsset UnityEngine.AddressableAssets.AssetReferenceTexture2D -- infered from UnityEngine.AddressableAssets.AssetReferenceT`1[UnityEngine.Texture2D]
+UnityEngine.AddressableAssets.AssetReferenceTexture2D = {}
+---@alias CS.UnityEngine.AddressableAssets.AssetReferenceTexture2D UnityEngine.AddressableAssets.AssetReferenceTexture2D
+CS.UnityEngine.AddressableAssets.AssetReferenceTexture2D = UnityEngine.AddressableAssets.AssetReferenceTexture2D
+
+---@param guid string
+---@return UnityEngine.AddressableAssets.AssetReferenceTexture2D
+function UnityEngine.AddressableAssets.AssetReferenceTexture2D.New(guid) end
+
+---@class UnityEngine.AddressableAssets.AssetReferenceTexture3D : UnityEngine.AddressableAssets.AssetReferenceT
+---@field editorAsset UnityEngine.AddressableAssets.AssetReferenceTexture3D -- infered from UnityEngine.AddressableAssets.AssetReferenceT`1[UnityEngine.Texture3D]
+UnityEngine.AddressableAssets.AssetReferenceTexture3D = {}
+---@alias CS.UnityEngine.AddressableAssets.AssetReferenceTexture3D UnityEngine.AddressableAssets.AssetReferenceTexture3D
+CS.UnityEngine.AddressableAssets.AssetReferenceTexture3D = UnityEngine.AddressableAssets.AssetReferenceTexture3D
+
+---@param guid string
+---@return UnityEngine.AddressableAssets.AssetReferenceTexture3D
+function UnityEngine.AddressableAssets.AssetReferenceTexture3D.New(guid) end
+
+---@class UnityEngine.AddressableAssets.AssetReferenceSprite : UnityEngine.AddressableAssets.AssetReferenceT
+---@field editorAsset UnityEngine.Object
+---@field editorAsset UnityEngine.AddressableAssets.AssetReferenceSprite -- infered from UnityEngine.AddressableAssets.AssetReferenceT`1[UnityEngine.Sprite]
+UnityEngine.AddressableAssets.AssetReferenceSprite = {}
+---@alias CS.UnityEngine.AddressableAssets.AssetReferenceSprite UnityEngine.AddressableAssets.AssetReferenceSprite
+CS.UnityEngine.AddressableAssets.AssetReferenceSprite = UnityEngine.AddressableAssets.AssetReferenceSprite
+
+---@param guid string
+---@return UnityEngine.AddressableAssets.AssetReferenceSprite
+function UnityEngine.AddressableAssets.AssetReferenceSprite.New(guid) end
+---@param path string
+---@return boolean
+function UnityEngine.AddressableAssets.AssetReferenceSprite:ValidateAsset(path) end
+
+---@class UnityEngine.AddressableAssets.AssetReferenceAtlasedSprite : UnityEngine.AddressableAssets.AssetReferenceT
+---@field editorAsset UnityEngine.U2D.SpriteAtlas
+---@field editorAsset UnityEngine.AddressableAssets.AssetReferenceAtlasedSprite -- infered from UnityEngine.AddressableAssets.AssetReferenceT`1[UnityEngine.Sprite]
+UnityEngine.AddressableAssets.AssetReferenceAtlasedSprite = {}
+---@alias CS.UnityEngine.AddressableAssets.AssetReferenceAtlasedSprite UnityEngine.AddressableAssets.AssetReferenceAtlasedSprite
+CS.UnityEngine.AddressableAssets.AssetReferenceAtlasedSprite = UnityEngine.AddressableAssets.AssetReferenceAtlasedSprite
+
+---@param guid string
+---@return UnityEngine.AddressableAssets.AssetReferenceAtlasedSprite
+function UnityEngine.AddressableAssets.AssetReferenceAtlasedSprite.New(guid) end
+---@overload fun(self: UnityEngine.AddressableAssets.AssetReferenceAtlasedSprite, obj: UnityEngine.Object) : boolean
+---@param path string
+---@return boolean
+function UnityEngine.AddressableAssets.AssetReferenceAtlasedSprite:ValidateAsset(path) end
+
+---@class UnityEngine.AddressableAssets.AssetReference : System.Object
+---@field OperationHandle UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+---@field RuntimeKey System.Object
+---@field AssetGUID string
+---@field SubObjectName string
+---@field IsDone boolean
+---@field Asset UnityEngine.Object
+---@field editorAsset UnityEngine.Object
+UnityEngine.AddressableAssets.AssetReference = {}
+---@alias CS.UnityEngine.AddressableAssets.AssetReference UnityEngine.AddressableAssets.AssetReference
+CS.UnityEngine.AddressableAssets.AssetReference = UnityEngine.AddressableAssets.AssetReference
+
+---@overload fun() : UnityEngine.AddressableAssets.AssetReference
+---@param guid string
+---@return UnityEngine.AddressableAssets.AssetReference
+function UnityEngine.AddressableAssets.AssetReference.New(guid) end
+---@return boolean
+function UnityEngine.AddressableAssets.AssetReference:IsValid() end
+---@return string
+function UnityEngine.AddressableAssets.AssetReference:ToString() end
+---@param loadMode UnityEngine.SceneManagement.LoadSceneMode
+---@param activateOnLoad boolean
+---@param priority number
+---@return UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+function UnityEngine.AddressableAssets.AssetReference:LoadSceneAsync(loadMode, activateOnLoad, priority) end
+---@return UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+function UnityEngine.AddressableAssets.AssetReference:UnLoadScene() end
+---@overload fun(self: UnityEngine.AddressableAssets.AssetReference, position: UnityEngine.Vector3, rotation: UnityEngine.Quaternion, parent: UnityEngine.Transform) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+---@param parent UnityEngine.Transform
+---@param instantiateInWorldSpace boolean
+---@return UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+function UnityEngine.AddressableAssets.AssetReference:InstantiateAsync(parent, instantiateInWorldSpace) end
+---@return boolean
+function UnityEngine.AddressableAssets.AssetReference:RuntimeKeyIsValid() end
+function UnityEngine.AddressableAssets.AssetReference:ReleaseAsset() end
+---@param obj UnityEngine.GameObject
+function UnityEngine.AddressableAssets.AssetReference:ReleaseInstance(obj) end
+---@overload fun(self: UnityEngine.AddressableAssets.AssetReference, obj: UnityEngine.Object) : boolean
+---@param path string
+---@return boolean
+function UnityEngine.AddressableAssets.AssetReference:ValidateAsset(path) end
+---@param value UnityEngine.Object
+---@return boolean
+function UnityEngine.AddressableAssets.AssetReference:SetEditorAsset(value) end
+---@param value UnityEngine.Object
+---@return boolean
+function UnityEngine.AddressableAssets.AssetReference:SetEditorSubObject(value) end
+
 ---@class UnityEngine.AddressableAssets.AssetPathToTypes : UnityEditor.AssetPostprocessor
 UnityEngine.AddressableAssets.AssetPathToTypes = {}
 ---@alias CS.UnityEngine.AddressableAssets.AssetPathToTypes UnityEngine.AddressableAssets.AssetPathToTypes
@@ -19380,628 +20001,3 @@ System.Web.UI.WebControls.BaseDataBoundControl = {}
 CS.System.Web.UI.WebControls.BaseDataBoundControl = System.Web.UI.WebControls.BaseDataBoundControl
 
 function System.Web.UI.WebControls.BaseDataBoundControl:DataBind() end
-
----@class System.Web.UI.WebControls.BaseDataList : System.Web.UI.WebControls.WebControl
----@field Caption string
----@field CaptionAlign System.Web.UI.WebControls.TableCaptionAlign
----@field CellPadding number
----@field CellSpacing number
----@field Controls System.Web.UI.ControlCollection
----@field DataKeyField string
----@field DataKeys System.Web.UI.WebControls.DataKeyCollection
----@field DataMember string
----@field DataSource System.Object
----@field GridLines System.Web.UI.WebControls.GridLines
----@field HorizontalAlign System.Web.UI.WebControls.HorizontalAlign
----@field UseAccessibleHeader boolean
----@field DataSourceID string
----@field SupportsDisabledAttribute boolean
-System.Web.UI.WebControls.BaseDataList = {}
----@alias CS.System.Web.UI.WebControls.BaseDataList System.Web.UI.WebControls.BaseDataList
-CS.System.Web.UI.WebControls.BaseDataList = System.Web.UI.WebControls.BaseDataList
-
----@param type System.Type
----@return boolean
-function System.Web.UI.WebControls.BaseDataList.IsBindableType(type) end
-function System.Web.UI.WebControls.BaseDataList:DataBind() end
-
----@class System.Web.UI.WebControls.BaseMenuRenderer : System.Object
----@field Tag System.Web.UI.HtmlTextWriterTag
-System.Web.UI.WebControls.BaseMenuRenderer = {}
----@alias CS.System.Web.UI.WebControls.BaseMenuRenderer System.Web.UI.WebControls.BaseMenuRenderer
-CS.System.Web.UI.WebControls.BaseMenuRenderer = System.Web.UI.WebControls.BaseMenuRenderer
-
----@param owner System.Web.UI.WebControls.Menu
----@return System.Web.UI.WebControls.BaseMenuRenderer
-function System.Web.UI.WebControls.BaseMenuRenderer.New(owner) end
----@param writer System.Web.UI.HtmlTextWriter
-function System.Web.UI.WebControls.BaseMenuRenderer:AddAttributesToRender(writer) end
----@param page System.Web.UI.Page
----@param head System.Web.UI.HtmlControls.HtmlHead
----@param csm System.Web.UI.ClientScriptManager
----@param cmenu string
----@param script System.Text.StringBuilder
-function System.Web.UI.WebControls.BaseMenuRenderer:PreRender(page, head, csm, cmenu, script) end
----@param writer System.Web.UI.HtmlTextWriter
----@param dynamic boolean
----@param menuLevel number
-function System.Web.UI.WebControls.BaseMenuRenderer:RenderMenuBeginTag(writer, dynamic, menuLevel) end
----@param writer System.Web.UI.HtmlTextWriter
----@param items System.Web.UI.WebControls.MenuItemCollection
----@param vertical boolean
----@param dynamic boolean
----@param notLast boolean
-function System.Web.UI.WebControls.BaseMenuRenderer:RenderMenuBody(writer, items, vertical, dynamic, notLast) end
----@param writer System.Web.UI.HtmlTextWriter
----@param skipLinkText string
-function System.Web.UI.WebControls.BaseMenuRenderer:RenderBeginTag(writer, skipLinkText) end
----@param writer System.Web.UI.HtmlTextWriter
-function System.Web.UI.WebControls.BaseMenuRenderer:RenderEndTag(writer) end
----@param writer System.Web.UI.HtmlTextWriter
-function System.Web.UI.WebControls.BaseMenuRenderer:RenderContents(writer) end
----@overload fun(self: System.Web.UI.WebControls.BaseMenuRenderer, owner: System.Web.UI.WebControls.Menu, item: System.Web.UI.WebControls.MenuItem) : boolean
----@param item System.Web.UI.WebControls.MenuItem
----@return boolean
-function System.Web.UI.WebControls.BaseMenuRenderer:IsDynamicItem(item) end
----@param writer System.Web.UI.HtmlTextWriter
----@param item System.Web.UI.WebControls.MenuItem
----@param notLast boolean
----@param isFirst boolean
-function System.Web.UI.WebControls.BaseMenuRenderer:RenderMenuItem(writer, item, notLast, isFirst) end
----@param writer System.Web.UI.HtmlTextWriter
----@param dynamic boolean
----@param menuLevel number
-function System.Web.UI.WebControls.BaseMenuRenderer:RenderMenuEndTag(writer, dynamic, menuLevel) end
----@param writer System.Web.UI.HtmlTextWriter
----@param item System.Web.UI.WebControls.MenuItem
----@param isDynamicItem boolean
-function System.Web.UI.WebControls.BaseMenuRenderer:RenderItemContent(writer, item, isDynamicItem) end
----@param style System.Web.UI.WebControls.Style
----@param cssClass string
-function System.Web.UI.WebControls.BaseMenuRenderer:AddCssClass(style, cssClass) end
----@param ownerClientID string
----@param item System.Web.UI.WebControls.MenuItem
----@param suffix string
----@return string
-function System.Web.UI.WebControls.BaseMenuRenderer:GetItemClientId(ownerClientID, item, suffix) end
----@param owner System.Web.UI.WebControls.Menu
----@param writer System.Web.UI.HtmlTextWriter
----@param item System.Web.UI.WebControls.MenuItem
-function System.Web.UI.WebControls.BaseMenuRenderer:RenderItemHref(owner, writer, item) end
----@param owner System.Web.UI.WebControls.Menu
----@param item System.Web.UI.WebControls.MenuItem
----@param isDynamicItem boolean
----@return string
-function System.Web.UI.WebControls.BaseMenuRenderer:GetPopOutImage(owner, item, isDynamicItem) end
----@param owner System.Web.UI.WebControls.Menu
----@return string
-function System.Web.UI.WebControls.BaseMenuRenderer:GetArrowResourceUrl(owner) end
----@param header System.Web.UI.HtmlControls.HtmlHead
----@param dynamic boolean
----@param menuLevel number
----@param style System.Web.UI.WebControls.SubMenuStyle
-function System.Web.UI.WebControls.BaseMenuRenderer:FillMenuStyle(header, dynamic, menuLevel, style) end
----@overload fun(self: System.Web.UI.WebControls.BaseMenuRenderer, baseStyle: System.Web.UI.WebControls.Style, linkStyle: System.Web.UI.WebControls.Style, head: System.Web.UI.HtmlControls.HtmlHead)
----@overload fun(self: System.Web.UI.WebControls.BaseMenuRenderer, baseStyle: System.Web.UI.WebControls.Style, linkStyle: System.Web.UI.WebControls.Style, className: string, head: System.Web.UI.HtmlControls.HtmlHead)
----@overload fun(self: System.Web.UI.WebControls.BaseMenuRenderer, baseStyle: System.Web.UI.WebControls.Style, head: System.Web.UI.HtmlControls.HtmlHead)
----@param baseStyle System.Web.UI.WebControls.Style
----@param className string
----@param head System.Web.UI.HtmlControls.HtmlHead
-function System.Web.UI.WebControls.BaseMenuRenderer:RegisterStyle(baseStyle, className, head) end
----@param owner System.Web.UI.WebControls.Menu
----@param writer System.Web.UI.HtmlTextWriter
----@param url string
----@param standardsCompliant boolean
-function System.Web.UI.WebControls.BaseMenuRenderer:RenderSeparatorImage(owner, writer, url, standardsCompliant) end
-
----@class System.Web.UI.WebControls.BaseMenuRenderer.OwnerContext : System.Object
----@field StaticMenuItemStyle System.Web.UI.WebControls.MenuItemStyle
----@field DynamicMenuItemStyle System.Web.UI.WebControls.MenuItemStyle
----@field LevelMenuItemStyles System.Web.UI.WebControls.MenuItemStyleCollection
----@field ControlLinkStyle System.Web.UI.WebControls.Style
----@field Header System.Web.UI.HtmlControls.HtmlHead
----@field ClientID string
----@field StaticDisplayLevels number
----@field IsVertical boolean
----@field SelectedItem System.Web.UI.WebControls.MenuItem
----@field StaticSubMenuIndent System.Web.UI.WebControls.Unit
----@field StaticPopOutImageTextFormatString string
----@field DynamicPopOutImageTextFormatString string
----@field DynamicTopSeparatorImageUrl string
----@field DynamicBottomSeparatorImageUrl string
----@field StaticTopSeparatorImageUrl string
----@field StaticBottomSeparatorImageUrl string
----@field LevelMenuItemLinkStyles System.Collections.Generic.List
----@field LevelSelectedLinkStyles System.Collections.Generic.List
----@field StaticMenuItemLinkStyle System.Web.UI.WebControls.Style
----@field DynamicMenuItemLinkStyle System.Web.UI.WebControls.Style
----@field StaticSelectedStyle System.Web.UI.WebControls.MenuItemStyle
----@field DynamicSelectedStyle System.Web.UI.WebControls.MenuItemStyle
----@field StaticSelectedLinkStyle System.Web.UI.WebControls.Style
----@field DynamicSelectedLinkStyle System.Web.UI.WebControls.Style
----@field LevelSelectedStyles System.Web.UI.WebControls.MenuItemStyleCollection
----@field DynamicItemTemplate System.Web.UI.ITemplate
-System.Web.UI.WebControls.BaseMenuRenderer.OwnerContext = {}
----@alias CS.System.Web.UI.WebControls.BaseMenuRenderer.OwnerContext System.Web.UI.WebControls.BaseMenuRenderer.OwnerContext
-CS.System.Web.UI.WebControls.BaseMenuRenderer.OwnerContext = System.Web.UI.WebControls.BaseMenuRenderer.OwnerContext
-
----@param container System.Web.UI.WebControls.BaseMenuRenderer
----@return System.Web.UI.WebControls.BaseMenuRenderer.OwnerContext
-function System.Web.UI.WebControls.BaseMenuRenderer.OwnerContext.New(container) end
-
----@class System.Web.UI.WebControls.BaseValidator : System.Web.UI.WebControls.Label
----@field AssociatedControlID string
----@field ValidationGroup string
----@field SetFocusOnError boolean
----@field Text string
----@field ControlToValidate string
----@field Display System.Web.UI.WebControls.ValidatorDisplay
----@field EnableClientScript boolean
----@field Enabled boolean
----@field ErrorMessage string
----@field ForeColor System.Drawing.Color
----@field IsValid boolean
-System.Web.UI.WebControls.BaseValidator = {}
----@alias CS.System.Web.UI.WebControls.BaseValidator System.Web.UI.WebControls.BaseValidator
-CS.System.Web.UI.WebControls.BaseValidator = System.Web.UI.WebControls.BaseValidator
-
----@param component System.Object
----@return System.ComponentModel.PropertyDescriptor
-function System.Web.UI.WebControls.BaseValidator.GetValidationProperty(component) end
-function System.Web.UI.WebControls.BaseValidator:Validate() end
-
----@class System.Web.UI.WebControls.BoundColumn : System.Web.UI.WebControls.DataGridColumn
----@field thisExpr string
----@field DataField string
----@field DataFormatString string
----@field ReadOnly boolean
-System.Web.UI.WebControls.BoundColumn = {}
----@alias CS.System.Web.UI.WebControls.BoundColumn System.Web.UI.WebControls.BoundColumn
-CS.System.Web.UI.WebControls.BoundColumn = System.Web.UI.WebControls.BoundColumn
-
----@return System.Web.UI.WebControls.BoundColumn
-function System.Web.UI.WebControls.BoundColumn.New() end
-function System.Web.UI.WebControls.BoundColumn:Initialize() end
----@param cell System.Web.UI.WebControls.TableCell
----@param columnIndex number
----@param itemType System.Web.UI.WebControls.ListItemType
-function System.Web.UI.WebControls.BoundColumn:InitializeCell(cell, columnIndex, itemType) end
-
----@class System.Web.UI.WebControls.BoundField : System.Web.UI.WebControls.DataControlField
----@field ThisExpression string
----@field ApplyFormatInEditMode boolean
----@field ConvertEmptyStringToNull boolean
----@field DataField string
----@field DataFormatString string
----@field HeaderText string
----@field NullDisplayText string
----@field ReadOnly boolean
----@field HtmlEncode boolean
----@field HtmlEncodeFormatString boolean
----@field ValidateRequestMode System.Web.UI.ValidateRequestMode
-System.Web.UI.WebControls.BoundField = {}
----@alias CS.System.Web.UI.WebControls.BoundField System.Web.UI.WebControls.BoundField
-CS.System.Web.UI.WebControls.BoundField = System.Web.UI.WebControls.BoundField
-
----@return System.Web.UI.WebControls.BoundField
-function System.Web.UI.WebControls.BoundField.New() end
----@param dictionary System.Collections.Specialized.IOrderedDictionary
----@param cell System.Web.UI.WebControls.DataControlFieldCell
----@param rowState System.Web.UI.WebControls.DataControlRowState
----@param includeReadOnly boolean
-function System.Web.UI.WebControls.BoundField:ExtractValuesFromCell(dictionary, cell, rowState, includeReadOnly) end
----@param enableSorting boolean
----@param control System.Web.UI.Control
----@return boolean
-function System.Web.UI.WebControls.BoundField:Initialize(enableSorting, control) end
----@param cell System.Web.UI.WebControls.DataControlFieldCell
----@param cellType System.Web.UI.WebControls.DataControlCellType
----@param rowState System.Web.UI.WebControls.DataControlRowState
----@param rowIndex number
-function System.Web.UI.WebControls.BoundField:InitializeCell(cell, cellType, rowState, rowIndex) end
-function System.Web.UI.WebControls.BoundField:ValidateSupportsCallback() end
-
----@class System.Web.UI.WebControls.BulletStyle
----@field NotSet System.Web.UI.WebControls.BulletStyle
----@field Numbered System.Web.UI.WebControls.BulletStyle
----@field LowerAlpha System.Web.UI.WebControls.BulletStyle
----@field UpperAlpha System.Web.UI.WebControls.BulletStyle
----@field LowerRoman System.Web.UI.WebControls.BulletStyle
----@field UpperRoman System.Web.UI.WebControls.BulletStyle
----@field Disc System.Web.UI.WebControls.BulletStyle
----@field Circle System.Web.UI.WebControls.BulletStyle
----@field Square System.Web.UI.WebControls.BulletStyle
----@field CustomImage System.Web.UI.WebControls.BulletStyle
-System.Web.UI.WebControls.BulletStyle = {}
----@alias CS.System.Web.UI.WebControls.BulletStyle System.Web.UI.WebControls.BulletStyle
-CS.System.Web.UI.WebControls.BulletStyle = System.Web.UI.WebControls.BulletStyle
-
-
----@class System.Web.UI.WebControls.BulletedList : System.Web.UI.WebControls.ListControl
----@field AutoPostBack boolean
----@field SelectedIndex number
----@field SelectedItem System.Web.UI.WebControls.ListItem
----@field SelectedValue string
----@field BulletImageUrl string
----@field BulletStyle System.Web.UI.WebControls.BulletStyle
----@field Controls System.Web.UI.ControlCollection
----@field DisplayMode System.Web.UI.WebControls.BulletedListDisplayMode
----@field FirstBulletNumber number
----@field Target string
----@field Text string
----@field RenderWhenDataEmpty boolean
-System.Web.UI.WebControls.BulletedList = {}
----@alias CS.System.Web.UI.WebControls.BulletedList System.Web.UI.WebControls.BulletedList
-CS.System.Web.UI.WebControls.BulletedList = System.Web.UI.WebControls.BulletedList
-
----@return System.Web.UI.WebControls.BulletedList
-function System.Web.UI.WebControls.BulletedList.New() end
-
----@class System.Web.UI.WebControls.BulletedListDisplayMode
----@field Text System.Web.UI.WebControls.BulletedListDisplayMode
----@field HyperLink System.Web.UI.WebControls.BulletedListDisplayMode
----@field LinkButton System.Web.UI.WebControls.BulletedListDisplayMode
-System.Web.UI.WebControls.BulletedListDisplayMode = {}
----@alias CS.System.Web.UI.WebControls.BulletedListDisplayMode System.Web.UI.WebControls.BulletedListDisplayMode
-CS.System.Web.UI.WebControls.BulletedListDisplayMode = System.Web.UI.WebControls.BulletedListDisplayMode
-
-
----@class System.Web.UI.WebControls.Button : System.Web.UI.WebControls.WebControl
----@field CausesValidation boolean
----@field CommandArgument string
----@field CommandName string
----@field OnClientClick string
----@field Text string
----@field UseSubmitBehavior boolean
----@field PostBackUrl string
----@field ValidationGroup string
-System.Web.UI.WebControls.Button = {}
----@alias CS.System.Web.UI.WebControls.Button System.Web.UI.WebControls.Button
-CS.System.Web.UI.WebControls.Button = System.Web.UI.WebControls.Button
-
----@return System.Web.UI.WebControls.Button
-function System.Web.UI.WebControls.Button.New() end
-
----@class System.Web.UI.WebControls.ButtonColumn : System.Web.UI.WebControls.DataGridColumn
----@field ButtonType System.Web.UI.WebControls.ButtonColumnType
----@field CommandName string
----@field CausesValidation boolean
----@field DataTextField string
----@field DataTextFormatString string
----@field Text string
----@field ValidationGroup string
-System.Web.UI.WebControls.ButtonColumn = {}
----@alias CS.System.Web.UI.WebControls.ButtonColumn System.Web.UI.WebControls.ButtonColumn
-CS.System.Web.UI.WebControls.ButtonColumn = System.Web.UI.WebControls.ButtonColumn
-
----@return System.Web.UI.WebControls.ButtonColumn
-function System.Web.UI.WebControls.ButtonColumn.New() end
-function System.Web.UI.WebControls.ButtonColumn:Initialize() end
----@param cell System.Web.UI.WebControls.TableCell
----@param columnIndex number
----@param itemType System.Web.UI.WebControls.ListItemType
-function System.Web.UI.WebControls.ButtonColumn:InitializeCell(cell, columnIndex, itemType) end
-
----@class System.Web.UI.WebControls.ButtonField : System.Web.UI.WebControls.ButtonFieldBase
----@field CommandName string
----@field DataTextField string
----@field DataTextFormatString string
----@field ImageUrl string
----@field Text string
-System.Web.UI.WebControls.ButtonField = {}
----@alias CS.System.Web.UI.WebControls.ButtonField System.Web.UI.WebControls.ButtonField
-CS.System.Web.UI.WebControls.ButtonField = System.Web.UI.WebControls.ButtonField
-
----@return System.Web.UI.WebControls.ButtonField
-function System.Web.UI.WebControls.ButtonField.New() end
----@param sortingEnabled boolean
----@param control System.Web.UI.Control
----@return boolean
-function System.Web.UI.WebControls.ButtonField:Initialize(sortingEnabled, control) end
----@param cell System.Web.UI.WebControls.DataControlFieldCell
----@param cellType System.Web.UI.WebControls.DataControlCellType
----@param rowState System.Web.UI.WebControls.DataControlRowState
----@param rowIndex number
-function System.Web.UI.WebControls.ButtonField:InitializeCell(cell, cellType, rowState, rowIndex) end
-function System.Web.UI.WebControls.ButtonField:ValidateSupportsCallback() end
-
----@class System.Web.UI.WebControls.ButtonFieldBase : System.Web.UI.WebControls.DataControlField
----@field ButtonType System.Web.UI.WebControls.ButtonType
----@field CausesValidation boolean
----@field ShowHeader boolean
----@field ValidationGroup string
-System.Web.UI.WebControls.ButtonFieldBase = {}
----@alias CS.System.Web.UI.WebControls.ButtonFieldBase System.Web.UI.WebControls.ButtonFieldBase
-CS.System.Web.UI.WebControls.ButtonFieldBase = System.Web.UI.WebControls.ButtonFieldBase
-
-
----@class System.Web.UI.WebControls.Calendar : System.Web.UI.WebControls.WebControl
----@field Caption string
----@field CaptionAlign System.Web.UI.WebControls.TableCaptionAlign
----@field CellPadding number
----@field CellSpacing number
----@field DayHeaderStyle System.Web.UI.WebControls.TableItemStyle
----@field DayNameFormat System.Web.UI.WebControls.DayNameFormat
----@field DayStyle System.Web.UI.WebControls.TableItemStyle
----@field FirstDayOfWeek System.Web.UI.WebControls.FirstDayOfWeek
----@field NextMonthText string
----@field NextPrevFormat System.Web.UI.WebControls.NextPrevFormat
----@field NextPrevStyle System.Web.UI.WebControls.TableItemStyle
----@field OtherMonthDayStyle System.Web.UI.WebControls.TableItemStyle
----@field PrevMonthText string
----@field SelectedDate System.DateTime
----@field SelectedDates System.Web.UI.WebControls.SelectedDatesCollection
----@field SelectedDayStyle System.Web.UI.WebControls.TableItemStyle
----@field SelectionMode System.Web.UI.WebControls.CalendarSelectionMode
----@field SelectMonthText string
----@field SelectorStyle System.Web.UI.WebControls.TableItemStyle
----@field SelectWeekText string
----@field ShowDayHeader boolean
----@field ShowGridLines boolean
----@field ShowNextPrevMonth boolean
----@field ShowTitle boolean
----@field TitleFormat System.Web.UI.WebControls.TitleFormat
----@field TitleStyle System.Web.UI.WebControls.TableItemStyle
----@field TodayDayStyle System.Web.UI.WebControls.TableItemStyle
----@field TodaysDate System.DateTime
----@field UseAccessibleHeader boolean
----@field VisibleDate System.DateTime
----@field WeekendDayStyle System.Web.UI.WebControls.TableItemStyle
----@field SupportsDisabledAttribute boolean
-System.Web.UI.WebControls.Calendar = {}
----@alias CS.System.Web.UI.WebControls.Calendar System.Web.UI.WebControls.Calendar
-CS.System.Web.UI.WebControls.Calendar = System.Web.UI.WebControls.Calendar
-
----@return System.Web.UI.WebControls.Calendar
-function System.Web.UI.WebControls.Calendar.New() end
-
----@class System.Web.UI.WebControls.CalendarDay : System.Object
----@field Date System.DateTime
----@field DayNumberText string
----@field IsOtherMonth boolean
----@field IsSelectable boolean
----@field IsSelected boolean
----@field IsToday boolean
----@field IsWeekend boolean
-System.Web.UI.WebControls.CalendarDay = {}
----@alias CS.System.Web.UI.WebControls.CalendarDay System.Web.UI.WebControls.CalendarDay
-CS.System.Web.UI.WebControls.CalendarDay = System.Web.UI.WebControls.CalendarDay
-
----@param date System.DateTime
----@param isWeekend boolean
----@param isToday boolean
----@param isSelected boolean
----@param isOtherMonth boolean
----@param dayNumberText string
----@return System.Web.UI.WebControls.CalendarDay
-function System.Web.UI.WebControls.CalendarDay.New(date, isWeekend, isToday, isSelected, isOtherMonth, dayNumberText) end
-
----@class System.Web.UI.WebControls.ChangePassword : System.Web.UI.WebControls.CompositeControl
----@field CancelButtonCommandName string
----@field ChangePasswordButtonCommandName string
----@field ContinueButtonCommandName string
----@field BorderPadding number
----@field CancelButtonImageUrl string
----@field CancelButtonStyle System.Web.UI.WebControls.Style
----@field CancelButtonText string
----@field CancelButtonType System.Web.UI.WebControls.ButtonType
----@field CancelDestinationPageUrl string
----@field ChangePasswordButtonImageUrl string
----@field ChangePasswordButtonStyle System.Web.UI.WebControls.Style
----@field ChangePasswordButtonText string
----@field ChangePasswordButtonType System.Web.UI.WebControls.ButtonType
----@field ChangePasswordFailureText string
----@field ChangePasswordTemplate System.Web.UI.ITemplate
----@field ChangePasswordTemplateContainer System.Web.UI.Control
----@field ChangePasswordTitleText string
----@field ConfirmNewPassword string
----@field ConfirmNewPasswordLabelText string
----@field ConfirmPasswordCompareErrorMessage string
----@field ConfirmPasswordRequiredErrorMessage string
----@field ContinueButtonImageUrl string
----@field ContinueButtonStyle System.Web.UI.WebControls.Style
----@field ContinueButtonText string
----@field ContinueButtonType System.Web.UI.WebControls.ButtonType
----@field ContinueDestinationPageUrl string
----@field CreateUserIconUrl string
----@field CreateUserText string
----@field CreateUserUrl string
----@field CurrentPassword string
----@field DisplayUserName boolean
----@field EditProfileIconUrl string
----@field EditProfileText string
----@field EditProfileUrl string
----@field FailureTextStyle System.Web.UI.WebControls.TableItemStyle
----@field HelpPageIconUrl string
----@field HelpPageText string
----@field HelpPageUrl string
----@field HyperLinkStyle System.Web.UI.WebControls.TableItemStyle
----@field InstructionText string
----@field InstructionTextStyle System.Web.UI.WebControls.TableItemStyle
----@field LabelStyle System.Web.UI.WebControls.TableItemStyle
----@field MailDefinition System.Web.UI.WebControls.MailDefinition
----@field MembershipProvider string
----@field NewPassword string
----@field NewPasswordLabelText string
----@field NewPasswordRegularExpression string
----@field NewPasswordRegularExpressionErrorMessage string
----@field NewPasswordRequiredErrorMessage string
----@field PasswordHintStyle System.Web.UI.WebControls.TableItemStyle
----@field PasswordHintText string
----@field PasswordLabelText string
----@field PasswordRecoveryIconUrl string
----@field PasswordRecoveryText string
----@field PasswordRecoveryUrl string
----@field PasswordRequiredErrorMessage string
----@field RenderOuterTable boolean
----@field SuccessPageUrl string
----@field SuccessTemplate System.Web.UI.ITemplate
----@field SuccessTemplateContainer System.Web.UI.Control
----@field SuccessText string
----@field SuccessTextStyle System.Web.UI.WebControls.TableItemStyle
----@field SuccessTitleText string
----@field TextBoxStyle System.Web.UI.WebControls.Style
----@field TitleTextStyle System.Web.UI.WebControls.TableItemStyle
----@field UserName string
----@field UserNameLabelText string
----@field UserNameRequiredErrorMessage string
----@field ValidatorTextStyle System.Web.UI.WebControls.Style
-System.Web.UI.WebControls.ChangePassword = {}
----@alias CS.System.Web.UI.WebControls.ChangePassword System.Web.UI.WebControls.ChangePassword
-CS.System.Web.UI.WebControls.ChangePassword = System.Web.UI.WebControls.ChangePassword
-
----@return System.Web.UI.WebControls.ChangePassword
-function System.Web.UI.WebControls.ChangePassword.New() end
-
----@class System.Web.UI.WebControls.ChangePassword.BaseChangePasswordContainer : System.Web.UI.Control
-System.Web.UI.WebControls.ChangePassword.BaseChangePasswordContainer = {}
----@alias CS.System.Web.UI.WebControls.ChangePassword.BaseChangePasswordContainer System.Web.UI.WebControls.ChangePassword.BaseChangePasswordContainer
-CS.System.Web.UI.WebControls.ChangePassword.BaseChangePasswordContainer = System.Web.UI.WebControls.ChangePassword.BaseChangePasswordContainer
-
----@param owner System.Web.UI.WebControls.ChangePassword
----@return System.Web.UI.WebControls.ChangePassword.BaseChangePasswordContainer
-function System.Web.UI.WebControls.ChangePassword.BaseChangePasswordContainer.New(owner) end
----@param template System.Web.UI.ITemplate
-function System.Web.UI.WebControls.ChangePassword.BaseChangePasswordContainer:InstantiateTemplate(template) end
-
----@class System.Web.UI.WebControls.ChangePassword.ChangePasswordContainer : System.Web.UI.WebControls.ChangePassword.BaseChangePasswordContainer
----@field UserNameTextBox System.Web.UI.IEditableTextControl
----@field CurrentPasswordTextBox System.Web.UI.IEditableTextControl
----@field NewPasswordTextBox System.Web.UI.IEditableTextControl
----@field ConfirmNewPasswordTextBox System.Web.UI.IEditableTextControl
----@field CancelButton System.Web.UI.Control
----@field ChangePasswordButton System.Web.UI.Control
----@field FailureTextLiteral System.Web.UI.ITextControl
-System.Web.UI.WebControls.ChangePassword.ChangePasswordContainer = {}
----@alias CS.System.Web.UI.WebControls.ChangePassword.ChangePasswordContainer System.Web.UI.WebControls.ChangePassword.ChangePasswordContainer
-CS.System.Web.UI.WebControls.ChangePassword.ChangePasswordContainer = System.Web.UI.WebControls.ChangePassword.ChangePasswordContainer
-
----@param owner System.Web.UI.WebControls.ChangePassword
----@return System.Web.UI.WebControls.ChangePassword.ChangePasswordContainer
-function System.Web.UI.WebControls.ChangePassword.ChangePasswordContainer.New(owner) end
-
----@class System.Web.UI.WebControls.ChangePassword.ChangePasswordDeafultTemplate : System.Object
-System.Web.UI.WebControls.ChangePassword.ChangePasswordDeafultTemplate = {}
----@alias CS.System.Web.UI.WebControls.ChangePassword.ChangePasswordDeafultTemplate System.Web.UI.WebControls.ChangePassword.ChangePasswordDeafultTemplate
-CS.System.Web.UI.WebControls.ChangePassword.ChangePasswordDeafultTemplate = System.Web.UI.WebControls.ChangePassword.ChangePasswordDeafultTemplate
-
----@param container System.Web.UI.Control
-function System.Web.UI.WebControls.ChangePassword.ChangePasswordDeafultTemplate:InstantiateIn(container) end
-
----@class System.Web.UI.WebControls.ChangePassword.SuccessDefaultTemplate : System.Object
-System.Web.UI.WebControls.ChangePassword.SuccessDefaultTemplate = {}
----@alias CS.System.Web.UI.WebControls.ChangePassword.SuccessDefaultTemplate System.Web.UI.WebControls.ChangePassword.SuccessDefaultTemplate
-CS.System.Web.UI.WebControls.ChangePassword.SuccessDefaultTemplate = System.Web.UI.WebControls.ChangePassword.SuccessDefaultTemplate
-
----@param container System.Web.UI.Control
-function System.Web.UI.WebControls.ChangePassword.SuccessDefaultTemplate:InstantiateIn(container) end
-
----@class System.Web.UI.WebControls.ChangePassword.SuccessContainer : System.Web.UI.WebControls.ChangePassword.BaseChangePasswordContainer
----@field ChangePasswordButton System.Web.UI.Control
-System.Web.UI.WebControls.ChangePassword.SuccessContainer = {}
----@alias CS.System.Web.UI.WebControls.ChangePassword.SuccessContainer System.Web.UI.WebControls.ChangePassword.SuccessContainer
-CS.System.Web.UI.WebControls.ChangePassword.SuccessContainer = System.Web.UI.WebControls.ChangePassword.SuccessContainer
-
----@param owner System.Web.UI.WebControls.ChangePassword
----@return System.Web.UI.WebControls.ChangePassword.SuccessContainer
-function System.Web.UI.WebControls.ChangePassword.SuccessContainer.New(owner) end
-
----@class System.Web.UI.WebControls.CheckBox : System.Web.UI.WebControls.WebControl
----@field AutoPostBack boolean
----@field CausesValidation boolean
----@field Checked boolean
----@field InputAttributes System.Web.UI.AttributeCollection
----@field LabelAttributes System.Web.UI.AttributeCollection
----@field Text string
----@field TextAlign System.Web.UI.WebControls.TextAlign
----@field ValidationGroup string
-System.Web.UI.WebControls.CheckBox = {}
----@alias CS.System.Web.UI.WebControls.CheckBox System.Web.UI.WebControls.CheckBox
-CS.System.Web.UI.WebControls.CheckBox = System.Web.UI.WebControls.CheckBox
-
----@return System.Web.UI.WebControls.CheckBox
-function System.Web.UI.WebControls.CheckBox.New() end
-
----@class System.Web.UI.WebControls.CheckBoxField : System.Web.UI.WebControls.BoundField
----@field ApplyFormatInEditMode boolean
----@field ConvertEmptyStringToNull boolean
----@field DataField string
----@field DataFormatString string
----@field HtmlEncode boolean
----@field HtmlEncodeFormatString boolean
----@field NullDisplayText string
----@field Text string
-System.Web.UI.WebControls.CheckBoxField = {}
----@alias CS.System.Web.UI.WebControls.CheckBoxField System.Web.UI.WebControls.CheckBoxField
-CS.System.Web.UI.WebControls.CheckBoxField = System.Web.UI.WebControls.CheckBoxField
-
----@return System.Web.UI.WebControls.CheckBoxField
-function System.Web.UI.WebControls.CheckBoxField.New() end
----@param dictionary System.Collections.Specialized.IOrderedDictionary
----@param cell System.Web.UI.WebControls.DataControlFieldCell
----@param rowState System.Web.UI.WebControls.DataControlRowState
----@param includeReadOnly boolean
-function System.Web.UI.WebControls.CheckBoxField:ExtractValuesFromCell(dictionary, cell, rowState, includeReadOnly) end
-function System.Web.UI.WebControls.CheckBoxField:ValidateSupportsCallback() end
-
----@class System.Web.UI.WebControls.CheckBoxList : System.Web.UI.WebControls.ListControl
----@field CellPadding number
----@field CellSpacing number
----@field RepeatColumns number
----@field RepeatDirection System.Web.UI.WebControls.RepeatDirection
----@field RepeatLayout System.Web.UI.WebControls.RepeatLayout
----@field TextAlign System.Web.UI.WebControls.TextAlign
----@field RenderWhenDataEmpty boolean
-System.Web.UI.WebControls.CheckBoxList = {}
----@alias CS.System.Web.UI.WebControls.CheckBoxList System.Web.UI.WebControls.CheckBoxList
-CS.System.Web.UI.WebControls.CheckBoxList = System.Web.UI.WebControls.CheckBoxList
-
----@return System.Web.UI.WebControls.CheckBoxList
-function System.Web.UI.WebControls.CheckBoxList.New() end
-
----@class System.Web.UI.WebControls.ChildTable : System.Web.UI.WebControls.Table
-System.Web.UI.WebControls.ChildTable = {}
----@alias CS.System.Web.UI.WebControls.ChildTable System.Web.UI.WebControls.ChildTable
-CS.System.Web.UI.WebControls.ChildTable = System.Web.UI.WebControls.ChildTable
-
----@param parent System.Web.UI.Control
----@return System.Web.UI.WebControls.ChildTable
-function System.Web.UI.WebControls.ChildTable.New(parent) end
-
----@class System.Web.UI.WebControls.CircleHotSpot : System.Web.UI.WebControls.HotSpot
----@field Radius number
----@field X number
----@field Y number
-System.Web.UI.WebControls.CircleHotSpot = {}
----@alias CS.System.Web.UI.WebControls.CircleHotSpot System.Web.UI.WebControls.CircleHotSpot
-CS.System.Web.UI.WebControls.CircleHotSpot = System.Web.UI.WebControls.CircleHotSpot
-
----@return System.Web.UI.WebControls.CircleHotSpot
-function System.Web.UI.WebControls.CircleHotSpot.New() end
----@return string
-function System.Web.UI.WebControls.CircleHotSpot:GetCoordinates() end
-
----@class System.Web.UI.WebControls.CollectionDataSource : System.Object
-System.Web.UI.WebControls.CollectionDataSource = {}
----@alias CS.System.Web.UI.WebControls.CollectionDataSource System.Web.UI.WebControls.CollectionDataSource
-CS.System.Web.UI.WebControls.CollectionDataSource = System.Web.UI.WebControls.CollectionDataSource
-
----@param collection System.Collections.IEnumerable
----@return System.Web.UI.WebControls.CollectionDataSource
-function System.Web.UI.WebControls.CollectionDataSource.New(collection) end
----@param viewName string
----@return System.Web.UI.DataSourceView
-function System.Web.UI.WebControls.CollectionDataSource:GetView(viewName) end
----@return System.Collections.ICollection
-function System.Web.UI.WebControls.CollectionDataSource:GetViewNames() end
-
----@class System.Web.UI.WebControls.CollectionDataSourceView : System.Web.UI.DataSourceView
-System.Web.UI.WebControls.CollectionDataSourceView = {}
----@alias CS.System.Web.UI.WebControls.CollectionDataSourceView System.Web.UI.WebControls.CollectionDataSourceView
-CS.System.Web.UI.WebControls.CollectionDataSourceView = System.Web.UI.WebControls.CollectionDataSourceView
-
----@param owner System.Web.UI.IDataSource
----@param viewName string
----@param collection System.Collections.IEnumerable
----@return System.Web.UI.WebControls.CollectionDataSourceView
-function System.Web.UI.WebControls.CollectionDataSourceView.New(owner, viewName, collection) end
