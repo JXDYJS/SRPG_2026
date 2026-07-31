@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: Strength
   m_EditorClassIdentifier: 
   ID: strength
-  Name: "\u529B\u91CF\u589E\u76CA"
+  Name: Strength
   Icon: {fileID: 0}
-  Description: "\u589E\u52A0\u653B\u51FB\u529B"
+  Description: Increases ATK
   Stacks: 0
   MaxStacks: 9999
   IsDebuff: 0

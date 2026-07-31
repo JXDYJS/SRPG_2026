@@ -7,7 +7,7 @@ local BuffFortitude = BuffBase.extends(BuffBase)
 
 function BuffFortitude:ctor(stacks)
     self.super.ctor(self, stacks or 1)
-    self.Name = "铁骨"
+    self.Name = "Fortitude"
     self.MaxStacks = 1
     self.DecayAtTurnStart = false
     self.DefBonus = 2

@@ -6,7 +6,7 @@ local BuffPreciseShot = BuffBase.extends(BuffBase)
 
 function BuffPreciseShot:ctor(stacks)
     self.super.ctor(self, stacks or 1)
-    self.Name = "精准射击"
+    self.Name = "PreciseShot"
     self.MaxStacks = 1
     self.DecayAtTurnStart = false
     self.MinDistance = 2

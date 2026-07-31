@@ -13,7 +13,7 @@ namespace GamePlay.Buff
 
         private void OnEnable()
         {
-            if (string.IsNullOrEmpty(Name)) Name = "吸血";
+            if (string.IsNullOrEmpty(Name)) Name = "Vampire";
         }
 
         public override void OnApply(MapUnit owner)

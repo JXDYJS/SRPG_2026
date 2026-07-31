@@ -12,7 +12,7 @@ namespace GamePlay.Buff
 
         private void OnEnable()
         {
-            if (string.IsNullOrEmpty(Name)) Name = "守护";
+            if (string.IsNullOrEmpty(Name)) Name = "Ward";
         }
 
         public override void OnApply(MapUnit owner)

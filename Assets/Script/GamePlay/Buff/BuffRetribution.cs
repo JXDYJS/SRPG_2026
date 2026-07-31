@@ -15,7 +15,7 @@ namespace GamePlay.Buff
 
         private void OnEnable()
         {
-            if (string.IsNullOrEmpty(Name)) Name = "惩戒";
+            if (string.IsNullOrEmpty(Name)) Name = "Retribution";
         }
 
         public override void OnApply(MapUnit owner)

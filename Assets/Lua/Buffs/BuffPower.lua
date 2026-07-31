@@ -7,7 +7,7 @@ local BuffPower = BuffBase.extends(BuffStrength)
 ---跟strength的区别是不会掉层
 function BuffPower:ctor(stacks)
     self.super.ctor(self, stacks or 1)
-    self.Name = "力量强化"
+    self.Name = "Power"
     self.DecayAtTurnStart = false
 end
 

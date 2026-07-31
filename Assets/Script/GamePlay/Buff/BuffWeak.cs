@@ -11,7 +11,7 @@ namespace GamePlay.Buff
 
         private void OnEnable()
         {
-            if (string.IsNullOrEmpty(Name)) Name = "虚弱";
+            if (string.IsNullOrEmpty(Name)) Name = "Weak";
         }
 
         public override void OnApply(MapUnit owner)
