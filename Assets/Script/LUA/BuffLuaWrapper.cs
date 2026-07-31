@@ -23,6 +23,15 @@ namespace Lua
 
         public override bool IsTaunt => _isTaunt;
 
+        /// <summary>
+        /// 安全读取可选 Lua bool 字段：未声明(nil)时兜底为 false，避免 InvalidCastException。
+        /// 只有声明了该字段的 Lua Buff 才会返回 true，普通 Buff 无需配置。
+        /// </summary>
+        private bool ReadOptionalBool(string key)
+        {
+            return LuaInstance.Get<object>(key) is bool b && b;
+        }
+
         public void Bind(LuaTable instance)
         {
             LuaInstance = instance;
@@ -41,7 +50,7 @@ namespace Lua
             MaxStacks = LuaInstance.Get<int>("MaxStacks");
             IsDebuff = LuaInstance.Get<bool>("IsDebuff");
             DecayAtTurnStart = LuaInstance.Get<bool>("DecayAtTurnStart");
-            _isTaunt = LuaInstance.Get<bool>("IsTaunt");
+            _isTaunt = ReadOptionalBool("IsTaunt");
 
             // 优先使用 Lua 侧配置的展示名，缺省回退到 BuffID
             string luaName = LuaInstance.Get<string>("Name");
