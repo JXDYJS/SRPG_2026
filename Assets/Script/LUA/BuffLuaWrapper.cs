@@ -19,6 +19,10 @@ namespace Lua
         private LuaFunction _onBeHurt;
         private LuaFunction _onStacksChanged;
 
+        private bool _isTaunt;
+
+        public override bool IsTaunt => _isTaunt;
+
         public void Bind(LuaTable instance)
         {
             LuaInstance = instance;
@@ -37,6 +41,7 @@ namespace Lua
             MaxStacks = LuaInstance.Get<int>("MaxStacks");
             IsDebuff = LuaInstance.Get<bool>("IsDebuff");
             DecayAtTurnStart = LuaInstance.Get<bool>("DecayAtTurnStart");
+            _isTaunt = LuaInstance.Get<bool>("IsTaunt");
 
             // 优先使用 Lua 侧配置的展示名，缺省回退到 BuffID
             string luaName = LuaInstance.Get<string>("Name");

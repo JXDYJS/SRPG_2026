@@ -9,6 +9,7 @@ function BuffTaunt:ctor(stacks)
     self.Name = "Taunt"
     self.MaxStacks = 5
     self.DecayAtTurnStart = true
+    self.IsTaunt = true
 end
 
 ---@param owner GamePlay.Units.MapUnit

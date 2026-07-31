@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Managers;
-using GamePlay.Buff;
 using GamePlay.Grid;
 using GamePlay.Skill;
 using GamePlay.Units;
@@ -25,16 +24,14 @@ namespace GamePlay.AI
     /// </summary>
     public static class TauntSystem
     {
-        public const string TAUNT_BUFF_ID = "taunt";
-
         /// <summary>
-        /// 单位是否处于嘲讽状态（存活且携带 taunt Buff）
+        /// 单位是否处于嘲讽状态（存活且携带带 IsTaunt 标记的 Buff）
         /// </summary>
         public static bool IsTaunting(MapUnit unit)
         {
             if (unit == null || unit.Character == null) return false;
             if (unit.CurrentState == UnitState.Dead) return false;
-            return BuffManager.FindBuffByID(unit, TAUNT_BUFF_ID) != null;
+            return unit.ActiveBuffs.Exists(b => b != null && b.IsTaunt);
         }
 
         /// <summary>
