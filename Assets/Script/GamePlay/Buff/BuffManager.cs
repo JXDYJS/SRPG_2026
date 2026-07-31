@@ -50,16 +50,24 @@ namespace GamePlay.Buff
             }
             else
             {
-                var handle = Addressables.LoadAssetAsync<BuffBase>(key);
-                template = handle.WaitForCompletion();
+                try
+                {
+                    var handle = Addressables.LoadAssetAsync<BuffBase>(key);
+                    template = handle.WaitForCompletion();
 
-                if (template != null)
-                {
-                    _templateCache[key] = template;
+                    if (template != null)
+                    {
+                        _templateCache[key] = template;
+                    }
+                    else
+                    {
+                        Addressables.Release(handle);
+                        return null;
+                    }
                 }
-                else
+                catch (InvalidKeyException)
                 {
-                    Addressables.Release(handle);
+                    // key 不在 Addressables 中，交给反射/Lua 兜底解析
                     return null;
                 }
             }
