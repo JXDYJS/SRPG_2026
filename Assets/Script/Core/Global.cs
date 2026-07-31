@@ -121,6 +121,7 @@ namespace Global
             Normal,
             Skill,
             Environment,
+            ForceKill,
         }
         public enum TransitType { None, Projectile, Teleport }
 

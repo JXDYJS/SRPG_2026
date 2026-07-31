@@ -669,7 +669,7 @@ namespace GamePlay.Units
             return tiles;
         }
 
-        private void Die()
+        protected virtual void Die()
         {
             Debug.Log($"{name} has died.");
             UndoSystem.Instance.RegisterDirty(this);
