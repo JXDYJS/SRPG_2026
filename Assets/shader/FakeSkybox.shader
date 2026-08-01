@@ -31,6 +31,7 @@ Shader "Skybox/Fakeskybox"
         [Header(Volumetric Clouds)]
         [Toggle] _EnableClouds ("Enable Volumetric Clouds", Float) = 1
         _CloudWetness ("Cloud Wetness", Range(0, 1)) = 0.0
+        [NoScaleOffset] _CloudNoise3D ("Cloud Noise 3D (128^3 RGBA8)", 3D) = "white" {}
     }
 
     HLSLINCLUDE
@@ -156,7 +157,7 @@ Shader "Skybox/Fakeskybox"
         // 天空散射闭式：ω * (1 - trans)
         float3 skyScatter = skyColor * CLOUD_SCATTER_ALBEDO * (1.0 - cloudTransmittance);
 
-        return skyColor * cloudTransmittance + cloudColor + skyScatter;
+        return cloudColor;
     }
     ENDHLSL
 
@@ -211,7 +212,7 @@ Shader "Skybox/Fakeskybox"
                 float3 skyColorWithClouds = CompositeClouds(skyColor, viewDir, sunDir, sunColor, _CloudWetness);
                 float3 color = lerp(skyColor, skyColorWithClouds, _EnableClouds);
                 //color = float3(0.0,1.0,0.0);
-                return float4(color, 1.0);
+                return float4(skyColorWithClouds, 1.0);
             }
             ENDHLSL
         }
