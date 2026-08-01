@@ -345,8 +345,12 @@ namespace GamePlay.AI
                 if (accumulatedCost > ctx.MoveRange)
                     break;
 
-                if (UnitManager.Instance.GetUnitAt(tile) != null)
+                if (!ctx.ReachableTiles.Contains(tile))
                 {
+                    // 不可达的推进格直接排除（评分视为 0）：
+                    // ReachableTiles 已预计算一步可达集（含占用/高度/移动力约束），
+                    // 保证生成的 MoveTask 目标一定可达，不会在竞价时被 MoveTask.CalculateUtilityFor 的
+                    // ReachableTiles 门槛 SKIPPED，从而保住"前压"任务
                     lastPos = tile;
                     continue;
                 }
