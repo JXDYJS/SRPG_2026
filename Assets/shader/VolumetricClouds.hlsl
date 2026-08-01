@@ -125,10 +125,15 @@ float4 SetCloudPos(float3 worldPos, float2 cloudAltitude, float planetRadius, fl
 //   2) 用 block 采样低频形状噪声（CloudNoise3D，128^3 RGBA8，需要你导入为 Texture3D）：
 //        baseDensity 混合 = baseNoise.y * 0.4 + baseNoise.z * 0.4 + baseNoise.w * 0.2
 //        baseDensity = remapSaturate(baseNoise.x, baseDensity - 1.0, 1.0)
-//   3) 高度塑形（让云只出现在层内）：
+//   3) 垂直密度剖面（下厚上薄，共 4 项；"层内约束"由 SetCloudPos 的
+//      w = remapSaturate(...) 完成，不在这里）：
 //        shapeCurve = curveTop(saturate(1.0 - cloudPos.w)) * 0.5
 //                   + curve(saturate(1.15 - cloudPos.w * 1.43)) * 0.5
 //        baseDensity *= shapeCurve
+//        baseDensity *= fsqrt(saturate(cloudPos.w * 2.5)) * 0.2 + 0.8;
+//        baseDensity *= lerp(1.0, curveTop(saturate(cloudPos.w * 3.0)), wetness);
+//        baseDensity *= curve(saturate(cloudPos.w * 1.8 - 0.8)) * 2.0 + 1.0;
+//        baseDensity *= curveTop(saturate(cloudPos.w * 1.8));
 //   4) 覆盖率（XZ 粗采样）：
 //        coverageNoise 采样坐标 = cloudPos.xyz * CLOUD_COVERAGE_NOISE_SCALE
 //                               + windDirection + CLOUD_COVERAGE_NOISE_OFFSET
@@ -143,10 +148,22 @@ float SampleDensityDiscrete(float4 cloudPos, float3 windDirection, float wetness
 
     // 全局声明的 _CloudNoise3D 直接采样，无需传参
     float4 baseNoise = SAMPLE_TEXTURE3D_LOD(_CloudNoise3D, sampler_CloudNoise3D, block, 0);
+    float density = baseNoise.y * 0.4 + baseNoise.z * 0.4 + baseNoise.w * 0.2;
+    density = remapSaturate(baseNoise.x,density - 1.0,1.0);
+
+    // ========== 垂直密度剖面（下厚上薄，共 4 项） ==========
+    float shapeCurve = curveTop(saturate(1.0 - cloudPos.w)) * 0.5;
+    shapeCurve += curve(saturate(1.15 - cloudPos.w * 1.43)) * 0.5;
+    density *= shapeCurve;
+    density *= fsqrt(saturate(cloudPos.w * 2.5)) * 0.2 + 0.8;
+    density *= lerp(1.0, curveTop(saturate(cloudPos.w * 3.0)), wetness);
+    density *= curve(saturate(cloudPos.w * 1.8 - 0.8)) * 2.0 + 1.0;
+    density *= curveTop(saturate(cloudPos.w * 1.8));
+    density = saturate(density);
 
     // 混合 = baseNoise.y*0.4 + baseNoise.z*0.4 + baseNoise.w*0.2
     // baseDensity = remapSaturate(baseNoise.x, 混合 - 1.0, 1.0)
-    // ...高度塑形 / 覆盖率...
+    // ...覆盖率...
     // return step(CLOUD_OCCUPANCY_THRESHOLD, baseDensity); -> 0/1
     return 0.0;
 }
