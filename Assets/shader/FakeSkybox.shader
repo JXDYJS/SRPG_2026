@@ -154,17 +154,18 @@ Shader "Skybox/Fakeskybox"
         NubisCumulusDiscrete(cloudColor, viewDir, _WorldSpaceCameraPos,
             cloudAltitude, sunDir, sunColor, skyColor, windDirection, wetness, cloudTransmittance);
 
-        // ③ 大气透视：相机→云方向的大气散射（含瑞利/Mie 相位函数），替代原 skyColor*ω
-        float3 aerial = calcAtmosphericScatter(sunDir, viewDir);
-
-        // ② 大气透射率（相机→云）：云在低空光程短，衰减应温和。
-        // 注意 calcParticleThickness 估计的是整段大气，地平线方向会归零，
-        // 会把地平线云完全消光，所以用 lerp 抬升下限（软衰减，可调）。
+        // ③ 大气透视（相机→云之间那段雾，而非整段天空）：
+        //   整段天空散射 = 相机→云的散射 + (1-atmoTrans) 之后的背景，
+        //   故 aerial = 整段天空散射 × (1-atmoTrans)，远处雾多、近处雾少。
+        // 注意：calcAtmosphericScatter 返回的是到"无穷远"的散射，直接乘 (1-trans)
+        // 会把地平线整片辉光叠到远处云上导致过亮，必须先用 (1-atmoTrans) 截断。
         float uDotW = max(dot(float3(0.0, 1.0, 0.0), viewDir), 0.0);
         float opticalDepth = calcParticleThickness(uDotW);
         float3 totalCoeff = float3(_RayleighRed, _RayleighGreen, _RayleighBlue) * 1e-5
                           + float3(0.5e-6, 0.5e-6, 0.5e-6);
         float3 atmoTrans = lerp(absorb(totalCoeff, opticalDepth), 1.0, 0.6);
+
+        float3 aerial = calcAtmosphericScatter(sunDir, viewDir) * (1.0 - atmoTrans);
 
         return skyColor * cloudTransmittance
              + cloudColor * atmoTrans
