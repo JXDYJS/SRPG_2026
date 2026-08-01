@@ -69,8 +69,8 @@
 // 双波瓣 HG 相位函数（Dual-Lobe HG）：前向瓣 g_f>0 提供向阳亮部，
 // 后向瓣 g_b<0 填补背阳暗部（VdotL<0 不彻底黑），weight 为前向瓣占比
 #define CLOUD_HG_FORWARD_G 				0.8
-#define CLOUD_HG_BACKWARD_G 			-0.3
-#define CLOUD_HG_FORWARD_WEIGHT 		0.7
+#define CLOUD_HG_BACKWARD_G 			-0.2
+#define CLOUD_HG_FORWARD_WEIGHT 		0.5
 
 // ---------------- 主步进（方案B：动态步长） ----------------
 // 步长随透射率降低而增大：stepSize = lerp(CLOUD_MAX_STEP, CLOUD_MIN_STEP, transmittance)
@@ -85,11 +85,16 @@
 // ---------------- 风 ---------------- 
 // wind = 0.0005 * (frameTimeCounter * CLOUD_SPEED + 10.0 * FTC_OFFSET)
 #define CLOUD_WIND_FACTOR 				0.0005
-#define CLOUD_SPEED 					0.0
+#define CLOUD_SPEED 					1.0
 #define CLOUD_FTC_OFFSET 				0.0
 // windDirection = float3(1.0, wetness * 0.1 - 0.05, -0.4) * wind
 // 形状噪声采样风偏移系数（* 10.0）；细节噪声风偏移 * 140.0（离散版只用形状）
 #define CLOUD_BASE_NOISE_WIND 			10.0
+
+// ---------------- 大气透视（相机→云） ----------------
+// 指数大气标高（米）：控制雾随距离堆积的速率。越小雾越快堆积。
+// 光学厚度 τ(d) = totalCoeff * H/μ * (1 - exp(-μ*d/H))，μ = 视线与竖直方向夹角余弦
+#define CLOUD_ATMO_SCALE_HEIGHT 		8000.0
 
 // ---------------- 质量 / 远景 ---------------- 
 #define CLOUD_QUALITY 					1.0

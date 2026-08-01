@@ -142,6 +142,7 @@ Shader "Skybox/Fakeskybox"
     float3 CompositeClouds(float3 skyColor, float3 viewDir, float3 sunDir, float3 sunColor, float wetness) {
         float3 cloudColor = float3(0.0, 0.0, 0.0);
         float cloudTransmittance = 1.0;
+        float cloudDistance = 1e6;
 
         float2 cloudAltitude = float2(CLOUD_CLEAR_ALTITUDE, CLOUD_CLEAR_ALTITUDE + CLOUD_CLEAR_THICKNESS);
         cloudAltitude = lerp(cloudAltitude,
@@ -152,19 +153,20 @@ Shader "Skybox/Fakeskybox"
         float3 windDirection = float3(1.0, wetness * 0.1 - 0.05, -0.4) * wind;
 
         NubisCumulusDiscrete(cloudColor, viewDir, _WorldSpaceCameraPos,
-            cloudAltitude, sunDir, sunColor, skyColor, windDirection, wetness, cloudTransmittance);
+            cloudAltitude, sunDir, sunColor, skyColor, windDirection, wetness,
+            cloudTransmittance, cloudDistance);
 
-        // ③ 大气透视（相机→云之间那段雾，而非整段天空）：
-        //   整段天空散射 = 相机→云的散射 + (1-atmoTrans) 之后的背景，
-        //   故 aerial = 整段天空散射 × (1-atmoTrans)，远处雾多、近处雾少。
-        // 注意：calcAtmosphericScatter 返回的是到"无穷远"的散射，直接乘 (1-trans)
-        // 会把地平线整片辉光叠到远处云上导致过亮，必须先用 (1-atmoTrans) 截断。
-        float uDotW = max(dot(float3(0.0, 1.0, 0.0), viewDir), 0.0);
-        float opticalDepth = calcParticleThickness(uDotW);
+        // ② 大气透射率（相机→云）：用 DDA 求出的精确距离做指数大气积分，
+        //    而非整段大气近似。τ = totalCoeff * H/μ * (1 - exp(-μ*d/H))，
+        //    近处雾少（τ≈0），远处地平线雾多（τ 大），不会把地平线云叠亮。
+        float mu = max(dot(float3(0.0, 1.0, 0.0), viewDir), 0.01);
         float3 totalCoeff = float3(_RayleighRed, _RayleighGreen, _RayleighBlue) * 1e-5
                           + float3(0.5e-6, 0.5e-6, 0.5e-6);
-        float3 atmoTrans = lerp(absorb(totalCoeff, opticalDepth), 1.0, 0.6);
+        float opticalDepth = (CLOUD_ATMO_SCALE_HEIGHT / mu)
+                           * (1.0 - exp(-mu * cloudDistance / CLOUD_ATMO_SCALE_HEIGHT));
+        float3 atmoTrans = absorb(totalCoeff, opticalDepth);
 
+        // ③ 大气透视：相机→云之间那段雾的散射 = 整段天空散射 - 云后(透射)部分的散射
         float3 aerial = calcAtmosphericScatter(sunDir, viewDir) * (1.0 - atmoTrans);
 
         return skyColor * cloudTransmittance

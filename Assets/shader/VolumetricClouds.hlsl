@@ -295,14 +295,19 @@ float3 CloudLightingDiscrete(float3 worldPos, float4 cloudPos, float occupied,
 //   4) 透射率低于 CLOUD_TRANSMIT_EPS 直接退出
 //
 // 返回：cloudColor 累加进 color（inout），cloudTransmittance 单独输出。
+// cloudDistance：相机到第一块云的精确距离（米），供调用方做大气透视/透射计算。
 // 合成在调用方做：sky * trans + cloudColor + sky * ω * (1 - trans)（天空散射闭式）
 void NubisCumulusDiscrete(inout float3 color, float3 worldDir, float3 cameraPos,
     float2 cloudAltitude, float3 sunDir, float3 sunColor, float3 skyColor,
-    float3 windDirection, float wetness, out float cloudTransmittance)
+    float3 windDirection, float wetness, out float cloudTransmittance,
+    out float cloudDistance)
 {
     const float BLOCK = CLOUD_BLOCK_SIZE;
     const float planetRadius = CLOUD_PLANET_RADIUS;
     const float cloudScale = lerp(CLOUD_CLEAR_SCALE, CLOUD_RAIN_SCALE, wetness);
+
+    // 无云时给个大值：调用方按 (1-trans)=0 自然忽略，此处只是兜底
+    cloudDistance = 1e6;
 
     // ===== 1. 求视线与云层外壳的交点，确定步进区间 =====
     // 云层为行星外壳：底半径 = planetRadius + alt.x，顶半径 = planetRadius + alt.y
@@ -373,6 +378,7 @@ void NubisCumulusDiscrete(inout float3 color, float3 worldDir, float3 cameraPos,
         if (occ >= 0.5)
         {
             cloudStartT = t;   // 进入该云块的起点
+            cloudDistance = length(checkPos - cameraPos);   // 相机到第一块云的精确距离
             break;
         }
 
