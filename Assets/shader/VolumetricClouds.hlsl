@@ -320,6 +320,24 @@ void NubisCumulusDiscrete(inout float3 color, float3 worldDir, float3 cameraPos,
     tStart = tStart * (1.0 - inCloud);
     tEnd = lerp(tEnd, iInner, inCloud);
 
+    // ===== 0. 地球求交：视线打到地面则云被遮挡，直接返回 =====
+    // 用球面几何替代原来的 worldDir.y <= 0.01 平面近似判断（相机高度变化时更准）。
+    // 行星 = 半径 planetRadius 的球体，球心即 rayStartPos 坐标系原点。
+    //   1) 云层入口在出口之后（视线根本穿不过云壳，例如相机在云下向下看）→ 无云
+    //   2) 视线近交点在地球表面，且早于云层入口 → 地面遮挡云层 → 无云
+    float2 iEarth = RaySphereIntersection(rayStartPos, worldDir, planetRadius);
+    if (tEnd < tStart)
+    {
+        cloudTransmittance = 1.0;
+        return;
+    }
+    // iEarth.y > 0 表示视线确实穿过地球（近交点 iEarth.x 在相机前方）
+    if (iEarth.y > 0.0 && iEarth.x < tStart)
+    {
+        cloudTransmittance = 1.0;
+        return;
+    }
+
     // 世界坐标步进区间（与原版一致：iMarching.x * worldDir * (1-inCloud) + cameraPosition）
     // 相机在云内时起点 = 相机位置；相机在云外时起点 = 相机 + 视线方向 * tStart
     float3 marchStart = tStart * worldDir + cameraPos;
@@ -373,7 +391,10 @@ void NubisCumulusDiscrete(inout float3 color, float3 worldDir, float3 cameraPos,
 
     // 没有云 -> 透射率 1，直接返回
     cloudTransmittance = 1.0;
-    if (cloudStartT >= totalLen) return;
+    if (cloudStartT >= totalLen){
+        //cloudTransmittance = 0.0; 
+        return;
+    }
 
     // ===== 3. 传统 raymarch：动态步长，遇空块即停 =====
     float transmittance = 1.0;
