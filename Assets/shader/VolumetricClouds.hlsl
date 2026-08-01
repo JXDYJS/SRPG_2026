@@ -22,7 +22,15 @@
 // 参考原版坐标链（worldPos -> cloudPos -> 噪声坐标）：
 //   1) SetCloudPos：世界坐标 -> 行星相对高度 + 高度归一化 w + 高度变形
 //   2) 噪声坐标 = cloudPos.xyz * CLOUD_BASE_NOISE_SCALE + windDirection * 10.0
-//   3) 离散化：在噪声坐标这一层 floor 取整（做法乙：先加风再取整，方块随风平移）
+//
+// 离散体素云的关键区别（重要）：
+//   DDA 步进在世界坐标里按 CLOUD_BLOCK_SIZE 走格，所以体素网格必须世界对齐：
+//     blockMin = floor(worldPos / CLOUD_BLOCK_SIZE) * CLOUD_BLOCK_SIZE
+//   SetCloudPos 的缩放与高度变形会破坏世界方格（XZ 随高度偏移），
+//   所以"取整"必须在世界坐标做，SetCloudPos 只用来把块中心映射成噪声采样点：
+//     cloudPos = SetCloudPos(blockCenter, ...)          // 块中心是固定点 -> 整块恒值
+//     noiseCoord = cloudPos.xyz * CLOUD_BASE_NOISE_SCALE + windDirection * 10.0
+//   windDirection 仍作为采样相位偏移（云内容随风流动），但不参与取整。
 // ================================================================================
 
 #include "CloudSettings.hlsl"
@@ -113,16 +121,21 @@ float4 SetCloudPos(float3 worldPos, float2 cloudAltitude, float planetRadius, fl
 }
 
 // ---------------- TODO: 离散密度采样 ----------------
-// 输入 SetCloudPos 输出的 cloudPos，输出该体素密度（0.0 或 1.0）。
+// 输入：世界坐标 worldPos（DDA 当前块的任意点，函数内部会对齐到块）、输出该体素密度（0.0 或 1.0）。
+//
+// 关键点（为什么取整在世界坐标、而不是 cloudPos）：
+//   DDA 按 CLOUD_BLOCK_SIZE 在世界坐标步进，所以体素网格必须世界对齐：
+//     blockMin = floor(worldPos / CLOUD_BLOCK_SIZE) * CLOUD_BLOCK_SIZE
+//   SetCloudPos 的缩放与高度变形会破坏世界方格（XZ 随高度偏移），
+//   所以先在世界坐标 floor 出块，再用"块中心"调 SetCloudPos 得到噪声采样点。
+//   块中心是固定点 -> 整块恒值，无需再对噪声坐标取整。
 //
 // 参考原版 SampleDensity 的 base 部分（不包含 detail）：
-//   1) 噪声坐标（做法乙：先加风再取整，方块随风暴性平移）：
+//   1) 世界坐标取整 -> 块中心 -> SetCloudPos -> 噪声坐标：
+//        float4 cloudPos = SetCloudPos(blockCenter, cloudAltitude, planetRadius, cloudScale);
 //        float3 noiseCoord = cloudPos.xyz * CLOUD_BASE_NOISE_SCALE
 //                          + windDirection * CLOUD_BASE_NOISE_WIND;
-//        float3 block      = floor(noiseCoord / blockNoiseSize) * blockNoiseSize;
-//        其中 blockNoiseSize = CLOUD_BLOCK_SIZE * CLOUD_BASE_NOISE_SCALE
-//        （即把世界里的 CLOUD_BLOCK_SIZE 米块换算成噪声坐标里的尺寸）
-//   2) 用 block 采样低频形状噪声（CloudNoise3D，128^3 RGBA8，需要你导入为 Texture3D）：
+//   2) 用 noiseCoord 采样低频形状噪声（CloudNoise3D，128^3 RGBA8）：
 //        baseDensity 混合 = baseNoise.y * 0.4 + baseNoise.z * 0.4 + baseNoise.w * 0.2
 //        baseDensity = remapSaturate(baseNoise.x, baseDensity - 1.0, 1.0)
 //   3) 垂直密度剖面（下厚上薄，共 4 项；"层内约束"由 SetCloudPos 的
@@ -134,22 +147,27 @@ float4 SetCloudPos(float3 worldPos, float2 cloudAltitude, float planetRadius, fl
 //        baseDensity *= lerp(1.0, curveTop(saturate(cloudPos.w * 3.0)), wetness);
 //        baseDensity *= curve(saturate(cloudPos.w * 1.8 - 0.8)) * 2.0 + 1.0;
 //        baseDensity *= curveTop(saturate(cloudPos.w * 1.8));
-//   4) 覆盖率（XZ 粗采样）：
+//   4) 覆盖率（XZ 粗采样，连续未取整）：
 //        coverageNoise 采样坐标 = cloudPos.xyz * CLOUD_COVERAGE_NOISE_SCALE
 //                               + windDirection + CLOUD_COVERAGE_NOISE_OFFSET
 //        coverage 按 wetness 插值，remapSaturate(1.0 - coverageNoise, coverage*0.2, coverage)
 //   5) 最后硬切：step(CLOUD_OCCUPANCY_THRESHOLD, baseDensity) -> 0/1
-float SampleDensityDiscrete(float4 cloudPos, float3 windDirection, float wetness)
+float SampleDensityDiscrete(float3 worldPos, float3 windDirection, float wetness,
+    float2 cloudAltitude, float planetRadius, float cloudScale)
 {
     // TODO: 编写离散密度采样
-    float3 noiseCoord = cloudPos.xyz * CLOUD_BASE_NOISE_SCALE + windDirection * CLOUD_BASE_NOISE_WIND;
-    float scale = CLOUD_BLOCK_SIZE * CLOUD_BASE_NOISE_SCALE;
-    float3 block = floor(noiseCoord / scale) * scale;
+    // 1) 世界坐标取整 -> 块（网格本体，必须世界对齐）
+    float3 blockMin = floor(worldPos / CLOUD_BLOCK_SIZE) * CLOUD_BLOCK_SIZE;
+    float3 blockCenter = blockMin + 0.5 * CLOUD_BLOCK_SIZE;
 
-    // 全局声明的 _CloudNoise3D 直接采样，无需传参
-    float4 baseNoise = SAMPLE_TEXTURE3D_LOD(_CloudNoise3D, sampler_CloudNoise3D, block, 0);
+    // 2) 块中心 -> cloudPos（固定点 -> 整块恒值），再取噪声采样点
+    float4 cloudPos = SetCloudPos(blockCenter, cloudAltitude, planetRadius, cloudScale);
+    float3 noiseCoord = cloudPos.xyz * CLOUD_BASE_NOISE_SCALE + windDirection * CLOUD_BASE_NOISE_WIND;
+
+    // 3) 采样 + 混合
+    float4 baseNoise = SAMPLE_TEXTURE3D_LOD(_CloudNoise3D, sampler_CloudNoise3D, noiseCoord, 0);
     float density = baseNoise.y * 0.4 + baseNoise.z * 0.4 + baseNoise.w * 0.2;
-    density = remapSaturate(baseNoise.x,density - 1.0,1.0);
+    density = remapSaturate(baseNoise.x, density - 1.0, 1.0);
 
     // ========== 垂直密度剖面（下厚上薄，共 4 项） ==========
     float shapeCurve = curveTop(saturate(1.0 - cloudPos.w)) * 0.5;
@@ -160,12 +178,10 @@ float SampleDensityDiscrete(float4 cloudPos, float3 windDirection, float wetness
     density *= curve(saturate(cloudPos.w * 1.8 - 0.8)) * 2.0 + 1.0;
     density *= curveTop(saturate(cloudPos.w * 1.8));
     density = saturate(density);
-
-    // 混合 = baseNoise.y*0.4 + baseNoise.z*0.4 + baseNoise.w*0.2
-    // baseDensity = remapSaturate(baseNoise.x, 混合 - 1.0, 1.0)
-    // ...覆盖率...
-    // return step(CLOUD_OCCUPANCY_THRESHOLD, baseDensity); -> 0/1
-    return 0.0;
+    float coverageNoise  = SAMPLE_TEXTURE3D_LOD(_CloudNoise3D, sampler_CloudNoise3D, cloudPos.xyz * CLOUD_COVERAGE_NOISE_SCALE + windDirection + CLOUD_COVERAGE_NOISE_OFFSET, 0).x;
+    float coverage = 1.0  - remapSaturate(1.0 - coverageNoise,CLOUD_COVERAGE * 0.2,CLOUD_COVERAGE);
+    density *= coverage;
+    return step(CLOUD_OCCUPANCY_THRESHOLD,density);
 }
 
 // ---------------- TODO: 离散光照 ----------------
@@ -181,7 +197,9 @@ float3 CloudLightingDiscrete(float3 worldPos, float4 cloudPos, float occupied,
     float3 sunDir, float3 sunColor, float3 skyColor, float3 windDirection, float wetness,
     float2 cloudAltitude, float planetRadius, float cloudScale)
 {
-    // TODO: 编写离散光照（逐体素向太阳计数的光步进）
+    if(occupied < 0.5) return float3(0.0,0.0,0.0);
+    float transmittance = 1.0;
+    float3 lowBoundary = floor(cloudPos);
     return float3(0.0, 0.0, 0.0);
 }
 

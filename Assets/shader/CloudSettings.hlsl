@@ -52,6 +52,7 @@
 #define CLOUD_RAIN_SKYLIGHTING			0.8
 #define CLOUD_CLEAR_SCALE 				1.0
 #define CLOUD_RAIN_SCALE 				1.0
+#define CLOUD_COVERAGE                  0.5
 
 // ---------------- 光照 ---------------- 
 #define CLOUD_BOTTOM_BRIGHTNESS 		0.15
