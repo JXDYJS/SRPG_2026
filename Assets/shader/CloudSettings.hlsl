@@ -59,6 +59,11 @@
 #define CLOUD_OUTSCATTER_FACTOR 		1.3
 // 主步进透射率早停阈值
 #define CLOUD_TRANSMIT_EPS 				0.0001
+// 光步进（向太阳方向逐块 DDA）：最大步数 / 单块消光系数 / 强度
+#define CLOUD_LIGHT_STEPS 				16 		// [4 8 12 16 24 32]
+#define CLOUD_LIGHT_EXTINCTION 			0.15 	// [0.05 0.1 0.15 0.2 0.3 0.5]
+#define CLOUD_LIGHT_SUN_MUL 			24.0
+#define CLOUD_LIGHT_SKY_MUL 			0.35
 
 // ---------------- 风 ---------------- 
 // wind = 0.0005 * (frameTimeCounter * CLOUD_SPEED + 10.0 * FTC_OFFSET)

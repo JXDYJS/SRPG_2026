@@ -186,23 +186,89 @@ float SampleDensityDiscrete(float3 worldPos, float3 windDirection, float wetness
     return step(CLOUD_OCCUPANCY_THRESHOLD,density);
 }
 
-// ---------------- TODO: 离散光照 ----------------
+// ---------------- 离散光照（光步进 DDA） ----------------
 // 输入：命中体素的世界坐标 / 该体素密度 / cloudPos / 太阳方向，输出光照颜色。
 //
-// 参考原版 CloudLighting 的"光步进"改成逐体素计数：
-//   - 从命中体素沿 worldShadowVector（太阳方向）逐块 DDA 走 cap 步（如 8~16 块），
-//     用 SampleDensityDiscrete 累计"太阳方向上被遮挡的体素数量" sumOcc
-//   - 阳光透射 = exp2(-sumOcc * 消光系数)，得到清晰的硬边方块阴影
-//   - 主散射 = 阳光透射 * HenyeyGreenstein(VdotL, 0.65) * 太阳光颜色
-//   - 环境光 = (1 - 密度) * fsqrt(cloudPos.w) * 天空光颜色
+// 思路：从命中块沿太阳方向逐块 DDA（Amanatides & Woo）推进，累计"光学厚度"
+//       （路上被占据的块数 sumOcc）。空块即停（射线已离开云）。消光 exp2(-sumOcc * k)
+//       得到硬边方块阴影；再叠加 HG 相位 + 环境光。
+//
+// 到达下一块的距离：
+//   tMax = (下一块边界 - 当前点) / sunDir，取三轴最小值即最近边界。
+//   浮点注意：sunDir 某轴分量为 0 时不能除，需给该轴极大值（不参与比较）。
+//   典型实现：
+//     stepSign = sign(sunDir);   // 每轴 +1 / -1 / 0
+//     tDelta   = CLOUD_BLOCK_SIZE / abs(sunDir);          // 穿过一块的距离（沿射线）
+//     tMax     = ((cell + max(stepSign,0)) * BLOCK - pos) / sunDir;  // 到最近边界的距离
+//     while (...) { 选 min(tMax) 的轴推进：cell += stepSign；tMax += tDelta；... }
 float3 CloudLightingDiscrete(float3 worldPos, float4 cloudPos, float occupied,
     float3 sunDir, float3 sunColor, float3 skyColor, float3 windDirection, float wetness,
     float2 cloudAltitude, float planetRadius, float cloudScale)
 {
-    if(occupied < 0.5) return float3(0.0,0.0,0.0);
-    float transmittance = 1.0;
-    float3 lowBoundary = floor(cloudPos);
-    return float3(0.0, 0.0, 0.0);
+    if (occupied < 0.5) return float3(0.0, 0.0, 0.0);
+
+    const float BLOCK = CLOUD_BLOCK_SIZE;
+
+    // ===== 光步进 DDA：从当前块向太阳方向逐块推进 =====
+    // 起点：当前块的左下角（世界对齐）
+    float3 rayPos = floor(worldPos / BLOCK) * BLOCK;
+    float3 cell = floor(rayPos / BLOCK);
+    float3 stepSign = sign(sunDir);
+    float3 dirAbs = max(abs(sunDir), 1e-6);   // 防除零
+
+    // 到下一块边界（沿射线方向的 t 值）
+    float3 tMax;
+    tMax.x = (stepSign.x == 0.0) ? 1e30 : ((cell.x + max(stepSign.x, 0.0)) * BLOCK - rayPos.x) / sunDir.x;
+    tMax.y = (stepSign.y == 0.0) ? 1e30 : ((cell.y + max(stepSign.y, 0.0)) * BLOCK - rayPos.y) / sunDir.y;
+    tMax.z = (stepSign.z == 0.0) ? 1e30 : ((cell.z + max(stepSign.z, 0.0)) * BLOCK - rayPos.z) / sunDir.z;
+    float3 tDelta = BLOCK / dirAbs;   // 沿射线穿过一块所需距离
+
+    float sumOcc = 0.0;        // 光学厚度（被占据块数）
+    float distanceToSun = 0.0; // 累计沿太阳方向推进的距离
+    float rayT = 0.0;
+    float prevT = 0.0;
+
+    for (int i = 0; i < CLOUD_LIGHT_STEPS; i++)
+    {
+        // 推进到最近的下一块边界
+        if (tMax.x < tMax.y && tMax.x < tMax.z)
+        {
+            rayT = tMax.x; tMax.x += tDelta.x; cell.x += stepSign.x;
+        }
+        else if (tMax.y < tMax.z)
+        {
+            rayT = tMax.y; tMax.y += tDelta.y; cell.y += stepSign.y;
+        }
+        else
+        {
+            rayT = tMax.z; tMax.z += tDelta.z; cell.z += stepSign.z;
+        }
+
+        distanceToSun += rayT - prevT;   // 累积本次推进的射线长度
+        prevT = rayT;
+
+        // 新块中心（世界坐标）
+        float3 checkPos = (cell + 0.5) * BLOCK;
+        float occ = SampleDensityDiscrete(checkPos, windDirection, wetness,
+            cloudAltitude, planetRadius, cloudScale);
+
+        if (occ < 0.5) break;   // 空块：已离开云，停止
+        sumOcc += occ;          // 占据块计入光学厚度
+    }
+
+    // ===== 光照 =====
+    float VdotL = dot(sunDir, sunDir);  // TODO: 应传视线方向求 VdotL = dot(viewDir, sunDir)
+    float hg = HenyeyGreenstein(VdotL, 0.65);
+
+    // 阳光透射：exp2(-光学厚度 * 消光) -> 硬边方块阴影
+    float sunTrans = exp2(-sumOcc * CLOUD_LIGHT_EXTINCTION);
+    float3 directLight = sunColor * (sunTrans * (hg + 0.02) * CLOUD_LIGHT_SUN_MUL);
+
+    // 环境光：底部暗，随高度提升
+    float ambient = (1.0 - occupied) * fsqrt(cloudPos.w);
+    float3 skyLight = skyColor * (ambient * CLOUD_LIGHT_SKY_MUL);
+
+    return directLight + skyLight;
 }
 
 // ---------------- TODO: 体素 DDA 主步进 ----------------
