@@ -102,11 +102,10 @@ namespace Core.Data
         public readonly float supportCrewMin = 0f;
         public readonly float supportCrewMax = 2f;
 
-        // ── 过杀惩罚 ──
-        // 承诺伤害 ≥ currentHP × ratio 时开始惩罚，防止多人猛攻同一残血目标
-        public readonly float overkillThresholdRatio = 0.8f;
-        // 过杀惩罚完全归零的额外区间（ratio + fullKillMargin → 惩罚=0）
-        public readonly float overkillFullKillMargin = 0.5f;
+        // ── 承诺惩罚下限 ──
+        // 承诺导致的效用衰减会重映射到 [commitmentPenaltyFloor, 1]，
+        // 保证任务优先度不会因为"队友已盯上目标"而归零，但仍大幅下降（让 AI 优先选没人打的单位）
+        public readonly float commitmentPenaltyFloor = 0.3f;
 
         // ── 职业-任务权重细调 ──
         // Skill 任务的基础倍率

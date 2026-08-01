@@ -16,11 +16,13 @@ namespace GamePlay.AI
         public static SharedTaskBoard Instance { get; private set; }
 
         private Dictionary<MapUnit, List<MapUnit>> _coverageTable = new();
-        private Dictionary<MapUnit, int> _attackCounts = new();
-        private Dictionary<MapUnit, int> _skillCounts = new();
-        private Dictionary<MapUnit, int> _supportCounts = new();
         private Dictionary<MapUnit,float> _strategicScore = new();
-        private Dictionary<MapUnit, float> _committedDamage = new();
+
+        /// <summary>
+        /// 按单位承诺：unit -> 它当前计划要攻击/支援的目标列表
+        /// 由 AI 选定任务时整体重建（UpdateUnitCommitments），因此承诺自带时效、无需清空点
+        /// </summary>
+        private Dictionary<MapUnit, List<MapUnit>> _unitCommitments = new();
         private bool _roundPrepared;
 
         public void Awake()
@@ -34,9 +36,8 @@ namespace GamePlay.AI
             if (_roundPrepared) return;
             _roundPrepared = true;
 
-            // 承诺数据（committedDamage / 认领计数）跨回合持久携带
-            // 只有单位阵亡时 TargetDied() 才会清理对应条目
-            // 这里只刷新可变的覆盖率和战略评分
+            // 承诺数据（_unitCommitments）无需在此刷新：
+            // 每个单位在自己选定任务时整体重建列表，旧承诺自动失效
             RefreshCoverage();
             RefreshStrategicScores();
         }
@@ -47,17 +48,6 @@ namespace GamePlay.AI
         public void OnPlayerTurnStart()
         {
             _roundPrepared = false;
-        }
-
-        public void RoundEnd()
-        {
-            _roundPrepared = false;
-            _coverageTable.Clear();
-            _attackCounts.Clear();
-            _skillCounts.Clear();
-            _supportCounts.Clear();
-            _strategicScore.Clear();
-            _committedDamage.Clear();
         }
 
         private void RefreshCoverage()
@@ -84,81 +74,61 @@ namespace GamePlay.AI
             return list.Count(u => u.Faction == faction);
         }
 
-        public void RegisterCommitment(MapUnit target, AITaskType taskType, float estimatedDamage = 0f)
-        {
-            var dict = GetCommitDict(taskType);
-            if (dict != null)
-            {
-                dict.TryGetValue(target, out int count);
-                dict[target] = count + 1;
-            }
+        // ==============================================================
+        // 承诺系统 — 按单位自管承诺列表
+        // 每个单位在 AI 选定任务时调用 UpdateUnitCommitments 整体重建自己的承诺，
+        // 因此承诺时效绑定"该单位最近一次决策"，无需全局清空点。
+        // ==============================================================
 
-            if (estimatedDamage > 0f)
-            {
-                _committedDamage.TryGetValue(target, out float current);
-                _committedDamage[target] = current + estimatedDamage;
-            }
-        }
-
-        public int GetCommitmentCount(MapUnit target, AITaskType taskType)
+        /// <summary>
+        /// 重建某个单位的承诺目标列表（整体替换实现自过期）。
+        /// targets 为 null/空 表示该单位当前没有承诺任何目标（移动/防御/待机等）。
+        /// </summary>
+        public void UpdateUnitCommitments(MapUnit unit, List<MapUnit> targets)
         {
-            var dict = GetCommitDict(taskType);
-            if (dict == null) return 0;
-            dict.TryGetValue(target, out int count);
-            return count;
+            if (unit == null) return;
+            if (targets == null || targets.Count == 0)
+            {
+                _unitCommitments.Remove(unit);
+            }
+            else
+            {
+                _unitCommitments[unit] = targets;
+            }
         }
 
         /// <summary>
-        /// 根据已认领人数和类型返回挤占系数
-        /// ≤crewMin → 1.0，≥crewMax → 0.0，中间线性递减
+        /// 原始承诺因子 (0~1)：统计除 actingUnit 外，有多少存活单位正承诺打/支援 target。
+        /// ≤crewMin → 1.0；≥crewMax → 0.0；中间线性递减。
         /// </summary>
-        public float GetCrewFactor(MapUnit target, AITaskType taskType)
+        public float GetCommitmentFactor(MapUnit actingUnit, MapUnit target, AITaskType taskType)
         {
+            if (target == null)
+            {
+                return 1f;
+            }
+
+            int count = 0;
+            foreach (var kv in _unitCommitments)
+            {
+                MapUnit unit = kv.Key;
+                if (unit == null || unit == actingUnit || !unit.IsAlive)
+                {
+                    continue;
+                }
+                if (kv.Value == null || !kv.Value.Contains(target))
+                {
+                    continue;
+                }
+                count++;
+            }
+
             (float min, float max) = GetCrewRange(taskType);
-            if (max <= 0f) return 1f;
-            int count = GetCommitmentCount(target, taskType);
+            if (max <= 0f)
+            {
+                return 1f;
+            }
             return LinearStep(min, max, count);
-        }
-
-        /// <summary>
-        /// 获取已承诺的伤害总量
-        /// </summary>
-        public float GetCommittedDamage(MapUnit target)
-        {
-            if (_committedDamage.TryGetValue(target, out float damage))
-                return damage;
-            return 0f;
-        }
-
-        /// <summary>
-        /// 过杀惩罚因子（0~1）
-        /// 1.0 = 可以继续攻击; 0.0 = 目标已有足够承诺伤害，不应再攻击
-        /// 当 committedDamage / remainingHP ≤ thresholdRatio → 1.0
-        /// 当 committedDamage / remainingHP ≥ thresholdRatio + fullKillMargin → 0.0
-        /// 中间线性递减
-        /// </summary>
-        public float GetOverkillPenalty(MapUnit target)
-        {
-            if (target == null || target.Character == null)
-                return 1f;
-
-            float remainingHP = target.Character.statSystem.currentHP;
-            if (remainingHP <= 0f)
-                return 0f;
-
-            float committed = GetCommittedDamage(target);
-            if (committed <= 0f)
-                return 1f;
-
-            float ratio = committed / remainingHP;
-            float threshold = Data.Config.AIConfig.overkillThresholdRatio;
-            float margin = Data.Config.AIConfig.overkillFullKillMargin;
-
-            if (ratio <= threshold)
-                return 1f;
-            if (ratio >= threshold + margin)
-                return 0f;
-            return 1f - (ratio - threshold) / margin;
         }
 
         // ==============================================================
@@ -215,19 +185,13 @@ namespace GamePlay.AI
         public void TargetDied(MapUnit target)
         {
             _coverageTable.Remove(target);
-            _attackCounts.Remove(target);
-            _skillCounts.Remove(target);
-            _supportCounts.Remove(target);
-            _committedDamage.Remove(target);
+            _unitCommitments.Remove(target);
+            foreach (var kv in _unitCommitments)
+            {
+                kv.Value?.Remove(target);
+            }
+            _strategicScore.Remove(target);
         }
-
-        private Dictionary<MapUnit, int> GetCommitDict(AITaskType type) => type switch
-        {
-            AITaskType.Attack => _attackCounts,
-            AITaskType.Skill => _skillCounts,
-            AITaskType.Support => _supportCounts,
-            _ => null
-        };
 
         private (float min, float max) GetCrewRange(AITaskType type) => type switch
         {
