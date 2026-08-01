@@ -226,7 +226,6 @@ float3 CloudLightingDiscrete(float3 worldPos, float4 cloudPos, float occupied,
     float3 tDelta = BLOCK / dirAbs;   // 沿射线穿过一块所需距离
 
     float sumOcc = 0.0;        // 光学厚度（被占据块数）
-    float sumForward = 0.0;    // 束内前向散射闭式累加 Σ(ω*P_f*τ)
     float rayT = 0.0;
     float prevT = 0.0;
 
@@ -253,11 +252,6 @@ float3 CloudLightingDiscrete(float3 worldPos, float4 cloudPos, float occupied,
 
         if (occ < 0.5) break;   // 空块：已离开云，停止
         sumOcc += occ;          // 占据块计入光学厚度
-
-        // 加法闭式：单次前向散射随光程累加 Σ(ω*P_f*τ)
-        float tau = CLOUD_LIGHT_EXTINCTION * occ;
-        float hgFwd = HenyeyGreenstein(1.0, 0.65);   // 前向相位 P_f = HG(cos=1, g)
-        sumForward += CLOUD_SCATTER_ALBEDO * hgFwd * tau;
     }
 
     // ===== 光照 =====
@@ -265,13 +259,12 @@ float3 CloudLightingDiscrete(float3 worldPos, float4 cloudPos, float occupied,
     float VdotL = dot(viewDir, sunDir);
     float hg = HenyeyGreenstein(VdotL, 0.65);
 
-    // 太阳到达该点能量 = 直接透射 exp2(-Στ) * (1 + Σ(ω*P_f*τ))
-    // 加法闭式与单次前向散射物理一致，能量不会超 1 过冲
+    // 太阳到达该点能量 = 直接透射 exp2(-Στ)（纯 Beer-Lambert，无前向散射补偿）
     float sunTrans = exp2(-sumOcc * CLOUD_LIGHT_EXTINCTION);
-    float3 sunArrive = sunColor * (sunTrans * (1.0 + sumForward));
+    float3 sunArrive = sunColor * sunTrans;
 
-    // 散射到视线方向：到达能量 * 反照率 * HG 相位
-    float3 directLight = sunArrive * (CLOUD_SCATTER_ALBEDO  * CLOUD_LIGHT_SUN_MUL);
+    // 散射到视线方向：到达能量 * 反照率 * HG 相位（VdotL<0 时 hg 低 → 暗部成立）
+    float3 directLight = sunArrive * (CLOUD_SCATTER_ALBEDO * (hg + 0.02) * CLOUD_LIGHT_SUN_MUL);
 
     // 环境光已移除：暗部填充交给 CompositeClouds 的大气透视 aerial*(1-trans)，
     // 避免三路能量叠加过亮（原 NUBIS 里 ambientScattering 同理可省）。
