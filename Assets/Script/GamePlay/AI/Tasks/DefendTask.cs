@@ -31,7 +31,7 @@ namespace GamePlay.AI.Tasks
         public override float CalculateUtilityFor(MapUnit unit, AITaskContext ctx)
         {
             // 0. 前置检查
-            if (unit.Character == null || unit.Character.statSystem.currentHP <= 0)
+            if (unit == null || !unit.IsAlive)
             {
                 return 0f;
             }

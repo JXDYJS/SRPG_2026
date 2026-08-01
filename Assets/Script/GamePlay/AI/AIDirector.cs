@@ -73,7 +73,7 @@ namespace GamePlay.AI
 
             foreach (MapUnit player in players)
             {
-                if (player == null || player.Character.statSystem.currentHP <= 0)
+                if (player == null || !player.IsAlive)
                 {
                     continue;
                 }
@@ -124,7 +124,7 @@ namespace GamePlay.AI
 
                 foreach (MapUnit ally in allies)
                 {
-                    if (ally.Character.statSystem.currentHP <= 0)
+                    if (!ally.IsAlive)
                     {
                         continue;
                     }
@@ -287,7 +287,7 @@ namespace GamePlay.AI
                     continue;
                 if (enemy.Faction == unit.Faction)
                     continue;
-                if (enemy.Character == null || enemy.Character.statSystem.currentHP <= 0)
+                if (!enemy.IsAlive)
                     continue;
 
                 // 战略评分 (SharedTaskBoard 综合了 HP紧迫+威胁+职业+覆盖)

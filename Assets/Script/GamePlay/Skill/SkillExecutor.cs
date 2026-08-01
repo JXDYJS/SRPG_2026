@@ -151,7 +151,7 @@ namespace GamePlay.Skill
 
                     foreach (MapUnit target in phaseTargets)
                     {
-                        if (target == null || target.Character.statSystem.currentHP <= 0)
+                        if (target == null || !target.IsAlive)
                         {
                             continue;
                         }
@@ -274,7 +274,7 @@ namespace GamePlay.Skill
             );
             targetResult.DamageRecords.Add(damageRecord);
             
-            targetResult.IsDead = target.Character.statSystem.currentHP <= 0;
+            targetResult.IsDead = !target.IsAlive;
         }
 
         private static void ApplyHeal(MapUnit caster, MapUnit target, SkillEffect effect, TargetResult targetResult)

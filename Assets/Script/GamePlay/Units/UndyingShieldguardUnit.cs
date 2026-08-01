@@ -11,6 +11,18 @@ namespace GamePlay.Units
     {
         private bool _forcedKillContext;
 
+        /// <summary>
+        /// 假死中(undying_will > 0)仍视为存活，等待治疗复活；对外系统以此为准，不会被误判死亡
+        /// </summary>
+        public override bool IsAlive
+        {
+            get
+            {
+                if (base.IsAlive) return true;
+                return IsUndying;
+            }
+        }
+
         private bool HasVow
         {
             get
@@ -77,13 +89,13 @@ namespace GamePlay.Units
             var undyingBuff = BuffManager.FindBuffByID(this, "undying_will");
             if (undyingBuff != null)
             {
-                if (Character.statSystem.currentHP > 0)
+                if (base.IsAlive)
                 {
                     RemoveBuff(undyingBuff);
                     Debug.Log($"{GetUnitName()} 被治疗复活: undying_will已移除");
                 }
             }
-            else if (Character.statSystem.currentHP == 0)
+            else if (!base.IsAlive)
             {
                 Debug.Log($"{GetUnitName()} 假死层数归零, 真死");
                 base.Die();

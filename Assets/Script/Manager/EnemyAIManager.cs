@@ -50,7 +50,7 @@ namespace GamePlay.AI
 
                 foreach (MapUnit player in playerUnits)
                 {
-                    if (player.Character.statSystem.currentHP <= 0) continue;
+                    if (!player.IsAlive) continue;
                     if (!attackRange.Contains(player.gridPosition)) continue;
 
                     float threat = threatMap.GetScore(movePos);

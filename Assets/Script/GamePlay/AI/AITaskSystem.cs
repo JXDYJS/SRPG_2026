@@ -57,7 +57,7 @@ namespace GamePlay.AI
             Debug.Log($"[AITaskSystem] {unit.name} 开始任务驱动 AI 回合");
 
             // ─── 0. 前置检查 ───
-            if (unit == null || unit.Character == null || unit.Character.statSystem.currentHP <= 0)
+            if (unit == null || !unit.IsAlive)
             {
                 Debug.LogWarning($"[AITaskSystem] {unit?.name ?? "null"} 已阵亡，跳过 AI 回合");
                 TurnManager.Instance.EndCurrentUnitTurn();

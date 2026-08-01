@@ -60,7 +60,7 @@ public class TurnManager : MonoBehaviour
     public void CalculateNextAction()
     {
         // 1. 清理死人
-        _allBattleUnits.RemoveAll(u => u == null || u.Character.statSystem.currentHP <= 0);
+        _allBattleUnits.RemoveAll(u => u == null || !u.IsAlive);
         Debug.Log($"[TURN] CalculateNextAction: {_allBattleUnits.Count} units alive");
         if (_allBattleUnits.Count == 0)
         {

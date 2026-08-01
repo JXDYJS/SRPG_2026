@@ -40,7 +40,7 @@ namespace GamePlay.AI
                 AIPlanStep step = plan.Steps[i];
 
                 // 执行前检查：单位是否还活着
-                if (unit == null || unit.Character == null || unit.Character.statSystem.currentHP <= 0)
+                if (unit == null || !unit.IsAlive)
                 {
                     Debug.Log($"[AI] {unit?.name ?? "null"} 在执行计划中阵亡，中断执行");
                     yield break;
