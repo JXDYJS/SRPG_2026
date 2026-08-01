@@ -106,14 +106,23 @@ float2 RaySphereIntersection(float3 ori, float3 dir, float radius)
     return intersection;
 }
 
-// ---------------- 坐标变换（抄自 NUBIS.glsl SetCloudPos，原样保留） ----------------
+// ---------------- 坐标变换（改造自 NUBIS.glsl SetCloudPos） ----------------
 // worldPos(米) -> cloudPos：
 //   cloudPos.y   = 到行星表面的高度（相对行星）
 //   cloudPos.w   = 高度在 [cloudAltitude.x, cloudAltitude.y] 内归一化到 [0,1]
 //   cloudPos.xyz = worldPos * cloudScale + 高度变形(float3(30, 0, -12) * w)
+//
+// 离散体素云改造：取整内置于本函数。
+//   DDA 在世界坐标按 CLOUD_BLOCK_SIZE 步进，体素网格必须世界对齐；
+//   且 SetCloudPos 的缩放/高度变形会破坏世界方格（XZ 随高度偏移）。
+//   所以先在世界坐标 floor 到块中心（blockCenter），再走行星外壳变换。
+//   效果：同一方块内任意点 -> 同一 blockCenter -> 同一 cloudPos -> 整块恒值。
 float4 SetCloudPos(float3 worldPos, float2 cloudAltitude, float planetRadius, float cloudScale)
 {
-    float4 cloudPos = float4(worldPos, 0.0);
+    // 世界坐标取整到块中心（网格本体，世界对齐）
+    float3 blockCenter = floor(worldPos / CLOUD_BLOCK_SIZE) * CLOUD_BLOCK_SIZE + 0.5 * CLOUD_BLOCK_SIZE;
+
+    float4 cloudPos = float4(blockCenter, 0.0);
     cloudPos.y = length(cloudPos.xyz + float3(0.0, planetRadius, 0.0)) - planetRadius;
     cloudPos.w = remapSaturate(cloudPos.y, cloudAltitude.x, cloudAltitude.y);
     cloudPos.xyz = cloudPos.xyz * cloudScale + float3(30.0 * cloudPos.w, 0.0, -12.0 * cloudPos.w);
@@ -123,18 +132,15 @@ float4 SetCloudPos(float3 worldPos, float2 cloudAltitude, float planetRadius, fl
 // ---------------- TODO: 离散密度采样 ----------------
 // 输入：世界坐标 worldPos（DDA 当前块的任意点，函数内部会对齐到块）、输出该体素密度（0.0 或 1.0）。
 //
-// 关键点（为什么取整在世界坐标、而不是 cloudPos）：
-//   DDA 按 CLOUD_BLOCK_SIZE 在世界坐标步进，所以体素网格必须世界对齐：
-//     blockMin = floor(worldPos / CLOUD_BLOCK_SIZE) * CLOUD_BLOCK_SIZE
-//   SetCloudPos 的缩放与高度变形会破坏世界方格（XZ 随高度偏移），
-//   所以先在世界坐标 floor 出块，再用"块中心"调 SetCloudPos 得到噪声采样点。
-//   块中心是固定点 -> 整块恒值，无需再对噪声坐标取整。
+// 关键点（取整已内置于 SetCloudPos，不需要在这里做）：
+//   DDA 按 CLOUD_BLOCK_SIZE 在世界坐标步进，体素网格必须世界对齐；
+//   SetCloudPos 的缩放/高度变形会破坏世界方格（XZ 随高度偏移），
+//   所以 SetCloudPos 内部先在世界坐标 floor 到块中心，再做行星外壳变换。
+//   块中心是固定点 -> 同一方块内 cloudPos 恒定 -> 整块恒值。
 //
 // 参考原版 SampleDensity 的 base 部分（不包含 detail）：
-//   1) 世界坐标取整 -> 块中心 -> SetCloudPos -> 噪声坐标：
-//        float4 cloudPos = SetCloudPos(blockCenter, cloudAltitude, planetRadius, cloudScale);
-//        float3 noiseCoord = cloudPos.xyz * CLOUD_BASE_NOISE_SCALE
-//                          + windDirection * CLOUD_BASE_NOISE_WIND;
+//   1) 噪声坐标 = cloudPos.xyz * CLOUD_BASE_NOISE_SCALE + windDirection * CLOUD_BASE_NOISE_WIND
+//      （cloudPos = SetCloudPos(worldPos, ...)，取整已在函数内完成）
 //   2) 用 noiseCoord 采样低频形状噪声（CloudNoise3D，128^3 RGBA8）：
 //        baseDensity 混合 = baseNoise.y * 0.4 + baseNoise.z * 0.4 + baseNoise.w * 0.2
 //        baseDensity = remapSaturate(baseNoise.x, baseDensity - 1.0, 1.0)
@@ -156,15 +162,11 @@ float SampleDensityDiscrete(float3 worldPos, float3 windDirection, float wetness
     float2 cloudAltitude, float planetRadius, float cloudScale)
 {
     // TODO: 编写离散密度采样
-    // 1) 世界坐标取整 -> 块（网格本体，必须世界对齐）
-    float3 blockMin = floor(worldPos / CLOUD_BLOCK_SIZE) * CLOUD_BLOCK_SIZE;
-    float3 blockCenter = blockMin + 0.5 * CLOUD_BLOCK_SIZE;
-
-    // 2) 块中心 -> cloudPos（固定点 -> 整块恒值），再取噪声采样点
-    float4 cloudPos = SetCloudPos(blockCenter, cloudAltitude, planetRadius, cloudScale);
+    // 1) SetCloudPos 内部已在世界坐标取整到块中心 -> 整块恒值
+    float4 cloudPos = SetCloudPos(worldPos, cloudAltitude, planetRadius, cloudScale);
     float3 noiseCoord = cloudPos.xyz * CLOUD_BASE_NOISE_SCALE + windDirection * CLOUD_BASE_NOISE_WIND;
 
-    // 3) 采样 + 混合
+    // 2) 采样 + 混合
     float4 baseNoise = SAMPLE_TEXTURE3D_LOD(_CloudNoise3D, sampler_CloudNoise3D, noiseCoord, 0);
     float density = baseNoise.y * 0.4 + baseNoise.z * 0.4 + baseNoise.w * 0.2;
     density = remapSaturate(baseNoise.x, density - 1.0, 1.0);
