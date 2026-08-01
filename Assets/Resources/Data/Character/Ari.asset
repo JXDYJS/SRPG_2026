@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8efc81e1bd6ebcd46966edd3f36a3c2a, type: 3}
   m_Name: Ari
   m_EditorClassIdentifier: 
-  ID: 
-  CharacterName: 
+  ID: 5
+  CharacterName: Ari
   Description: 
   Icon: {fileID: 0}
   Prefab:
-    m_AssetGUID: 
+    m_AssetGUID: 04dcade7860b4c94db990962ba12bdf9
     m_SubObjectName: 
     m_SubObjectType: 
     m_EditorAssetChanged: 0
@@ -26,19 +26,19 @@ MonoBehaviour:
     m_SubObjectName: 
     m_SubObjectType: 
     m_EditorAssetChanged: 0
-  BaseMaxHP: 0
-  BaseATK: 0
-  BaseDEF: 0
-  BaseRES: 0
-  MoveRange: 0
-  Height: 0
-  Speed: 0
-  BaseMaxMP: 0
+  BaseMaxHP: 32
+  BaseATK: 6
+  BaseDEF: 6
+  BaseRES: 4
+  MoveRange: 3
+  Height: 2
+  Speed: 65
+  BaseMaxMP: 15
   RangeType: 0
   Pattern: 0
   MinRange: 1
   MaxRange: 1
   CustomPattern: []
   GrowthTable: []
-  skillConfig: {fileID: 0}
-  unitClass: {fileID: 0}
+  skillConfig: {fileID: 11400000, guid: 240232812e810a04188d0bb2400a91f1, type: 2}
+  unitClass: {fileID: 11400000, guid: eda5962829b59793c9c33867886b713f, type: 2}

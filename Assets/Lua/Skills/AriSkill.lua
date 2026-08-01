@@ -17,13 +17,13 @@ function Skills.Ari.LastStand_Phase1(ctx)
 
     local atk = caster.Character.statSystem.ATK:getValue()
     local rawDmg = math.floor(atk * 1.6)
-    log.logd("LastStand rawDmg:"..tostring(rawDmg))
+    --log.logd("LastStand rawDmg:"..tostring(rawDmg))
 
     local DamageInfo = CS.Status.damage.DamageInfo
     local CombatCalculator = CS.Status.damage.CombatCalculator
     local info = DamageInfo(rawDmg, caster, target, CS.Global.DamageType.Physical, CS.Global.DamageMethod.Skill)
     CombatCalculator.CalculateDamage(info)
-    log.logd("LastStand Act Dmg:"..tostring(info.damage))
+    --log.logd("LastStand Act Dmg:"..tostring(info.damage))
     target:TakeDamage(info)
 
     local res = CS.GamePlay.Skill.PhaseResult(caster, targetPos)
