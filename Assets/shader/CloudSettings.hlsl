@@ -59,11 +59,23 @@
 #define CLOUD_OUTSCATTER_FACTOR 		1.3
 // 主步进透射率早停阈值
 #define CLOUD_TRANSMIT_EPS 				0.0001
+// 单次散射反照率（散射能量 / 消光能量），云 ≈ 0.9
+#define CLOUD_SCATTER_ALBEDO 			0.9
 // 光步进（向太阳方向逐块 DDA）：最大步数 / 单块消光系数 / 强度
 #define CLOUD_LIGHT_STEPS 				16 		// [4 8 12 16 24 32]
 #define CLOUD_LIGHT_EXTINCTION 			0.15 	// [0.05 0.1 0.15 0.2 0.3 0.5]
 #define CLOUD_LIGHT_SUN_MUL 			24.0
 #define CLOUD_LIGHT_SKY_MUL 			0.35
+
+// ---------------- 主步进（方案B：动态步长） ----------------
+// 步长随透射率降低而增大：stepSize = lerp(CLOUD_MAX_STEP, CLOUD_MIN_STEP, transmittance)
+// 透射率接近 1（刚入云）-> 小步长精采；透射率下降（云深处）-> 大步长加速
+#define CLOUD_MIN_STEP 					16.0 	// [4.0 8.0 16.0 24.0 32.0]
+#define CLOUD_MAX_STEP 					64.0 	// [32.0 48.0 64.0 96.0 128.0]
+// 主步进消光：absorption = exp2(-occupied * CLOUD_MAIN_EXTINCTION * stepSize)
+#define CLOUD_MAIN_EXTINCTION 			0.02 	// [0.005 0.01 0.015 0.02 0.03 0.05]
+// 主步进最大迭代次数（防死循环）
+#define CLOUD_MAIN_MAX_STEPS 			64
 
 // ---------------- 风 ---------------- 
 // wind = 0.0005 * (frameTimeCounter * CLOUD_SPEED + 10.0 * FTC_OFFSET)

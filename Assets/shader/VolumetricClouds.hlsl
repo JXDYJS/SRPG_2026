@@ -85,8 +85,8 @@ float HenyeyGreenstein(float cosAngle, float g)
 {
     float num = 1.0 - g * g;
     float denom = 1.0 + g * g - 2.0 * g * cosAngle;
-    float rsqrt = rsqrt(denom);
-    return num * rsqrt * rsqrt * rsqrt * (0.25 / PI);
+    float invSqrt = rsqrt(denom);
+    return num * invSqrt * invSqrt * invSqrt * (0.25 / PI);
 }
 
 // 射线-球体交点。返回 (近交点, 远交点)；未命中返回 (1e10, -1e10)
@@ -187,22 +187,24 @@ float SampleDensityDiscrete(float3 worldPos, float3 windDirection, float wetness
 }
 
 // ---------------- 离散光照（光步进 DDA） ----------------
-// 输入：命中体素的世界坐标 / 该体素密度 / cloudPos / 太阳方向，输出光照颜色。
+// 输入：命中体素的世界坐标 / 该体素密度 / cloudPos / 视线方向 / 太阳方向，输出光照颜色。
 //
 // 思路：从命中块沿太阳方向逐块 DDA（Amanatides & Woo）推进，累计"光学厚度"
 //       （路上被占据的块数 sumOcc）。空块即停（射线已离开云）。消光 exp2(-sumOcc * k)
 //       得到硬边方块阴影；再叠加 HG 相位 + 环境光。
 //
+// 散射强度（闭式，前向散射）：
+//   太阳光到达该点的能量 = sunColor * exp2(-Στ) * Π(1 + ω*P_f*τ)
+//   - exp2(-Στ)：直接透射（Beer-Lambert）
+//   - Π(1 + ω*P_f*τ)：束内前向散射补偿（密度恒定块的闭式算子，ω=反照率，P_f=前向相位）
+//   块内恒密度 -> 闭式成立，这就是"太阳→点的散射强度"。
+//
 // 到达下一块的距离：
 //   tMax = (下一块边界 - 当前点) / sunDir，取三轴最小值即最近边界。
 //   浮点注意：sunDir 某轴分量为 0 时不能除，需给该轴极大值（不参与比较）。
-//   典型实现：
-//     stepSign = sign(sunDir);   // 每轴 +1 / -1 / 0
-//     tDelta   = CLOUD_BLOCK_SIZE / abs(sunDir);          // 穿过一块的距离（沿射线）
-//     tMax     = ((cell + max(stepSign,0)) * BLOCK - pos) / sunDir;  // 到最近边界的距离
-//     while (...) { 选 min(tMax) 的轴推进：cell += stepSign；tMax += tDelta；... }
 float3 CloudLightingDiscrete(float3 worldPos, float4 cloudPos, float occupied,
-    float3 sunDir, float3 sunColor, float3 skyColor, float3 windDirection, float wetness,
+    float3 viewDir, float3 sunDir, float3 sunColor, float3 skyColor,
+    float3 windDirection, float wetness,
     float2 cloudAltitude, float planetRadius, float cloudScale)
 {
     if (occupied < 0.5) return float3(0.0, 0.0, 0.0);
@@ -224,7 +226,7 @@ float3 CloudLightingDiscrete(float3 worldPos, float4 cloudPos, float occupied,
     float3 tDelta = BLOCK / dirAbs;   // 沿射线穿过一块所需距离
 
     float sumOcc = 0.0;        // 光学厚度（被占据块数）
-    float distanceToSun = 0.0; // 累计沿太阳方向推进的距离
+    float forward = 1.0;       // 束内前向散射闭式乘积 Π(1 + ω*P_f*τ)
     float rayT = 0.0;
     float prevT = 0.0;
 
@@ -244,9 +246,6 @@ float3 CloudLightingDiscrete(float3 worldPos, float4 cloudPos, float occupied,
             rayT = tMax.z; tMax.z += tDelta.z; cell.z += stepSign.z;
         }
 
-        distanceToSun += rayT - prevT;   // 累积本次推进的射线长度
-        prevT = rayT;
-
         // 新块中心（世界坐标）
         float3 checkPos = (cell + 0.5) * BLOCK;
         float occ = SampleDensityDiscrete(checkPos, windDirection, wetness,
@@ -254,15 +253,24 @@ float3 CloudLightingDiscrete(float3 worldPos, float4 cloudPos, float occupied,
 
         if (occ < 0.5) break;   // 空块：已离开云，停止
         sumOcc += occ;          // 占据块计入光学厚度
+
+        // 闭式：该块光学厚度 τ = EXT * occ，前向散射算子是 (1 + ω*P_f*τ)
+        float tau = CLOUD_LIGHT_EXTINCTION * occ;
+        float hgFwd = HenyeyGreenstein(1.0, 0.65);   // 前向相位 P_f = HG(cos=1, g)
+        forward *= (1.0 + CLOUD_SCATTER_ALBEDO * hgFwd * tau);
     }
 
     // ===== 光照 =====
-    float VdotL = dot(sunDir, sunDir);  // TODO: 应传视线方向求 VdotL = dot(viewDir, sunDir)
+    // 真实相位角：视线与太阳夹角
+    float VdotL = dot(viewDir, sunDir);
     float hg = HenyeyGreenstein(VdotL, 0.65);
 
-    // 阳光透射：exp2(-光学厚度 * 消光) -> 硬边方块阴影
+    // 太阳到达该点能量 = 直接透射 exp2(-Στ) * 束内前向散射补偿 forward
     float sunTrans = exp2(-sumOcc * CLOUD_LIGHT_EXTINCTION);
-    float3 directLight = sunColor * (sunTrans * (hg + 0.02) * CLOUD_LIGHT_SUN_MUL);
+    float3 sunArrive = sunColor * (sunTrans * forward);
+
+    // 散射到视线方向：到达能量 * 反照率 * HG 相位
+    float3 directLight = sunArrive * (CLOUD_SCATTER_ALBEDO * (hg + 0.02) * CLOUD_LIGHT_SUN_MUL);
 
     // 环境光：底部暗，随高度提升
     float ambient = (1.0 - occupied) * fsqrt(cloudPos.w);
@@ -271,38 +279,144 @@ float3 CloudLightingDiscrete(float3 worldPos, float4 cloudPos, float occupied,
     return directLight + skyLight;
 }
 
-// ---------------- TODO: 体素 DDA 主步进 ----------------
+// ---------------- 体素 DDA 主步进 ----------------
 // 入口：传入视线方向与世界相机位置，输出累加后的云颜色 + 透射率。
 //
-// 参考原版 NubisCumulus 流程（改成体素 DDA）：
-//   1) 用 RaySphereIntersection 求视线与云层底部/顶部球面的交点，
-//      确定步进区间 [marchingStart, marchingEnd]
-//   2) 相机在云层内时（inCloud），起点改为相机位置，终点 cap 到 CLOUD_INNER_CAP
-//   3) 体素 DDA（Amanatides & Woo）：
-//        cell     = floor(rayPos / CLOUD_BLOCK_SIZE)
-//        stepSign = sign(rayDir)
-//        tDelta   = CLOUD_BLOCK_SIZE / abs(rayDir)        // 沿各轴穿过一块的距离
-//        tMax     = ((cell + stepSign * 0.5 + 0.5) - rayPos) / rayDir * ... // 到下一块边界的距离
-//      while (t < tEnd && transmittance > CLOUD_TRANSMIT_EPS):
-//        每块中心调用 SampleDensityDiscrete，占据则：
-//          光 = CloudLightingDiscrete(...)
-//          absorption = exp2(-occupied * densityMul)
-//          color += 光 * transmittance * (1 - absorption)
-//          transmittance *= absorption
-//        推进到最近的一块边界（比较 tMax.x/y/z 取最小），跳过空块
-//   4) 大气透视（可选）：fade = exp2(-距离 * CLOUD_FADE_RATE)，远处淡出
+// 方案B（已确认）：
+//   1) DDA 空区跳过：在云层外壳内，先逐块 DDA 快速找到第一处占据的云块，
+//      用几何关系求出进入该块的起点 tCloudStart
+//   2) 传统 raymarch（非 DDA）：从 tCloudStart 起以"动态步长"推进，
+//      步长随透射率降低而增大：stepSize = lerp(CLOUD_MAX_STEP, CLOUD_MIN_STEP, transmittance)
+//   3) 停法：进云后标记 inCloud，再次碰到空块立即结束（忽略云层叠加）
+//   4) 透射率低于 CLOUD_TRANSMIT_EPS 直接退出
 //
-// 参数建议：cloudAltitude = float2(CLOUD_CLEAR_ALTITUDE, CLOUD_CLEAR_ALTITUDE + CLOUD_CLEAR_THICKNESS)
-//          planetRadius  = CLOUD_PLANET_RADIUS
-//          cloudScale    = lerp(CLOUD_CLEAR_SCALE, CLOUD_RAIN_SCALE, wetness)
-//          windDirection = float3(1.0, wetness * 0.1 - 0.05, -0.4) * wind
-//          其中 wind = CLOUD_WIND_FACTOR * (frameTimeCounter * CLOUD_SPEED + 10.0 * CLOUD_FTC_OFFSET)
+// 返回：cloudColor 累加进 color（inout），cloudTransmittance 单独输出。
+// 合成在调用方做：sky * trans + cloudColor + sky * ω * (1 - trans)（天空散射闭式）
 void NubisCumulusDiscrete(inout float3 color, float3 worldDir, float3 cameraPos,
     float2 cloudAltitude, float3 sunDir, float3 sunColor, float3 skyColor,
     float3 windDirection, float wetness, out float cloudTransmittance)
 {
-    // TODO: 编写体素 DDA 主步进
+    const float BLOCK = CLOUD_BLOCK_SIZE;
+    const float planetRadius = CLOUD_PLANET_RADIUS;
+    const float cloudScale = lerp(CLOUD_CLEAR_SCALE, CLOUD_RAIN_SCALE, wetness);
+
+    // ===== 1. 求视线与云层外壳的交点，确定步进区间 =====
+    // 云层为行星外壳：底半径 = planetRadius + alt.x，顶半径 = planetRadius + alt.y
+    float3 rayStartPos = float3(0.0, planetRadius + cameraPos.y, 0.0);
+    float2 iBottom = RaySphereIntersection(rayStartPos, worldDir, planetRadius + cloudAltitude.x);
+    float2 iTop = RaySphereIntersection(rayStartPos, worldDir, planetRadius + cloudAltitude.y);
+
+    // 相机在云上 / 云下决定进入点
+    float2 iMarching = cameraPos.y > cloudAltitude.y ? float2(iTop.x, iBottom.x) : float2(iBottom.y, iTop.y);
+    float tStart = iMarching.x;
+    float tEnd = iMarching.y;
+
+    // 相机是否在云层内
+    float inCloud = (1.0 - saturate((cameraPos.y - cloudAltitude.y) * CLOUD_INCLOUD_SOFTNESS)) *
+                    (1.0 - saturate((cloudAltitude.x - cameraPos.y) * CLOUD_INCLOUD_SOFTNESS));
+    // 相机在云内时：起点改为相机位置，终点 cap
+    float iInner = (iBottom.y >= 0.0 && cameraPos.y > cloudAltitude.x) ? iBottom.x : iTop.y;
+    iInner = min(iInner, CLOUD_INNER_CAP);
+    tStart = tStart * (1.0 - inCloud);
+    tEnd = lerp(tEnd, iInner, inCloud);
+
+    // 世界坐标步进区间（与原版一致：iMarching.x * worldDir * (1-inCloud) + cameraPosition）
+    // 相机在云内时起点 = 相机位置；相机在云外时起点 = 相机 + 视线方向 * tStart
+    float3 marchStart = tStart * worldDir + cameraPos;
+    float3 marchEnd = tEnd * worldDir + cameraPos;
+
+    // ===== 2. DDA 空区跳过：找到第一处占据的云块 =====
+    // 从 marchStart 出发，逐块推进，检查占据；找到第一个 density>=0.5 的块即停
+    float3 rayPos = marchStart;
+    float3 cell = floor(rayPos / BLOCK);
+    float3 stepSign = sign(worldDir);
+    float3 dirAbs = max(abs(worldDir), 1e-6);
+
+    float3 tMaxD;
+    tMaxD.x = (stepSign.x == 0.0) ? 1e30 : ((cell.x + max(stepSign.x, 0.0)) * BLOCK - rayPos.x) / worldDir.x;
+    tMaxD.y = (stepSign.y == 0.0) ? 1e30 : ((cell.y + max(stepSign.y, 0.0)) * BLOCK - rayPos.y) / worldDir.y;
+    tMaxD.z = (stepSign.z == 0.0) ? 1e30 : ((cell.z + max(stepSign.z, 0.0)) * BLOCK - rayPos.z) / worldDir.z;
+    float3 tDeltaD = BLOCK / dirAbs;
+
+    float totalLen = length(marchEnd - marchStart);
+    float t = 0.0;
+    float cloudStartT = totalLen;   // 第一处云的位置（超界则无云）
+
+    for (int s = 0; s < CLOUD_MAIN_MAX_STEPS; s++)
+    {
+        // 当前块是否占据
+        float3 checkPos = (cell + 0.5) * BLOCK;
+        float occ = SampleDensityDiscrete(checkPos, windDirection, wetness,
+            cloudAltitude, planetRadius, cloudScale);
+        if (occ >= 0.5)
+        {
+            cloudStartT = t;   // 进入该云块的起点
+            break;
+        }
+
+        // 推进到最近边界
+        if (tMaxD.x < tMaxD.y && tMaxD.x < tMaxD.z)
+        {
+            t = tMaxD.x; tMaxD.x += tDeltaD.x; cell.x += stepSign.x;
+        }
+        else if (tMaxD.y < tMaxD.z)
+        {
+            t = tMaxD.y; tMaxD.y += tDeltaD.y; cell.y += stepSign.y;
+        }
+        else
+        {
+            t = tMaxD.z; tMaxD.z += tDeltaD.z; cell.z += stepSign.z;
+        }
+
+        if (t >= totalLen) { cloudStartT = totalLen; break; }
+    }
+
+    // 没有云 -> 透射率 1，直接返回
     cloudTransmittance = 1.0;
+    if (cloudStartT >= totalLen) return;
+
+    // ===== 3. 传统 raymarch：动态步长，遇空块即停 =====
+    float transmittance = 1.0;
+    float3 cloudAccum = float3(0.0, 0.0, 0.0);
+    bool inCloudFlag = false;
+    t = cloudStartT;
+
+    for (int i = 0; i < CLOUD_MAIN_MAX_STEPS; i++)
+    {
+        if (t >= totalLen || transmittance < CLOUD_TRANSMIT_EPS) break;
+
+        // 当前采样点（世界坐标）
+        float3 samplePos = marchStart + worldDir * t;
+        float occ = SampleDensityDiscrete(samplePos, windDirection, wetness,
+            cloudAltitude, planetRadius, cloudScale);
+
+        if (occ >= 0.5)
+        {
+            inCloudFlag = true;
+
+            // 光照（含光步进 DDA）
+            float4 cloudPos = SetCloudPos(samplePos, cloudAltitude, planetRadius, cloudScale);
+            float3 light = CloudLightingDiscrete(samplePos, cloudPos, occ,
+                worldDir, sunDir, sunColor, skyColor, windDirection, wetness,
+                cloudAltitude, planetRadius, cloudScale);
+
+            // 消光：块内闭式
+            float absorption = exp2(-occ * CLOUD_MAIN_EXTINCTION * BLOCK);
+            cloudAccum += light * transmittance * (1.0 - absorption);
+            transmittance *= absorption;
+        }
+        else if (inCloudFlag)
+        {
+            break;   // 已出云：首次遇到空块即停（忽略云层叠加）
+        }
+
+        // 动态步长：透射率越低，步长越大
+        float stepSize = lerp(CLOUD_MAX_STEP, CLOUD_MIN_STEP, saturate(transmittance));
+        t += stepSize;
+    }
+
+    cloudTransmittance = transmittance;
+    color += cloudAccum;
 }
 
 #endif // VOLUMETRIC_CLOUDS_INCLUDED
