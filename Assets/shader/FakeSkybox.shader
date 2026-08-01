@@ -135,10 +135,10 @@ Shader "Skybox/Fakeskybox"
     // === 体积云接入（离散体素云） ===
     #include "Assets/shader/VolumetricClouds.hlsl"
 
-    // 合成公式（单散射）：
-    //   final = skyColor * trans + cloudColor + skyColor * ω * (1 - trans)
-    //   cloudColor：raymarch 内已按 transmittance 加权累加
-    //   skyColor * ω * (1-trans)：天空光在云层内的散射闭式解
+    // 合成公式（NUBIS 三段式，替代原 skyColor*ω*(1-trans) 的过度简化）：
+    //   final = skyColor * trans               ① 天空透过云（∝T，厚云该路递减）
+    //         + cloudColor * atmoTrans         ② 云自身散射光 × 大气透射率（相机→云）
+    //         + aerial * (1 - trans)           ③ 大气透视（含瑞利/Mie 相位），按云遮挡比例混合
     float3 CompositeClouds(float3 skyColor, float3 viewDir, float3 sunDir, float3 sunColor, float wetness) {
         float3 cloudColor = float3(0.0, 0.0, 0.0);
         float cloudTransmittance = 1.0;
@@ -154,10 +154,21 @@ Shader "Skybox/Fakeskybox"
         NubisCumulusDiscrete(cloudColor, viewDir, _WorldSpaceCameraPos,
             cloudAltitude, sunDir, sunColor, skyColor, windDirection, wetness, cloudTransmittance);
 
-        // 天空散射闭式：ω * (1 - trans)
-        float3 skyScatter = skyColor * CLOUD_SCATTER_ALBEDO * (1.0 - cloudTransmittance);
+        // ③ 大气透视：相机→云方向的大气散射（含瑞利/Mie 相位函数），替代原 skyColor*ω
+        float3 aerial = calcAtmosphericScatter(sunDir, viewDir);
 
-        return skyColor * cloudTransmittance + cloudColor + skyScatter;
+        // ② 大气透射率（相机→云）：云在低空光程短，衰减应温和。
+        // 注意 calcParticleThickness 估计的是整段大气，地平线方向会归零，
+        // 会把地平线云完全消光，所以用 lerp 抬升下限（软衰减，可调）。
+        float uDotW = max(dot(float3(0.0, 1.0, 0.0), viewDir), 0.0);
+        float opticalDepth = calcParticleThickness(uDotW);
+        float3 totalCoeff = float3(_RayleighRed, _RayleighGreen, _RayleighBlue) * 1e-5
+                          + float3(0.5e-6, 0.5e-6, 0.5e-6);
+        float3 atmoTrans = lerp(absorb(totalCoeff, opticalDepth), 1.0, 0.6);
+
+        return skyColor * cloudTransmittance
+             + cloudColor * atmoTrans
+             + aerial * (1.0 - cloudTransmittance);
     }
     ENDHLSL
 
@@ -208,7 +219,7 @@ Shader "Skybox/Fakeskybox"
                 float3 skyColor = GetFinalSkyColor(normalize(viewDir), sunDir);
 
                 // 太阳光带强度（URP _LightColor0.rgb 已是 强度 x 颜色）
-                float3 sunColor = _SunColor.rgb * _SunIntensity;
+                float3 sunColor = _SunColor.rgb * _SunIntensity ;
                 float3 skyColorWithClouds = CompositeClouds(skyColor, viewDir, sunDir, sunColor, _CloudWetness);
                 float3 color = lerp(skyColor, skyColorWithClouds, _EnableClouds);
                 //color = float3(0.0,1.0,0.0);

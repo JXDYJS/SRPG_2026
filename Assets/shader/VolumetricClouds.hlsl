@@ -272,11 +272,9 @@ float3 CloudLightingDiscrete(float3 worldPos, float4 cloudPos, float occupied,
     // 散射到视线方向：到达能量 * 反照率 * HG 相位
     float3 directLight = sunArrive * (CLOUD_SCATTER_ALBEDO * (hg + 0.02) * CLOUD_LIGHT_SUN_MUL);
 
-    // 环境光：底部暗，随高度提升
-    float ambient = (1.0 - occupied) * fsqrt(cloudPos.w);
-    float3 skyLight = skyColor * (ambient * CLOUD_LIGHT_SKY_MUL);
-
-    return directLight + skyLight;
+    // 环境光已移除：暗部填充交给 CompositeClouds 的大气透视 aerial*(1-trans)，
+    // 避免三路能量叠加过亮（原 NUBIS 里 ambientScattering 同理可省）。
+    return directLight;
 }
 
 // ---------------- 体素 DDA 主步进 ----------------
