@@ -157,7 +157,7 @@ Shader "Skybox/Fakeskybox"
         // 天空散射闭式：ω * (1 - trans)
         float3 skyScatter = skyColor * CLOUD_SCATTER_ALBEDO * (1.0 - cloudTransmittance);
 
-        return cloudColor;
+        return skyColor * cloudTransmittance + cloudColor + skyScatter;
     }
     ENDHLSL
 
