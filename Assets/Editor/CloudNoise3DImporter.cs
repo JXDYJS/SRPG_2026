@@ -69,6 +69,13 @@ public static class CloudNoise3DImporter
         tex.anisoLevel = 0;
         tex.Apply(false, true);
 
+        // ==== 交叉对账：从 CPU 侧 colors 数组读取（纹理已设为不可读，避免 GetPixel 报错）====
+        LogSample(colors, 0, 0, 0, "z=0   y=0  x=0");
+        LogSample(colors, 64, 0, 0, "z=0   y=0  x=64");
+        LogSample(colors, 0, 0, 64, "z=64  y=0  x=0");
+        LogSample(colors, 64, 64, 64, "z=64  y=64 x=64");
+        LogSample(colors, 0, 0, 127, "z=127 y=0  x=0");
+
         string savePath = EditorUtility.SaveFilePanelInProject(
             "保存 Cloud Noise 3D", "CloudNoise_128_128_128", "asset", "选择保存位置");
         if (string.IsNullOrEmpty(savePath)) return;
@@ -77,19 +84,14 @@ public static class CloudNoise3DImporter
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
 
-        // ==== 交叉对账：打印与 Python 脚本相同的坐标，人工核对 ====
-        LogSample(tex, 0, 0, 0, "z=0   y=0  x=0");
-        LogSample(tex, 64, 0, 0, "z=0   y=0  x=64");
-        LogSample(tex, 0, 0, 64, "z=64  y=0  x=0");
-        LogSample(tex, 64, 64, 64, "z=64  y=64 x=64");
-        LogSample(tex, 0, 0, 127, "z=127 y=0  x=0");
-
         Debug.Log($"已保存: {savePath}");
     }
 
-    private static void LogSample(Texture3D tex, int x, int y, int z, string label)
+    private static void LogSample(Color[] colors, int x, int y, int z, string label)
     {
-        Color c = tex.GetPixel(x, y, z);
+        // 数组索引与填充循环一致：z-major，(z*SIZE*SIZE + y*SIZE + x)
+        int idx = z * SIZE * SIZE + y * SIZE + x;
+        Color c = colors[idx];
         Debug.Log($"对账 {label}: R={(int)Mathf.Round(c.r * 255)} G={(int)Mathf.Round(c.g * 255)} " +
                   $"B={(int)Mathf.Round(c.b * 255)} A={(int)Mathf.Round(c.a * 255)}");
     }
