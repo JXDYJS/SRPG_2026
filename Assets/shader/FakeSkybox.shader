@@ -27,10 +27,14 @@ Shader "Skybox/Fakeskybox"
         [Header(Tonemapping)]
         [Toggle] _UseCustomTonemap ("Use Built-in Robobo1221 Tonemap", Float) = 1
         _Exposure ("Built-in Exposure", Float) = 0.5
+
+        [Header(Volumetric Clouds)]
+        [Toggle] _EnableClouds ("Enable Volumetric Clouds", Float) = 1
+        _CloudWetness ("Cloud Wetness", Range(0, 1)) = 0.0
     }
 
-    CGINCLUDE
-    #include "UnityCG.cginc"
+    HLSLINCLUDE
+    #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 
     float _SunIntensity;
     float3 _SunColor;
@@ -42,6 +46,9 @@ Shader "Skybox/Fakeskybox"
 
     float _UseCustomTonemap;
     float _Exposure;
+
+    float _EnableClouds;
+    float _CloudWetness;
 
     #define d0(x) (abs(x) + 1e-8)
 
@@ -57,10 +64,10 @@ Shader "Skybox/Fakeskybox"
 
     float rayleighPhase(float x) { return 0.375 * (1.0 + x * x); }
     float hgPhase(float x, float g) {
-        float g2 = g * g;
-        return 0.25 * ((1.0 - g2) * pow(1.0 + g2 - 2.0 * g * x, -1.5));
+        float g2 = saturate(g) * saturate(g);
+        return 0.25 * ((1.0 - g2) * pow(abs(1.0 + g2 - 2.0 * g * x), -1.5));
     }
-    float miePhaseSky(float x, float depth) { return hgPhase(x, exp2(-0.000003 * depth)); }
+    float miePhaseSky(float x, float depth) { return hgPhase(x, max(exp2(-0.000003 * depth), 1e-6)); }
 
     float3 ApplyLMS(float3 color) {
         float3x3 lms = float3x3(_LMS_Row1.xyz, _LMS_Row2.xyz, _LMS_Row3.xyz);
@@ -123,7 +130,35 @@ Shader "Skybox/Fakeskybox"
         
         return max(color, 0.0); 
     }
-    ENDCG
+
+    // === 体积云接入（离散体素云） ===
+    #include "Assets/shader/VolumetricClouds.hlsl"
+
+    // 合成公式（单散射）：
+    //   final = skyColor * trans + cloudColor + skyColor * ω * (1 - trans)
+    //   cloudColor：raymarch 内已按 transmittance 加权累加
+    //   skyColor * ω * (1-trans)：天空光在云层内的散射闭式解
+    float3 CompositeClouds(float3 skyColor, float3 viewDir, float3 sunDir, float3 sunColor, float wetness) {
+        float3 cloudColor = float3(0.0, 0.0, 0.0);
+        float cloudTransmittance = 1.0;
+
+        float2 cloudAltitude = float2(CLOUD_CLEAR_ALTITUDE, CLOUD_CLEAR_ALTITUDE + CLOUD_CLEAR_THICKNESS);
+        cloudAltitude = lerp(cloudAltitude,
+            float2(CLOUD_RAIN_ALTITUDE, CLOUD_RAIN_ALTITUDE + CLOUD_RAIN_THICKNESS), wetness);
+
+        // 风：wind = CLOUD_WIND_FACTOR * (time * CLOUD_SPEED + 10*FTC_OFFSET)
+        float wind = CLOUD_WIND_FACTOR * (_Time.y * CLOUD_SPEED + 10.0 * CLOUD_FTC_OFFSET);
+        float3 windDirection = float3(1.0, wetness * 0.1 - 0.05, -0.4) * wind;
+
+        NubisCumulusDiscrete(cloudColor, viewDir, _WorldSpaceCameraPos,
+            cloudAltitude, sunDir, sunColor, skyColor, windDirection, wetness, cloudTransmittance);
+
+        // 天空散射闭式：ω * (1 - trans)
+        float3 skyScatter = skyColor * CLOUD_SCATTER_ALBEDO * (1.0 - cloudTransmittance);
+
+        return skyColor * cloudTransmittance + cloudColor + skyScatter;
+    }
+    ENDHLSL
 
     SubShader
     {
@@ -132,7 +167,7 @@ Shader "Skybox/Fakeskybox"
 
         Pass
         {
-            CGPROGRAM
+            HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
             #pragma target 3.0
@@ -150,39 +185,35 @@ Shader "Skybox/Fakeskybox"
 
             v2f vert (appdata_t v) {
                 v2f o;
-                o.vertex = UnityObjectToClipPos(v.vertex);
+                o.vertex = TransformObjectToHClip(v.vertex.xyz);
                 o.texcoord = v.texcoord; 
                 return o;
             }
 
-            fixed4 frag (v2f i) : SV_Target {
+            float4 frag (v2f i) : SV_Target {
                 float3 viewDir;
                 
                 #if BAKE_MODE
                     // 开启烘焙时，把传入的 2D 坐标（i.texcoord.xy）当作经纬度，映射为 3D 球面射线
-                    float phi = i.texcoord.x * UNITY_TWO_PI;
-                    float theta = (i.texcoord.y - 0.5) * UNITY_PI;
+                    float phi = i.texcoord.x * 2.0 * PI;
+                    float theta = (i.texcoord.y - 0.5) * PI;
                     viewDir = float3(cos(theta) * sin(phi), sin(theta), cos(theta) * cos(phi));
                 #else
                     // 正常天空盒渲染时，直接使用 3D 射线
                     viewDir = normalize(i.texcoord);
                 #endif
 
-                float3 sunDir = normalize(_WorldSpaceLightPos0.xyz);
-                float3 color = GetFinalSkyColor(normalize(viewDir), sunDir);
+                float3 sunDir = normalize(_MainLightPosition.xyz);
+                float3 skyColor = GetFinalSkyColor(normalize(viewDir), sunDir);
 
-                // === DEBUG: 左上角像素标记 tonemap 状态 ===
-                // if (i.texcoord.x < 0.02 && i.texcoord.y < 0.02)
-                // {
-                //     if (_UseCustomTonemap > -0.5)
-                //         color = float3(0, 10, 0); // 绿 = tonemap ON
-                //     else
-                //         color = float3(10, 0, 0); // 红 = tonemap OFF
-                // }
-
+                // 太阳光带强度（URP _LightColor0.rgb 已是 强度 x 颜色）
+                float3 sunColor = _SunColor.rgb * _SunIntensity;
+                float3 skyColorWithClouds = CompositeClouds(skyColor, viewDir, sunDir, sunColor, _CloudWetness);
+                float3 color = lerp(skyColor, skyColorWithClouds, _EnableClouds);
+                //color = float3(0.0,1.0,0.0);
                 return float4(color, 1.0);
             }
-            ENDCG
+            ENDHLSL
         }
     }
 }
