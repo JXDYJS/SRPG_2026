@@ -64,13 +64,17 @@
 // 光步进（向太阳方向逐块 DDA）：最大步数 / 单块消光系数 / 强度
 #define CLOUD_LIGHT_STEPS 				16 		// [4 8 12 16 24 32]
 #define CLOUD_LIGHT_EXTINCTION 			0.15 	// [0.05 0.1 0.15 0.2 0.3 0.5]
-#define CLOUD_LIGHT_SUN_MUL 			0.65
+#define CLOUD_LIGHT_SUN_MUL 			1.0
 #define CLOUD_LIGHT_SKY_MUL 			0.35
 // 双波瓣 HG 相位函数（Dual-Lobe HG）：前向瓣 g_f>0 提供向阳亮部，
 // 后向瓣 g_b<0 填补背阳暗部（VdotL<0 不彻底黑），weight 为前向瓣占比
 #define CLOUD_HG_FORWARD_G 				0.8
 #define CLOUD_HG_BACKWARD_G 			-0.2
 #define CLOUD_HG_FORWARD_WEIGHT 		0.5
+// HG 相位动态范围极大（cos=1 峰值比 cos=0 大 200+ 倍），直接乘会让
+// 向阳面窄窄一束亮、其余全暗。pow(hg, POWER) 把范围压到 ~8 倍：
+// 抬升暗部、压低峰值、过渡平滑。POWER=1 关掉压缩（回到原始 HG）。
+#define CLOUD_HG_POWER 					0.5 	// [0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
 
 // ---------------- 主步进（方案B：动态步长） ----------------
 // 步长随透射率降低而增大：stepSize = lerp(CLOUD_MAX_STEP, CLOUD_MIN_STEP, transmittance)
@@ -85,7 +89,7 @@
 // ---------------- 风 ---------------- 
 // wind = 0.0005 * (frameTimeCounter * CLOUD_SPEED + 10.0 * FTC_OFFSET)
 #define CLOUD_WIND_FACTOR 				0.0005
-#define CLOUD_SPEED 					1.0
+#define CLOUD_SPEED 					0.0//测试阶段就是0
 #define CLOUD_FTC_OFFSET 				0.0
 // windDirection = float3(1.0, wetness * 0.1 - 0.05, -0.4) * wind
 // 形状噪声采样风偏移系数（* 10.0）；细节噪声风偏移 * 140.0（离散版只用形状）

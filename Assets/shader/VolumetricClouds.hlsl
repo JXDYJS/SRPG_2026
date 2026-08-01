@@ -92,12 +92,15 @@ float HenyeyGreenstein(float cosAngle, float g)
 // 双波瓣 HG 相位函数（Dual-Lobe HG）：
 //   前向瓣 g_f > 0 提供向阳面强前向峰值，后向瓣 g_b < 0 填补背阳面暗部，
 //   避免 VdotL<0 时相位趋零导致云背面死黑。
-//   结果 = lerp(HG(θ, g_b), HG(θ, g_f), weight)，weight 为前向瓣占比。
+//   结果 = pow(lerp(HG(θ, g_b), HG(θ, g_f), weight), POWER)。
+//   POWER<1 做幂压缩：HG 动态范围高达 200+ 倍（cos=1 峰值 vs cos=0），
+//   直接乘会让向阳面窄束过亮、其余死暗；pow 不成比例抬小压大，过渡平滑。
 float HenyeyGreensteinDual(float cosAngle)
 {
     float fwd = HenyeyGreenstein(cosAngle, CLOUD_HG_FORWARD_G);
     float bwd = HenyeyGreenstein(cosAngle, CLOUD_HG_BACKWARD_G);
-    return lerp(bwd, fwd, CLOUD_HG_FORWARD_WEIGHT);
+    float dual = lerp(bwd, fwd, CLOUD_HG_FORWARD_WEIGHT);
+    return pow(max(dual, 1e-4), CLOUD_HG_POWER);
 }
 
 // 射线-球体交点。返回 (近交点, 远交点)；未命中返回 (1e10, -1e10)
