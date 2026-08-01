@@ -17,7 +17,7 @@
 
 // ---------------- 离散化 ---------------- 
 // 体素边长（米）。原版方块 1m 太小（远处亚像素），推荐 16~64m
-#define CLOUD_BLOCK_SIZE 				32.0
+#define CLOUD_BLOCK_SIZE 				16.0
 // 占据阈值：形状噪声采样值超过它才判定该体素有云（0/1 硬切）
 #define CLOUD_OCCUPANCY_THRESHOLD 		0.5
 
@@ -52,7 +52,7 @@
 #define CLOUD_RAIN_SKYLIGHTING			0.8
 #define CLOUD_CLEAR_SCALE 				1.0
 #define CLOUD_RAIN_SCALE 				1.0
-#define CLOUD_COVERAGE                  0.5
+#define CLOUD_COVERAGE                  0.6
 
 // ---------------- 光照 ---------------- 
 #define CLOUD_BOTTOM_BRIGHTNESS 		0.15
@@ -64,8 +64,13 @@
 // 光步进（向太阳方向逐块 DDA）：最大步数 / 单块消光系数 / 强度
 #define CLOUD_LIGHT_STEPS 				16 		// [4 8 12 16 24 32]
 #define CLOUD_LIGHT_EXTINCTION 			0.15 	// [0.05 0.1 0.15 0.2 0.3 0.5]
-#define CLOUD_LIGHT_SUN_MUL 			24.0
+#define CLOUD_LIGHT_SUN_MUL 			0.65
 #define CLOUD_LIGHT_SKY_MUL 			0.35
+// 双波瓣 HG 相位函数（Dual-Lobe HG）：前向瓣 g_f>0 提供向阳亮部，
+// 后向瓣 g_b<0 填补背阳暗部（VdotL<0 不彻底黑），weight 为前向瓣占比
+#define CLOUD_HG_FORWARD_G 				0.8
+#define CLOUD_HG_BACKWARD_G 			-0.3
+#define CLOUD_HG_FORWARD_WEIGHT 		0.7
 
 // ---------------- 主步进（方案B：动态步长） ----------------
 // 步长随透射率降低而增大：stepSize = lerp(CLOUD_MAX_STEP, CLOUD_MIN_STEP, transmittance)
@@ -73,14 +78,14 @@
 #define CLOUD_MIN_STEP 					16.0 	// [4.0 8.0 16.0 24.0 32.0]
 #define CLOUD_MAX_STEP 					64.0 	// [32.0 48.0 64.0 96.0 128.0]
 // 主步进消光：absorption = exp2(-occupied * CLOUD_MAIN_EXTINCTION * stepSize)
-#define CLOUD_MAIN_EXTINCTION 			0.02 	// [0.005 0.01 0.015 0.02 0.03 0.05]
+#define CLOUD_MAIN_EXTINCTION 			0.22 	// [0.005 0.01 0.015 0.02 0.03 0.05]
 // 主步进最大迭代次数（防死循环）
 #define CLOUD_MAIN_MAX_STEPS 			64
 
 // ---------------- 风 ---------------- 
 // wind = 0.0005 * (frameTimeCounter * CLOUD_SPEED + 10.0 * FTC_OFFSET)
 #define CLOUD_WIND_FACTOR 				0.0005
-#define CLOUD_SPEED 					1.0
+#define CLOUD_SPEED 					0.0
 #define CLOUD_FTC_OFFSET 				0.0
 // windDirection = float3(1.0, wetness * 0.1 - 0.05, -0.4) * wind
 // 形状噪声采样风偏移系数（* 10.0）；细节噪声风偏移 * 140.0（离散版只用形状）

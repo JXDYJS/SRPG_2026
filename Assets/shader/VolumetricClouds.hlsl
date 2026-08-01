@@ -89,6 +89,17 @@ float HenyeyGreenstein(float cosAngle, float g)
     return num * invSqrt * invSqrt * invSqrt * (0.25 / PI);
 }
 
+// 双波瓣 HG 相位函数（Dual-Lobe HG）：
+//   前向瓣 g_f > 0 提供向阳面强前向峰值，后向瓣 g_b < 0 填补背阳面暗部，
+//   避免 VdotL<0 时相位趋零导致云背面死黑。
+//   结果 = lerp(HG(θ, g_b), HG(θ, g_f), weight)，weight 为前向瓣占比。
+float HenyeyGreensteinDual(float cosAngle)
+{
+    float fwd = HenyeyGreenstein(cosAngle, CLOUD_HG_FORWARD_G);
+    float bwd = HenyeyGreenstein(cosAngle, CLOUD_HG_BACKWARD_G);
+    return lerp(bwd, fwd, CLOUD_HG_FORWARD_WEIGHT);
+}
+
 // 射线-球体交点。返回 (近交点, 远交点)；未命中返回 (1e10, -1e10)
 // 用于求视线与云层外壳（底部 / 顶部球面）的交点，确定步进区间
 float2 RaySphereIntersection(float3 ori, float3 dir, float radius)
@@ -257,13 +268,14 @@ float3 CloudLightingDiscrete(float3 worldPos, float4 cloudPos, float occupied,
     // ===== 光照 =====
     // 真实相位角：视线与太阳夹角
     float VdotL = dot(viewDir, sunDir);
-    float hg = HenyeyGreenstein(VdotL, 0.65);
+    float hg = HenyeyGreensteinDual(VdotL);
 
     // 太阳到达该点能量 = 直接透射 exp2(-Στ)（纯 Beer-Lambert，无前向散射补偿）
     float sunTrans = exp2(-sumOcc * CLOUD_LIGHT_EXTINCTION);
     float3 sunArrive = sunColor * sunTrans;
 
-    // 散射到视线方向：到达能量 * 反照率 * HG 相位（VdotL<0 时 hg 低 → 暗部成立）
+    // 散射到视线方向：到达能量 * 反照率 * 双波瓣HG相位
+    // 前向瓣给向阳亮部，后向瓣给背阳暗部（VdotL<0 不彻底黑）
     float3 directLight = sunArrive * (CLOUD_SCATTER_ALBEDO * (hg + 0.02) * CLOUD_LIGHT_SUN_MUL);
 
     // 环境光已移除：暗部填充交给 CompositeClouds 的大气透视 aerial*(1-trans)，
