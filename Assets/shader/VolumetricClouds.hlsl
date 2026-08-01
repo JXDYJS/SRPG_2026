@@ -27,6 +27,17 @@
 
 #include "CloudSettings.hlsl"
 
+// ---------------- 纹理声明（shader 全局，函数里直接引用，无需传参） ----------------
+// Unity 里 TEXTURE3D + SAMPLER 在 HLSL 顶层声明后即为 shader 全局。
+// 在最终 .shader 的 Properties 里声明同名纹理即可被材质绑定：
+//     Properties { _CloudNoise3D ("Cloud Noise 3D", 3D) = "white" {} }
+// 然后本文件的函数可直接用 SAMPLE_TEXTURE3D_LOD(_CloudNoise3D, sampler_CloudNoise3D, uv, lod)。
+// 备注：纹理本身（128^3 RGBA8 的低频形状噪声）需要你在外部导入为 Texture3D。
+// 若你倾向纯函数式（不依赖全局），可把参数改成 TEXTURE3D_ARGS(_CloudNoise3D, sampler_CloudNoise3D)，
+// 参考本文件下方 SampleDensityDiscrete 的 TODO 注释。
+TEXTURE3D(_CloudNoise3D);
+SAMPLER(sampler_CloudNoise3D);
+
 // ---------------- 常量（HLSL 需要的补全） ---------------- 
 #ifndef PI
 #define PI 3.14159265358979323846
@@ -126,6 +137,17 @@ float4 SetCloudPos(float3 worldPos, float2 cloudAltitude, float planetRadius, fl
 float SampleDensityDiscrete(float4 cloudPos, float3 windDirection, float wetness)
 {
     // TODO: 编写离散密度采样
+    float3 noiseCoord = cloudPos.xyz * CLOUD_BASE_NOISE_SCALE + windDirection * CLOUD_BASE_NOISE_WIND;
+    float scale = CLOUD_BLOCK_SIZE * CLOUD_BASE_NOISE_SCALE;
+    float3 block = floor(noiseCoord / scale) * scale;
+
+    // 全局声明的 _CloudNoise3D 直接采样，无需传参
+    float4 baseNoise = SAMPLE_TEXTURE3D_LOD(_CloudNoise3D, sampler_CloudNoise3D, block, 0);
+
+    // 混合 = baseNoise.y*0.4 + baseNoise.z*0.4 + baseNoise.w*0.2
+    // baseDensity = remapSaturate(baseNoise.x, 混合 - 1.0, 1.0)
+    // ...高度塑形 / 覆盖率...
+    // return step(CLOUD_OCCUPANCY_THRESHOLD, baseDensity); -> 0/1
     return 0.0;
 }
 
