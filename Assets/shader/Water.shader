@@ -12,6 +12,11 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
         _AbsorptionColor("Absorption (uA)", Color) = (0.35, 0.05, 0.02, 1.0)
         _Smoothness("Smoothness", Range(0, 1)) = 0.15
 
+        [Header(Sun Glint)]
+        _GlintSmoothness("Glint Smoothness (Sun Glint)", Range(0, 1)) = 0.9
+        _SunAngularRadius("Sun Angular Radius (deg)", Range(0.1, 6.0)) = 2.0
+        _GlintIntensity("Glint Intensity", Range(0, 8)) = 1.0
+
         [Header(Volumetrics)]
         _ExpFactor("EXP_FACTOR", Float) = 15.0
         _MaxRayLength("Max Ray Length", Float) = 50.0
@@ -80,6 +85,9 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
                 float _SSSPathScale;
                 float _BacklitPathScale;
                 float _Smoothness;
+                float _GlintSmoothness;
+                float _SunAngularRadius;
+                float _GlintIntensity;
             CBUFFER_END
 
             float _WaterSurfaceHeight;
@@ -144,6 +152,57 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
                 float3 scatteringAlbedo = uS * rcp(max(uT, 0.0001));
                 //return originLight * (1.0 - transmittance) * scatteringAlbedo * (phase + rcp(4*PI) * (uS / uT));
                 return originLight * (1.0 - transmittance) * scatteringAlbedo * (phase);
+            }
+
+            // === HZD 球形面光源近似（Horizon: Zero Dawn），Photon 移植 ===
+            // 把太阳当作圆盘光源，反射方向落在圆盘内时 NoH^2 直接取 1，
+            // 使太阳光斑有平亮心与物理尺寸（不是无限小的点）。
+            // light_radius 单位为弧度。
+            float get_NoH_squared(float NoL, float NoV, float LoV, float light_radius) {
+                float radius_cos = cos(light_radius);
+                float radius_tan = tan(light_radius);
+
+                // 反射方向已落在太阳圆盘内，直接取峰值
+                float RoL = 2.0 * NoL * NoV - LoV;
+                if (RoL >= radius_cos) {
+                    return 1.0;
+                }
+
+                float r_over_length_t
+                    = radius_cos * radius_tan * rcp(sqrt(max(1.0 - RoL * RoL, 1e-6)));
+                float not_r = r_over_length_t * (NoV - RoL * NoL);
+                float vot_r = r_over_length_t * (2.0 * NoV * NoV - 1.0 - RoL * LoV);
+
+                float triple = sqrt(clamp01(
+                    1.0 - NoL * NoL - NoV * NoV - LoV * LoV + 2.0 * NoL * NoV * LoV
+                ));
+
+                // 做一次 Newton 迭代修正弯曲的光方向
+                float NoB_r = r_over_length_t * triple;
+                float VoB_r = r_over_length_t * (2.0 * triple * NoV);
+                float NoL_vt_r = NoL * radius_cos + NoV + not_r;
+                float LoV_vt_r = LoV * radius_cos + 1.0 + vot_r;
+                float p = NoB_r * LoV_vt_r;
+                float q = NoL_vt_r * LoV_vt_r;
+                float s = VoB_r * NoL_vt_r;
+                float x_num = q * (-0.5 * p + 0.25 * VoB_r * NoL_vt_r);
+                float x_denom = p * p + s * (s - 2.0 * p)
+                              + NoL_vt_r * ((NoL * radius_cos + NoV) * LoV_vt_r * LoV_vt_r
+                                             + q * (-0.5 * (LoV_vt_r + LoV * radius_cos) - 0.5));
+                float two_x_1 = 2.0 * x_num / (x_denom * x_denom + x_num * x_num);
+                float sin_theta = two_x_1 * x_denom;
+                float cos_theta = 1.0 - two_x_1 * x_num;
+                // 用修正后的 T 更新 not_r / vot_r
+                not_r = cos_theta * not_r + sin_theta * NoB_r;
+                vot_r = cos_theta * vot_r + sin_theta * VoB_r;
+
+                // 基于弯曲后的光方向计算 (N.H)^2
+                float new_NoL = NoL * radius_cos + not_r;
+                float new_LoV = LoV * radius_cos + vot_r;
+                float NoH = NoV + new_NoL;
+                float HoH = 2.0 * new_LoV + 2.0;
+
+                return clamp01(NoH * NoH / HoH);
             }
 
             Varyings vert(Attributes input) {
@@ -262,18 +321,39 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
                 // float3 directSpecular = specularTerm * mainLight.color * F_Schlick(_Fresnel0, saturate(dot(H, V)));
                 // float3 directSpecular = specularTerm * mainLight.color * _Fresnel0;
 
-                // 新实现：标准 PBR。specular = _Fresnel0（水的电介质 F0 ≈ 0.02），
-                // DirectBRDFSpecular_GGX 返回 D(GGX NDF) * G(Smith 高度相关 G2/(4*NoL*NoV)) * F(Schlick)，
-                // 不内置渲染方程的 NdotL，须由调用方补乘；阴影与散射路径一致。
+                // 双瓣高光（参考 Photon 水面）：specular = _Fresnel0（水的电介质 F0 ≈ 0.02）。
+                // 1) 宽光瓣 sheen：_Smoothness 控制，整片水面偏亮的湿润泛光。
+                // 2) 亮斑瓣 glint：_GlintSmoothness（高光滑）控制锐度，_SunAngularRadius 面光源太阳
+                //    给光斑物理尺寸（不是点），GGX NDF 分布决定高光范围。
+                // 函数复用 CustomBRDF.hlsl：InitializeBRDFData / DirectBRDFSpecular_GGX / NDF / v2_smith_ggx / fresnelSchlick。
                 half alpha = 1.0h;
-                BRDFData brdfData;
-                InitializeBRDFData(half3(0.0, 0.0, 0.0), 0.0h, half3(_Fresnel0, _Fresnel0, _Fresnel0), _Smoothness, alpha, brdfData);
+                BRDFData sheenBRDF;
+                InitializeBRDFData(half3(0.0, 0.0, 0.0), 0.0h, half3(_Fresnel0, _Fresnel0, _Fresnel0), _Smoothness, alpha, sheenBRDF);
 
+                BRDFData glintBRDF;
+                InitializeBRDFData(half3(0.0, 0.0, 0.0), 0.0h, half3(_Fresnel0, _Fresnel0, _Fresnel0), _GlintSmoothness, alpha, glintBRDF);
+
+                float NoL = saturate(dot(N, L));
+                float NoV = abs(dot(N, V)) + HALF_MIN;
+                float3 H = SafeNormalize(L + V);
+                float LoH = saturate(dot(L, H));
+                float LoV = saturate(dot(L, V));
+
+                // 宽光瓣：标准 GGX Cook-Torrance（直接复用上轮移植的 DirectBRDFSpecular_GGX）
                 half3 outFresnel;
-                float3 directSpecular = DirectBRDFSpecular_GGX(brdfData, N, L, V, outFresnel)
-                                      * mainLight.color
-                                      * saturate(dot(N, L))
-                                      * mainLight.shadowAttenuation;
+                float3 sheen = DirectBRDFSpecular_GGX(sheenBRDF, N, L, V, outFresnel)
+                             * mainLight.color * NoL * mainLight.shadowAttenuation;
+
+                // 亮斑瓣：HZD 球形面光源近似求 NoH^2，再用 GGX NDF 求分布（高光范围由 NDF + 太阳盘决定）
+                float NoH_sq = get_NoH_squared(NoL, NoV, LoV, _SunAngularRadius * PI / 180.0);
+                float glintD = NDF(glintBRDF.roughness, sqrt(NoH_sq));
+                float glintG = v2_smith_ggx(max(NoL, 1e-4), max(NoV, 1e-4), glintBRDF.roughness2);
+                float3 glintF = fresnelSchlick(glintBRDF.specular, 1.0h, LoH);
+                float3 glint = NoL * glintD * glintG * glintF
+                             * mainLight.color * mainLight.shadowAttenuation * _GlintIntensity;
+                glint = min(glint, 4.0); // 防 bloom 过载（同 Photon specular_max_value）
+
+                float3 directSpecular = sheen + glint;
 
                 // === 间接高光 (Indirect Specular) 采样动态天空图 ===
                 float3 R = reflect(-V, N);
@@ -291,8 +371,13 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
 
                 float F = F_Schlick(_Fresnel0, saturate(dot(N, V)));
                 
+                // === 修复双重 Fresnel ===
+                // 环境反射仍按 Fresnel(NoV) 加权；(1.0 - T_exit) 只作用于环境反射；
+                // 直接高光（sheen + glint）内部已含 Fresnel(LoH)，不再额外乘 (1.0 - T_exit)，
+                // 避免 F0=0.02 时被双重衰减到几乎不可见（与 Photon/URP 一致，只加一次）。
                 float3 finalColor = (G_entry * T_entry * scatteredLight + thinLayerSSS + backlitTrans + sceneInScattering + sceneColor * accumTransmittance * lastLightTransmittance) * T_exit 
-                                  + (finalReflection + directSpecular) * (1.0 - T_exit);
+                                  + finalReflection * (1.0 - T_exit)
+                                  + directSpecular;
                 
                 // === 远景雾 (Fog) 采样动态天空图 ===
                 float transmittance = get_border_fog(view_dist, 150.0);
