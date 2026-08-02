@@ -49,6 +49,10 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
             #pragma multi_compile_fragment _ _REFLECTION_PROBE_BLENDING
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+            // === 标准 PBR BRDF 库（labPBR 扩展：GGX NDF / Smith G2 / DirectBRDFSpecular_GGX）===
+            // 必须在 URP Lighting.hlsl 之前 include：它复用 UNIVERSAL_BRDF_INCLUDED guard，
+            // 先 include 才能让 URP 自带的 BRDF.hlsl 被跳过（与 CustomLit 管线同款做法）。
+            #include "Assets/shader/pbr/CustomBRDF.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareOpaqueTexture.hlsl"
@@ -240,20 +244,36 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
                 float3 T_exit = 1.0 - F_Schlick(_Fresnel0, saturate(dot(N, V)));
                 //sceneInScattering = sceneColor * accumTransmittance * uS * totalRayLength * Luminance(mainLight.color);
 
-                float3 H = SafeNormalize(L + V);
-                float NoH = saturate(dot(N, H));
-                float LoH = saturate(dot(L, H));
+                // === PBR 直接高光（标准 GGX Cook-Torrance，复用 CustomBRDF.hlsl）===
+                // 原实现：手写 Minimalist Cook-Torrance（URP 近似 D/(LoH^2*(roughness*4+2))），
+                // 且只乘 mainLight.color，缺 NdotL 与阴影衰减。以下保留供比对/回退。
+                // float3 H = SafeNormalize(L + V);
+                // float NoH = saturate(dot(N, H));
+                // float LoH = saturate(dot(L, H));
 
                 float perceptualRoughness = 1.0 - _Smoothness;
-                float roughness = perceptualRoughness * perceptualRoughness;
-                float roughness2 = max(roughness * roughness, 0.0078125); 
+                // float roughness = perceptualRoughness * perceptualRoughness;
+                // float roughness2 = max(roughness * roughness, 0.0078125); 
 
-                float d_denom = NoH * NoH * (roughness2 - 1.0) + 1.00001;
-                float D = roughness2 / (d_denom * d_denom);
-                float specularTerm = D / (max(0.1, LoH * LoH) * (roughness * 4.0 + 2.0));
-                specularTerm = clamp(specularTerm, 0.0, 1000.0);
-                float3 directSpecular = specularTerm * mainLight.color * F_Schlick(_Fresnel0, saturate(dot(H, V)));
-                //float3 directSpecular = specularTerm * mainLight.color * _Fresnel0;
+                // float d_denom = NoH * NoH * (roughness2 - 1.0) + 1.00001;
+                // float D = roughness2 / (d_denom * d_denom);
+                // float specularTerm = D / (max(0.1, LoH * LoH) * (roughness * 4.0 + 2.0));
+                // specularTerm = clamp(specularTerm, 0.0, 1000.0);
+                // float3 directSpecular = specularTerm * mainLight.color * F_Schlick(_Fresnel0, saturate(dot(H, V)));
+                // float3 directSpecular = specularTerm * mainLight.color * _Fresnel0;
+
+                // 新实现：标准 PBR。specular = _Fresnel0（水的电介质 F0 ≈ 0.02），
+                // DirectBRDFSpecular_GGX 返回 D(GGX NDF) * G(Smith 高度相关 G2/(4*NoL*NoV)) * F(Schlick)，
+                // 不内置渲染方程的 NdotL，须由调用方补乘；阴影与散射路径一致。
+                half alpha = 1.0h;
+                BRDFData brdfData;
+                InitializeBRDFData(half3(0.0, 0.0, 0.0), 0.0h, half3(_Fresnel0, _Fresnel0, _Fresnel0), _Smoothness, alpha, brdfData);
+
+                half3 outFresnel;
+                float3 directSpecular = DirectBRDFSpecular_GGX(brdfData, N, L, V, outFresnel)
+                                      * mainLight.color
+                                      * saturate(dot(N, L))
+                                      * mainLight.shadowAttenuation;
 
                 // === 间接高光 (Indirect Specular) 采样动态天空图 ===
                 float3 R = reflect(-V, N);
