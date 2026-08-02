@@ -13,9 +13,9 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
         _Smoothness("Smoothness", Range(0, 1)) = 0.15
 
         [Header(Sun Glint)]
-        _GlintSmoothness("Glint Smoothness (Sun Glint)", Range(0, 1)) = 0.9
+        _GlintSmoothness("Glint Smoothness (Sun Glint)", Range(0, 1)) = 0.65
         _SunAngularRadius("Sun Angular Radius (deg)", Range(0.1, 6.0)) = 2.0
-        _GlintIntensity("Glint Intensity", Range(0, 8)) = 1.0
+        _GlintIntensity("Glint Intensity", Range(0, 8)) = 3.0
 
         [Header(Debug)]
         _DebugMode("Debug Mode (0=Off, 1-5)", Range(0, 5)) = 0
@@ -193,7 +193,9 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
                 float x_denom = p * p + s * (s - 2.0 * p)
                               + NoL_vt_r * ((NoL * radius_cos + NoV) * LoV_vt_r * LoV_vt_r
                                              + q * (-0.5 * (LoV_vt_r + LoV * radius_cos) - 0.5));
-                float two_x_1 = 2.0 * x_num / (x_denom * x_denom + x_num * x_num);
+                // 除零防护：Newton 修正量在退化几何下可能 0/0 → inf/NaN，钳制为 0（退化为未迭代值）
+                float newton_denom = x_denom * x_denom + x_num * x_num;
+                float two_x_1 = newton_denom > 1e-8 ? 2.0 * x_num / newton_denom : 0.0;
                 float sin_theta = two_x_1 * x_denom;
                 float cos_theta = 1.0 - two_x_1 * x_num;
                 // 用修正后的 T 更新 not_r / vot_r
@@ -206,7 +208,9 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
                 float NoH = NoV + new_NoL;
                 float HoH = 2.0 * new_LoV + 2.0;
 
-                return clamp01(NoH * NoH / HoH);
+                float NoH_sq = NoH * NoH / HoH;
+                // NaN 兜底：任何退化几何都不允许泄漏 NaN，避免高光被硬擦除
+                return clamp01(isfinite(NoH_sq) ? NoH_sq : 0.0);
             }
 
             Varyings vert(Attributes input) {
@@ -421,7 +425,7 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
                     // 主光颜色
                     finalColor = mainLight.color;
                 }
-                return half4(finalColor,1.0);
+                return half4(glintD.xxx * 1,1.0);
             }
             ENDHLSL
         }
