@@ -37,6 +37,8 @@
 #define CLOUD_BASE_NOISE_SCALE 			0.00001
 // 噪声采样 mip（需纹理开 mipmap）。LOD 越高越模糊，抹掉纹素级中高频凹凸，
 // 消除"朵朵小云"。LOD 2 ≈ 模糊 3km 以下细节；LOD 3 ≈ 6km。调小则云更有细节。
+// ★ 当前 Fix2 已暂时注释掉（采样用 LOD 0），需要时把 VolumetricClouds.hlsl 两处
+//   采样 LOD 改回此宏即可重新启用。
 #define CLOUD_BASE_NOISE_LOD 			2.0
 // 高频细节噪声缩放（32^3 那张，离散版用不到，仅保留参考）
 #define CLOUD_DETAILED_NOISE_SCALE 		0.007

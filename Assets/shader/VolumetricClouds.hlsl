@@ -169,7 +169,7 @@ float4 SetCloudPos(float3 worldPos, float2 cloudAltitude, float planetRadius, fl
 //   2) 用 noiseCoord 采样低频形状噪声（CloudNoise3D，128^3 RGBA8，mipmap 已开）：
 //        baseDensity 混合 = baseNoise.y * 0.4 + baseNoise.z * 0.4 + baseNoise.w * 0.2
 //        baseDensity = remapSaturate(baseNoise.x, baseDensity - 1.0, 1.0)
-//        采样用 CLOUD_BASE_NOISE_LOD（模糊 mip，抹掉纹素级中高频 -> 去朵朵小云）
+//        采样 LOD 0（Fix2 去小云/mip 模糊暂时注释掉，需要时用 CLOUD_BASE_NOISE_LOD）
 //   3) 垂直密度剖面（下重上轻，积云轮廓；"层内约束"由 SetCloudPos 的
 //      w = remapSaturate(...) 完成，不在这里）：
 //        condensation = curve(saturate(w * CLOUD_CONDENSE_SPEED))       // 凝结底盘快速升起
@@ -191,8 +191,9 @@ float SampleDensityDiscrete(float3 worldPos, float3 windDirection, float wetness
     float4 cloudPos = SetCloudPos(worldPos, cloudAltitude, planetRadius, cloudScale, windDirection);
     float3 noiseCoord = cloudPos.xyz * CLOUD_BASE_NOISE_SCALE;
 
-    // 2) 采样 + 混合（CLOUD_BASE_NOISE_LOD 模糊 mip，抹掉纹素级中高频 -> 去朵朵小云）
-    float4 baseNoise = SAMPLE_TEXTURE3D_LOD(_CloudNoise3D, sampler_CloudNoise3D, noiseCoord, CLOUD_BASE_NOISE_LOD);
+    // 2) 采样 + 混合
+    //    Fix2(去小云/mip 模糊) 暂时注释掉：需要时把 LOD 0 换成 CLOUD_BASE_NOISE_LOD
+    float4 baseNoise = SAMPLE_TEXTURE3D_LOD(_CloudNoise3D, sampler_CloudNoise3D, noiseCoord, 0);
     float density = baseNoise.y * 0.4 + baseNoise.z * 0.4 + baseNoise.w * 0.2;
     density = remapSaturate(baseNoise.x, density - 1.0, 1.0);
 
@@ -207,7 +208,7 @@ float SampleDensityDiscrete(float3 worldPos, float3 windDirection, float wetness
     density *= condensation * taper * CLOUD_BASE_INTENSITY;
     density *= lerp(1.0, curveTop(saturate(wL * 3.0)), wetness);
     density = saturate(density);
-    float coverageNoise  = SAMPLE_TEXTURE3D_LOD(_CloudNoise3D, sampler_CloudNoise3D, cloudPos.xyz * CLOUD_COVERAGE_NOISE_SCALE + CLOUD_COVERAGE_NOISE_OFFSET, CLOUD_BASE_NOISE_LOD).x;
+    float coverageNoise  = SAMPLE_TEXTURE3D_LOD(_CloudNoise3D, sampler_CloudNoise3D, cloudPos.xyz * CLOUD_COVERAGE_NOISE_SCALE + CLOUD_COVERAGE_NOISE_OFFSET, 0).x;
     float coverage = 1.0  - remapSaturate(1.0 - coverageNoise,CLOUD_COVERAGE * 0.2,CLOUD_COVERAGE);
     density *= coverage;
     return step(CLOUD_OCCUPANCY_THRESHOLD,density);
