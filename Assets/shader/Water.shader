@@ -398,6 +398,11 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
                 //finalColor = sceneInScattering;
                 //finalColor = directSpecular;
                 //finalColor = T_exit;
+
+                // === DEBUG: 单独查看亮斑瓣 glint（检查该项颜色是否算对）===
+                // 想看宽光瓣 sheen 就换成下面注释行
+                //finalColor = sheen;
+                finalColor = glint;
                 return half4(finalColor,1.0);
             }
             ENDHLSL
