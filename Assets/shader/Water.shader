@@ -399,30 +399,6 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
                 //finalColor = directSpecular;
                 //finalColor = T_exit;
 
-                // === DEBUG: 逐项定位 glint 全黑原因（颜色编码）===
-                // 命中哪个条件就返回对应纯色，肉眼即可定位错的值。
-                // 白:glint为NaN/Inf   红:NoL≈0   绿:阴影衰减=0   黄:主光颜色≈0
-                // 品红:面光源NoH^2≈0  青:NDF≈0  橙:Smith G≈0    蓝:Fresnel≈0
-                // 全部通过则放大10倍输出亮斑形状
-                if (any(isnan(glint)) || any(isinf(glint))) {
-                    finalColor = float3(1,1,1);
-                } else if (NoL <= 1e-3) {
-                    finalColor = float3(1,0,0);
-                } else if (mainLight.shadowAttenuation <= 1e-3) {
-                    finalColor = float3(0,1,0);
-                } else if (Luminance(mainLight.color) <= 1e-4) {
-                    finalColor = float3(1,1,0);
-                } else if (NoH_sq <= 1e-4) {
-                    finalColor = float3(1,0,1);
-                } else if (glintD <= 1e-6) {
-                    finalColor = float3(0,1,1);
-                } else if (glintG <= 1e-6) {
-                    finalColor = float3(1,0.5,0);
-                } else if (Luminance(glintF) <= 1e-5) {
-                    finalColor = float3(0,0,1);
-                } else {
-                    finalColor = glint * 10.0;
-                }
                 return half4(finalColor,1.0);
             }
             ENDHLSL
