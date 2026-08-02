@@ -159,9 +159,9 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
             }
 
             // === HZD 球形面光源近似（Horizon: Zero Dawn），Photon 移植 ===
-            // 把太阳当作圆盘光源，反射方向落在圆盘内时 NoH^2 直接取 1，
-            // 使太阳光斑有平亮心与物理尺寸（不是无限小的点）。
-            // light_radius 单位为弧度。
+            // 已弃用：Newton 迭代在特定几何下存在跳变/NaN，会被锐利 NDF 放大成"擦除线"，
+            // 现改在 frag 内用"点光源 NoH² + 软太阳盘 smoothstep 平顶"替代（处处连续）。
+            // 保留本函数仅供比对/回退。
             float get_NoH_squared(float NoL, float NoV, float LoV, float light_radius) {
                 float radius_cos = cos(light_radius);
                 float radius_tan = tan(light_radius);
@@ -352,8 +352,15 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
                 float3 sheen = DirectBRDFSpecular_GGX(sheenBRDF, N, L, V, outFresnel)
                              * mainLight.color * NoL * mainLight.shadowAttenuation;
 
-                // 亮斑瓣：HZD 球形面光源近似求 NoH^2，再用 GGX NDF 求分布（高光范围由 NDF + 太阳盘决定）
-                float NoH_sq = get_NoH_squared(NoL, NoV, LoV, _SunAngularRadius * PI / 180.0);
+                // 亮斑瓣：平滑的点光源 NoH² + 软太阳盘平顶。
+                // 替代 HZD Newton 迭代：后者在特定几何下存在跳变/NaN，被 NDF 放大成"擦除线"。
+                // RoL = 反射方向·光方向，反射越贴近太阳 NoH_sq 越接近 1（平亮心），
+                // smoothstep 保证处处连续，盘外平滑回落到点光源 NoH²，光斑尺寸由 NDF(_GlintSmoothness) 控制。
+                float RoL_disk = 2.0 * NoL * NoV - LoV;
+                float radius_cos = cos(_SunAngularRadius * PI / 180.0);
+                float diskFlat = smoothstep(radius_cos, 1.0, RoL_disk);
+                float NoH2_point = (NoL + NoV) * (NoL + NoV) / max(2.0 * LoV + 2.0, 1e-4);
+                float NoH_sq = lerp(NoH2_point, 1.0, diskFlat);
                 float glintD = NDF(glintBRDF.roughness, sqrt(NoH_sq));
                 float glintG = v2_smith_ggx(max(NoL, 1e-4), max(NoV, 1e-4), glintBRDF.roughness2);
                 float3 glintF = fresnelSchlick(glintBRDF.specular, 1.0h, LoH);
