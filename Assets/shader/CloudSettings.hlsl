@@ -17,7 +17,7 @@
 
 // ---------------- 离散化 ---------------- 
 // 体素边长（米）。原版方块 1m 太小（远处亚像素），推荐 16~64m
-#define CLOUD_BLOCK_SIZE 				16.0
+#define CLOUD_BLOCK_SIZE 				32.0
 // 占据阈值：形状噪声采样值超过它才判定该体素有云（0/1 硬切）
 #define CLOUD_OCCUPANCY_THRESHOLD 		0.5
 
@@ -67,7 +67,7 @@
 //   CLOUD_BASE_INTENSITY 底盘强度：越大底盘越宽（>1 让底部阈值更低、底盘铺开）
 //   CLOUD_CONDENSE_SPEED 凝结底陡度：越大底越平（上升越陡），过小会糊成一片
 #define CLOUD_CONDENSE_SPEED 			8.0
-#define CLOUD_PROFILE_SLOPE 			1.2
+#define CLOUD_PROFILE_SLOPE 			1.0
 #define CLOUD_PROFILE_POWER 			0.8
 #define CLOUD_BASE_INTENSITY 			1.2
 
@@ -102,7 +102,7 @@
 // 出云空块容差：进云后允许穿过 N 个连续空块再判出云。云边缘棱角常有 1~2 格缺口，
 // 缺口后往往又是厚云，过早早退会把厚云跳过导致边缘漏出天空色。
 // 主步进与光步进共用。调小更省性能但易漏色，调大更实但两朵近云(<N*BLOCK)会连成一片。
-#define CLOUD_GAP_TOLERANCE 			3
+#define CLOUD_GAP_TOLERANCE 			6
 
 // ---------------- 风 ---------------- 
 // wind(原始) = CLOUD_WIND_FACTOR * (frameTimeCounter * CLOUD_SPEED + 10.0 * FTC_OFFSET)

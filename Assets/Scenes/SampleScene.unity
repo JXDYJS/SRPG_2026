@@ -10043,6 +10043,26 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 448880442559874703, guid: 76fcf4ba804f0094fbc62fec53cf782f,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 0.09289278
+      objectReference: {fileID: 0}
+    - target: {fileID: 448880442559874703, guid: 76fcf4ba804f0094fbc62fec53cf782f,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 0.45119974
+      objectReference: {fileID: 0}
+    - target: {fileID: 448880442559874703, guid: 76fcf4ba804f0094fbc62fec53cf782f,
+        type: 3}
+      propertyPath: m_Intensity
+      value: 1.986722
+      objectReference: {fileID: 0}
+    - target: {fileID: 1380755099173815078, guid: 76fcf4ba804f0094fbc62fec53cf782f,
+        type: 3}
+      propertyPath: sunAngle
+      value: 0.475
+      objectReference: {fileID: 0}
     - target: {fileID: 1380755099173815078, guid: 76fcf4ba804f0094fbc62fec53cf782f,
         type: 3}
       propertyPath: dynamicSkyMap
@@ -10066,22 +10086,22 @@ PrefabInstance:
     - target: {fileID: 1925767420115934604, guid: 76fcf4ba804f0094fbc62fec53cf782f,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.93482023
+      value: 0.07578566
       objectReference: {fileID: 0}
     - target: {fileID: 1925767420115934604, guid: 76fcf4ba804f0094fbc62fec53cf782f,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.24315402
+      value: 0.96294826
       objectReference: {fileID: 0}
     - target: {fileID: 1925767420115934604, guid: 76fcf4ba804f0094fbc62fec53cf782f,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.25048435
+      value: 0.020306706
       objectReference: {fileID: 0}
     - target: {fileID: 1925767420115934604, guid: 76fcf4ba804f0094fbc62fec53cf782f,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.06515293
+      value: -0.2580212
       objectReference: {fileID: 0}
     - target: {fileID: 1925767420115934604, guid: 76fcf4ba804f0094fbc62fec53cf782f,
         type: 3}

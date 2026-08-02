@@ -43,7 +43,7 @@ public static class CloudNoise3DImporter
             return;
         }
 
-        Texture3D tex = new Texture3D(SIZE, SIZE, SIZE, TextureFormat.RGBA32, false);
+        Texture3D tex = new Texture3D(SIZE, SIZE, SIZE, TextureFormat.RGBA32, true);
         Color[] colors = new Color[SIZE * SIZE * SIZE];
 
         for (int z = 0; z < SIZE; z++)
