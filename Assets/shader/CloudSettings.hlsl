@@ -17,14 +17,14 @@
 
 // ---------------- 离散化 ---------------- 
 // 体素边长（米）。原版方块 1m 太小（远处亚像素），推荐 16~64m
-#define CLOUD_BLOCK_SIZE 				32.0
+#define CLOUD_BLOCK_SIZE 				16.0
 // 占据阈值：形状噪声采样值超过它才判定该体素有云（0/1 硬切）
 #define CLOUD_OCCUPANCY_THRESHOLD 		0.5
 
 // ---------------- 云层几何 ---------------- 
 // 云层为球形外壳，云底高度 CLOUD_CLEAR_ALTITUDE，厚度叠加其上
 #define CLOUD_CLEAR_ALTITUDE 			500.0
-#define CLOUD_CLEAR_THICKNESS 			450.0
+#define CLOUD_CLEAR_THICKNESS 			800.0
 #define CLOUD_RAIN_ALTITUDE 			500.0
 #define CLOUD_RAIN_THICKNESS 			800.0
 // 行星半径（米）：云层外壳套在 planetRadius 上，altitude 是相对行星表面的高度
@@ -34,7 +34,7 @@
 // 低频形状噪声缩放：worldPos(米) * 0.0007 -> 噪声坐标。
 // 注意：原版里 worldPos 先经 SetCloudPos 变成 cloudPos（含行星外壳 + 高度变形），
 //       再乘这个缩放采样。离散化就在"噪声坐标"这一层 floor 取整。
-#define CLOUD_BASE_NOISE_SCALE 			0.0007
+#define CLOUD_BASE_NOISE_SCALE 			0.00001
 // 高频细节噪声缩放（32^3 那张，离散版用不到，仅保留参考）
 #define CLOUD_DETAILED_NOISE_SCALE 		0.007
 // 覆盖率噪声缩放（几乎是一张 XZ 二维图，Y 分量 ≈ 0，与高度无关）
@@ -52,7 +52,7 @@
 #define CLOUD_RAIN_SKYLIGHTING			0.8
 #define CLOUD_CLEAR_SCALE 				1.0
 #define CLOUD_RAIN_SCALE 				1.0
-#define CLOUD_COVERAGE                  0.6
+#define CLOUD_COVERAGE                  0.8
 
 // ---------------- 光照 ---------------- 
 #define CLOUD_BOTTOM_BRIGHTNESS 		0.15
@@ -84,13 +84,16 @@
 #define CLOUD_MAIN_MAX_STEPS 			128
 
 // ---------------- 风 ---------------- 
-// wind = 0.0005 * (frameTimeCounter * CLOUD_SPEED + 10.0 * FTC_OFFSET)
+// wind(原始) = CLOUD_WIND_FACTOR * (frameTimeCounter * CLOUD_SPEED + 10.0 * FTC_OFFSET)
 #define CLOUD_WIND_FACTOR 				0.0005
-#define CLOUD_SPEED 					0.0//测试阶段就是0
+#define CLOUD_SPEED 					1.01//测试阶段就是0
 #define CLOUD_FTC_OFFSET 				0.0
-// windDirection = float3(1.0, wetness * 0.1 - 0.05, -0.4) * wind
-// 形状噪声采样风偏移系数（* 10.0）；细节噪声风偏移 * 140.0（离散版只用形状）
-#define CLOUD_BASE_NOISE_WIND 			10.0
+// 世界米系数：windDirection(米) = float3(1,0,-0.4) * wind(原始) * CLOUD_WIND_TO_METERS。
+// 漂移速度 ≈ CLOUD_WIND_FACTOR * CLOUD_SPEED * CLOUD_WIND_TO_METERS * |方向|
+//            = 0.0005 * 1.01 * 1e4 * 1.077 ≈ 5.4 m/s。
+// ★ 调整风速只改这一个数：越大漂得越快（如 5e4 ≈ 27 m/s）。
+// ★ windDirection.y 必须保持 0：否则网格相对固定云层高度带上下滑，块会凭空生长/消失。
+#define CLOUD_WIND_TO_METERS 			1e4
 
 // ---------------- 大气透视（相机→云） ----------------
 // 指数大气标高（米）：控制雾随距离堆积的速率。越小雾越快堆积。
@@ -100,7 +103,7 @@
 // ---------------- 质量 / 远景 ---------------- 
 #define CLOUD_QUALITY 					1.0
 // 距离淡出：fade = exp2(-distance * CLOUD_FADE_RATE)
-#define CLOUD_FADE_RATE 				8e-5
+#define CLOUD_FADE_RATE 				4e-4
 // 相机进入云层内部时主步进长度上限
 #define CLOUD_INNER_CAP 				5000.0
 // 相机在云内的高度平滑过渡系数（0.005）

@@ -149,9 +149,11 @@ Shader "Skybox/Fakeskybox"
         cloudAltitude = lerp(cloudAltitude,
             float2(CLOUD_RAIN_ALTITUDE, CLOUD_RAIN_ALTITUDE + CLOUD_RAIN_THICKNESS), wetness);
 
-        // 风：wind = CLOUD_WIND_FACTOR * (time * CLOUD_SPEED + 10*FTC_OFFSET)
+        // 风：windDirection 是世界米位移 = wind(原始) * CLOUD_WIND_TO_METERS。
+        // windDirection.y 必须保持 0：否则网格相对固定云层高度带上下滑，
+        // 会出现块凭空生长/消失。调风速改 CloudSettings.hlsl 的 CLOUD_WIND_TO_METERS。
         float wind = CLOUD_WIND_FACTOR * (_Time.y * CLOUD_SPEED + 10.0 * CLOUD_FTC_OFFSET);
-        float3 windDirection = float3(1.0, wetness * 0.1 - 0.05, -0.4) * wind;
+        float3 windDirection = float3(1.0, 0.0, -0.4) * wind * CLOUD_WIND_TO_METERS;
 
         NubisCumulusDiscrete(cloudColor, viewDir, _WorldSpaceCameraPos,
             cloudAltitude, sunDir, sunColor, skyColor, windDirection, wetness,
