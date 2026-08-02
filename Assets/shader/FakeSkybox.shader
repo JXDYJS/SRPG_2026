@@ -36,6 +36,7 @@ Shader "Skybox/Fakeskybox"
 
     HLSLINCLUDE
     #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+    #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 
     float _SunIntensity;
     float3 _SunColor;
@@ -169,9 +170,18 @@ Shader "Skybox/Fakeskybox"
         // ③ 大气透视：相机→云之间那段雾的散射 = 整段天空散射 - 云后(透射)部分的散射
         float3 aerial = calcAtmosphericScatter(sunDir, viewDir) * (1.0 - atmoTrans);
 
-        return skyColor * cloudTransmittance
+        // ④ 距离淡出（移植 iterationRP NUBIS 的 CLOUD_FADE）：
+        //    fade = exp2(-cloudDistance * CLOUD_FADE_RATE)，连续指数衰减，不是硬 step。
+        //    cloudDistance 是相机到第一块云的精确距离（NubisCumulusDiscrete 已传出）。
+        //    远云 fade→0：transFaded→1、cloudColor→0，露出的是另算的 skyColor（平滑天空），
+        //    而不是用白色雾去填 —— 地平线"白花花一团"的根源就在这。
+        float fade = saturate(exp2(-cloudDistance * CLOUD_FADE_RATE));
+        float transFaded = lerp(1.0, cloudTransmittance, fade);
+        cloudColor *= fade;
+
+        return skyColor * transFaded
              + cloudColor * atmoTrans
-             + aerial * (1.0 - cloudTransmittance);
+             + aerial * (1.0 - transFaded);
     }
     ENDHLSL
 
@@ -218,15 +228,18 @@ Shader "Skybox/Fakeskybox"
                     viewDir = normalize(i.texcoord);
                 #endif
 
-                float3 sunDir = normalize(_MainLightPosition.xyz);
+                // 场景主光（URP）：与 Water.shader 颜色来源一致（_MainLightColor），
+                // 跟随场景 Directional Light 的颜色/强度，避免云与水光照不同步。
+                // 用无参 GetMainLight()：天空盒无表面点，不采样阴影贴图。
+                Light mainLight = GetMainLight();
+                float3 sunDir = mainLight.direction;
                 float3 skyColor = GetFinalSkyColor(normalize(viewDir), sunDir);
 
-                // 太阳光带强度（URP _LightColor0.rgb 已是 强度 x 颜色）
-                float3 sunColor = _SunColor.rgb * _SunIntensity ;
+                // 太阳散射光：URP 场景光颜色（已含 强度 x 颜色），乘倍率增强云上亮度
+                float3 sunColor = mainLight.color * _SunIntensity;
                 float3 skyColorWithClouds = CompositeClouds(skyColor, viewDir, sunDir, sunColor, _CloudWetness);
                 float3 color = lerp(skyColor, skyColorWithClouds, _EnableClouds);
-                //color = float3(0.0,1.0,0.0);
-                return float4(skyColorWithClouds, 1.0);
+                return float4(color, 1.0);
             }
             ENDHLSL
         }
