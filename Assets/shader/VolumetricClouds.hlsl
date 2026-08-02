@@ -256,6 +256,7 @@ float3 CloudLightingDiscrete(float3 worldPos, float4 cloudPos, float occupied,
     float sumOcc = 0.0;        // 光学厚度（被占据块数）
     float rayT = 0.0;
     float prevT = 0.0;
+    int emptyRun = 0;          // 连续空块计数（边缘缺口放行，防边缘过亮/漏色）
 
     for (int i = 0; i < CLOUD_LIGHT_STEPS; i++)
     {
@@ -278,7 +279,13 @@ float3 CloudLightingDiscrete(float3 worldPos, float4 cloudPos, float occupied,
         float occ = SampleDensityDiscrete(checkPos, windDirection, wetness,
             cloudAltitude, planetRadius, cloudScale);
 
-        if (occ < 0.5) break;   // 空块：已离开云，停止
+        // 空块：连续达到容差才认为出云（边缘 1~2 格缺口后常有厚云，放行穿过去）
+        if (occ < 0.5)
+        {
+            if (++emptyRun >= CLOUD_GAP_TOLERANCE) break;
+            continue;
+        }
+        emptyRun = 0;
         sumOcc += occ;          // 占据块计入光学厚度
     }
 
@@ -389,6 +396,7 @@ void NubisCumulusDiscrete(inout float3 color, float3 worldDir, float3 cameraPos,
     float transmittance = 1.0;
     float3 cloudAccum = float3(0.0, 0.0, 0.0);
     bool inCloudFlag = false;
+    int emptyRun = 0;          // 连续空块计数（边缘缺口放行，防漏天空色）
     float prevT = 0.0;
 
     for (int s = 0; s < CLOUD_MAIN_MAX_STEPS; s++)
@@ -405,8 +413,17 @@ void NubisCumulusDiscrete(inout float3 color, float3 worldDir, float3 cameraPos,
             cloudDistance = length(checkPos - cameraPos);
         }
 
-        // 已进云但当前是空块 -> 出云即停（忽略云层叠加）
-        if (inCloudFlag && occ < 0.5) break;
+        // 已进云后：允许穿过 CLOUD_GAP_TOLERANCE 个连续空块再判出云。
+        // 云边缘棱角的 1~2 格缺口后往往是厚云，过早早退会把厚云跳过、
+        // transmittance 仍接近 1，导致边缘漏出天空色。
+        if (inCloudFlag && occ < 0.5)
+        {
+            if (++emptyRun >= CLOUD_GAP_TOLERANCE) break;
+        }
+        else
+        {
+            emptyRun = 0;
+        }
 
         // 推进到最近边界；守卫：严格前进，防浮点误差/平局导致死循环
         float newT = min(tMaxD.x, min(tMaxD.y, tMaxD.z));

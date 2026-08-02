@@ -23,8 +23,8 @@
 
 // ---------------- 云层几何 ---------------- 
 // 云层为球形外壳，云底高度 CLOUD_CLEAR_ALTITUDE，厚度叠加其上
-#define CLOUD_CLEAR_ALTITUDE 			500.0
-#define CLOUD_CLEAR_THICKNESS 			800.0
+#define CLOUD_CLEAR_ALTITUDE 			600.0
+#define CLOUD_CLEAR_THICKNESS 			400.0
 #define CLOUD_RAIN_ALTITUDE 			500.0
 #define CLOUD_RAIN_THICKNESS 			800.0
 // 行星半径（米）：云层外壳套在 planetRadius 上，altitude 是相对行星表面的高度
@@ -34,12 +34,12 @@
 // 低频形状噪声缩放：worldPos(米) * 0.0007 -> 噪声坐标。
 // 注意：原版里 worldPos 先经 SetCloudPos 变成 cloudPos（含行星外壳 + 高度变形），
 //       再乘这个缩放采样。离散化就在"噪声坐标"这一层 floor 取整。
-#define CLOUD_BASE_NOISE_SCALE 			0.00001
+#define CLOUD_BASE_NOISE_SCALE 			0.00005
 // 噪声采样 mip（需纹理开 mipmap）。LOD 越高越模糊，抹掉纹素级中高频凹凸，
 // 消除"朵朵小云"。LOD 2 ≈ 模糊 3km 以下细节；LOD 3 ≈ 6km。调小则云更有细节。
 // ★ 当前 Fix2 已暂时注释掉（采样用 LOD 0），需要时把 VolumetricClouds.hlsl 两处
 //   采样 LOD 改回此宏即可重新启用。
-#define CLOUD_BASE_NOISE_LOD 			2.0
+#define CLOUD_BASE_NOISE_LOD 			1.0
 // 高频细节噪声缩放（32^3 那张，离散版用不到，仅保留参考）
 #define CLOUD_DETAILED_NOISE_SCALE 		0.007
 // 覆盖率噪声缩放（几乎是一张 XZ 二维图，Y 分量 ≈ 0，与高度无关）
@@ -57,7 +57,7 @@
 #define CLOUD_RAIN_SKYLIGHTING			0.8
 #define CLOUD_CLEAR_SCALE 				1.0
 #define CLOUD_RAIN_SCALE 				1.0
-#define CLOUD_COVERAGE                  0.8
+#define CLOUD_COVERAGE                  0.4
 
 // ---------------- 云轮廓塑形（垂直剖面，SampleDensityDiscrete 用） ----------------
 // 剖面 = condensation(凝结底) * taper(顶部收窄) * CLOUD_BASE_INTENSITY(底盘强度)
@@ -67,9 +67,9 @@
 //   CLOUD_BASE_INTENSITY 底盘强度：越大底盘越宽（>1 让底部阈值更低、底盘铺开）
 //   CLOUD_CONDENSE_SPEED 凝结底陡度：越大底越平（上升越陡），过小会糊成一片
 #define CLOUD_CONDENSE_SPEED 			8.0
-#define CLOUD_PROFILE_SLOPE 			1.1
-#define CLOUD_PROFILE_POWER 			1.5
-#define CLOUD_BASE_INTENSITY 			1.5
+#define CLOUD_PROFILE_SLOPE 			1.2
+#define CLOUD_PROFILE_POWER 			0.8
+#define CLOUD_BASE_INTENSITY 			1.2
 
 // ---------------- 光照 ---------------- 
 #define CLOUD_BOTTOM_BRIGHTNESS 		0.15
@@ -99,6 +99,10 @@
 #define CLOUD_MAIN_EXTINCTION 			0.22 	// [0.005 0.01 0.015 0.02 0.03 0.05]
 // 主步进最大迭代次数（防死循环）
 #define CLOUD_MAIN_MAX_STEPS 			128
+// 出云空块容差：进云后允许穿过 N 个连续空块再判出云。云边缘棱角常有 1~2 格缺口，
+// 缺口后往往又是厚云，过早早退会把厚云跳过导致边缘漏出天空色。
+// 主步进与光步进共用。调小更省性能但易漏色，调大更实但两朵近云(<N*BLOCK)会连成一片。
+#define CLOUD_GAP_TOLERANCE 			3
 
 // ---------------- 风 ---------------- 
 // wind(原始) = CLOUD_WIND_FACTOR * (frameTimeCounter * CLOUD_SPEED + 10.0 * FTC_OFFSET)
