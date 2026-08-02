@@ -17,6 +17,9 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
         _SunAngularRadius("Sun Angular Radius (deg)", Range(0.1, 6.0)) = 2.0
         _GlintIntensity("Glint Intensity", Range(0, 8)) = 1.0
 
+        [Header(Debug)]
+        _DebugMode("Debug Mode (0=Off, 1-5)", Range(0, 5)) = 0
+
         [Header(Volumetrics)]
         _ExpFactor("EXP_FACTOR", Float) = 15.0
         _MaxRayLength("Max Ray Length", Float) = 50.0
@@ -88,6 +91,7 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
                 float _GlintSmoothness;
                 float _SunAngularRadius;
                 float _GlintIntensity;
+                float _DebugMode;
             CBUFFER_END
 
             float _WaterSurfaceHeight;
@@ -399,6 +403,24 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
                 //finalColor = directSpecular;
                 //finalColor = T_exit;
 
+                // === DEBUG: 检视面板把 _DebugMode 切到 1-5，逐个看原始值 ===
+                if (_DebugMode == 1) {
+                    // R=GlintIntensity  G=GlintSmoothness  B=SunAngularRadius/6
+                    // 若 R 通道发黑(=0)，说明新材质参数没生效，glint 直接为 0
+                    finalColor = float3(_GlintIntensity, _GlintSmoothness, _SunAngularRadius / 6.0);
+                } else if (_DebugMode == 2) {
+                    // R=NoL  G=NoH_sq(面光源)  B=glintF 亮度
+                    finalColor = float3(NoL, NoH_sq, Luminance(glintF));
+                } else if (_DebugMode == 3) {
+                    // R=glintD*1e4  G=glintG(Smith)  B=shadowAttenuation
+                    finalColor = float3(glintD * 1e4, glintG, mainLight.shadowAttenuation);
+                } else if (_DebugMode == 4) {
+                    // 最终 glint 放大 10 倍（找亮斑用）
+                    finalColor = glint * 10.0;
+                } else if (_DebugMode == 5) {
+                    // 主光颜色
+                    finalColor = mainLight.color;
+                }
                 return half4(finalColor,1.0);
             }
             ENDHLSL
