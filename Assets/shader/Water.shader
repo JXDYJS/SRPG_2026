@@ -18,7 +18,7 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
         _GlintIntensity("Glint Intensity", Range(0, 8)) = 3.0
 
         [Header(Debug)]
-        _DebugMode("Debug Mode (0=Off, 1-5)", Range(0, 5)) = 0
+        _DebugMode("Debug Mode (0=Off, 1-9)", Range(0, 9)) = 0
 
         [Header(Volumetrics)]
         _ExpFactor("EXP_FACTOR", Float) = 15.0
@@ -352,15 +352,10 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
                 float3 sheen = DirectBRDFSpecular_GGX(sheenBRDF, N, L, V, outFresnel)
                              * mainLight.color * NoL * mainLight.shadowAttenuation;
 
-                // 亮斑瓣：平滑的点光源 NoH² + 软太阳盘平顶。
-                // 替代 HZD Newton 迭代：后者在特定几何下存在跳变/NaN，被 NDF 放大成"擦除线"。
-                // RoL = 反射方向·光方向，反射越贴近太阳 NoH_sq 越接近 1（平亮心），
-                // smoothstep 保证处处连续，盘外平滑回落到点光源 NoH²，光斑尺寸由 NDF(_GlintSmoothness) 控制。
-                float RoL_disk = 2.0 * NoL * NoV - LoV;
-                float radius_cos = cos(_SunAngularRadius * PI / 180.0);
-                float diskFlat = smoothstep(radius_cos, 1.0, RoL_disk);
-                float NoH2_point = (NoL + NoV) * (NoL + NoV) / max(2.0 * LoV + 2.0, 1e-4);
-                float NoH_sq = lerp(NoH2_point, 1.0, diskFlat);
+                // 亮斑瓣：纯点光源 NoH²（平滑、无平顶/硬边，彻底消除盘边跳变）。
+                // HZD 与软盘平顶方案都会引入可感知的硬边，太阳盘一移动就像"擦除线"。
+                // 光斑尺寸完全由 NDF(_GlintSmoothness) 控制。
+                float NoH_sq = saturate((NoL + NoV) * (NoL + NoV) / max(2.0 * LoV + 2.0, 1e-4));
                 float glintD = NDF(glintBRDF.roughness, sqrt(NoH_sq));
                 float glintG = v2_smith_ggx(max(NoL, 1e-4), max(NoV, 1e-4), glintBRDF.roughness2);
                 float3 glintF = fresnelSchlick(glintBRDF.specular, 1.0h, LoH);
@@ -414,25 +409,36 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
                 //finalColor = directSpecular;
                 //finalColor = T_exit;
 
-                // === DEBUG: 检视面板把 _DebugMode 切到 1-5，逐个看原始值 ===
+                // === DEBUG: 检视面板把 _DebugMode 切到 1-9，逐个隔离排查哪一项带"擦除线" ===
                 if (_DebugMode == 1) {
                     // R=GlintIntensity  G=GlintSmoothness  B=SunAngularRadius/6
-                    // 若 R 通道发黑(=0)，说明新材质参数没生效，glint 直接为 0
                     finalColor = float3(_GlintIntensity, _GlintSmoothness, _SunAngularRadius / 6.0);
                 } else if (_DebugMode == 2) {
-                    // R=NoL  G=NoH_sq(面光源)  B=glintF 亮度
+                    // R=NoL  G=NoH_sq  B=glintF 亮度
                     finalColor = float3(NoL, NoH_sq, Luminance(glintF));
                 } else if (_DebugMode == 3) {
                     // R=glintD*1e4  G=glintG(Smith)  B=shadowAttenuation
                     finalColor = float3(glintD * 1e4, glintG, mainLight.shadowAttenuation);
                 } else if (_DebugMode == 4) {
-                    // 最终 glint 放大 10 倍（找亮斑用）
+                    // 最终 glint 放大 10 倍
                     finalColor = glint * 10.0;
                 } else if (_DebugMode == 5) {
                     // 主光颜色
                     finalColor = mainLight.color;
+                } else if (_DebugMode == 6) {
+                    // glint 去掉 shadowAttenuation（×10）：若此模式下"擦除线"消失 → 是阴影造成
+                    finalColor = min(NoL * glintD * glintG * glintF * mainLight.color * _GlintIntensity, 4.0) * 10.0;
+                } else if (_DebugMode == 7) {
+                    // shadowAttenuation 灰度：看"擦除线"是否正好是阴影边界
+                    finalColor = mainLight.shadowAttenuation.xxx;
+                } else if (_DebugMode == 8) {
+                    // sheen 宽光瓣 ×10
+                    finalColor = sheen * 10.0;
+                } else if (_DebugMode == 9) {
+                    // 环境反射（动态天空图）
+                    finalColor = envReflection;
                 }
-                return half4(glintD.xxx * 1,1.0);
+                return half4(finalColor,1.0);
             }
             ENDHLSL
         }
