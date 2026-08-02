@@ -35,6 +35,9 @@
 // 注意：原版里 worldPos 先经 SetCloudPos 变成 cloudPos（含行星外壳 + 高度变形），
 //       再乘这个缩放采样。离散化就在"噪声坐标"这一层 floor 取整。
 #define CLOUD_BASE_NOISE_SCALE 			0.00001
+// 噪声采样 mip（需纹理开 mipmap）。LOD 越高越模糊，抹掉纹素级中高频凹凸，
+// 消除"朵朵小云"。LOD 2 ≈ 模糊 3km 以下细节；LOD 3 ≈ 6km。调小则云更有细节。
+#define CLOUD_BASE_NOISE_LOD 			2.0
 // 高频细节噪声缩放（32^3 那张，离散版用不到，仅保留参考）
 #define CLOUD_DETAILED_NOISE_SCALE 		0.007
 // 覆盖率噪声缩放（几乎是一张 XZ 二维图，Y 分量 ≈ 0，与高度无关）
@@ -53,6 +56,18 @@
 #define CLOUD_CLEAR_SCALE 				1.0
 #define CLOUD_RAIN_SCALE 				1.0
 #define CLOUD_COVERAGE                  0.8
+
+// ---------------- 云轮廓塑形（垂直剖面，SampleDensityDiscrete 用） ----------------
+// 剖面 = condensation(凝结底) * taper(顶部收窄) * CLOUD_BASE_INTENSITY(底盘强度)
+//   目的：底盘宽平、顶部窄，摆脱旧的"中间厚两端收 + 顶部×3增强"导致的圆滚滚/上宽下窄。
+//   CLOUD_PROFILE_SLOPE  塔高：越小越高（0.8~1.4），越大云越矮胖
+//   CLOUD_PROFILE_POWER  收窄曲率：越大顶部越尖，1.0 线性
+//   CLOUD_BASE_INTENSITY 底盘强度：越大底盘越宽（>1 让底部阈值更低、底盘铺开）
+//   CLOUD_CONDENSE_SPEED 凝结底陡度：越大底越平（上升越陡），过小会糊成一片
+#define CLOUD_CONDENSE_SPEED 			8.0
+#define CLOUD_PROFILE_SLOPE 			1.1
+#define CLOUD_PROFILE_POWER 			1.5
+#define CLOUD_BASE_INTENSITY 			1.5
 
 // ---------------- 光照 ---------------- 
 #define CLOUD_BOTTOM_BRIGHTNESS 		0.15
@@ -93,7 +108,7 @@
 //            = 0.0005 * 1.01 * 1e4 * 1.077 ≈ 5.4 m/s。
 // ★ 调整风速只改这一个数：越大漂得越快（如 5e4 ≈ 27 m/s）。
 // ★ windDirection.y 必须保持 0：否则网格相对固定云层高度带上下滑，块会凭空生长/消失。
-#define CLOUD_WIND_TO_METERS 			1e4
+#define CLOUD_WIND_TO_METERS 			5e4
 
 // ---------------- 大气透视（相机→云） ----------------
 // 指数大气标高（米）：控制雾随距离堆积的速率。越小雾越快堆积。

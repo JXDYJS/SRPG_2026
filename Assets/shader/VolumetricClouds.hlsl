@@ -166,18 +166,16 @@ float4 SetCloudPos(float3 worldPos, float2 cloudAltitude, float planetRadius, fl
 // 参考原版 SampleDensity 的 base 部分（不包含 detail）：
 //   1) 噪声坐标 = cloudPos.xyz * CLOUD_BASE_NOISE_SCALE（风已由 SetCloudPos 平移进 worldPos）
 //      （cloudPos = SetCloudPos(worldPos, ...)，取整已在函数内完成）
-//   2) 用 noiseCoord 采样低频形状噪声（CloudNoise3D，128^3 RGBA8）：
+//   2) 用 noiseCoord 采样低频形状噪声（CloudNoise3D，128^3 RGBA8，mipmap 已开）：
 //        baseDensity 混合 = baseNoise.y * 0.4 + baseNoise.z * 0.4 + baseNoise.w * 0.2
 //        baseDensity = remapSaturate(baseNoise.x, baseDensity - 1.0, 1.0)
-//   3) 垂直密度剖面（下厚上薄，共 4 项；"层内约束"由 SetCloudPos 的
+//        采样用 CLOUD_BASE_NOISE_LOD（模糊 mip，抹掉纹素级中高频 -> 去朵朵小云）
+//   3) 垂直密度剖面（下重上轻，积云轮廓；"层内约束"由 SetCloudPos 的
 //      w = remapSaturate(...) 完成，不在这里）：
-//        shapeCurve = curveTop(saturate(1.0 - cloudPos.w)) * 0.5
-//                   + curve(saturate(1.15 - cloudPos.w * 1.43)) * 0.5
-//        baseDensity *= shapeCurve
-//        baseDensity *= fsqrt(saturate(cloudPos.w * 2.5)) * 0.2 + 0.8;
-//        baseDensity *= lerp(1.0, curveTop(saturate(cloudPos.w * 3.0)), wetness);
-//        baseDensity *= curve(saturate(cloudPos.w * 1.8 - 0.8)) * 2.0 + 1.0;
-//        baseDensity *= curveTop(saturate(cloudPos.w * 1.8));
+//        condensation = curve(saturate(w * CLOUD_CONDENSE_SPEED))       // 凝结底盘快速升起
+//        taper        = pow(saturate(1 - w * CLOUD_PROFILE_SLOPE), POWER) // 顶部单调收窄
+//        baseDensity *= condensation * taper * CLOUD_BASE_INTENSITY
+//        baseDensity *= lerp(1, curveTop(saturate(w*3)), wetness)
 //   4) 覆盖率（XZ 粗采样，连续未取整）：
 //        coverageNoise 采样坐标 = cloudPos.xyz * CLOUD_COVERAGE_NOISE_SCALE
 //                               + CLOUD_COVERAGE_NOISE_OFFSET
@@ -193,21 +191,23 @@ float SampleDensityDiscrete(float3 worldPos, float3 windDirection, float wetness
     float4 cloudPos = SetCloudPos(worldPos, cloudAltitude, planetRadius, cloudScale, windDirection);
     float3 noiseCoord = cloudPos.xyz * CLOUD_BASE_NOISE_SCALE;
 
-    // 2) 采样 + 混合
-    float4 baseNoise = SAMPLE_TEXTURE3D_LOD(_CloudNoise3D, sampler_CloudNoise3D, noiseCoord, 0);
+    // 2) 采样 + 混合（CLOUD_BASE_NOISE_LOD 模糊 mip，抹掉纹素级中高频 -> 去朵朵小云）
+    float4 baseNoise = SAMPLE_TEXTURE3D_LOD(_CloudNoise3D, sampler_CloudNoise3D, noiseCoord, CLOUD_BASE_NOISE_LOD);
     float density = baseNoise.y * 0.4 + baseNoise.z * 0.4 + baseNoise.w * 0.2;
     density = remapSaturate(baseNoise.x, density - 1.0, 1.0);
 
-    // ========== 垂直密度剖面（下厚上薄，共 4 项） ==========
-    float shapeCurve = curveTop(saturate(1.0 - cloudPos.w)) * 0.5;
-    shapeCurve += curve(saturate(1.15 - cloudPos.w * 1.43)) * 0.5;
-    density *= shapeCurve;
-    density *= fsqrt(saturate(cloudPos.w * 2.5)) * 0.2 + 0.8;
-    density *= lerp(1.0, curveTop(saturate(cloudPos.w * 3.0)), wetness);
-    density *= curve(saturate(cloudPos.w * 1.8 - 0.8)) * 2.0 + 1.0;
-    density *= curveTop(saturate(cloudPos.w * 1.8));
+    // ========== 垂直密度剖面（下重上轻，积云轮廓） ==========
+    //   旧剖面"中间厚两端收"且顶部有 ×2~×3 增强项（curve(w*1.8-0.8)*2+1 等），
+    //   导致云圆滚滚、上宽下窄（宽度被 3D 噪声块形状主导）。
+    //   新剖面：condensation 底部快速升起=平的凝结底盘，taper 让密度从底部单调收窄到顶，
+    //   轮廓由剖面主导 -> 底盘宽、顶部窄。参数见 CloudSettings.hlsl。
+    float wL = cloudPos.w;
+    float condensation = curve(saturate(wL * CLOUD_CONDENSE_SPEED));
+    float taper = pow(saturate(1.0 - wL * CLOUD_PROFILE_SLOPE), CLOUD_PROFILE_POWER);
+    density *= condensation * taper * CLOUD_BASE_INTENSITY;
+    density *= lerp(1.0, curveTop(saturate(wL * 3.0)), wetness);
     density = saturate(density);
-    float coverageNoise  = SAMPLE_TEXTURE3D_LOD(_CloudNoise3D, sampler_CloudNoise3D, cloudPos.xyz * CLOUD_COVERAGE_NOISE_SCALE + CLOUD_COVERAGE_NOISE_OFFSET, 0).x;
+    float coverageNoise  = SAMPLE_TEXTURE3D_LOD(_CloudNoise3D, sampler_CloudNoise3D, cloudPos.xyz * CLOUD_COVERAGE_NOISE_SCALE + CLOUD_COVERAGE_NOISE_OFFSET, CLOUD_BASE_NOISE_LOD).x;
     float coverage = 1.0  - remapSaturate(1.0 - coverageNoise,CLOUD_COVERAGE * 0.2,CLOUD_COVERAGE);
     density *= coverage;
     return step(CLOUD_OCCUPANCY_THRESHOLD,density);
