@@ -11,6 +11,11 @@ namespace GamePlay.Buff
         [Header("吸血配置")]
         [SerializeField] private int healPerStack = 1;
 
+        private void OnEnable()
+        {
+            if (string.IsNullOrEmpty(Name)) Name = "Vampire";
+        }
+
         public override void OnApply(MapUnit owner)
         {
             base.OnApply(owner);

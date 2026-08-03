@@ -107,7 +107,7 @@ namespace UI.Slot
         }
         public void updateMask(bool isLock)
         {
-            Debug.LogError($"node Layer{node.col} node row{node.row} isLock{node.isLock}");
+            //Debug.LogError($"node Layer{node.col} node row{node.row} isLock{node.isLock}");
             if (isLock)
             {
                 button.interactable = false;

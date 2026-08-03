@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79a2e9171b9b9db489bd6f61796a188d, type: 3}
+  m_Name: Alex
+  m_EditorClassIdentifier: 
+  CharacterID: 1
+  SkillSlots:
+  - SlotType: 0
+    SlotDisplayName: Attack
+    EvolutionChain:
+    - RequiredLevel: 0
+      SkillData: {fileID: 11400000, guid: 88ce9ef18dd3bfc4ba922b718235a47f, type: 2}
+  - SlotType: 5
+    SlotDisplayName: PreciseShot
+    EvolutionChain:
+    - RequiredLevel: 0
+      SkillData: {fileID: 11400000, guid: 139b73acf9431ec44a7f3398c377f238, type: 2}
+  - SlotType: 1
+    SlotDisplayName: PreciseShot
+    EvolutionChain:
+    - RequiredLevel: 0
+      SkillData: {fileID: 11400000, guid: 9449a0b31891cbf4c833c472bd8e4630, type: 2}
+  - SlotType: 2
+    SlotDisplayName: PreciseShot
+    EvolutionChain:
+    - RequiredLevel: 0
+      SkillData: {fileID: 11400000, guid: 5edf37868f4bccf40962f0af0a49905a, type: 2}
+  - SlotType: 3
+    SlotDisplayName: PreciseShot
+    EvolutionChain:
+    - RequiredLevel: 0
+      SkillData: {fileID: 11400000, guid: da5edfe8c22d9c24a801cc0e0c54b24d, type: 2}

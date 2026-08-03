@@ -10,6 +10,9 @@ namespace GamePlay.Skill
         CasterPosition
     }
 
+    public enum SkillPhaseCastRangeMode { Standard, Script }
+    public enum SkillPhaseExecuteMode { Standard, Script }
+
     [System.Serializable]
     public class SkillPhase
     {
@@ -32,11 +35,19 @@ namespace GamePlay.Skill
         public List<SkillEffect> Effects;
         public SkillVisualData VisualData;
 
+        [Header("模式配置")]
+        public SkillPhaseExecuteMode ExecuteMode = SkillPhaseExecuteMode.Standard;
+
+        [Header("Script 模式配置")]
+        [Tooltip("ExecuteMode=Script 时，返回 PhaseResult 的 Lua/C# 函数名")]
+        public string ExecuteFuncName = "";
+
         public SkillPhase(string phaseName, TargetType targetType = TargetType.Enemy)
         {
             this.PhaseName = phaseName;
             this.TargetType = targetType;
             this.Effects = new List<SkillEffect>();
+            this.ExecuteMode = SkillPhaseExecuteMode.Standard;
         }
     }
 

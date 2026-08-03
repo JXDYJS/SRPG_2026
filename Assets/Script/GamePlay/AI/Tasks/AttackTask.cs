@@ -39,7 +39,7 @@ namespace GamePlay.AI.Tasks
                 return 0f;
             }
 
-            if (TargetUnit.Character == null || TargetUnit.Character.statSystem.currentHP <= 0)
+            if (TargetUnit == null || !TargetUnit.IsAlive)
             {
                 return 0f;
             }
@@ -162,7 +162,7 @@ namespace GamePlay.AI.Tasks
         // ──────────────────────────────────────
         public override bool IsCompleted()
         {
-            return TargetUnit == null || TargetUnit.Character.statSystem.currentHP <= 0;
+            return TargetUnit == null || !TargetUnit.IsAlive;
         }
 
         public override bool IsFailed()

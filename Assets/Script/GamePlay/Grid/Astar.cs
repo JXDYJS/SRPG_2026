@@ -22,7 +22,7 @@ namespace GamePlay.Grid
         // 入口函数：现在接收 3D 坐标
         public static List<Vector3Int> FindPath(Vector3Int start, Vector3Int end, LogicalGrid grid, UnitMoveStats stats)
         {
-            // 1. 基础检查
+            float pathStartTime = Time.realtimeSinceStartup;
             
             List<Node> openSet = new List<Node>();
             HashSet<Vector3Int> closedSet = new HashSet<Vector3Int>();
@@ -32,6 +32,11 @@ namespace GamePlay.Grid
 
             while (openSet.Count > 0)
             {
+                if (Time.realtimeSinceStartup - pathStartTime > 1.0f)
+                {
+                    Debug.LogError($"[AStar] FindPath 从 {start} 到 {end} 耗时过长(>{Time.realtimeSinceStartup - pathStartTime:F1}s)，可能死循环！openSet={openSet.Count}");
+                    return null;
+                }
                 // 取出 FCost 最小的节点（手动遍历，避免 LINQ OrderBy O(n log n) 排序）
                 Node currentNode = openSet[0];
                 int bestIdx = 0;
@@ -98,6 +103,8 @@ namespace GamePlay.Grid
         /// </summary>
         public static List<Vector3Int> FindPathToOccupied(Vector3Int start, Vector3Int end, LogicalGrid grid, UnitMoveStats stats)
         {
+            float pathStartTime = Time.realtimeSinceStartup;
+
             List<Node> openSet = new List<Node>();
             HashSet<Vector3Int> closedSet = new HashSet<Vector3Int>();
 
@@ -106,6 +113,11 @@ namespace GamePlay.Grid
 
             while (openSet.Count > 0)
             {
+                if (Time.realtimeSinceStartup - pathStartTime > 1.0f)
+                {
+                    Debug.LogError($"[AStar] FindPathToOccupied 从 {start} 到 {end} 耗时过长(>{Time.realtimeSinceStartup - pathStartTime:F1}s)，可能死循环！openSet={openSet.Count}");
+                    return null;
+                }
                 Node currentNode = openSet[0];
                 int bestIdx = 0;
                 for (int j = 1; j < openSet.Count; j++)

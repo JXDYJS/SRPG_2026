@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: BuffWeak
   m_EditorClassIdentifier: 
   ID: weak
-  Name: weak
+  Name: Weak
   Icon: {fileID: 0}
-  Description: 
+  Description: Reduces ATK
   Stacks: 0
   MaxStacks: 9999
   IsDebuff: 1

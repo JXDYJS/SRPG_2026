@@ -12,6 +12,14 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
         _AbsorptionColor("Absorption (uA)", Color) = (0.35, 0.05, 0.02, 1.0)
         _Smoothness("Smoothness", Range(0, 1)) = 0.15
 
+        [Header(Sun Glint)]
+        _GlintSmoothness("Glint Smoothness (Sun Glint)", Range(0, 1)) = 0.65
+        _SunAngularRadius("Sun Angular Radius (deg)", Range(0.1, 6.0)) = 2.0
+        _GlintIntensity("Glint Intensity", Range(0, 8)) = 3.0
+
+        [Header(Debug)]
+        _DebugMode("Debug Mode (0=Off, 1-9)", Range(0, 9)) = 0
+
         [Header(Volumetrics)]
         _ExpFactor("EXP_FACTOR", Float) = 15.0
         _MaxRayLength("Max Ray Length", Float) = 50.0
@@ -49,6 +57,9 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
             #pragma multi_compile_fragment _ _REFLECTION_PROBE_BLENDING
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+            // 自定义 PBR BRDF（GGX NDF / Smith G2 / DirectBRDFSpecular_GGX）
+            // 须先于 URP Lighting.hlsl include：复用 UNIVERSAL_BRDF_INCLUDED guard 跳过 URP 自带 BRDF
+            #include "Assets/shader/pbr/CustomBRDF.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareOpaqueTexture.hlsl"
@@ -76,7 +87,13 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
                 float _SSSPathScale;
                 float _BacklitPathScale;
                 float _Smoothness;
+                float _GlintSmoothness;
+                float _SunAngularRadius;
+                float _GlintIntensity;
+                float _DebugMode;
             CBUFFER_END
+
+            float _WaterSurfaceHeight;
 
             TEXTURE2D(_NoiseTex); SAMPLER(sampler_NoiseTex);
             TEXTURE2D(_SSPR_ReflectionTexture); SAMPLER(sampler_SSPR_ReflectionTexture);
@@ -136,7 +153,61 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
                 float3 uT = uA + uS;
                 transmittance = exp(-uT * d);
                 float3 scatteringAlbedo = uS * rcp(max(uT, 0.0001));
-                return originLight * (1.0 - transmittance) * scatteringAlbedo * phase;
+                //return originLight * (1.0 - transmittance) * scatteringAlbedo * (phase + rcp(4*PI) * (uS / uT));
+                return originLight * (1.0 - transmittance) * scatteringAlbedo * (phase);
+            }
+
+            // === HZD 球形面光源近似（已弃用，保留供比对） ===
+            // Newton 迭代在特定几何下有跳变/NaN，会放大成"擦除线"；现改用点光源 NoH² + 软太阳盘。
+            float get_NoH_squared(float NoL, float NoV, float LoV, float light_radius) {
+                float radius_cos = cos(light_radius);
+                float radius_tan = tan(light_radius);
+
+                // 反射方向已落在太阳圆盘内，直接取峰值
+                float RoL = 2.0 * NoL * NoV - LoV;
+                if (RoL >= radius_cos) {
+                    return 1.0;
+                }
+
+                float r_over_length_t
+                    = radius_cos * radius_tan * rcp(sqrt(max(1.0 - RoL * RoL, 1e-6)));
+                float not_r = r_over_length_t * (NoV - RoL * NoL);
+                float vot_r = r_over_length_t * (2.0 * NoV * NoV - 1.0 - RoL * LoV);
+
+                float triple = sqrt(clamp01(
+                    1.0 - NoL * NoL - NoV * NoV - LoV * LoV + 2.0 * NoL * NoV * LoV
+                ));
+
+                // 做一次 Newton 迭代修正弯曲的光方向
+                float NoB_r = r_over_length_t * triple;
+                float VoB_r = r_over_length_t * (2.0 * triple * NoV);
+                float NoL_vt_r = NoL * radius_cos + NoV + not_r;
+                float LoV_vt_r = LoV * radius_cos + 1.0 + vot_r;
+                float p = NoB_r * LoV_vt_r;
+                float q = NoL_vt_r * LoV_vt_r;
+                float s = VoB_r * NoL_vt_r;
+                float x_num = q * (-0.5 * p + 0.25 * VoB_r * NoL_vt_r);
+                float x_denom = p * p + s * (s - 2.0 * p)
+                              + NoL_vt_r * ((NoL * radius_cos + NoV) * LoV_vt_r * LoV_vt_r
+                                             + q * (-0.5 * (LoV_vt_r + LoV * radius_cos) - 0.5));
+                // 除零防护：Newton 修正量在退化几何下可能 0/0 → inf/NaN，钳制为 0（退化为未迭代值）
+                float newton_denom = x_denom * x_denom + x_num * x_num;
+                float two_x_1 = newton_denom > 1e-8 ? 2.0 * x_num / newton_denom : 0.0;
+                float sin_theta = two_x_1 * x_denom;
+                float cos_theta = 1.0 - two_x_1 * x_num;
+                // 用修正后的 T 更新 not_r / vot_r
+                not_r = cos_theta * not_r + sin_theta * NoB_r;
+                vot_r = cos_theta * vot_r + sin_theta * VoB_r;
+
+                // 基于弯曲后的光方向计算 (N.H)^2
+                float new_NoL = NoL * radius_cos + not_r;
+                float new_LoV = LoV * radius_cos + vot_r;
+                float NoH = NoV + new_NoL;
+                float HoH = 2.0 * new_LoV + 2.0;
+
+                float NoH_sq = NoH * NoH / HoH;
+                // NaN 兜底：任何退化几何都不允许泄漏 NaN，避免高光被硬擦除
+                return clamp01(isfinite(NoH_sq) ? NoH_sq : 0.0);
             }
 
             Varyings vert(Attributes input) {
@@ -157,6 +228,8 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
                 float sceneZ = LinearEyeDepth(rawDepth, _ZBufferParams);
                 float surfaceZ = LinearEyeDepth(input.positionCS.z, _ZBufferParams);
                 float totalRayLength = min(_MaxRayLength, sceneZ - surfaceZ);
+                bool hasBackScene = sceneZ - surfaceZ <= 2 * _MaxRayLength && rawDepth > 1e-5;
+                float distanceToBackScene = hasBackScene ? sceneZ - surfaceZ : 1e5;
                 float thickness = saturate(totalRayLength / _MaxRayLength);
 
                 float step_size = 0.1;
@@ -185,9 +258,13 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
                 float expStep = pow(_ExpFactor, rcpCount);
                 float dither = InterleavedGradientNoise(input.positionCS.xy, _Time.y % 1000) * _DitherStrength;
                 float currentExp = pow(_ExpFactor, dither * rcpCount);
+                float3 sceneInScattering = 0.0.xxx;
+                float2 distortedUV = screenUV + N.xz * 0.02;
+                float3 sceneColor = SampleSceneColor(distortedUV);
 
                 float3 scatteredLight = 0;
                 float3 accumTransmittance = 1.0;
+                float3 lastLightTransmittance = 1.0;
                 float lastShadow = 1.0;
 
                 for (int i = 0; i < WATER_SAMPLE_COUNT; i++) {
@@ -202,10 +279,14 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
                     float3 stepTrans;
                     float3 scatterPhase = CalculateScatterPhase(cosTheta, _PhaseG);
                     float3 effectivePhase = lerp(scatterPhase, float3(1,1,1)/(4.0*PI), saturate(Luminance(uS/uT) * 0.5));
-                    float3 stepS = CalculateScatteredLight(mainLight.color * shadow, uA, uS, dd * totalRayLength, effectivePhase, stepTrans);
+                    float  distanceToLight = max(((_WaterSurfaceHeight - sampleWS.y) / max(L.y,0.001)),0.001 );
+                    float3 LightTransmittance = exp(-uT * distanceToLight);
+                    if(i == WATER_SAMPLE_COUNT - 1) lastLightTransmittance = LightTransmittance; 
+                    float3 stepS = CalculateScatteredLight(mainLight.color * shadow * LightTransmittance, uA, uS, dd * totalRayLength, effectivePhase, stepTrans);
                     
                     scatteredLight += stepS * accumTransmittance;
                     accumTransmittance *= stepTrans;
+                    sceneInScattering += sceneColor * LightTransmittance * uS * (dd * totalRayLength) * CalculateScatterPhase(1, _PhaseG) * exp(-uT * distanceToBackScene);
                     currentExp *= expStep;
                 }
 
@@ -224,24 +305,45 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
                 float P_backlit = HenyeyPhase(dot(V, -L), 0.998);
                 float3 backlitTrans = mainLight.color * G_backlit * T_backlit * P_backlit * lastShadow;
 
-                float2 distortedUV = screenUV + N.xz * 0.02;
                 float3 T_exit = 1.0 - F_Schlick(_Fresnel0, saturate(dot(N, V)));
-                float3 sceneColor = SampleSceneColor(distortedUV);
-                float3 sceneInScattering = sceneColor * accumTransmittance * uS * totalRayLength * Luminance(mainLight.color);
+                //sceneInScattering = sceneColor * accumTransmittance * uS * totalRayLength * Luminance(mainLight.color);
 
-                float3 H = SafeNormalize(L + V);
-                float NoH = saturate(dot(N, H));
-                float LoH = saturate(dot(L, H));
+                // === PBR 直接高光（标准 GGX Cook-Torrance，复用 CustomBRDF.hlsl）===
+                // 原手写 Cook-Torrance 实现（缺 NdotL/阴影衰减）已弃用，保留于提交历史。
 
                 float perceptualRoughness = 1.0 - _Smoothness;
-                float roughness = perceptualRoughness * perceptualRoughness;
-                float roughness2 = max(roughness * roughness, 0.0078125); 
 
-                float d_denom = NoH * NoH * (roughness2 - 1.0) + 1.00001;
-                float D = roughness2 / (d_denom * d_denom);
-                float specularTerm = D / (max(0.1, LoH * LoH) * (roughness * 4.0 + 2.0));
-                specularTerm = clamp(specularTerm, 0.0, 1000.0);
-                float3 directSpecular = specularTerm * mainLight.color * _Fresnel0;
+                // 双瓣高光：sheen（_Smoothness 宽泛光）+ glint（_GlintSmoothness 亮斑），复用 CustomBRDF.hlsl
+                half alpha = 1.0h;
+                BRDFData sheenBRDF;
+                InitializeBRDFData(half3(0.0, 0.0, 0.0), 0.0h, half3(_Fresnel0, _Fresnel0, _Fresnel0), _Smoothness, alpha, sheenBRDF);
+
+                BRDFData glintBRDF;
+                InitializeBRDFData(half3(0.0, 0.0, 0.0), 0.0h, half3(_Fresnel0, _Fresnel0, _Fresnel0), _GlintSmoothness, alpha, glintBRDF);
+
+                float NoL = saturate(dot(N, L));
+                float NoV = abs(dot(N, V)) + HALF_MIN;
+                float3 H = SafeNormalize(L + V);
+                float LoH = saturate(dot(L, H));
+
+                // 宽光瓣：标准 GGX Cook-Torrance
+                half3 outFresnel;
+                float3 sheen = DirectBRDFSpecular_GGX(sheenBRDF, N, L, V, outFresnel)
+                             * mainLight.color * NoL * mainLight.shadowAttenuation;
+
+                // 亮斑瓣：纯点光源 NoH²，光斑尺寸由 NDF(_GlintSmoothness) 控制。
+                // 不能用 NoH_sq 的解析恒等式：LoV 经 saturate 后，低角度太阳下峰值会被压塌
+                // 导致高光消失（"高光擦除"），故直接由 H 计算 NoH。
+                float NoH = saturate(dot(N, H));
+                float NoH_sq = NoH * NoH;
+                float glintD = NDF(glintBRDF.roughness, sqrt(NoH_sq));
+                float glintG = v2_smith_ggx(max(NoL, 1e-4), max(NoV, 1e-4), glintBRDF.roughness2);
+                float3 glintF = fresnelSchlick(glintBRDF.specular, 1.0h, LoH);
+                float3 glint = NoL * glintD * glintG * glintF
+                             * mainLight.color * mainLight.shadowAttenuation * _GlintIntensity;
+                glint = min(glint, 4.0); // 防 bloom 过载
+
+                float3 directSpecular = sheen + glint;
 
                 // === 间接高光 (Indirect Specular) 采样动态天空图 ===
                 float3 R = reflect(-V, N);
@@ -259,8 +361,11 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
 
                 float F = F_Schlick(_Fresnel0, saturate(dot(N, V)));
                 
-                float3 finalColor = (G_entry * T_entry * scatteredLight + thinLayerSSS + backlitTrans) * T_exit 
-                                  + (sceneColor * accumTransmittance) * T_exit + finalReflection * (1.0 - T_exit) + sceneInScattering + directSpecular;
+                // === 修复双重 Fresnel ===
+                // 环境反射按 Fresnel(NoV) 加权；直接高光内部已含 Fresnel(LoH)，不再额外乘 (1.0 - T_exit)。
+                float3 finalColor = (G_entry * T_entry * scatteredLight + thinLayerSSS + backlitTrans + sceneInScattering + sceneColor * accumTransmittance * lastLightTransmittance) * T_exit 
+                                  + finalReflection * (1.0 - T_exit)
+                                  + directSpecular;
                 
                 // === 远景雾 (Fog) 采样动态天空图 ===
                 float transmittance = get_border_fog(view_dist, 150.0);
@@ -277,6 +382,40 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
                 
                 finalColor = lerp(fogColor, finalColor, transmittance);
                 //finalColor = transmittance;
+                //finalColor = hasBackScene ? float3(1.0,1.0,1.0) : float3(0.0,0.0,0.0);
+                //finalColor = sceneInScattering;
+                //finalColor = directSpecular;
+                //finalColor = T_exit;
+
+                // === DEBUG: 检视面板把 _DebugMode 切到 1-9，逐个隔离排查哪一项带"擦除线" ===
+                if (_DebugMode == 1) {
+                    // R=GlintIntensity  G=GlintSmoothness  B=SunAngularRadius/6
+                    finalColor = float3(_GlintIntensity, _GlintSmoothness, _SunAngularRadius / 6.0);
+                } else if (_DebugMode == 2) {
+                    // R=NoL  G=NoH_sq  B=glintF 亮度
+                    finalColor = float3(NoL, NoH_sq, Luminance(glintF));
+                } else if (_DebugMode == 3) {
+                    // R=glintD*1e4  G=glintG(Smith)  B=shadowAttenuation
+                    finalColor = float3(glintD * 1e4, glintG, mainLight.shadowAttenuation);
+                } else if (_DebugMode == 4) {
+                    // 最终 glint 放大 10 倍
+                    finalColor = glint * 10.0;
+                } else if (_DebugMode == 5) {
+                    // 主光颜色
+                    finalColor = mainLight.color;
+                } else if (_DebugMode == 6) {
+                    // glint 去掉 shadowAttenuation（×10）：若此模式下"擦除线"消失 → 是阴影造成
+                    finalColor = min(NoL * glintD * glintG * glintF * mainLight.color * _GlintIntensity, 4.0) * 10.0;
+                } else if (_DebugMode == 7) {
+                    // shadowAttenuation 灰度：看"擦除线"是否正好是阴影边界
+                    finalColor = mainLight.shadowAttenuation.xxx;
+                } else if (_DebugMode == 8) {
+                    // sheen 宽光瓣 ×10
+                    finalColor = sheen * 10.0;
+                } else if (_DebugMode == 9) {
+                    // 环境反射（动态天空图）
+                    finalColor = envReflection;
+                }
                 return half4(finalColor,1.0);
             }
             ENDHLSL

@@ -31,6 +31,14 @@ namespace GamePlay.Grid
             // 对于施法范围，我们不需要目标位置，只需要计算以施法者为中心的范围
             List<Vector2Int> range2D = GetCastGrids(start2D, skill.CastPattern, skill.CastMinRange, skill.CastMaxRange);
 
+            // 对自身可施放的技能（自buff/自愈）：把施法者自己的格子补进施法范围
+            // 原因：CastMinRange 通常为 1，菱形/方形形状只包含距离 1+ 的格子，
+            // 距离 0（自身）不在其中，导致点自己无法施放。CanCastTo 里已有同样的自施法特判。
+            if (skill.CanTargetSelf() && !range2D.Contains(start2D))
+            {
+                range2D.Add(start2D);
+            }
+
             int heightUp = skill.CastVerticalRange;
             int heightDown = skill.CastVerticalRange;
 
@@ -595,10 +603,10 @@ namespace GamePlay.Grid
         /// </summary>
         public static bool IsValidTargetForCast(Vector3Int targetPos, SkillDataSO skill, FactionType casterFaction)
         {
-            // 如果技能允许位置目标（如传送技能），直接返回true
+            // 如果技能允许位置目标（如传送技能
             if (skill.TargetType == TargetType.Position)
             {
-                return true;
+                return !UnitManager.Instance.GetUnitAt(targetPos);
             }
 
             // 获取目标位置上的单位

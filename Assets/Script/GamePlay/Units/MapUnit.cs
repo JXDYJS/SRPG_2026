@@ -83,6 +83,11 @@ namespace GamePlay.Units
         // --- 1. Soul Reference (The Data) ---
         public CharacterInstance Character { get; private set; }
 
+        /// <summary>
+        /// 判断单位是否存活。默认以真实 HP > 0 为准，子类可 override 扩展假死等状态。
+        /// </summary>
+        public virtual bool IsAlive => Character != null && Character.statSystem.currentHP > 0;
+
         // --- 2. Buff Storage (New!) ---
         // 存储当前单位身上的临时 Buff (实现了 CombatModifier 的对象)
         // 不在 Inspector 显示，防止误改引用
@@ -222,6 +227,7 @@ namespace GamePlay.Units
             
             // 初始化时清空旧 Buff，并强制重刷缓存
             ActiveBuffs.Clear();
+            ApplyPassiveBuffs();
             SetModifiersDirty();
         }
 
@@ -231,6 +237,45 @@ namespace GamePlay.Units
         public void SetModifiersDirty()
         {
             _isModifiersDirty = true;
+        }
+
+        // ================== Passive Skill Auto-Loading ==================
+
+        private void ApplyPassiveBuffs()
+        {
+            if (Character?.SkillInventory == null) return;
+
+            var passiveSlots = new[]
+            {
+                SkillSlotType.Passive1,
+                SkillSlotType.Passive2,
+                SkillSlotType.Passive3,
+                SkillSlotType.Passive4,
+                SkillSlotType.Passive5
+            };
+
+            foreach (var slot in passiveSlots)
+            {
+                var skill = Character.SkillInventory.GetSkill(slot);
+                if (skill == null) continue;
+
+                foreach (var phase in skill.Phases)
+                {
+                    foreach (var effect in phase.Effects)
+                    {
+                        if (effect.EffectType == GamePlay.Skill.EffectType.AddBuff)
+                        {
+                            var buff = BuffManager.CreateBuffFromID(effect.BuffID, effect.BuffStacks);
+                            if (buff != null)
+                            {
+                                buff.IsHidden = true;
+                                AddBuff(buff);
+                                Debug.Log($"{GetUnitName()} 加载被动技能: {skill.SkillName} → Buff: {effect.BuffID}");
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         // ================== Buff Management ==================
@@ -412,7 +457,7 @@ namespace GamePlay.Units
     public virtual void Attack(MapUnit target)
     {
 
-        if (target == null || target.Character.statSystem.currentHP <= 0) return;
+        if (target == null || !target.IsAlive) return;
 
         DamageInfo info = new DamageInfo(
             Character.statSystem.ATK.getValue(),
@@ -629,7 +674,7 @@ namespace GamePlay.Units
             return tiles;
         }
 
-        private void Die()
+        protected virtual void Die()
         {
             Debug.Log($"{name} has died.");
             UndoSystem.Instance.RegisterDirty(this);

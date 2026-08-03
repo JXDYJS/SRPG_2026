@@ -88,10 +88,14 @@ namespace GamePlay.Skill
             {
                 if (unit.View != null && !string.IsNullOrEmpty(eventName))
                 {
-                    await UniTask.WhenAny(
+                    int winner = await UniTask.WhenAny(
                         unit.View.WaitForAnimationEvent(eventName, TIMEOUT_PROTECTION_SECONDS),
                         UniTask.Delay(TimeSpan.FromSeconds(TIMEOUT_PROTECTION_SECONDS))
                     );
+                    if (winner == 1)
+                    {
+                        Debug.LogError($"[SkillPerformer] {unit.name} 等待动画事件 '{eventName}' 超时({TIMEOUT_PROTECTION_SECONDS}s)！可能事件名不匹配或动画未触发");
+                    }
                 }
                 return;
             }
@@ -173,6 +177,12 @@ namespace GamePlay.Skill
             Vector3 startPos = caster.transform.position;
 
             float distance = Vector3.Distance(startPos, targetWorldPos);
+            if (caster.moveSpeed <= 0f)
+            {
+                Debug.LogError($"[SkillPerformer] {caster.name} moveSpeed={caster.moveSpeed} 导致 PerformCasterMovement 除零！直接跳转");
+                caster.transform.position = targetWorldPos;
+                return;
+            }
             float duration = distance / caster.moveSpeed;
             float elapsed = 0f;
 
@@ -207,6 +217,13 @@ namespace GamePlay.Skill
             
             GameObject bullet = handle.Result;
             bullet.transform.rotation = launchRotation;
+
+            if (visual.ProjectileSpeed <= 0f)
+            {
+                Debug.LogError($"[SkillPerformer] {caster.name} ProjectileSpeed={visual.ProjectileSpeed} 导致弹道卡死！直接完成");
+                if (bullet != null) Addressables.ReleaseInstance(bullet);
+                return;
+            }
 
             while (bullet != null && Vector3.Distance(bullet.transform.position, targetWorldPos) > 0.1f)
             {

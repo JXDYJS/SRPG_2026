@@ -120,7 +120,7 @@ namespace Character{
         [Range(0f,10f)] public float resThreat = 1.0f;
         
         [Tooltip("速度计算区间 (min, max)，在此区间内按百分比换算威胁")]
-        public Vector2 speedRange = new Vector2(100, 10000);
+        public Vector2 speedRange = new Vector2(1, 200);
         [Range(0f,10f)] public float speedThreat = 1.0f;
         
         [Tooltip("攻击距离计算区间 (min, max)，在此区间内按百分比换算威胁")]

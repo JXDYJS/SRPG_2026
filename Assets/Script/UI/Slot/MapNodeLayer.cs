@@ -42,8 +42,16 @@ namespace UI.Slot
                 slot.Reset();
             }
             ActivateNodes.Clear();
-            foreach(var node in initNodes)
+            foreach (var node in initNodes)
             {
+                node._onEnterNode += () =>
+                {
+                    foreach (var otherNode in initNodes)
+                    {
+                        if (otherNode == node) continue;
+                        otherNode.isLock = true;
+                    }
+                };
                 nodeSlots[node.row].Init(node);
                 ActivateNodes.Add(node);
             }

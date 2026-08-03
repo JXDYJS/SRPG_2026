@@ -8,6 +8,10 @@ namespace Managers
         // 单例模式，方便其他系统（如时间/回合管理器）调用
         public static ShaderManager Instance { get; private set; }
 
+        [Header("水面设置")]
+        [Tooltip("水面世界空间高度")]
+        [SerializeField] private float _waterSurfaceHeight = 0.5f;
+
         [Header("动态环境光设置")]
         [Tooltip("是否开启环境光定时刷新")]
         [SerializeField] private bool _enableDynamicGIUpdate = true;
@@ -36,6 +40,8 @@ namespace Managers
 
         private void Start()
         {
+            Shader.SetGlobalFloat("_WaterSurfaceHeight", _waterSurfaceHeight);
+
             if (_enableDynamicGIUpdate)
             {
                 StartCoroutine(UpdateEnvironmentGIRoutine());

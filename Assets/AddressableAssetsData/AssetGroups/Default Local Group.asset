@@ -17,6 +17,16 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: f98965fa04444ca45ae9c9174dbcebc1
   m_SerializeEntries:
+  - m_GUID: 04dcade7860b4c94db990962ba12bdf9
+    m_Address: Ari
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 077a316a2b1da224eb5b3286d6415711
+    m_Address: Test2
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 121455ccbdbc7c81eb825ee1458d5bfc
     m_Address: Assets/Animation/zombie/zombie.controller
     m_ReadOnly: 0
@@ -29,6 +39,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4f2f2d43fc7d2fe4ea7a00cf22e95ca2
     m_Address: Assets/Mob/arrow.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5b9bc299b0214744fade9135e3bcacc6
+    m_Address: Assets/Perfob/mob_portrait/Ari.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -52,6 +67,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b0f5187749f5bab4bb37e83651d7e69a
+    m_Address: Alex
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b482da457f71c6c409af8466001b9f81
     m_Address: Assets/Perfob/mob_portrait/Skeleton.prefab
     m_ReadOnly: 0
@@ -59,6 +79,26 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d30a83508b0869d499c74987c334babb
     m_Address: Assets/Perfob/mob_portrait/Zombie.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e37ea322b3ab18246be30723cb7ae678
+    m_Address: Test1
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e703158255c51994caca962aa74a20b2
+    m_Address: Assets/Mob/Ari/Ari.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e81757d17b70fdf45945b3f891d1b682
+    m_Address: TallMap
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f5cd9114a1d9bd840917beb2152a0dc6
+    m_Address: Assets/Perfob/mob_portrait/Alex.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

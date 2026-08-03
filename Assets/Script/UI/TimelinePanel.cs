@@ -131,6 +131,13 @@ namespace UI
             const float iconWidth = 20f;
             float usableWidth = _trackWidth - iconWidth;
 
+            float maxAV = 1f;
+            for (int i = 0; i < actionQueue.Count; i++)
+            {
+                if (actionQueue[i].CurrentActionValue > maxAV)
+                    maxAV = actionQueue[i].CurrentActionValue;
+            }
+
             float[] targetX = new float[actionQueue.Count];
 
             float lastPlacedX = usableWidth + iconWidth;
@@ -140,7 +147,7 @@ namespace UI
                 var unit = actionQueue[i];
                 if (unit == null || !_activeIcons.ContainsKey(unit)) continue;
 
-                float rawX = (1f - Mathf.Clamp01(unit.CurrentActionValue / 100f)) * usableWidth;
+                float rawX = (1f - Mathf.Clamp01(unit.CurrentActionValue / maxAV)) * usableWidth;
 
                 if (TurnManager.Instance.ActiveUnit == unit)
                     rawX = usableWidth;

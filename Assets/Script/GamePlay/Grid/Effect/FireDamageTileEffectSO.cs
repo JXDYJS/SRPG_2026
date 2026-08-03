@@ -12,7 +12,7 @@ public class FireDamageTileEffectSO : TileEffectSO
 
     public override void onApply(MapUnit unit, MapObject mapObject)
     {
-        if (unit == null || unit.Character.statSystem.currentHP <= 0) return;
+        if (unit == null || !unit.IsAlive) return;
 
         // 生成伤害信息并扣血
         DamageInfo info = new DamageInfo(

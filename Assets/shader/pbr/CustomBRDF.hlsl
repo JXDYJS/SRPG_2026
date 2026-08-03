@@ -254,11 +254,11 @@ half3 fresnelSchlick(half3 f0, half f90, half VdotH) {
 
 // GGX Normal Distribution Function
 // D = alphaSq / (PI * (NoH^2 * (alphaSq - 1) + 1)^2)
-// roughness: physical roughness (perceptualRoughness^2)
+// roughness: physical roughness (perceptualRoughness^2)，alphaSq = roughness^2 = perceptualRoughness^4
+// 注：此前多乘了一次 alphaSq 导致分布过锐，已移除并与 v2_smith_ggx 保持一致
 half NDF(half roughness, half nDotH)
 {
     half alphaSq = roughness * roughness;
-    alphaSq = alphaSq * alphaSq;
     half nDotH2 = nDotH * nDotH;
     half denom = nDotH2 * (alphaSq - 1.0) + 1.0;
     return alphaSq / max(PI * denom * denom, HALF_MIN);

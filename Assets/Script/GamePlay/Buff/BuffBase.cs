@@ -10,6 +10,12 @@ namespace GamePlay.Buff{
         public int Stacks;       // 当前层数
         public int MaxStacks;    // 最大层数限制
         public bool IsDebuff;    // 是增益还是减益（用于净化逻辑）
+        public bool IsHidden;    // 被动技能等隐藏Buff，不在UI显示
+        /// <summary>
+        /// 语义标记：是否具有"嘲讽"效果（AI 强制索敌依赖此标记）。
+        /// C# 子类可在构造函数中置 true；Lua Buff 通过 BuffLuaWrapper 读取同名字段。
+        /// </summary>
+        public virtual bool IsTaunt => false;
         public MapUnit Owner { get; protected set; }
         public bool isInit = false;
         public Action _onChange;

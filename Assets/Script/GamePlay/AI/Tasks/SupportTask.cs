@@ -38,12 +38,12 @@ namespace GamePlay.AI.Tasks
                 return 0f;
             }
 
-            if (TargetUnit.Character == null || TargetUnit.Character.statSystem.currentHP <= 0)
+            if (TargetUnit == null || !TargetUnit.IsAlive)
             {
                 return 0f;
             }
 
-            if (unit.Character == null || unit.Character.statSystem.currentHP <= 0)
+            if (unit == null || !unit.IsAlive)
             {
                 return 0f;
             }
@@ -173,7 +173,7 @@ namespace GamePlay.AI.Tasks
         public override bool IsCompleted()
         {
             return TargetUnit == null
-                || TargetUnit.Character.statSystem.currentHP <= 0
+                || !TargetUnit.IsAlive
                 || TargetUnit.Character.statSystem.currentHP >= TargetUnit.Character.statSystem.maxHP.getValue();
         }
 

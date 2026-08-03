@@ -9,9 +9,11 @@ using GamePlay.Grid;
 using GamePlay.Visual;
 using GamePlay.Skill;
 using GamePlay.Battle;
+using GamePlay.AI;
 using System.Collections;
 using Core.System;
 using UnityEngine.InputSystem;
+using Lua;
 
 namespace GamePlay.Control
 {
@@ -52,6 +54,7 @@ namespace GamePlay.Control
         private HashSet<Vector3Int> _validTargetTiles = new HashSet<Vector3Int>();
         private HashSet<Vector3Int> _highlightTiles = new HashSet<Vector3Int>();
         private SkillDataSO _selectedSkill;
+        private static readonly Color TauntHighlightColor = new Color(1f, 0.55f, 0f, 0.8f);
 
         public SkillDataSO SelectedSkill => _selectedSkill;
 
@@ -230,6 +233,13 @@ namespace GamePlay.Control
                     _validTargetTiles.Add(pos);
                 }
             }
+
+            // 嘲讽过滤：普攻永远单体，范围内存在嘲讽目标 → 只保留嘲讽目标格
+            if (ApplyTauntFilter())
+            {
+                return;
+            }
+
             GridVisualManager.Instance.ShowTilesHighlight(_validTargetTiles, Color.red);
         }
 
@@ -243,24 +253,58 @@ namespace GamePlay.Control
 
             GridPositionTool.TryGetMouseGridPosition(mainCam, out Vector3Int hoverPos);
 
-            // 使用新的双层范围系统
-            var (castTiles, aoeTiles) = AttackRangeSystem.GetSkillRangesForUI(
-                activeUnit.gridPosition,
-                hoverPos,
-                _selectedSkill
-            );
+            List<Vector3Int> castTiles = null;
+            List<Vector3Int> aoeTiles = null;
+
+            if (_selectedSkill.CastRangeMode == SkillPhaseCastRangeMode.Script
+                && !string.IsNullOrEmpty(_selectedSkill.CastRangeFuncName))
+            {
+                var ctx = new SkillEvalContext(activeUnit, hoverPos, _selectedSkill);
+                var tiles = ScriptFunctionResolver.Invoke<List<Vector3Int>>(_selectedSkill.CastRangeFuncName, ctx);
+                if (tiles != null)
+                    castTiles = tiles;
+            }
+
+            if (castTiles == null)
+            {
+                var (cTiles, aTiles) = AttackRangeSystem.GetSkillRangesForUI(
+                    activeUnit.gridPosition, hoverPos, _selectedSkill);
+                castTiles = cTiles;
+                aoeTiles = aTiles;
+            }
 
             _highlightTiles = new HashSet<Vector3Int>(castTiles);
             _validTargetTiles = new HashSet<Vector3Int>(castTiles);
 
-            // 显示施法范围（蓝色）和AoE范围（红色）
+            // 嘲讽过滤：仅"单体进攻型"技能受嘲讽约束（AoE/Global/辅助豁免）。
+            // 注：此处过滤作用于 castTiles 之后——脚本/标准施法范围层保持纯净，嘲讽只是收窄选择窗口。
+            if (TauntSystem.IsSingleTargetOffensiveSkill(_selectedSkill) && ApplyTauntFilter())
+            {
+                return;
+            }
+
             GridVisualManager.Instance.ShowTilesHighlight(_highlightTiles, Color.blue);
-            
-            // 如果有AoE范围，用红色显示
-            // if (aoeTiles.Count > 0)
-            // {
-            //     GridVisualManager.Instance.ShowTilesHighlight(aoeTiles, Color.red);
-            // }
+        }
+
+        /// <summary>
+        /// 嘲讽过滤：可选格中存在嘲讽目标时，把可点选范围收窄到嘲讽目标所在格，并高亮为橙色。
+        /// 返回 true 表示已施加过滤并完成高亮。
+        /// </summary>
+        private bool ApplyTauntFilter()
+        {
+            List<MapUnit> taunters = TauntSystem.GetTauntingTargetsInTiles(activeUnit, _validTargetTiles);
+            if (taunters.Count == 0) return false;
+
+            _validTargetTiles.Clear();
+            _highlightTiles.Clear();
+            foreach (MapUnit taunter in taunters)
+            {
+                _validTargetTiles.Add(taunter.gridPosition);
+                _highlightTiles.Add(taunter.gridPosition);
+            }
+
+            GridVisualManager.Instance.ShowTilesHighlight(_highlightTiles, TauntHighlightColor);
+            return true;
         }
 
         void HandleLeftClick(Vector3Int clickPos)
@@ -356,18 +400,21 @@ namespace GamePlay.Control
 
             List<MapUnit> targets = new List<MapUnit>();
 
-            // 使用新的AoE范围计算
             if (_selectedSkill.Phases.Count > 0)
             {
-                SkillPhase firstPhase = _selectedSkill.Phases[0];
-                List<Vector3Int> aoeRange = AttackRangeSystem.GetAoERange3D(activeUnit.gridPosition, targetPos, firstPhase);
+                var firstPhase = _selectedSkill.Phases[0];
 
-                foreach (Vector3Int pos in aoeRange)
+                if (firstPhase.ExecuteMode == SkillPhaseExecuteMode.Standard)
                 {
-                    MapUnit unit = UnitManager.Instance.GetUnitAt(pos);
-                    if (unit != null && AttackRangeSystem.IsTargetValidForPhase(unit, firstPhase, activeUnit.Faction))
+                    List<Vector3Int> aoeRange = AttackRangeSystem.GetAoERange3D(activeUnit.gridPosition, targetPos, firstPhase);
+
+                    foreach (Vector3Int pos in aoeRange)
                     {
-                        targets.Add(unit);
+                        MapUnit unit = UnitManager.Instance.GetUnitAt(pos);
+                        if (unit != null && AttackRangeSystem.IsTargetValidForPhase(unit, firstPhase, activeUnit.Faction))
+                        {
+                            targets.Add(unit);
+                        }
                     }
                 }
             }

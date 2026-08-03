@@ -32,7 +32,13 @@ namespace GamePlay.Skill
         public int CastMinRange = 1;
 
         [Tooltip("施法垂直高度容忍度")]
-        public int CastVerticalRange = 1; 
+        public int CastVerticalRange = 1;
+
+        [Tooltip("施法范围模式：Standard=现有系统, Script=自定义函数")]
+        public SkillPhaseCastRangeMode CastRangeMode = SkillPhaseCastRangeMode.Standard;
+
+        [Tooltip("CastRangeMode=Script 时，返回 List<Vector3Int> 的 Lua/C# 函数名")]
+        public string CastRangeFuncName = "";
 
         [Tooltip("弹道轨迹类型 - 决定技能如何穿越空间到达目标")]
         public TrajectoryType Trajectory = TrajectoryType.LineOfSight;
@@ -190,6 +196,8 @@ namespace GamePlay.Skill
             clone.CastMaxRange = this.CastMaxRange;
             clone.CastMinRange = this.CastMinRange;
             clone.CastVerticalRange = this.CastVerticalRange;
+            clone.CastRangeMode = this.CastRangeMode;
+            clone.CastRangeFuncName = this.CastRangeFuncName;
             clone.Trajectory = this.Trajectory;
             clone.StopsAtFirstHit = this.StopsAtFirstHit;
             clone.Cost = this.Cost;
@@ -225,6 +233,10 @@ namespace GamePlay.Skill
                     effectClone.RemoveMode = originalEffect.RemoveMode;
                     phaseClone.Effects.Add(effectClone);
                 }
+                
+                // 复制 Script 模式字段
+                phaseClone.ExecuteMode = originalPhase.ExecuteMode;
+                phaseClone.ExecuteFuncName = originalPhase.ExecuteFuncName;
                 
                 // 复制VisualData (都是值类型和引用，不需要深层复制引用对象)
                 if (originalPhase.VisualData != null)

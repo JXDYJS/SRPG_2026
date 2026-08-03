@@ -9,6 +9,11 @@ namespace GamePlay.Buff
     {
         private StatModifier _atkMod;
 
+        private void OnEnable()
+        {
+            if (string.IsNullOrEmpty(Name)) Name = "Weak";
+        }
+
         public override void OnApply(MapUnit owner)
         {
             base.OnApply(owner);
@@ -28,7 +33,6 @@ namespace GamePlay.Buff
         }
 
         public bool DecayAtTurnEnd = true;
-        public new bool DecayAtTurnStart = false;
 
         public override void OnTurnEnd(MapUnit owner)
         {

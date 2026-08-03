@@ -40,13 +40,19 @@ namespace GamePlay.AI
                 AIPlanStep step = plan.Steps[i];
 
                 // 执行前检查：单位是否还活着
-                if (unit == null || unit.Character == null || unit.Character.statSystem.currentHP <= 0)
+                if (unit == null || !unit.IsAlive)
                 {
                     Debug.Log($"[AI] {unit?.name ?? "null"} 在执行计划中阵亡，中断执行");
                     yield break;
                 }
 
+                float stepStart = Time.realtimeSinceStartup;
                 yield return ExecuteStep(unit, step);
+                float stepElapsed = (Time.realtimeSinceStartup - stepStart) * 1000f;
+                if (stepElapsed > 3000f)
+                {
+                    Debug.LogError($"[AI·异常] {unit.name} 步骤[{i}]{step.Type} 执行耗时 {stepElapsed:F0}ms，超过 3s 阈值！");
+                }
 
                 if (_planAborted)
                 {

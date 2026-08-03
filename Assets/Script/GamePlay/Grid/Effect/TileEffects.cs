@@ -1,6 +1,7 @@
 using GamePlay.Units;
 using Status.damage;
 using Global;
+using System.Diagnostics;
 
 namespace GamePlay.Grid
 {
@@ -8,7 +9,7 @@ namespace GamePlay.Grid
     {
         public static void FireDamage(MapUnit unit, MapObject mapObject, int damage, string damageTypeStr)
         {
-            if (unit == null || unit.Character?.statSystem?.currentHP <= 0)
+            if (unit == null || !unit.IsAlive)
                 return;
 
             var damageType = DamageType.Fire;

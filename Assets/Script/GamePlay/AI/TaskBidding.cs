@@ -81,24 +81,20 @@ namespace GamePlay.AI
                     distanceFactor = Mathf.Clamp(distanceFactor, 0.1f, 1f);
                 }
 
-                // 6. 挤占系数：已有人认领同一目标时降低效用
-                float crewFactor = 1f;
+                // 6. 承诺因子：有多少队友已盯上同一目标 → 衰减攻击/技能/支援效用
+                //    原始因子 [0,1]，重映射到 [commitmentPenaltyFloor, 1]，保证任务优先度永不为 0
+                float commitmentFactor = 1f;
                 if (task.TargetUnit != null && SharedTaskBoard.Instance != null)
                 {
-                    crewFactor = SharedTaskBoard.Instance.GetCrewFactor(task.TargetUnit, task.TaskType);
-                }
-
-                // 6.5 过杀惩罚：目标已有足够承诺伤害时阻止更多人攻击
-                float overkillPenalty = 1f;
-                if (task.TargetUnit != null && SharedTaskBoard.Instance != null)
-                {
-                    overkillPenalty = SharedTaskBoard.Instance.GetOverkillPenalty(task.TargetUnit);
+                    float rawCommit = SharedTaskBoard.Instance.GetCommitmentFactor(unit, task.TargetUnit, task.TaskType);
+                    float floor = Data.Config.AIConfig.commitmentPenaltyFloor;
+                    commitmentFactor = floor + (1f - floor) * rawCommit;
                 }
 
                 // 7. 综合评分
-                float finalScore = baseUtility * classWeight * hpModifier * distanceFactor * task.BasePriority * crewFactor * overkillPenalty;
+                float finalScore = baseUtility * classWeight * hpModifier * distanceFactor * task.BasePriority * commitmentFactor;
 
-                Debug.Log($"[AI·竞价]   [{idx}] {taskDesc,-40} | baseU={baseUtility:F3} | clsW={classWeight:F2} | hpM={hpModifier:F2} | distF={distanceFactor:F2} | crewF={crewFactor:F2} | overkill={overkillPenalty:F2} | prio={task.BasePriority:F2} | → {finalScore:F4}");
+                Debug.Log($"[AI·竞价]   [{idx}] {taskDesc,-40} | baseU={baseUtility:F3} | clsW={classWeight:F2} | hpM={hpModifier:F2} | distF={distanceFactor:F2} | commit={commitmentFactor:F2} | prio={task.BasePriority:F2} | → {finalScore:F4}");
 
                 if (finalScore > bestScore)
                 {

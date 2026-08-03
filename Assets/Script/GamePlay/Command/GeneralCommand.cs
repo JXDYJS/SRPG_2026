@@ -99,6 +99,13 @@ namespace Command
                     _unit.transform.rotation = Quaternion.LookRotation(direction);
                 }
                 
+                if (_unit.moveSpeed <= 0f)
+                {
+                    Debug.LogError($"[MoveRoutine] {_unit.name} moveSpeed={_unit.moveSpeed} 导致卡死！强制跳过移动");
+                    _unit.transform.position = targetWorldPos;
+                    break;
+                }
+
                 while (Vector3.Distance(_unit.transform.position, targetWorldPos) >0.05f)
                 {
                     _unit.transform.position = Vector3.MoveTowards(

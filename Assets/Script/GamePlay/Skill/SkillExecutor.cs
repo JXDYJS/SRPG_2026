@@ -6,6 +6,7 @@ using Global;
 using UnityEngine;
 using Command;
 using Utils;
+using Lua;
 
 namespace GamePlay.Skill
 {
@@ -60,7 +61,10 @@ namespace GamePlay.Skill
             //         return sequenceResult;
             //     }
             // }
-            if (skillData.CastPattern == CastPatternType.Line && skillData.StopsAtFirstHit)
+            bool hasScriptCastRange = skillData.CastRangeMode == SkillPhaseCastRangeMode.Script
+                && !string.IsNullOrEmpty(skillData.CastRangeFuncName);
+
+            if (!hasScriptCastRange && skillData.CastPattern == CastPatternType.Line && skillData.StopsAtFirstHit)
             {
                 // DDA 体素遍历 + AABB 精确检测
                 List<Vector3Int> trajectory = Grid.AttackRangeSystem.GetLinePath(caster.gridPosition, context.TargetPosition);
@@ -122,38 +126,58 @@ namespace GamePlay.Skill
 
             foreach (SkillPhase phase in skillData.Phases)
             {
-                PhaseResult phaseResult = new PhaseResult(caster, context.TargetPosition);
+                PhaseResult phaseResult;
 
-                List<MapUnit> phaseTargets = GetPhaseTargets(caster, context, phase, skillData);
-
-                foreach (MapUnit target in phaseTargets)
+                if (phase.ExecuteMode == SkillPhaseExecuteMode.Script && !string.IsNullOrEmpty(phase.ExecuteFuncName))
                 {
-                    if (target == null || target.Character.statSystem.currentHP <= 0)
+                    var ctx = new SkillEvalContext(caster, context.TargetPosition, skillData)
                     {
-                        continue;
+                        PhaseIndex = sequenceResult.PhaseResults.Count,
+                        PreviousResults = new List<PhaseResult>(sequenceResult.PhaseResults),
+                        OriginalContext = context
+                    };
+                    phaseResult = ScriptFunctionResolver.Invoke<PhaseResult>(phase.ExecuteFuncName, ctx);
+                    if (phaseResult == null)
+                    {
+                        Debug.LogError($"Execute script failed: {phase.ExecuteFuncName}");
+                        phaseResult = new PhaseResult(caster, context.TargetPosition);
                     }
+                }
+                else
+                {
+                    phaseResult = new PhaseResult(caster, context.TargetPosition);
 
-                    TargetResult targetResult = new TargetResult(target);
+                    List<MapUnit> phaseTargets = GetPhaseTargets(caster, context, phase, skillData);
+
+                    foreach (MapUnit target in phaseTargets)
+                    {
+                        if (target == null || !target.IsAlive)
+                        {
+                            continue;
+                        }
+
+                        TargetResult targetResult = new TargetResult(target);
+
+                        foreach (SkillEffect effect in phase.Effects)
+                        {
+                            ApplyEffect(caster, target, effect, targetResult);
+                        }
+
+                        phaseResult.TargetResults.Add(targetResult);
+                    }
 
                     foreach (SkillEffect effect in phase.Effects)
                     {
-                        ApplyEffect(caster, target, effect, targetResult);
+                        if (effect.EffectType == EffectType.MoveCaster)
+                        {
+                            ApplyCasterMovement(caster, context.TargetPosition, phaseResult);
+                        }
                     }
 
-                    phaseResult.TargetResults.Add(targetResult);
-                }
-
-                foreach (SkillEffect effect in phase.Effects)
-                {
-                    if (effect.EffectType == EffectType.MoveCaster)
+                    if (phaseResult.CasterMoved)
                     {
-                        ApplyCasterMovement(caster, context.TargetPosition, phaseResult);
+                        context.TargetPosition = phaseResult.CasterEndPosition;
                     }
-                }
-
-                if (phaseResult.CasterMoved)
-                {
-                    context.TargetPosition = phaseResult.CasterEndPosition;
                 }
 
                 sequenceResult.PhaseResults.Add(phaseResult);
@@ -250,7 +274,7 @@ namespace GamePlay.Skill
             );
             targetResult.DamageRecords.Add(damageRecord);
             
-            targetResult.IsDead = target.Character.statSystem.currentHP <= 0;
+            targetResult.IsDead = !target.IsAlive;
         }
 
         private static void ApplyHeal(MapUnit caster, MapUnit target, SkillEffect effect, TargetResult targetResult)
@@ -281,10 +305,21 @@ namespace GamePlay.Skill
         {
             UndoSystem.Instance.RegisterDirty(caster);
 
+            Vector3Int moveDir = new Vector3Int(
+                targetPosition.x - caster.gridPosition.x,
+                0,
+                targetPosition.z - caster.gridPosition.z
+            );
+            if (moveDir != Vector3Int.zero)
+            {
+                caster.SetFacingToDirection(moveDir);
+            }
+
             Vector3Int oldPos = caster.gridPosition;
             caster.gridPosition = targetPosition;
-
             UnitManager.Instance.UpdateUnitPosition(caster, oldPos);
+
+            caster.RestoreRecordedFacing();
 
             phaseResult.CasterMoved = true;
             phaseResult.CasterEndPosition = targetPosition;

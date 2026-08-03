@@ -1,16 +1,18 @@
+using System;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using UnityEngine.ResourceManagement.AsyncOperations;
 using GamePlay.Units;
-using GamePlay.Buff;
+using Lua;
+using XLua;
 
 namespace GamePlay.Buff
 {
     public static class BuffManager
     {
-        // 核心修改：增加一个模板缓存字典
         private static Dictionary<string, BuffBase> _templateCache = new Dictionary<string, BuffBase>();
+        private static Dictionary<string, Type> _reflectionCache = new Dictionary<string, Type>();
 
         public static BuffBase CreateBuffFromID(string buffID, int stacks = 1)
         {
@@ -20,42 +22,176 @@ namespace GamePlay.Buff
                 return null;
             }
 
-            string key = buffID.ToLower(); // 统一转小写，防止大小写配表错误
-            BuffBase buffTemplate = null;
+            string key = buffID.ToLower();
 
-            // 1. 优先从缓存中获取模板
-            if (_templateCache.TryGetValue(key, out var cachedTemplate))
+            // 1. Try Addressables first (legacy .asset-based buffs: strength, weak, etc.)
+            BuffBase instance = TryFromAddressables(key, buffID, stacks);
+            if (instance != null) return instance;
+
+            // 2. Fallback to reflection (new code-only buffs: zombie_skin, precise_shot, etc.)
+            instance = TryFromReflection(key, buffID, stacks);
+            if (instance != null) return instance;
+
+            // 3. Fallback to Lua (runtime-extensible buffs: battle_cry, fortitude, etc.)
+            instance = TryFromLua(buffID, stacks);
+            if (instance != null) return instance;
+
+            Debug.LogError($"BuffManager: 无法加载 Buff '{buffID}' — 反射、Addressables 和 Lua 均失败");
+            return null;
+        }
+
+        private static BuffBase TryFromAddressables(string key, string buffID, int stacks)
+        {
+            BuffBase template = null;
+
+            if (_templateCache.TryGetValue(key, out var cached))
             {
-                buffTemplate = cachedTemplate;
+                template = cached;
             }
             else
             {
-                // 2. 如果缓存没有，则通过 Addressables 同步加载
-                // 注意：这里可能会抛出异常，如果 key 填错了的话
-                var handle = Addressables.LoadAssetAsync<BuffBase>(key);
-                buffTemplate = handle.WaitForCompletion();
+                if (!IsBuffKeyRegistered(key)) return null;
 
-                if (buffTemplate != null)
+                try
                 {
-                    // 放入缓存，不再调用 Release，直到游戏关闭
-                    _templateCache[key] = buffTemplate; 
+                    var handle = Addressables.LoadAssetAsync<BuffBase>(key);
+                    template = handle.WaitForCompletion();
+
+                    if (template != null)
+                    {
+                        _templateCache[key] = template;
+                    }
+                    else
+                    {
+                        Addressables.Release(handle);
+                        return null;
+                    }
                 }
-                else
+                catch (InvalidKeyException)
                 {
-                    Debug.LogError($"BuffManager: 无法加载 Buff 资产，请检查 Addressables Groups 中的 Address 是否为: {key}");
-                    Addressables.Release(handle); // 只有加载失败才释放
+                    // key 不在 Addressables 中，交给反射/Lua 兜底解析
                     return null;
                 }
             }
 
-            // 3. 克隆模板创建运行时实例
-            BuffBase buffInstance = Object.Instantiate(buffTemplate);
-            
-            // 4. 设置运行时数据
-            buffInstance.ID = buffID;
-            buffInstance.Stacks = Mathf.Max(1, stacks);
-            
-            return buffInstance;
+            BuffBase instance = UnityEngine.Object.Instantiate(template);
+            instance.ID = buffID;
+            instance.Stacks = Mathf.Max(1, stacks);
+            if (string.IsNullOrEmpty(instance.Name)) instance.Name = buffID;
+            return instance;
+        }
+
+        // 预检 key 是否注册在 Addressables 中，避免 LoadAssetAsync 对缺失 key
+        // 内部直接 Debug.LogError(InvalidKeyException) 造成控制台噪音。
+        // 只有纯 Lua/反射 Buff（如 precise_shot、fortitude、power 等）会走到这一步。
+        private static bool IsBuffKeyRegistered(string key)
+        {
+            var locators = Addressables.ResourceLocators;
+            if (locators == null) return true; // 极端情况，保守走原逻辑
+
+            bool hasLocator = false;
+            foreach (var locator in locators)
+            {
+                hasLocator = true; // 至少一个 locator → Addressables 已初始化
+                if (locator.Locate(key, typeof(BuffBase), out var locations))
+                {
+                    return locations != null && locations.Count > 0;
+                }
+            }
+
+            // locators 为空（Addressables 尚未初始化）时保守返回 true，
+            // 让 LoadAssetAsync 自动初始化并配合 try-catch 兜底。
+            return !hasLocator;
+        }
+
+        private static BuffBase TryFromReflection(string key, string buffID, int stacks)
+        {
+            string className = "Buff" + ToPascalCase(key);
+
+            if (!_reflectionCache.TryGetValue(className, out var type))
+            {
+                type = typeof(BuffBase).Assembly.GetType($"GamePlay.Buff.{className}");
+                if (type == null || type.IsAbstract || !type.IsSubclassOf(typeof(BuffBase)))
+                {
+                    return null;
+                }
+                _reflectionCache[className] = type;
+            }
+
+            BuffBase instance = ScriptableObject.CreateInstance(type) as BuffBase;
+            if (instance != null)
+            {
+                instance.ID = buffID;
+                instance.Stacks = Mathf.Max(1, stacks);
+                if (string.IsNullOrEmpty(instance.Name)) instance.Name = buffID;
+            }
+            return instance;
+        }
+
+        private static BuffBase TryFromLua(string buffID, int stacks)
+        {
+            string className = "Buff" + ToPascalCase(buffID);
+            string module = "Buffs." + className;
+
+            LuaTable cls;
+            try
+            {
+                object[] ret = LuaManager.Instance.LuaEnv.DoString(
+                    "return require('" + module + "')");
+                if (ret == null || ret.Length == 0) return null;
+                cls = ret[0] as LuaTable;
+                if (cls == null) return null;
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning($"[BuffManager] Lua require '{buffID}' 失败: {e.Message}");
+                return null;
+            }
+
+            if (!InheritsFromBuffBase(cls)) return null;
+
+            // 通过 __call 元方法创建实例: cls(stacks)
+            object[] ret2;
+            try
+            {
+                var env = LuaManager.Instance.LuaEnv;
+                env.Global.SetInPath("__tmp_stacks", stacks);
+                ret2 = env.DoString(
+                    "return require('" + module + "')(__tmp_stacks)");
+                env.Global.Set<object, object>("__tmp_stacks", null);
+                if (ret2 == null || ret2.Length == 0) return null;
+            }
+            catch
+            {
+                return null;
+            }
+
+            LuaTable instance = ret2[0] as LuaTable;
+            if (instance == null) return null;
+
+            BuffLuaWrapper wrapper = ScriptableObject.CreateInstance<BuffLuaWrapper>();
+            wrapper.ID = buffID;
+            wrapper.Bind(instance);
+            return wrapper;
+        }
+
+        private static bool InheritsFromBuffBase(LuaTable cls)
+        {
+            LuaFunction check = LuaManager.Instance.LuaEnv.Global.Get<LuaFunction>("_isBuffBase");
+            if (check == null) return false;
+            object[] ret = check.Call(cls);
+            return ret != null && ret.Length > 0 && (bool)ret[0];
+        }
+
+        private static string ToPascalCase(string snakeCase)
+        {
+            string[] parts = snakeCase.Split('_');
+            for (int i = 0; i < parts.Length; i++)
+            {
+                if (parts[i].Length > 0)
+                    parts[i] = char.ToUpper(parts[i][0]) + parts[i].Substring(1).ToLower();
+            }
+            return string.Join("", parts);
         }
 
         public static BuffBase FindBuffByID(MapUnit unit, string buffID)
@@ -64,7 +200,7 @@ namespace GamePlay.Buff
 
             foreach (var buff in unit.ActiveBuffs)
             {
-                if (!string.IsNullOrEmpty(buff.ID) && buff.ID.Equals(buffID, System.StringComparison.OrdinalIgnoreCase))
+                if (!string.IsNullOrEmpty(buff.ID) && buff.ID.Equals(buffID, StringComparison.OrdinalIgnoreCase))
                 {
                     return buff;
                 }
@@ -91,12 +227,11 @@ namespace GamePlay.Buff
                 }
             }
         }
-        
-        // 游戏退出或返回主菜单时，可以调用这个方法清理内存
+
         public static void ClearCache()
         {
             _templateCache.Clear();
-            // 实际项目中，如果对内存要求极高，可以在这里配合 AssetReference 记录 handle 并统一 Release
+            _reflectionCache.Clear();
         }
     }
 }
