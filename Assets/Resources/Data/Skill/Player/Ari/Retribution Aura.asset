@@ -17,8 +17,8 @@ MonoBehaviour:
   Icon: {fileID: 0}
   TargetType: 2
   CastPattern: 0
-  CastMaxRange: 1
-  CastMinRange: 1
+  CastMaxRange: 0
+  CastMinRange: 0
   CastVerticalRange: 1
   CastRangeMode: 0
   CastRangeFuncName: 
