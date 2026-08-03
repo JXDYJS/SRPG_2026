@@ -1,5 +1,629 @@
 ---@meta
 
+---@overload fun(displayName: string) : System.Web.UI.WebControls.WebParts.ConnectionConsumerAttribute
+---@overload fun(displayName: string, id: string) : System.Web.UI.WebControls.WebParts.ConnectionConsumerAttribute
+---@overload fun(displayName: string, id: string, connectionPointType: System.Type) : System.Web.UI.WebControls.WebParts.ConnectionConsumerAttribute
+---@param displayName string
+---@param connectionPointType System.Type
+---@return System.Web.UI.WebControls.WebParts.ConnectionConsumerAttribute
+function System.Web.UI.WebControls.WebParts.ConnectionConsumerAttribute.New(displayName, connectionPointType) end
+
+---@class System.Web.UI.WebControls.WebParts.ConnectionProviderAttribute : System.Attribute
+---@field AllowsMultipleConnections boolean
+---@field ConnectionPointType System.Type
+---@field DisplayName string
+---@field ID string
+System.Web.UI.WebControls.WebParts.ConnectionProviderAttribute = {}
+---@alias CS.System.Web.UI.WebControls.WebParts.ConnectionProviderAttribute System.Web.UI.WebControls.WebParts.ConnectionProviderAttribute
+CS.System.Web.UI.WebControls.WebParts.ConnectionProviderAttribute = System.Web.UI.WebControls.WebParts.ConnectionProviderAttribute
+
+---@overload fun(displayName: string) : System.Web.UI.WebControls.WebParts.ConnectionProviderAttribute
+---@overload fun(displayName: string, id: string) : System.Web.UI.WebControls.WebParts.ConnectionProviderAttribute
+---@overload fun(displayName: string, id: string, connectionPointType: System.Type) : System.Web.UI.WebControls.WebParts.ConnectionProviderAttribute
+---@param displayName string
+---@param connectionPointType System.Type
+---@return System.Web.UI.WebControls.WebParts.ConnectionProviderAttribute
+function System.Web.UI.WebControls.WebParts.ConnectionProviderAttribute.New(displayName, connectionPointType) end
+
+---@class System.Web.UI.WebControls.WebParts.ConnectionsZone : System.Web.UI.WebControls.WebParts.ToolZone
+---@field CancelVerb System.Web.UI.WebControls.WebParts.WebPartVerb
+---@field CloseVerb System.Web.UI.WebControls.WebParts.WebPartVerb
+---@field ConfigureConnectionTitle string
+---@field ConfigureVerb System.Web.UI.WebControls.WebParts.WebPartVerb
+---@field ConnectToConsumerInstructionText string
+---@field ConnectToConsumerText string
+---@field ConnectToConsumerTitle string
+---@field ConnectToProviderInstructionText string
+---@field ConnectToProviderText string
+---@field ConnectToProviderTitle string
+---@field ConnectVerb System.Web.UI.WebControls.WebParts.WebPartVerb
+---@field ConsumersInstructionText string
+---@field ConsumersTitle string
+---@field DisconnectVerb System.Web.UI.WebControls.WebParts.WebPartVerb
+---@field EmptyZoneText string
+---@field ExistingConnectionErrorMessage string
+---@field GetFromText string
+---@field GetText string
+---@field HeaderText string
+---@field InstructionText string
+---@field InstructionTitle string
+---@field NewConnectionErrorMessage string
+---@field NoExistingConnectionInstructionText string
+---@field NoExistingConnectionTitle string
+---@field PartChromeType System.Web.UI.WebControls.WebParts.PartChromeType
+---@field ProvidersInstructionText string
+---@field ProvidersTitle string
+---@field SendText string
+---@field SendToText string
+System.Web.UI.WebControls.WebParts.ConnectionsZone = {}
+---@alias CS.System.Web.UI.WebControls.WebParts.ConnectionsZone System.Web.UI.WebControls.WebParts.ConnectionsZone
+CS.System.Web.UI.WebControls.WebParts.ConnectionsZone = System.Web.UI.WebControls.WebParts.ConnectionsZone
+
+---@return System.Web.UI.WebControls.WebParts.ConnectionsZone
+function System.Web.UI.WebControls.WebParts.ConnectionsZone.New() end
+
+---@class System.Web.UI.WebControls.WebParts.DeclarativeCatalogPart : System.Web.UI.WebControls.WebParts.CatalogPart
+---@field WebPartsListUserControlPath string
+---@field WebPartsTemplate System.Web.UI.ITemplate
+System.Web.UI.WebControls.WebParts.DeclarativeCatalogPart = {}
+---@alias CS.System.Web.UI.WebControls.WebParts.DeclarativeCatalogPart System.Web.UI.WebControls.WebParts.DeclarativeCatalogPart
+CS.System.Web.UI.WebControls.WebParts.DeclarativeCatalogPart = System.Web.UI.WebControls.WebParts.DeclarativeCatalogPart
+
+---@return System.Web.UI.WebControls.WebParts.DeclarativeCatalogPart
+function System.Web.UI.WebControls.WebParts.DeclarativeCatalogPart.New() end
+---@return System.Web.UI.WebControls.WebParts.WebPartDescriptionCollection
+function System.Web.UI.WebControls.WebParts.DeclarativeCatalogPart:GetAvailableWebPartDescriptions() end
+---@param description System.Web.UI.WebControls.WebParts.WebPartDescription
+---@return System.Web.UI.WebControls.WebParts.WebPart
+function System.Web.UI.WebControls.WebParts.DeclarativeCatalogPart:GetWebPart(description) end
+
+---@class System.Web.UI.WebControls.WebParts.EditorZone : System.Web.UI.WebControls.WebParts.EditorZoneBase
+---@field ZoneTemplate System.Web.UI.ITemplate
+System.Web.UI.WebControls.WebParts.EditorZone = {}
+---@alias CS.System.Web.UI.WebControls.WebParts.EditorZone System.Web.UI.WebControls.WebParts.EditorZone
+CS.System.Web.UI.WebControls.WebParts.EditorZone = System.Web.UI.WebControls.WebParts.EditorZone
+
+---@return System.Web.UI.WebControls.WebParts.EditorZone
+function System.Web.UI.WebControls.WebParts.EditorZone.New() end
+
+---@class System.Web.UI.WebControls.WebParts.ImportCatalogPart : System.Web.UI.WebControls.WebParts.CatalogPart
+---@field BrowseHelpText string
+---@field ImportedPartLabelText string
+---@field PartImportErrorLabelText string
+---@field UploadButtonText string
+---@field UploadHelpText string
+System.Web.UI.WebControls.WebParts.ImportCatalogPart = {}
+---@alias CS.System.Web.UI.WebControls.WebParts.ImportCatalogPart System.Web.UI.WebControls.WebParts.ImportCatalogPart
+CS.System.Web.UI.WebControls.WebParts.ImportCatalogPart = System.Web.UI.WebControls.WebParts.ImportCatalogPart
+
+---@return System.Web.UI.WebControls.WebParts.ImportCatalogPart
+function System.Web.UI.WebControls.WebParts.ImportCatalogPart.New() end
+---@return System.Web.UI.WebControls.WebParts.WebPartDescriptionCollection
+function System.Web.UI.WebControls.WebParts.ImportCatalogPart:GetAvailableWebPartDescriptions() end
+---@param description System.Web.UI.WebControls.WebParts.WebPartDescription
+---@return System.Web.UI.WebControls.WebParts.WebPart
+function System.Web.UI.WebControls.WebParts.ImportCatalogPart:GetWebPart(description) end
+
+---@class System.Web.UI.WebControls.WebParts.LayoutEditorPart : System.Web.UI.WebControls.WebParts.EditorPart
+System.Web.UI.WebControls.WebParts.LayoutEditorPart = {}
+---@alias CS.System.Web.UI.WebControls.WebParts.LayoutEditorPart System.Web.UI.WebControls.WebParts.LayoutEditorPart
+CS.System.Web.UI.WebControls.WebParts.LayoutEditorPart = System.Web.UI.WebControls.WebParts.LayoutEditorPart
+
+---@return System.Web.UI.WebControls.WebParts.LayoutEditorPart
+function System.Web.UI.WebControls.WebParts.LayoutEditorPart.New() end
+---@return boolean
+function System.Web.UI.WebControls.WebParts.LayoutEditorPart:ApplyChanges() end
+function System.Web.UI.WebControls.WebParts.LayoutEditorPart:SyncChanges() end
+
+---@class System.Web.UI.WebControls.WebParts.PageCatalogPart : System.Web.UI.WebControls.WebParts.CatalogPart
+System.Web.UI.WebControls.WebParts.PageCatalogPart = {}
+---@alias CS.System.Web.UI.WebControls.WebParts.PageCatalogPart System.Web.UI.WebControls.WebParts.PageCatalogPart
+CS.System.Web.UI.WebControls.WebParts.PageCatalogPart = System.Web.UI.WebControls.WebParts.PageCatalogPart
+
+---@return System.Web.UI.WebControls.WebParts.PageCatalogPart
+function System.Web.UI.WebControls.WebParts.PageCatalogPart.New() end
+---@return System.Web.UI.WebControls.WebParts.WebPartDescriptionCollection
+function System.Web.UI.WebControls.WebParts.PageCatalogPart:GetAvailableWebPartDescriptions() end
+---@param description System.Web.UI.WebControls.WebParts.WebPartDescription
+---@return System.Web.UI.WebControls.WebParts.WebPart
+function System.Web.UI.WebControls.WebParts.PageCatalogPart:GetWebPart(description) end
+
+---@class System.Web.UI.WebControls.WebParts.PersonalizationAdministration : System.Object
+---@field ApplicationName string
+---@field Provider System.Web.UI.WebControls.WebParts.PersonalizationProvider
+---@field Providers System.Web.UI.WebControls.WebParts.PersonalizationProviderCollection
+System.Web.UI.WebControls.WebParts.PersonalizationAdministration = {}
+---@alias CS.System.Web.UI.WebControls.WebParts.PersonalizationAdministration System.Web.UI.WebControls.WebParts.PersonalizationAdministration
+CS.System.Web.UI.WebControls.WebParts.PersonalizationAdministration = System.Web.UI.WebControls.WebParts.PersonalizationAdministration
+
+---@overload fun(pathToMatch: string, usernameToMatch: string, userInactiveSinceDate: System.DateTime) : System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection
+---@param pathToMatch string
+---@param usernameToMatch string
+---@param userInactiveSinceDate System.DateTime
+---@param pageIndex number
+---@param pageSize number
+---@param out_totalRecords number
+---@return System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection,number
+function System.Web.UI.WebControls.WebParts.PersonalizationAdministration.FindInactiveUserState(pathToMatch, usernameToMatch, userInactiveSinceDate, pageIndex, pageSize, out_totalRecords) end
+---@overload fun(pathToMatch: string) : System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection
+---@param pathToMatch string
+---@param pageIndex number
+---@param pageSize number
+---@param out_totalRecords number
+---@return System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection,number
+function System.Web.UI.WebControls.WebParts.PersonalizationAdministration.FindSharedState(pathToMatch, pageIndex, pageSize, out_totalRecords) end
+---@overload fun(pathToMatch: string, usernameToMatch: string) : System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection
+---@param pathToMatch string
+---@param usernameToMatch string
+---@param pageIndex number
+---@param pageSize number
+---@param out_totalRecords number
+---@return System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection,number
+function System.Web.UI.WebControls.WebParts.PersonalizationAdministration.FindUserState(pathToMatch, usernameToMatch, pageIndex, pageSize, out_totalRecords) end
+---@overload fun(userInactiveSinceDate: System.DateTime) : System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection
+---@param userInactiveSinceDate System.DateTime
+---@param pageIndex number
+---@param pageSize number
+---@param out_totalRecords number
+---@return System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection,number
+function System.Web.UI.WebControls.WebParts.PersonalizationAdministration.GetAllInactiveUserState(userInactiveSinceDate, pageIndex, pageSize, out_totalRecords) end
+---@overload fun(scope: System.Web.UI.WebControls.WebParts.PersonalizationScope) : System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection
+---@param scope System.Web.UI.WebControls.WebParts.PersonalizationScope
+---@param pageIndex number
+---@param pageSize number
+---@param out_totalRecords number
+---@return System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection,number
+function System.Web.UI.WebControls.WebParts.PersonalizationAdministration.GetAllState(scope, pageIndex, pageSize, out_totalRecords) end
+---@overload fun(userInactiveSinceDate: System.DateTime) : number
+---@param pathToMatch string
+---@param userInactiveSinceDate System.DateTime
+---@return number
+function System.Web.UI.WebControls.WebParts.PersonalizationAdministration.GetCountOfInactiveUserState(pathToMatch, userInactiveSinceDate) end
+---@overload fun(scope: System.Web.UI.WebControls.WebParts.PersonalizationScope) : number
+---@param scope System.Web.UI.WebControls.WebParts.PersonalizationScope
+---@param pathToMatch string
+---@return number
+function System.Web.UI.WebControls.WebParts.PersonalizationAdministration.GetCountOfState(scope, pathToMatch) end
+---@param usernameToMatch string
+---@return number
+function System.Web.UI.WebControls.WebParts.PersonalizationAdministration.GetCountOfUserState(usernameToMatch) end
+---@param scope System.Web.UI.WebControls.WebParts.PersonalizationScope
+---@return number
+function System.Web.UI.WebControls.WebParts.PersonalizationAdministration.ResetAllState(scope) end
+---@overload fun(userInactiveSinceDate: System.DateTime) : number
+---@param path string
+---@param userInactiveSinceDate System.DateTime
+---@return number
+function System.Web.UI.WebControls.WebParts.PersonalizationAdministration.ResetInactiveUserState(path, userInactiveSinceDate) end
+---@overload fun(path: string) : boolean
+---@param paths System.String[]
+---@return number
+function System.Web.UI.WebControls.WebParts.PersonalizationAdministration.ResetSharedState(paths) end
+---@param data System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection
+---@return number
+function System.Web.UI.WebControls.WebParts.PersonalizationAdministration.ResetState(data) end
+---@overload fun(path: string) : number
+---@overload fun(path: string, username: string) : boolean
+---@overload fun(path: string, usernames: System.String[]) : number
+---@param usernames System.String[]
+---@return number
+function System.Web.UI.WebControls.WebParts.PersonalizationAdministration.ResetUserState(usernames) end
+
+---@class System.Web.UI.WebControls.WebParts.PersonalizationProvider : System.Configuration.Provider.ProviderBase
+---@field ApplicationName string
+System.Web.UI.WebControls.WebParts.PersonalizationProvider = {}
+---@alias CS.System.Web.UI.WebControls.WebParts.PersonalizationProvider System.Web.UI.WebControls.WebParts.PersonalizationProvider
+CS.System.Web.UI.WebControls.WebParts.PersonalizationProvider = System.Web.UI.WebControls.WebParts.PersonalizationProvider
+
+---@param webPartManager System.Web.UI.WebControls.WebParts.WebPartManager
+---@param loadedState System.Web.UI.WebControls.WebParts.PersonalizationState
+---@return System.Web.UI.WebControls.WebParts.PersonalizationScope
+function System.Web.UI.WebControls.WebParts.PersonalizationProvider:DetermineInitialScope(webPartManager, loadedState) end
+---@param webPartManager System.Web.UI.WebControls.WebParts.WebPartManager
+---@return System.Collections.IDictionary
+function System.Web.UI.WebControls.WebParts.PersonalizationProvider:DetermineUserCapabilities(webPartManager) end
+---@param scope System.Web.UI.WebControls.WebParts.PersonalizationScope
+---@param query System.Web.UI.WebControls.WebParts.PersonalizationStateQuery
+---@param pageIndex number
+---@param pageSize number
+---@param out_totalRecords number
+---@return System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection,number
+function System.Web.UI.WebControls.WebParts.PersonalizationProvider:FindState(scope, query, pageIndex, pageSize, out_totalRecords) end
+---@param scope System.Web.UI.WebControls.WebParts.PersonalizationScope
+---@param query System.Web.UI.WebControls.WebParts.PersonalizationStateQuery
+---@return number
+function System.Web.UI.WebControls.WebParts.PersonalizationProvider:GetCountOfState(scope, query) end
+---@param webPartManager System.Web.UI.WebControls.WebParts.WebPartManager
+---@param ignoreCurrentUser boolean
+---@return System.Web.UI.WebControls.WebParts.PersonalizationState
+function System.Web.UI.WebControls.WebParts.PersonalizationProvider:LoadPersonalizationState(webPartManager, ignoreCurrentUser) end
+---@param webPartManager System.Web.UI.WebControls.WebParts.WebPartManager
+function System.Web.UI.WebControls.WebParts.PersonalizationProvider:ResetPersonalizationState(webPartManager) end
+---@param scope System.Web.UI.WebControls.WebParts.PersonalizationScope
+---@param paths System.String[]
+---@param usernames System.String[]
+---@return number
+function System.Web.UI.WebControls.WebParts.PersonalizationProvider:ResetState(scope, paths, usernames) end
+---@param path string
+---@param userInactiveSinceDate System.DateTime
+---@return number
+function System.Web.UI.WebControls.WebParts.PersonalizationProvider:ResetUserState(path, userInactiveSinceDate) end
+---@param state System.Web.UI.WebControls.WebParts.PersonalizationState
+function System.Web.UI.WebControls.WebParts.PersonalizationProvider:SavePersonalizationState(state) end
+
+---@class System.Web.UI.WebControls.WebParts.PersonalizationState : System.Object
+---@field IsDirty boolean
+---@field IsEmpty boolean
+---@field WebPartManager System.Web.UI.WebControls.WebParts.WebPartManager
+System.Web.UI.WebControls.WebParts.PersonalizationState = {}
+---@alias CS.System.Web.UI.WebControls.WebParts.PersonalizationState System.Web.UI.WebControls.WebParts.PersonalizationState
+CS.System.Web.UI.WebControls.WebParts.PersonalizationState = System.Web.UI.WebControls.WebParts.PersonalizationState
+
+function System.Web.UI.WebControls.WebParts.PersonalizationState:ApplyWebPartManagerPersonalization() end
+---@param webPart System.Web.UI.WebControls.WebParts.WebPart
+function System.Web.UI.WebControls.WebParts.PersonalizationState:ApplyWebPartPersonalization(webPart) end
+function System.Web.UI.WebControls.WebParts.PersonalizationState:ExtractWebPartManagerPersonalization() end
+---@param webPart System.Web.UI.WebControls.WebParts.WebPart
+function System.Web.UI.WebControls.WebParts.PersonalizationState:ExtractWebPartPersonalization(webPart) end
+---@param webPartID string
+---@return string
+function System.Web.UI.WebControls.WebParts.PersonalizationState:GetAuthorizationFilter(webPartID) end
+---@param webPart System.Web.UI.WebControls.WebParts.WebPart
+function System.Web.UI.WebControls.WebParts.PersonalizationState:SetWebPartDirty(webPart) end
+function System.Web.UI.WebControls.WebParts.PersonalizationState:SetWebPartManagerDirty() end
+
+---@class System.Web.UI.WebControls.WebParts.PersonalizationStateQuery : System.Object
+---@field Item System.Object
+---@field PathToMatch string
+---@field UserInactiveSinceDate System.DateTime
+---@field UsernameToMatch string
+System.Web.UI.WebControls.WebParts.PersonalizationStateQuery = {}
+---@alias CS.System.Web.UI.WebControls.WebParts.PersonalizationStateQuery System.Web.UI.WebControls.WebParts.PersonalizationStateQuery
+CS.System.Web.UI.WebControls.WebParts.PersonalizationStateQuery = System.Web.UI.WebControls.WebParts.PersonalizationStateQuery
+
+---@return System.Web.UI.WebControls.WebParts.PersonalizationStateQuery
+function System.Web.UI.WebControls.WebParts.PersonalizationStateQuery.New() end
+
+---@class System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection : System.Object
+---@field Count number
+---@field IsSynchronized boolean
+---@field Item System.Web.UI.WebControls.WebParts.PersonalizationStateInfo
+---@field SyncRoot System.Object
+System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection = {}
+---@alias CS.System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection
+CS.System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection = System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection
+
+---@return System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection
+function System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection.New() end
+---@param data System.Web.UI.WebControls.WebParts.PersonalizationStateInfo
+function System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection:Add(data) end
+function System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection:Clear() end
+---@param array System.Web.UI.WebControls.WebParts.PersonalizationStateInfo[]
+---@param index number
+function System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection:CopyTo(array, index) end
+---@return System.Collections.IEnumerator
+function System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection:GetEnumerator() end
+---@param path string
+---@param username string
+function System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection:Remove(path, username) end
+function System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection:SetReadOnly() end
+
+---@class System.Web.UI.WebControls.WebParts.PersonalizationStateInfo : System.Object
+---@field LastUpdatedDate System.DateTime
+---@field Path string
+---@field Size number
+System.Web.UI.WebControls.WebParts.PersonalizationStateInfo = {}
+---@alias CS.System.Web.UI.WebControls.WebParts.PersonalizationStateInfo System.Web.UI.WebControls.WebParts.PersonalizationStateInfo
+CS.System.Web.UI.WebControls.WebParts.PersonalizationStateInfo = System.Web.UI.WebControls.WebParts.PersonalizationStateInfo
+
+
+---@class System.Web.UI.WebControls.WebParts.PersonalizationProviderCollection : System.Configuration.Provider.ProviderCollection
+System.Web.UI.WebControls.WebParts.PersonalizationProviderCollection = {}
+---@alias CS.System.Web.UI.WebControls.WebParts.PersonalizationProviderCollection System.Web.UI.WebControls.WebParts.PersonalizationProviderCollection
+CS.System.Web.UI.WebControls.WebParts.PersonalizationProviderCollection = System.Web.UI.WebControls.WebParts.PersonalizationProviderCollection
+
+---@return System.Web.UI.WebControls.WebParts.PersonalizationProviderCollection
+function System.Web.UI.WebControls.WebParts.PersonalizationProviderCollection.New() end
+---@param array System.Web.UI.WebControls.WebParts.PersonalizationProvider[]
+---@param index number
+function System.Web.UI.WebControls.WebParts.PersonalizationProviderCollection:CopyTo(array, index) end
+
+---@class System.Web.UI.WebControls.WebParts.PropertyGridEditorPart : System.Web.UI.WebControls.WebParts.EditorPart
+System.Web.UI.WebControls.WebParts.PropertyGridEditorPart = {}
+---@alias CS.System.Web.UI.WebControls.WebParts.PropertyGridEditorPart System.Web.UI.WebControls.WebParts.PropertyGridEditorPart
+CS.System.Web.UI.WebControls.WebParts.PropertyGridEditorPart = System.Web.UI.WebControls.WebParts.PropertyGridEditorPart
+
+---@return System.Web.UI.WebControls.WebParts.PropertyGridEditorPart
+function System.Web.UI.WebControls.WebParts.PropertyGridEditorPart.New() end
+---@return boolean
+function System.Web.UI.WebControls.WebParts.PropertyGridEditorPart:ApplyChanges() end
+function System.Web.UI.WebControls.WebParts.PropertyGridEditorPart:SyncChanges() end
+
+---@class System.Web.UI.WebControls.WebParts.ProxyWebPartConnectionCollection : System.Collections.CollectionBase
+---@field IsReadOnly boolean
+---@field Item System.Web.UI.WebControls.WebParts.WebPartConnection
+System.Web.UI.WebControls.WebParts.ProxyWebPartConnectionCollection = {}
+---@alias CS.System.Web.UI.WebControls.WebParts.ProxyWebPartConnectionCollection System.Web.UI.WebControls.WebParts.ProxyWebPartConnectionCollection
+CS.System.Web.UI.WebControls.WebParts.ProxyWebPartConnectionCollection = System.Web.UI.WebControls.WebParts.ProxyWebPartConnectionCollection
+
+---@return System.Web.UI.WebControls.WebParts.ProxyWebPartConnectionCollection
+function System.Web.UI.WebControls.WebParts.ProxyWebPartConnectionCollection.New() end
+---@param value System.Web.UI.WebControls.WebParts.WebPartConnection
+---@return number
+function System.Web.UI.WebControls.WebParts.ProxyWebPartConnectionCollection:Add(value) end
+---@param value System.Web.UI.WebControls.WebParts.WebPartConnection
+---@return boolean
+function System.Web.UI.WebControls.WebParts.ProxyWebPartConnectionCollection:Contains(value) end
+---@param array System.Web.UI.WebControls.WebParts.WebPartConnection[]
+---@param index number
+function System.Web.UI.WebControls.WebParts.ProxyWebPartConnectionCollection:CopyTo(array, index) end
+---@param value System.Web.UI.WebControls.WebParts.WebPartConnection
+---@return number
+function System.Web.UI.WebControls.WebParts.ProxyWebPartConnectionCollection:IndexOf(value) end
+---@param index number
+---@param value System.Web.UI.WebControls.WebParts.WebPartConnection
+function System.Web.UI.WebControls.WebParts.ProxyWebPartConnectionCollection:Insert(index, value) end
+---@param value System.Web.UI.WebControls.WebParts.WebPartConnection
+function System.Web.UI.WebControls.WebParts.ProxyWebPartConnectionCollection:Remove(value) end
+
+---@class System.Web.UI.WebControls.WebParts.ProxyWebPartManager : System.Web.UI.Control
+---@field StaticConnections System.Web.UI.WebControls.WebParts.ProxyWebPartConnectionCollection
+System.Web.UI.WebControls.WebParts.ProxyWebPartManager = {}
+---@alias CS.System.Web.UI.WebControls.WebParts.ProxyWebPartManager System.Web.UI.WebControls.WebParts.ProxyWebPartManager
+CS.System.Web.UI.WebControls.WebParts.ProxyWebPartManager = System.Web.UI.WebControls.WebParts.ProxyWebPartManager
+
+---@return System.Web.UI.WebControls.WebParts.ProxyWebPartManager
+function System.Web.UI.WebControls.WebParts.ProxyWebPartManager.New() end
+
+---@class System.Web.UI.WebControls.WebParts.RowToFieldTransformer : System.Web.UI.WebControls.WebParts.WebPartTransformer
+---@field FieldName string
+System.Web.UI.WebControls.WebParts.RowToFieldTransformer = {}
+---@alias CS.System.Web.UI.WebControls.WebParts.RowToFieldTransformer System.Web.UI.WebControls.WebParts.RowToFieldTransformer
+CS.System.Web.UI.WebControls.WebParts.RowToFieldTransformer = System.Web.UI.WebControls.WebParts.RowToFieldTransformer
+
+---@return System.Web.UI.WebControls.WebParts.RowToFieldTransformer
+function System.Web.UI.WebControls.WebParts.RowToFieldTransformer.New() end
+---@return System.Web.UI.Control
+function System.Web.UI.WebControls.WebParts.RowToFieldTransformer:CreateConfigurationControl() end
+---@param providerData System.Object
+---@return System.Object
+function System.Web.UI.WebControls.WebParts.RowToFieldTransformer:Transform(providerData) end
+
+---@class System.Web.UI.WebControls.WebParts.WebPartTransformerAttribute : System.Attribute
+---@field ConsumerType System.Type
+---@field ProviderType System.Type
+System.Web.UI.WebControls.WebParts.WebPartTransformerAttribute = {}
+---@alias CS.System.Web.UI.WebControls.WebParts.WebPartTransformerAttribute System.Web.UI.WebControls.WebParts.WebPartTransformerAttribute
+CS.System.Web.UI.WebControls.WebParts.WebPartTransformerAttribute = System.Web.UI.WebControls.WebParts.WebPartTransformerAttribute
+
+---@param consumerType System.Type
+---@param providerType System.Type
+---@return System.Web.UI.WebControls.WebParts.WebPartTransformerAttribute
+function System.Web.UI.WebControls.WebParts.WebPartTransformerAttribute.New(consumerType, providerType) end
+---@param transformerType System.Type
+---@return System.Type
+function System.Web.UI.WebControls.WebParts.WebPartTransformerAttribute.GetConsumerType(transformerType) end
+---@param transformerType System.Type
+---@return System.Type
+function System.Web.UI.WebControls.WebParts.WebPartTransformerAttribute.GetProviderType(transformerType) end
+
+---@class System.Web.UI.WebControls.WebParts.RowToParametersTransformer : System.Web.UI.WebControls.WebParts.WebPartTransformer
+---@field ConsumerFieldNames System.String[]
+---@field ProviderFieldNames System.String[]
+System.Web.UI.WebControls.WebParts.RowToParametersTransformer = {}
+---@alias CS.System.Web.UI.WebControls.WebParts.RowToParametersTransformer System.Web.UI.WebControls.WebParts.RowToParametersTransformer
+CS.System.Web.UI.WebControls.WebParts.RowToParametersTransformer = System.Web.UI.WebControls.WebParts.RowToParametersTransformer
+
+---@return System.Web.UI.WebControls.WebParts.RowToParametersTransformer
+function System.Web.UI.WebControls.WebParts.RowToParametersTransformer.New() end
+---@return System.Web.UI.Control
+function System.Web.UI.WebControls.WebParts.RowToParametersTransformer:CreateConfigurationControl() end
+---@param providerData System.Object
+---@return System.Object
+function System.Web.UI.WebControls.WebParts.RowToParametersTransformer:Transform(providerData) end
+
+---@class System.Web.UI.WebControls.WebParts.SharedPersonalizationStateInfo : System.Web.UI.WebControls.WebParts.PersonalizationStateInfo
+---@field CountOfPersonalizations number
+---@field SizeOfPersonalizations number
+System.Web.UI.WebControls.WebParts.SharedPersonalizationStateInfo = {}
+---@alias CS.System.Web.UI.WebControls.WebParts.SharedPersonalizationStateInfo System.Web.UI.WebControls.WebParts.SharedPersonalizationStateInfo
+CS.System.Web.UI.WebControls.WebParts.SharedPersonalizationStateInfo = System.Web.UI.WebControls.WebParts.SharedPersonalizationStateInfo
+
+---@param path string
+---@param lastUpdatedDate System.DateTime
+---@param size number
+---@param sizeOfPersonalizations number
+---@param countOfPersonalizations number
+---@return System.Web.UI.WebControls.WebParts.SharedPersonalizationStateInfo
+function System.Web.UI.WebControls.WebParts.SharedPersonalizationStateInfo.New(path, lastUpdatedDate, size, sizeOfPersonalizations, countOfPersonalizations) end
+
+---@class System.Web.UI.WebControls.WebParts.SqlPersonalizationProvider : System.Web.UI.WebControls.WebParts.PersonalizationProvider
+---@field ApplicationName string
+System.Web.UI.WebControls.WebParts.SqlPersonalizationProvider = {}
+---@alias CS.System.Web.UI.WebControls.WebParts.SqlPersonalizationProvider System.Web.UI.WebControls.WebParts.SqlPersonalizationProvider
+CS.System.Web.UI.WebControls.WebParts.SqlPersonalizationProvider = System.Web.UI.WebControls.WebParts.SqlPersonalizationProvider
+
+---@return System.Web.UI.WebControls.WebParts.SqlPersonalizationProvider
+function System.Web.UI.WebControls.WebParts.SqlPersonalizationProvider.New() end
+---@param scope System.Web.UI.WebControls.WebParts.PersonalizationScope
+---@param query System.Web.UI.WebControls.WebParts.PersonalizationStateQuery
+---@param pageIndex number
+---@param pageSize number
+---@param out_totalRecords number
+---@return System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection,number
+function System.Web.UI.WebControls.WebParts.SqlPersonalizationProvider:FindState(scope, query, pageIndex, pageSize, out_totalRecords) end
+---@param scope System.Web.UI.WebControls.WebParts.PersonalizationScope
+---@param query System.Web.UI.WebControls.WebParts.PersonalizationStateQuery
+---@return number
+function System.Web.UI.WebControls.WebParts.SqlPersonalizationProvider:GetCountOfState(scope, query) end
+---@param scope System.Web.UI.WebControls.WebParts.PersonalizationScope
+---@param paths System.String[]
+---@param usernames System.String[]
+---@return number
+function System.Web.UI.WebControls.WebParts.SqlPersonalizationProvider:ResetState(scope, paths, usernames) end
+---@param path string
+---@param userInactiveSinceDate System.DateTime
+---@return number
+function System.Web.UI.WebControls.WebParts.SqlPersonalizationProvider:ResetUserState(path, userInactiveSinceDate) end
+
+---@class System.Web.UI.WebControls.WebParts.UnauthorizedWebPart : System.Web.UI.WebControls.WebParts.ProxyWebPart
+System.Web.UI.WebControls.WebParts.UnauthorizedWebPart = {}
+---@alias CS.System.Web.UI.WebControls.WebParts.UnauthorizedWebPart System.Web.UI.WebControls.WebParts.UnauthorizedWebPart
+CS.System.Web.UI.WebControls.WebParts.UnauthorizedWebPart = System.Web.UI.WebControls.WebParts.UnauthorizedWebPart
+
+---@overload fun(originalID: string, originalTypeName: string, originalPath: string, genericWebPartID: string) : System.Web.UI.WebControls.WebParts.UnauthorizedWebPart
+---@param webPart System.Web.UI.WebControls.WebParts.WebPart
+---@return System.Web.UI.WebControls.WebParts.UnauthorizedWebPart
+function System.Web.UI.WebControls.WebParts.UnauthorizedWebPart.New(webPart) end
+
+---@class System.Web.UI.WebControls.WebParts.UserPersonalizationStateInfo : System.Web.UI.WebControls.WebParts.PersonalizationStateInfo
+---@field LastActivityDate System.DateTime
+---@field Username string
+System.Web.UI.WebControls.WebParts.UserPersonalizationStateInfo = {}
+---@alias CS.System.Web.UI.WebControls.WebParts.UserPersonalizationStateInfo System.Web.UI.WebControls.WebParts.UserPersonalizationStateInfo
+CS.System.Web.UI.WebControls.WebParts.UserPersonalizationStateInfo = System.Web.UI.WebControls.WebParts.UserPersonalizationStateInfo
+
+---@param path string
+---@param lastUpdatedDate System.DateTime
+---@param size number
+---@param username string
+---@param lastActivityDate System.DateTime
+---@return System.Web.UI.WebControls.WebParts.UserPersonalizationStateInfo
+function System.Web.UI.WebControls.WebParts.UserPersonalizationStateInfo.New(path, lastUpdatedDate, size, username, lastActivityDate) end
+
+---@class System.Web.UI.WebControls.WebParts.WebPartTracker : System.Object
+---@field IsCircularConnection boolean
+System.Web.UI.WebControls.WebParts.WebPartTracker = {}
+---@alias CS.System.Web.UI.WebControls.WebParts.WebPartTracker System.Web.UI.WebControls.WebParts.WebPartTracker
+CS.System.Web.UI.WebControls.WebParts.WebPartTracker = System.Web.UI.WebControls.WebParts.WebPartTracker
+
+---@param webPart System.Web.UI.WebControls.WebParts.WebPart
+---@param providerConnectionPoint System.Web.UI.WebControls.WebParts.ProviderConnectionPoint
+---@return System.Web.UI.WebControls.WebParts.WebPartTracker
+function System.Web.UI.WebControls.WebParts.WebPartTracker.New(webPart, providerConnectionPoint) end
+
+---@class System.Web.UI.WebControls.WebParts.WebPartZone : System.Web.UI.WebControls.WebParts.WebPartZoneBase
+---@field ZoneTemplate System.Web.UI.ITemplate
+System.Web.UI.WebControls.WebParts.WebPartZone = {}
+---@alias CS.System.Web.UI.WebControls.WebParts.WebPartZone System.Web.UI.WebControls.WebParts.WebPartZone
+CS.System.Web.UI.WebControls.WebParts.WebPartZone = System.Web.UI.WebControls.WebParts.WebPartZone
+
+---@return System.Web.UI.WebControls.WebParts.WebPartZone
+function System.Web.UI.WebControls.WebParts.WebPartZone.New() end
+
+---@class Consts : System.Object
+---@field MonoCorlibVersion string
+---@field MonoVersion string
+---@field MonoCompany string
+---@field MonoProduct string
+---@field MonoCopyright string
+---@field FxVersion string
+---@field FxFileVersion string
+---@field EnvironmentVersion string
+---@field VsVersion string
+---@field VsFileVersion string
+---@field AssemblyI18N string
+---@field AssemblyMicrosoft_JScript string
+---@field AssemblyMicrosoft_VisualStudio string
+---@field AssemblyMicrosoft_VisualStudio_Web string
+---@field AssemblyMicrosoft_VSDesigner string
+---@field AssemblyMono_Http string
+---@field AssemblyMono_Posix string
+---@field AssemblyMono_Security string
+---@field AssemblyMono_Messaging_RabbitMQ string
+---@field AssemblyCorlib string
+---@field AssemblySystem string
+---@field AssemblySystem_Data string
+---@field AssemblySystem_Design string
+---@field AssemblySystem_DirectoryServices string
+---@field AssemblySystem_Drawing string
+---@field AssemblySystem_Drawing_Design string
+---@field AssemblySystem_Messaging string
+---@field AssemblySystem_Security string
+---@field AssemblySystem_ServiceProcess string
+---@field AssemblySystem_Web string
+---@field AssemblySystem_Windows_Forms string
+---@field AssemblySystem_2_0 string
+---@field AssemblySystemCore_3_5 string
+---@field AssemblySystem_Core string
+---@field WindowsBase_3_0 string
+---@field AssemblyWindowsBase string
+---@field AssemblyPresentationCore_3_5 string
+---@field AssemblyPresentationCore_4_0 string
+---@field AssemblyPresentationFramework_3_5 string
+---@field AssemblySystemServiceModel_3_0 string
+Consts = {}
+---@alias CS.Consts Consts
+CS.Consts = Consts
+
+
+---@class Locale : System.Object
+Locale = {}
+---@alias CS.Locale Locale
+CS.Locale = Locale
+
+---@overload fun(msg: string) : string
+---@param fmt string
+---@param args System.Object[]
+---@return string
+function Locale.GetText(fmt, args) end
+
+---@class System.MonoTODOAttribute : System.Attribute
+---@field Comment string
+System.MonoTODOAttribute = {}
+---@alias CS.System.MonoTODOAttribute System.MonoTODOAttribute
+CS.System.MonoTODOAttribute = System.MonoTODOAttribute
+
+---@overload fun() : System.MonoTODOAttribute
+---@param comment string
+---@return System.MonoTODOAttribute
+function System.MonoTODOAttribute.New(comment) end
+
+---@class System.MonoDocumentationNoteAttribute : System.MonoTODOAttribute
+System.MonoDocumentationNoteAttribute = {}
+---@alias CS.System.MonoDocumentationNoteAttribute System.MonoDocumentationNoteAttribute
+CS.System.MonoDocumentationNoteAttribute = System.MonoDocumentationNoteAttribute
+
+---@param comment string
+---@return System.MonoDocumentationNoteAttribute
+function System.MonoDocumentationNoteAttribute.New(comment) end
+
+---@class System.MonoExtensionAttribute : System.MonoTODOAttribute
+System.MonoExtensionAttribute = {}
+---@alias CS.System.MonoExtensionAttribute System.MonoExtensionAttribute
+CS.System.MonoExtensionAttribute = System.MonoExtensionAttribute
+
+---@param comment string
+---@return System.MonoExtensionAttribute
+function System.MonoExtensionAttribute.New(comment) end
+
+---@class System.MonoInternalNoteAttribute : System.MonoTODOAttribute
+System.MonoInternalNoteAttribute = {}
+---@alias CS.System.MonoInternalNoteAttribute System.MonoInternalNoteAttribute
+CS.System.MonoInternalNoteAttribute = System.MonoInternalNoteAttribute
+
+---@param comment string
+---@return System.MonoInternalNoteAttribute
+function System.MonoInternalNoteAttribute.New(comment) end
+
+---@class System.MonoLimitationAttribute : System.MonoTODOAttribute
+System.MonoLimitationAttribute = {}
+---@alias CS.System.MonoLimitationAttribute System.MonoLimitationAttribute
+CS.System.MonoLimitationAttribute = System.MonoLimitationAttribute
+
+---@param comment string
+---@return System.MonoLimitationAttribute
+function System.MonoLimitationAttribute.New(comment) end
+
+---@class System.MonoNotSupportedAttribute : System.MonoTODOAttribute
+System.MonoNotSupportedAttribute = {}
+---@alias CS.System.MonoNotSupportedAttribute System.MonoNotSupportedAttribute
+CS.System.MonoNotSupportedAttribute = System.MonoNotSupportedAttribute
+
+---@param comment string
+---@return System.MonoNotSupportedAttribute
+function System.MonoNotSupportedAttribute.New(comment) end
+
 ---@class System.Internal.HandleCollector : System.Object
 System.Internal.HandleCollector = {}
 ---@alias CS.System.Internal.HandleCollector System.Internal.HandleCollector
@@ -14541,4 +15165,4855 @@ CS.System.ComponentModel.CompModSwitches = System.ComponentModel.CompModSwitches
 ---@return System.ComponentModel.CompModSwitches
 function System.ComponentModel.CompModSwitches.New() end
 
+---@class System.Windows.Forms.Design.AnchorEditor : System.Drawing.Design.UITypeEditor
+System.Windows.Forms.Design.AnchorEditor = {}
+---@alias CS.System.Windows.Forms.Design.AnchorEditor System.Windows.Forms.Design.AnchorEditor
+CS.System.Windows.Forms.Design.AnchorEditor = System.Windows.Forms.Design.AnchorEditor
 
+---@return System.Windows.Forms.Design.AnchorEditor
+function System.Windows.Forms.Design.AnchorEditor.New() end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@param provider System.IServiceProvider
+---@param value System.Object
+---@return System.Object
+function System.Windows.Forms.Design.AnchorEditor:EditValue(context, provider, value) end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@return System.Drawing.Design.UITypeEditorEditStyle
+function System.Windows.Forms.Design.AnchorEditor:GetEditStyle(context) end
+
+---@class System.Windows.Forms.Design.AnchorSelector : System.Windows.Forms.UserControl
+---@field AnchorStyles System.Windows.Forms.AnchorStyles
+System.Windows.Forms.Design.AnchorSelector = {}
+---@alias CS.System.Windows.Forms.Design.AnchorSelector System.Windows.Forms.Design.AnchorSelector
+CS.System.Windows.Forms.Design.AnchorSelector = System.Windows.Forms.Design.AnchorSelector
+
+---@param editor_service System.Windows.Forms.Design.IWindowsFormsEditorService
+---@param startup System.Windows.Forms.AnchorStyles
+---@return System.Windows.Forms.Design.AnchorSelector
+function System.Windows.Forms.Design.AnchorSelector.New(editor_service, startup) end
+
+---@class System.Windows.Forms.Design.AxImporter : System.Object
+---@field GeneratedAssemblies System.String[]
+---@field GeneratedSources System.String[]
+---@field GeneratedTypeLibAttributes System.Runtime.InteropServices.TYPELIBATTR[]
+System.Windows.Forms.Design.AxImporter = {}
+---@alias CS.System.Windows.Forms.Design.AxImporter System.Windows.Forms.Design.AxImporter
+CS.System.Windows.Forms.Design.AxImporter = System.Windows.Forms.Design.AxImporter
+
+---@param options System.Windows.Forms.Design.AxImporter.Options
+---@return System.Windows.Forms.Design.AxImporter
+function System.Windows.Forms.Design.AxImporter.New(options) end
+---@param ref_tlibattr System.Runtime.InteropServices.TYPELIBATTR
+---@return string,System.Runtime.InteropServices.TYPELIBATTR
+function System.Windows.Forms.Design.AxImporter.GetFileOfTypeLib(ref_tlibattr) end
+---@param file System.IO.FileInfo
+---@return string
+function System.Windows.Forms.Design.AxImporter:GenerateFromFile(file) end
+---@overload fun(self: System.Windows.Forms.Design.AxImporter, typeLib: System.Runtime.InteropServices.UCOMITypeLib) : string
+---@param typeLib System.Runtime.InteropServices.UCOMITypeLib
+---@param clsid System.Guid
+---@return string
+function System.Windows.Forms.Design.AxImporter:GenerateFromTypeLibrary(typeLib, clsid) end
+
+---@class System.Windows.Forms.Design.AxImporter.Options : System.Object
+---@field delaySign boolean
+---@field genSources boolean
+---@field keyContainer string
+---@field keyFile string
+---@field keyPair System.Reflection.StrongNameKeyPair
+---@field noLogo boolean
+---@field outputDirectory string
+---@field outputName string
+---@field overwriteRCW boolean
+---@field publicKey System.Byte[]
+---@field references System.Windows.Forms.Design.AxImporter.IReferenceResolver
+---@field silentMode boolean
+---@field verboseMode boolean
+---@field msBuildErrors boolean
+---@field ignoreRegisteredOcx boolean
+System.Windows.Forms.Design.AxImporter.Options = {}
+---@alias CS.System.Windows.Forms.Design.AxImporter.Options System.Windows.Forms.Design.AxImporter.Options
+CS.System.Windows.Forms.Design.AxImporter.Options = System.Windows.Forms.Design.AxImporter.Options
+
+---@return System.Windows.Forms.Design.AxImporter.Options
+function System.Windows.Forms.Design.AxImporter.Options.New() end
+
+---@class System.Windows.Forms.Design.AxImporter.IReferenceResolver
+System.Windows.Forms.Design.AxImporter.IReferenceResolver = {}
+---@alias CS.System.Windows.Forms.Design.AxImporter.IReferenceResolver System.Windows.Forms.Design.AxImporter.IReferenceResolver
+CS.System.Windows.Forms.Design.AxImporter.IReferenceResolver = System.Windows.Forms.Design.AxImporter.IReferenceResolver
+
+---@param typeLib System.Runtime.InteropServices.UCOMITypeLib
+---@return string
+function System.Windows.Forms.Design.AxImporter.IReferenceResolver:ResolveActiveXReference(typeLib) end
+---@overload fun(self: System.Windows.Forms.Design.AxImporter.IReferenceResolver, name: System.Reflection.AssemblyName) : string
+---@param typeLib System.Runtime.InteropServices.UCOMITypeLib
+---@return string
+function System.Windows.Forms.Design.AxImporter.IReferenceResolver:ResolveComReference(typeLib) end
+---@param assemName string
+---@return string
+function System.Windows.Forms.Design.AxImporter.IReferenceResolver:ResolveManagedReference(assemName) end
+
+---@class System.Windows.Forms.Design.AxParameterData : System.Object
+---@field Direction System.CodeDom.FieldDirection
+---@field IsByRef boolean
+---@field IsIn boolean
+---@field IsOptional boolean
+---@field IsOut boolean
+---@field Name string
+---@field ParameterType System.Type
+---@field TypeName string
+System.Windows.Forms.Design.AxParameterData = {}
+---@alias CS.System.Windows.Forms.Design.AxParameterData System.Windows.Forms.Design.AxParameterData
+CS.System.Windows.Forms.Design.AxParameterData = System.Windows.Forms.Design.AxParameterData
+
+---@overload fun(info: System.Reflection.ParameterInfo) : System.Windows.Forms.Design.AxParameterData
+---@overload fun(info: System.Reflection.ParameterInfo, ignoreByRefs: boolean) : System.Windows.Forms.Design.AxParameterData
+---@overload fun(inname: string, typeName: string) : System.Windows.Forms.Design.AxParameterData
+---@param inname string
+---@param type System.Type
+---@return System.Windows.Forms.Design.AxParameterData
+function System.Windows.Forms.Design.AxParameterData.New(inname, type) end
+---@overload fun(infos: System.Reflection.ParameterInfo[]) : System.Windows.Forms.Design.AxParameterData[]
+---@param infos System.Reflection.ParameterInfo[]
+---@param ignoreByRefs boolean
+---@return System.Windows.Forms.Design.AxParameterData[]
+function System.Windows.Forms.Design.AxParameterData.Convert(infos, ignoreByRefs) end
+
+---@class System.Windows.Forms.Design.AxWrapperGen : System.Object
+---@field GeneratedSources System.Collections.ArrayList
+System.Windows.Forms.Design.AxWrapperGen = {}
+---@alias CS.System.Windows.Forms.Design.AxWrapperGen System.Windows.Forms.Design.AxWrapperGen
+CS.System.Windows.Forms.Design.AxWrapperGen = System.Windows.Forms.Design.AxWrapperGen
+
+---@param axType System.Type
+---@return System.Windows.Forms.Design.AxWrapperGen
+function System.Windows.Forms.Design.AxWrapperGen.New(axType) end
+
+---@class System.Windows.Forms.Design.BorderSidesEditor : System.Drawing.Design.UITypeEditor
+System.Windows.Forms.Design.BorderSidesEditor = {}
+---@alias CS.System.Windows.Forms.Design.BorderSidesEditor System.Windows.Forms.Design.BorderSidesEditor
+CS.System.Windows.Forms.Design.BorderSidesEditor = System.Windows.Forms.Design.BorderSidesEditor
+
+---@return System.Windows.Forms.Design.BorderSidesEditor
+function System.Windows.Forms.Design.BorderSidesEditor.New() end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@param provider System.IServiceProvider
+---@param value System.Object
+---@return System.Object
+function System.Windows.Forms.Design.BorderSidesEditor:EditValue(context, provider, value) end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@return System.Drawing.Design.UITypeEditorEditStyle
+function System.Windows.Forms.Design.BorderSidesEditor:GetEditStyle(context) end
+
+---@class System.Windows.Forms.Design.ComponentDocumentDesigner : System.ComponentModel.Design.ComponentDesigner
+---@field Control System.Windows.Forms.Control
+---@field TrayAutoArrange boolean
+---@field TrayLargeIcon boolean
+System.Windows.Forms.Design.ComponentDocumentDesigner = {}
+---@alias CS.System.Windows.Forms.Design.ComponentDocumentDesigner System.Windows.Forms.Design.ComponentDocumentDesigner
+CS.System.Windows.Forms.Design.ComponentDocumentDesigner = System.Windows.Forms.Design.ComponentDocumentDesigner
+
+---@return System.Windows.Forms.Design.ComponentDocumentDesigner
+function System.Windows.Forms.Design.ComponentDocumentDesigner.New() end
+---@param component System.ComponentModel.IComponent
+function System.Windows.Forms.Design.ComponentDocumentDesigner:Initialize(component) end
+
+---@class System.Windows.Forms.Design.ComponentTray : System.Windows.Forms.ScrollableControl
+---@field AutoArrange boolean
+---@field ComponentCount number
+---@field ShowLargeIcons boolean
+System.Windows.Forms.Design.ComponentTray = {}
+---@alias CS.System.Windows.Forms.Design.ComponentTray System.Windows.Forms.Design.ComponentTray
+CS.System.Windows.Forms.Design.ComponentTray = System.Windows.Forms.Design.ComponentTray
+
+---@param mainDesigner System.ComponentModel.Design.IDesigner
+---@param serviceProvider System.IServiceProvider
+---@return System.Windows.Forms.Design.ComponentTray
+function System.Windows.Forms.Design.ComponentTray.New(mainDesigner, serviceProvider) end
+---@param component System.ComponentModel.IComponent
+function System.Windows.Forms.Design.ComponentTray:AddComponent(component) end
+---@param tool System.Drawing.Design.ToolboxItem
+function System.Windows.Forms.Design.ComponentTray:CreateComponentFromTool(tool) end
+---@param receiver System.ComponentModel.IComponent
+---@return System.Drawing.Point
+function System.Windows.Forms.Design.ComponentTray:GetLocation(receiver) end
+---@param receiver System.ComponentModel.IComponent
+---@param location System.Drawing.Point
+function System.Windows.Forms.Design.ComponentTray:SetLocation(receiver, location) end
+---@param component System.ComponentModel.IComponent
+---@param forward boolean
+---@return System.ComponentModel.IComponent
+function System.Windows.Forms.Design.ComponentTray:GetNextComponent(component, forward) end
+---@param receiver System.ComponentModel.IComponent
+---@return System.Drawing.Point
+function System.Windows.Forms.Design.ComponentTray:GetTrayLocation(receiver) end
+---@param comp System.ComponentModel.IComponent
+---@return boolean
+function System.Windows.Forms.Design.ComponentTray:IsTrayComponent(comp) end
+---@param receiver System.ComponentModel.IComponent
+---@param location System.Drawing.Point
+function System.Windows.Forms.Design.ComponentTray:SetTrayLocation(receiver, location) end
+---@param component System.ComponentModel.IComponent
+function System.Windows.Forms.Design.ComponentTray:RemoveComponent(component) end
+
+---@class System.Windows.Forms.Design.ControlBindingsConverter : System.ComponentModel.TypeConverter
+System.Windows.Forms.Design.ControlBindingsConverter = {}
+---@alias CS.System.Windows.Forms.Design.ControlBindingsConverter System.Windows.Forms.Design.ControlBindingsConverter
+CS.System.Windows.Forms.Design.ControlBindingsConverter = System.Windows.Forms.Design.ControlBindingsConverter
+
+---@return System.Windows.Forms.Design.ControlBindingsConverter
+function System.Windows.Forms.Design.ControlBindingsConverter.New() end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@param value System.Object
+---@param attributes System.Attribute[]
+---@return System.ComponentModel.PropertyDescriptorCollection
+function System.Windows.Forms.Design.ControlBindingsConverter:GetProperties(context, value, attributes) end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@return boolean
+function System.Windows.Forms.Design.ControlBindingsConverter:GetPropertiesSupported(context) end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@param destinationType System.Type
+---@return boolean
+function System.Windows.Forms.Design.ControlBindingsConverter:CanConvertTo(context, destinationType) end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@param culture System.Globalization.CultureInfo
+---@param value System.Object
+---@param destinationType System.Type
+---@return System.Object
+function System.Windows.Forms.Design.ControlBindingsConverter:ConvertTo(context, culture, value, destinationType) end
+
+---@class System.Windows.Forms.Design.ControlBindingsConverter.DataBindingPropertyDescriptor : System.ComponentModel.PropertyDescriptor
+---@field PropertyType System.Type
+---@field Converter System.ComponentModel.TypeConverter
+---@field ComponentType System.Type
+---@field IsReadOnly boolean
+System.Windows.Forms.Design.ControlBindingsConverter.DataBindingPropertyDescriptor = {}
+---@alias CS.System.Windows.Forms.Design.ControlBindingsConverter.DataBindingPropertyDescriptor System.Windows.Forms.Design.ControlBindingsConverter.DataBindingPropertyDescriptor
+CS.System.Windows.Forms.Design.ControlBindingsConverter.DataBindingPropertyDescriptor = System.Windows.Forms.Design.ControlBindingsConverter.DataBindingPropertyDescriptor
+
+---@param property System.ComponentModel.PropertyDescriptor
+---@param attrs System.Attribute[]
+---@param readOnly boolean
+---@return System.Windows.Forms.Design.ControlBindingsConverter.DataBindingPropertyDescriptor
+function System.Windows.Forms.Design.ControlBindingsConverter.DataBindingPropertyDescriptor.New(property, attrs, readOnly) end
+---@param component System.Object
+---@return System.Object
+function System.Windows.Forms.Design.ControlBindingsConverter.DataBindingPropertyDescriptor:GetValue(component) end
+---@param component System.Object
+---@param value System.Object
+function System.Windows.Forms.Design.ControlBindingsConverter.DataBindingPropertyDescriptor:SetValue(component, value) end
+---@param component System.Object
+function System.Windows.Forms.Design.ControlBindingsConverter.DataBindingPropertyDescriptor:ResetValue(component) end
+---@param component System.Object
+---@return boolean
+function System.Windows.Forms.Design.ControlBindingsConverter.DataBindingPropertyDescriptor:CanResetValue(component) end
+---@param component System.Object
+---@return boolean
+function System.Windows.Forms.Design.ControlBindingsConverter.DataBindingPropertyDescriptor:ShouldSerializeValue(component) end
+
+---@class System.Windows.Forms.Design.ControlCodeDomSerializer : System.ComponentModel.Design.Serialization.ComponentCodeDomSerializer
+System.Windows.Forms.Design.ControlCodeDomSerializer = {}
+---@alias CS.System.Windows.Forms.Design.ControlCodeDomSerializer System.Windows.Forms.Design.ControlCodeDomSerializer
+CS.System.Windows.Forms.Design.ControlCodeDomSerializer = System.Windows.Forms.Design.ControlCodeDomSerializer
+
+---@return System.Windows.Forms.Design.ControlCodeDomSerializer
+function System.Windows.Forms.Design.ControlCodeDomSerializer.New() end
+---@param manager System.ComponentModel.Design.Serialization.IDesignerSerializationManager
+---@param value System.Object
+---@return System.Object
+function System.Windows.Forms.Design.ControlCodeDomSerializer:Serialize(manager, value) end
+
+---@class System.Windows.Forms.Design.ControlCollectionCodeDomSerializaer : System.ComponentModel.Design.Serialization.CollectionCodeDomSerializer
+System.Windows.Forms.Design.ControlCollectionCodeDomSerializaer = {}
+---@alias CS.System.Windows.Forms.Design.ControlCollectionCodeDomSerializaer System.Windows.Forms.Design.ControlCollectionCodeDomSerializaer
+CS.System.Windows.Forms.Design.ControlCollectionCodeDomSerializaer = System.Windows.Forms.Design.ControlCollectionCodeDomSerializaer
+
+---@return System.Windows.Forms.Design.ControlCollectionCodeDomSerializaer
+function System.Windows.Forms.Design.ControlCollectionCodeDomSerializaer.New() end
+
+---@class System.Windows.Forms.Design.ControlDataObject : System.Object
+System.Windows.Forms.Design.ControlDataObject = {}
+---@alias CS.System.Windows.Forms.Design.ControlDataObject System.Windows.Forms.Design.ControlDataObject
+CS.System.Windows.Forms.Design.ControlDataObject = System.Windows.Forms.Design.ControlDataObject
+
+---@overload fun() : System.Windows.Forms.Design.ControlDataObject
+---@overload fun(control: System.Windows.Forms.Control) : System.Windows.Forms.Design.ControlDataObject
+---@param controls System.Windows.Forms.Control[]
+---@return System.Windows.Forms.Design.ControlDataObject
+function System.Windows.Forms.Design.ControlDataObject.New(controls) end
+---@overload fun(self: System.Windows.Forms.Design.ControlDataObject, format: System.Type) : System.Object
+---@overload fun(self: System.Windows.Forms.Design.ControlDataObject, format: string) : System.Object
+---@param format string
+---@param autoConvert boolean
+---@return System.Object
+function System.Windows.Forms.Design.ControlDataObject:GetData(format, autoConvert) end
+---@overload fun(self: System.Windows.Forms.Design.ControlDataObject, format: System.Type) : boolean
+---@overload fun(self: System.Windows.Forms.Design.ControlDataObject, format: string) : boolean
+---@param format string
+---@param autoConvert boolean
+---@return boolean
+function System.Windows.Forms.Design.ControlDataObject:GetDataPresent(format, autoConvert) end
+---@overload fun() : System.String[]
+---@param autoConvert boolean
+---@return System.String[]
+function System.Windows.Forms.Design.ControlDataObject:GetFormats(autoConvert) end
+---@overload fun(self: System.Windows.Forms.Design.ControlDataObject, data: System.Object)
+---@overload fun(self: System.Windows.Forms.Design.ControlDataObject, format: System.Type, data: System.Object)
+---@overload fun(self: System.Windows.Forms.Design.ControlDataObject, format: string, data: System.Object)
+---@param format string
+---@param autoConvert boolean
+---@param data System.Object
+function System.Windows.Forms.Design.ControlDataObject:SetData(format, autoConvert, data) end
+
+---@class System.Windows.Forms.Design.ControlDesigner : System.ComponentModel.Design.ComponentDesigner
+---@field Control System.Windows.Forms.Control
+---@field SelectionRules System.Windows.Forms.Design.SelectionRules
+---@field AssociatedComponents System.Collections.ICollection
+---@field AccessibilityObject System.Windows.Forms.AccessibleObject
+---@field SnapLines System.Collections.IList
+---@field ParticipatesWithSnapLines boolean
+---@field AutoResizeHandles boolean
+System.Windows.Forms.Design.ControlDesigner = {}
+---@alias CS.System.Windows.Forms.Design.ControlDesigner System.Windows.Forms.Design.ControlDesigner
+CS.System.Windows.Forms.Design.ControlDesigner = System.Windows.Forms.Design.ControlDesigner
+
+---@return System.Windows.Forms.Design.ControlDesigner
+function System.Windows.Forms.Design.ControlDesigner.New() end
+---@param component System.ComponentModel.IComponent
+function System.Windows.Forms.Design.ControlDesigner:Initialize(component) end
+function System.Windows.Forms.Design.ControlDesigner:OnSetComponentDefaults() end
+---@param parentDesigner System.ComponentModel.Design.IDesigner
+---@return boolean
+function System.Windows.Forms.Design.ControlDesigner:CanBeParentedTo(parentDesigner) end
+---@param internalControlIndex number
+---@return System.Windows.Forms.Design.ControlDesigner
+function System.Windows.Forms.Design.ControlDesigner:InternalControlDesigner(internalControlIndex) end
+---@return number
+function System.Windows.Forms.Design.ControlDesigner:NumberOfInternalControlDesigners() end
+---@param selectionType System.Windows.Forms.Design.Behavior.GlyphSelectionType
+---@return System.Windows.Forms.Design.Behavior.GlyphCollection
+function System.Windows.Forms.Design.ControlDesigner:GetGlyphs(selectionType) end
+---@param defaultValues System.Collections.IDictionary
+function System.Windows.Forms.Design.ControlDesigner:InitializeExistingComponent(defaultValues) end
+---@param defaultValues System.Collections.IDictionary
+function System.Windows.Forms.Design.ControlDesigner:InitializeNewComponent(defaultValues) end
+
+---@class System.Windows.Forms.Design.ControlDesigner.ControlDesignerAccessibleObject : System.Windows.Forms.AccessibleObject
+---@field Bounds System.Drawing.Rectangle
+---@field DefaultAction string
+---@field Description string
+---@field Name string
+---@field Parent System.Windows.Forms.AccessibleObject
+---@field Role System.Windows.Forms.AccessibleRole
+---@field State System.Windows.Forms.AccessibleStates
+---@field Value string
+System.Windows.Forms.Design.ControlDesigner.ControlDesignerAccessibleObject = {}
+---@alias CS.System.Windows.Forms.Design.ControlDesigner.ControlDesignerAccessibleObject System.Windows.Forms.Design.ControlDesigner.ControlDesignerAccessibleObject
+CS.System.Windows.Forms.Design.ControlDesigner.ControlDesignerAccessibleObject = System.Windows.Forms.Design.ControlDesigner.ControlDesignerAccessibleObject
+
+---@param designer System.Windows.Forms.Design.ControlDesigner
+---@param control System.Windows.Forms.Control
+---@return System.Windows.Forms.Design.ControlDesigner.ControlDesignerAccessibleObject
+function System.Windows.Forms.Design.ControlDesigner.ControlDesignerAccessibleObject.New(designer, control) end
+---@param index number
+---@return System.Windows.Forms.AccessibleObject
+function System.Windows.Forms.Design.ControlDesigner.ControlDesignerAccessibleObject:GetChild(index) end
+---@return number
+function System.Windows.Forms.Design.ControlDesigner.ControlDesignerAccessibleObject:GetChildCount() end
+---@return System.Windows.Forms.AccessibleObject
+function System.Windows.Forms.Design.ControlDesigner.ControlDesignerAccessibleObject:GetFocused() end
+---@return System.Windows.Forms.AccessibleObject
+function System.Windows.Forms.Design.ControlDesigner.ControlDesignerAccessibleObject:GetSelected() end
+---@param x number
+---@param y number
+---@return System.Windows.Forms.AccessibleObject
+function System.Windows.Forms.Design.ControlDesigner.ControlDesignerAccessibleObject:HitTest(x, y) end
+
+---@class System.Windows.Forms.Design.DataMemberFieldConverter : System.ComponentModel.TypeConverter
+System.Windows.Forms.Design.DataMemberFieldConverter = {}
+---@alias CS.System.Windows.Forms.Design.DataMemberFieldConverter System.Windows.Forms.Design.DataMemberFieldConverter
+CS.System.Windows.Forms.Design.DataMemberFieldConverter = System.Windows.Forms.Design.DataMemberFieldConverter
+
+---@return System.Windows.Forms.Design.DataMemberFieldConverter
+function System.Windows.Forms.Design.DataMemberFieldConverter.New() end
+
+---@class System.Windows.Forms.Design.DataMemberFieldEditor : System.Drawing.Design.UITypeEditor
+System.Windows.Forms.Design.DataMemberFieldEditor = {}
+---@alias CS.System.Windows.Forms.Design.DataMemberFieldEditor System.Windows.Forms.Design.DataMemberFieldEditor
+CS.System.Windows.Forms.Design.DataMemberFieldEditor = System.Windows.Forms.Design.DataMemberFieldEditor
+
+---@return System.Windows.Forms.Design.DataMemberFieldEditor
+function System.Windows.Forms.Design.DataMemberFieldEditor.New() end
+
+---@class System.Windows.Forms.Design.DataMemberListEditor : System.Drawing.Design.UITypeEditor
+System.Windows.Forms.Design.DataMemberListEditor = {}
+---@alias CS.System.Windows.Forms.Design.DataMemberListEditor System.Windows.Forms.Design.DataMemberListEditor
+CS.System.Windows.Forms.Design.DataMemberListEditor = System.Windows.Forms.Design.DataMemberListEditor
+
+---@return System.Windows.Forms.Design.DataMemberListEditor
+function System.Windows.Forms.Design.DataMemberListEditor.New() end
+
+---@class System.Windows.Forms.Design.DataSourceConverter : System.ComponentModel.TypeConverter
+System.Windows.Forms.Design.DataSourceConverter = {}
+---@alias CS.System.Windows.Forms.Design.DataSourceConverter System.Windows.Forms.Design.DataSourceConverter
+CS.System.Windows.Forms.Design.DataSourceConverter = System.Windows.Forms.Design.DataSourceConverter
+
+---@return System.Windows.Forms.Design.DataSourceConverter
+function System.Windows.Forms.Design.DataSourceConverter.New() end
+
+---@class System.Windows.Forms.Design.DefaultMenuCommands : System.Object
+System.Windows.Forms.Design.DefaultMenuCommands = {}
+---@alias CS.System.Windows.Forms.Design.DefaultMenuCommands System.Windows.Forms.Design.DefaultMenuCommands
+CS.System.Windows.Forms.Design.DefaultMenuCommands = System.Windows.Forms.Design.DefaultMenuCommands
+
+---@param serviceProvider System.IServiceProvider
+---@return System.Windows.Forms.Design.DefaultMenuCommands
+function System.Windows.Forms.Design.DefaultMenuCommands.New(serviceProvider) end
+---@param commands System.ComponentModel.Design.IMenuCommandService
+function System.Windows.Forms.Design.DefaultMenuCommands:AddTo(commands) end
+
+---@class System.Windows.Forms.Design.DesignerOptions : System.Object
+---@field EnableInSituEditing boolean
+---@field GridSize System.Drawing.Size
+---@field ObjectBoundSmartTagAutoShow boolean
+---@field ShowGrid boolean
+---@field SnapToGrid boolean
+---@field UseOptimizedCodeGeneration boolean
+---@field UseSmartTags boolean
+---@field UseSnapLines boolean
+System.Windows.Forms.Design.DesignerOptions = {}
+---@alias CS.System.Windows.Forms.Design.DesignerOptions System.Windows.Forms.Design.DesignerOptions
+CS.System.Windows.Forms.Design.DesignerOptions = System.Windows.Forms.Design.DesignerOptions
+
+---@return System.Windows.Forms.Design.DesignerOptions
+function System.Windows.Forms.Design.DesignerOptions.New() end
+
+---@class System.Windows.Forms.Design.DockEditor : System.Drawing.Design.UITypeEditor
+System.Windows.Forms.Design.DockEditor = {}
+---@alias CS.System.Windows.Forms.Design.DockEditor System.Windows.Forms.Design.DockEditor
+CS.System.Windows.Forms.Design.DockEditor = System.Windows.Forms.Design.DockEditor
+
+---@return System.Windows.Forms.Design.DockEditor
+function System.Windows.Forms.Design.DockEditor.New() end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@param provider System.IServiceProvider
+---@param value System.Object
+---@return System.Object
+function System.Windows.Forms.Design.DockEditor:EditValue(context, provider, value) end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@return System.Drawing.Design.UITypeEditorEditStyle
+function System.Windows.Forms.Design.DockEditor:GetEditStyle(context) end
+
+---@class System.Windows.Forms.Design.DockEditor.DockEditorControl : System.Windows.Forms.UserControl
+---@field DockStyle System.Windows.Forms.DockStyle
+System.Windows.Forms.Design.DockEditor.DockEditorControl = {}
+---@alias CS.System.Windows.Forms.Design.DockEditor.DockEditorControl System.Windows.Forms.Design.DockEditor.DockEditorControl
+CS.System.Windows.Forms.Design.DockEditor.DockEditorControl = System.Windows.Forms.Design.DockEditor.DockEditorControl
+
+---@param editorService System.Windows.Forms.Design.IWindowsFormsEditorService
+---@return System.Windows.Forms.Design.DockEditor.DockEditorControl
+function System.Windows.Forms.Design.DockEditor.DockEditorControl.New(editorService) end
+
+---@class System.Windows.Forms.Design.DocumentDesigner : System.Windows.Forms.Design.ScrollableControlDesigner
+---@field SelectionRules System.Windows.Forms.Design.SelectionRules
+System.Windows.Forms.Design.DocumentDesigner = {}
+---@alias CS.System.Windows.Forms.Design.DocumentDesigner System.Windows.Forms.Design.DocumentDesigner
+CS.System.Windows.Forms.Design.DocumentDesigner = System.Windows.Forms.Design.DocumentDesigner
+
+---@return System.Windows.Forms.Design.DocumentDesigner
+function System.Windows.Forms.Design.DocumentDesigner.New() end
+---@param component System.ComponentModel.IComponent
+function System.Windows.Forms.Design.DocumentDesigner:Initialize(component) end
+---@param selectionType System.Windows.Forms.Design.Behavior.GlyphSelectionType
+---@return System.Windows.Forms.Design.Behavior.GlyphCollection
+function System.Windows.Forms.Design.DocumentDesigner:GetGlyphs(selectionType) end
+
+---@class System.Windows.Forms.Design.DocumentDesigner.DesignerViewFrame : System.Windows.Forms.UserControl
+---@field ComponentTray System.Windows.Forms.Design.ComponentTray
+---@field DesignedControl System.Windows.Forms.Control
+System.Windows.Forms.Design.DocumentDesigner.DesignerViewFrame = {}
+---@alias CS.System.Windows.Forms.Design.DocumentDesigner.DesignerViewFrame System.Windows.Forms.Design.DocumentDesigner.DesignerViewFrame
+CS.System.Windows.Forms.Design.DocumentDesigner.DesignerViewFrame = System.Windows.Forms.Design.DocumentDesigner.DesignerViewFrame
+
+---@param designedControl System.Windows.Forms.Control
+---@param tray System.Windows.Forms.Design.ComponentTray
+---@return System.Windows.Forms.Design.DocumentDesigner.DesignerViewFrame
+function System.Windows.Forms.Design.DocumentDesigner.DesignerViewFrame.New(designedControl, tray) end
+function System.Windows.Forms.Design.DocumentDesigner.DesignerViewFrame:ShowComponentTray() end
+function System.Windows.Forms.Design.DocumentDesigner.DesignerViewFrame:HideComponentTray() end
+
+---@class System.Windows.Forms.Design.EventHandlerService : System.Object
+---@field FocusWindow System.Windows.Forms.Control
+System.Windows.Forms.Design.EventHandlerService = {}
+---@alias CS.System.Windows.Forms.Design.EventHandlerService System.Windows.Forms.Design.EventHandlerService
+CS.System.Windows.Forms.Design.EventHandlerService = System.Windows.Forms.Design.EventHandlerService
+
+---@param focusWnd System.Windows.Forms.Control
+---@return System.Windows.Forms.Design.EventHandlerService
+function System.Windows.Forms.Design.EventHandlerService.New(focusWnd) end
+---@param handlerType System.Type
+---@return System.Object
+function System.Windows.Forms.Design.EventHandlerService:GetHandler(handlerType) end
+---@param handler System.Object
+function System.Windows.Forms.Design.EventHandlerService:PopHandler(handler) end
+---@param handler System.Object
+function System.Windows.Forms.Design.EventHandlerService:PushHandler(handler) end
+
+---@class System.Windows.Forms.Design.FileNameEditor : System.Drawing.Design.UITypeEditor
+System.Windows.Forms.Design.FileNameEditor = {}
+---@alias CS.System.Windows.Forms.Design.FileNameEditor System.Windows.Forms.Design.FileNameEditor
+CS.System.Windows.Forms.Design.FileNameEditor = System.Windows.Forms.Design.FileNameEditor
+
+---@return System.Windows.Forms.Design.FileNameEditor
+function System.Windows.Forms.Design.FileNameEditor.New() end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@param provider System.IServiceProvider
+---@param value System.Object
+---@return System.Object
+function System.Windows.Forms.Design.FileNameEditor:EditValue(context, provider, value) end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@return System.Drawing.Design.UITypeEditorEditStyle
+function System.Windows.Forms.Design.FileNameEditor:GetEditStyle(context) end
+
+---@class System.Windows.Forms.Design.FolderNameEditor : System.Drawing.Design.UITypeEditor
+System.Windows.Forms.Design.FolderNameEditor = {}
+---@alias CS.System.Windows.Forms.Design.FolderNameEditor System.Windows.Forms.Design.FolderNameEditor
+CS.System.Windows.Forms.Design.FolderNameEditor = System.Windows.Forms.Design.FolderNameEditor
+
+---@return System.Windows.Forms.Design.FolderNameEditor
+function System.Windows.Forms.Design.FolderNameEditor.New() end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@param provider System.IServiceProvider
+---@param value System.Object
+---@return System.Object
+function System.Windows.Forms.Design.FolderNameEditor:EditValue(context, provider, value) end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@return System.Drawing.Design.UITypeEditorEditStyle
+function System.Windows.Forms.Design.FolderNameEditor:GetEditStyle(context) end
+
+---@class System.Windows.Forms.Design.FolderNameEditor.FolderBrowserFolder
+---@field Desktop System.Windows.Forms.Design.FolderNameEditor.FolderBrowserFolder
+---@field Favorites System.Windows.Forms.Design.FolderNameEditor.FolderBrowserFolder
+---@field MyComputer System.Windows.Forms.Design.FolderNameEditor.FolderBrowserFolder
+---@field MyDocuments System.Windows.Forms.Design.FolderNameEditor.FolderBrowserFolder
+---@field MyPictures System.Windows.Forms.Design.FolderNameEditor.FolderBrowserFolder
+---@field NetAndDialUpConnections System.Windows.Forms.Design.FolderNameEditor.FolderBrowserFolder
+---@field NetworkNeighborhood System.Windows.Forms.Design.FolderNameEditor.FolderBrowserFolder
+---@field Printers System.Windows.Forms.Design.FolderNameEditor.FolderBrowserFolder
+---@field Recent System.Windows.Forms.Design.FolderNameEditor.FolderBrowserFolder
+---@field SendTo System.Windows.Forms.Design.FolderNameEditor.FolderBrowserFolder
+---@field StartMenu System.Windows.Forms.Design.FolderNameEditor.FolderBrowserFolder
+---@field Templates System.Windows.Forms.Design.FolderNameEditor.FolderBrowserFolder
+System.Windows.Forms.Design.FolderNameEditor.FolderBrowserFolder = {}
+---@alias CS.System.Windows.Forms.Design.FolderNameEditor.FolderBrowserFolder System.Windows.Forms.Design.FolderNameEditor.FolderBrowserFolder
+CS.System.Windows.Forms.Design.FolderNameEditor.FolderBrowserFolder = System.Windows.Forms.Design.FolderNameEditor.FolderBrowserFolder
+
+
+---@class System.Windows.Forms.Design.FolderNameEditor.FolderBrowserStyles
+---@field BrowseForComputer System.Windows.Forms.Design.FolderNameEditor.FolderBrowserStyles
+---@field BrowseForEverything System.Windows.Forms.Design.FolderNameEditor.FolderBrowserStyles
+---@field BrowseForPrinter System.Windows.Forms.Design.FolderNameEditor.FolderBrowserStyles
+---@field RestrictToDomain System.Windows.Forms.Design.FolderNameEditor.FolderBrowserStyles
+---@field RestrictToFilesystem System.Windows.Forms.Design.FolderNameEditor.FolderBrowserStyles
+---@field RestrictToSubfolders System.Windows.Forms.Design.FolderNameEditor.FolderBrowserStyles
+---@field ShowTextBox System.Windows.Forms.Design.FolderNameEditor.FolderBrowserStyles
+System.Windows.Forms.Design.FolderNameEditor.FolderBrowserStyles = {}
+---@alias CS.System.Windows.Forms.Design.FolderNameEditor.FolderBrowserStyles System.Windows.Forms.Design.FolderNameEditor.FolderBrowserStyles
+CS.System.Windows.Forms.Design.FolderNameEditor.FolderBrowserStyles = System.Windows.Forms.Design.FolderNameEditor.FolderBrowserStyles
+
+
+---@class System.Windows.Forms.Design.FolderNameEditor.FolderBrowser : System.ComponentModel.Component
+---@field Description string
+---@field DirectoryPath string
+---@field StartLocation System.Windows.Forms.Design.FolderNameEditor.FolderBrowserFolder
+---@field Style System.Windows.Forms.Design.FolderNameEditor.FolderBrowserStyles
+System.Windows.Forms.Design.FolderNameEditor.FolderBrowser = {}
+---@alias CS.System.Windows.Forms.Design.FolderNameEditor.FolderBrowser System.Windows.Forms.Design.FolderNameEditor.FolderBrowser
+CS.System.Windows.Forms.Design.FolderNameEditor.FolderBrowser = System.Windows.Forms.Design.FolderNameEditor.FolderBrowser
+
+---@return System.Windows.Forms.Design.FolderNameEditor.FolderBrowser
+function System.Windows.Forms.Design.FolderNameEditor.FolderBrowser.New() end
+---@overload fun() : System.Windows.Forms.DialogResult
+---@param owner System.Windows.Forms.IWin32Window
+---@return System.Windows.Forms.DialogResult
+function System.Windows.Forms.Design.FolderNameEditor.FolderBrowser:ShowDialog(owner) end
+
+---@class System.Windows.Forms.Design.FormDocumentDesigner : System.Windows.Forms.Design.DocumentDesigner
+System.Windows.Forms.Design.FormDocumentDesigner = {}
+---@alias CS.System.Windows.Forms.Design.FormDocumentDesigner System.Windows.Forms.Design.FormDocumentDesigner
+CS.System.Windows.Forms.Design.FormDocumentDesigner = System.Windows.Forms.Design.FormDocumentDesigner
+
+---@return System.Windows.Forms.Design.FormDocumentDesigner
+function System.Windows.Forms.Design.FormDocumentDesigner.New() end
+---@param component System.ComponentModel.IComponent
+function System.Windows.Forms.Design.FormDocumentDesigner:Initialize(component) end
+---@param control System.Windows.Forms.Control
+---@return boolean
+function System.Windows.Forms.Design.FormDocumentDesigner:CanParent(control) end
+
+---@class System.Windows.Forms.Design.FormatStringEditor : System.Drawing.Design.UITypeEditor
+System.Windows.Forms.Design.FormatStringEditor = {}
+---@alias CS.System.Windows.Forms.Design.FormatStringEditor System.Windows.Forms.Design.FormatStringEditor
+CS.System.Windows.Forms.Design.FormatStringEditor = System.Windows.Forms.Design.FormatStringEditor
+
+---@return System.Windows.Forms.Design.FormatStringEditor
+function System.Windows.Forms.Design.FormatStringEditor.New() end
+
+---@class System.Windows.Forms.Design.IMenuEditorService
+System.Windows.Forms.Design.IMenuEditorService = {}
+---@alias CS.System.Windows.Forms.Design.IMenuEditorService System.Windows.Forms.Design.IMenuEditorService
+CS.System.Windows.Forms.Design.IMenuEditorService = System.Windows.Forms.Design.IMenuEditorService
+
+---@return System.Windows.Forms.Menu
+function System.Windows.Forms.Design.IMenuEditorService:GetMenu() end
+---@return boolean
+function System.Windows.Forms.Design.IMenuEditorService:IsActive() end
+---@param ref_m System.Windows.Forms.Message
+---@return boolean,System.Windows.Forms.Message
+function System.Windows.Forms.Design.IMenuEditorService:MessageFilter(ref_m) end
+---@param menu System.Windows.Forms.Menu
+function System.Windows.Forms.Design.IMenuEditorService:SetMenu(menu) end
+---@param item System.Windows.Forms.MenuItem
+function System.Windows.Forms.Design.IMenuEditorService:SetSelection(item) end
+
+---@class System.Windows.Forms.Design.IMessageReceiver
+System.Windows.Forms.Design.IMessageReceiver = {}
+---@alias CS.System.Windows.Forms.Design.IMessageReceiver System.Windows.Forms.Design.IMessageReceiver
+CS.System.Windows.Forms.Design.IMessageReceiver = System.Windows.Forms.Design.IMessageReceiver
+
+---@param ref_m System.Windows.Forms.Message
+---@return ,System.Windows.Forms.Message
+function System.Windows.Forms.Design.IMessageReceiver:WndProc(ref_m) end
+
+---@class System.Windows.Forms.Design.IOleDragClient
+---@field CanModifyComponents boolean
+---@field Component System.ComponentModel.IComponent
+System.Windows.Forms.Design.IOleDragClient = {}
+---@alias CS.System.Windows.Forms.Design.IOleDragClient System.Windows.Forms.Design.IOleDragClient
+CS.System.Windows.Forms.Design.IOleDragClient = System.Windows.Forms.Design.IOleDragClient
+
+---@param component System.ComponentModel.IComponent
+---@param name string
+---@param firstAdd boolean
+---@return boolean
+function System.Windows.Forms.Design.IOleDragClient:AddComponent(component, name, firstAdd) end
+---@param component System.Object
+---@return System.Windows.Forms.Control
+function System.Windows.Forms.Design.IOleDragClient:GetControlForComponent(component) end
+---@return System.Windows.Forms.Control
+function System.Windows.Forms.Design.IOleDragClient:GetDesignerControl() end
+---@param component System.ComponentModel.IComponent
+---@return boolean
+function System.Windows.Forms.Design.IOleDragClient:IsDropOk(component) end
+
+---@class System.Windows.Forms.Design.ISelectionUIHandler
+System.Windows.Forms.Design.ISelectionUIHandler = {}
+---@alias CS.System.Windows.Forms.Design.ISelectionUIHandler System.Windows.Forms.Design.ISelectionUIHandler
+CS.System.Windows.Forms.Design.ISelectionUIHandler = System.Windows.Forms.Design.ISelectionUIHandler
+
+---@param components System.Object[]
+---@param rules System.Windows.Forms.Design.SelectionRules
+---@param initialX number
+---@param initialY number
+---@return boolean
+function System.Windows.Forms.Design.ISelectionUIHandler:BeginDrag(components, rules, initialX, initialY) end
+---@param components System.Object[]
+---@param offset System.Drawing.Rectangle
+function System.Windows.Forms.Design.ISelectionUIHandler:DragMoved(components, offset) end
+---@param components System.Object[]
+---@param cancel boolean
+function System.Windows.Forms.Design.ISelectionUIHandler:EndDrag(components, cancel) end
+---@param component System.Object
+---@return System.Drawing.Rectangle
+function System.Windows.Forms.Design.ISelectionUIHandler:GetComponentBounds(component) end
+---@param component System.Object
+---@return System.Windows.Forms.Design.SelectionRules
+function System.Windows.Forms.Design.ISelectionUIHandler:GetComponentRules(component) end
+---@param component System.Object
+---@return System.Drawing.Rectangle
+function System.Windows.Forms.Design.ISelectionUIHandler:GetSelectionClipRect(component) end
+---@param de System.Windows.Forms.DragEventArgs
+function System.Windows.Forms.Design.ISelectionUIHandler:OleDragDrop(de) end
+---@param de System.Windows.Forms.DragEventArgs
+function System.Windows.Forms.Design.ISelectionUIHandler:OleDragEnter(de) end
+function System.Windows.Forms.Design.ISelectionUIHandler:OleDragLeave() end
+---@param de System.Windows.Forms.DragEventArgs
+function System.Windows.Forms.Design.ISelectionUIHandler:OleDragOver(de) end
+---@param component System.ComponentModel.IComponent
+function System.Windows.Forms.Design.ISelectionUIHandler:OnSelectionDoubleClick(component) end
+---@param components System.Object[]
+---@param rules System.Windows.Forms.Design.SelectionRules
+---@param initialX number
+---@param initialY number
+---@return boolean
+function System.Windows.Forms.Design.ISelectionUIHandler:QueryBeginDrag(components, rules, initialX, initialY) end
+---@param component System.ComponentModel.IComponent
+function System.Windows.Forms.Design.ISelectionUIHandler:ShowContextMenu(component) end
+
+---@class System.Windows.Forms.Design.IUISelectionService
+---@field SelectionInProgress boolean
+---@field DragDropInProgress boolean
+---@field ResizeInProgress boolean
+---@field SelectionBounds System.Drawing.Rectangle
+System.Windows.Forms.Design.IUISelectionService = {}
+---@alias CS.System.Windows.Forms.Design.IUISelectionService System.Windows.Forms.Design.IUISelectionService
+CS.System.Windows.Forms.Design.IUISelectionService = System.Windows.Forms.Design.IUISelectionService
+
+---@param container System.Windows.Forms.Control
+---@param x number
+---@param y number
+function System.Windows.Forms.Design.IUISelectionService:MouseDragBegin(container, x, y) end
+---@param x number
+---@param y number
+function System.Windows.Forms.Design.IUISelectionService:MouseDragMove(x, y) end
+---@param cancel boolean
+function System.Windows.Forms.Design.IUISelectionService:MouseDragEnd(cancel) end
+function System.Windows.Forms.Design.IUISelectionService:DragBegin() end
+---@param container System.Windows.Forms.Control
+---@param x number
+---@param y number
+function System.Windows.Forms.Design.IUISelectionService:DragOver(container, x, y) end
+---@param cancel boolean
+---@param container System.Windows.Forms.Control
+---@param x number
+---@param y number
+function System.Windows.Forms.Design.IUISelectionService:DragDrop(cancel, container, x, y) end
+---@param container System.Windows.Forms.Control
+---@param gfx System.Drawing.Graphics
+function System.Windows.Forms.Design.IUISelectionService:PaintAdornments(container, gfx) end
+---@param x number
+---@param y number
+---@return boolean
+function System.Windows.Forms.Design.IUISelectionService:SetCursor(x, y) end
+---@param control System.Windows.Forms.Control
+---@param x number
+---@param y number
+---@return boolean
+function System.Windows.Forms.Design.IUISelectionService:AdornmentsHitTest(control, x, y) end
+
+---@class System.Windows.Forms.Design.ImageCollectionEditor : System.ComponentModel.Design.CollectionEditor
+System.Windows.Forms.Design.ImageCollectionEditor = {}
+---@alias CS.System.Windows.Forms.Design.ImageCollectionEditor System.Windows.Forms.Design.ImageCollectionEditor
+CS.System.Windows.Forms.Design.ImageCollectionEditor = System.Windows.Forms.Design.ImageCollectionEditor
+
+---@param type System.Type
+---@return System.Windows.Forms.Design.ImageCollectionEditor
+function System.Windows.Forms.Design.ImageCollectionEditor.New(type) end
+
+---@class System.Windows.Forms.Design.ImageIndexEditor : System.Drawing.Design.UITypeEditor
+System.Windows.Forms.Design.ImageIndexEditor = {}
+---@alias CS.System.Windows.Forms.Design.ImageIndexEditor System.Windows.Forms.Design.ImageIndexEditor
+CS.System.Windows.Forms.Design.ImageIndexEditor = System.Windows.Forms.Design.ImageIndexEditor
+
+---@return System.Windows.Forms.Design.ImageIndexEditor
+function System.Windows.Forms.Design.ImageIndexEditor.New() end
+
+---@class System.Windows.Forms.Design.ImageListCodeDomSerializer : System.ComponentModel.Design.Serialization.CodeDomSerializer
+System.Windows.Forms.Design.ImageListCodeDomSerializer = {}
+---@alias CS.System.Windows.Forms.Design.ImageListCodeDomSerializer System.Windows.Forms.Design.ImageListCodeDomSerializer
+CS.System.Windows.Forms.Design.ImageListCodeDomSerializer = System.Windows.Forms.Design.ImageListCodeDomSerializer
+
+---@return System.Windows.Forms.Design.ImageListCodeDomSerializer
+function System.Windows.Forms.Design.ImageListCodeDomSerializer.New() end
+---@param manager System.ComponentModel.Design.Serialization.IDesignerSerializationManager
+---@param codeObject System.Object
+---@return System.Object
+function System.Windows.Forms.Design.ImageListCodeDomSerializer:Deserialize(manager, codeObject) end
+---@param manager System.ComponentModel.Design.Serialization.IDesignerSerializationManager
+---@param value System.Object
+---@return System.Object
+function System.Windows.Forms.Design.ImageListCodeDomSerializer:Serialize(manager, value) end
+
+---@class System.Windows.Forms.Design.ListControlStringCollectionEditor : System.Windows.Forms.Design.StringCollectionEditor
+System.Windows.Forms.Design.ListControlStringCollectionEditor = {}
+---@alias CS.System.Windows.Forms.Design.ListControlStringCollectionEditor System.Windows.Forms.Design.ListControlStringCollectionEditor
+CS.System.Windows.Forms.Design.ListControlStringCollectionEditor = System.Windows.Forms.Design.ListControlStringCollectionEditor
+
+---@param type System.Type
+---@return System.Windows.Forms.Design.ListControlStringCollectionEditor
+function System.Windows.Forms.Design.ListControlStringCollectionEditor.New(type) end
+
+---@class System.Windows.Forms.Design.MaskDescriptor : System.Object
+---@field Culture System.Globalization.CultureInfo
+---@field Mask string
+---@field Name string
+---@field Sample string
+---@field ValidatingType System.Type
+System.Windows.Forms.Design.MaskDescriptor = {}
+---@alias CS.System.Windows.Forms.Design.MaskDescriptor System.Windows.Forms.Design.MaskDescriptor
+CS.System.Windows.Forms.Design.MaskDescriptor = System.Windows.Forms.Design.MaskDescriptor
+
+---@overload fun(maskDescriptor: System.Windows.Forms.Design.MaskDescriptor) : boolean
+---@param maskDescriptor System.Windows.Forms.Design.MaskDescriptor
+---@param out_validationErrorDescription string
+---@return boolean,string
+function System.Windows.Forms.Design.MaskDescriptor.IsValidMaskDescriptor(maskDescriptor, out_validationErrorDescription) end
+---@param maskDescriptor System.Object
+---@return boolean
+function System.Windows.Forms.Design.MaskDescriptor:Equals(maskDescriptor) end
+---@return number
+function System.Windows.Forms.Design.MaskDescriptor:GetHashCode() end
+---@return string
+function System.Windows.Forms.Design.MaskDescriptor:ToString() end
+
+---@class System.Windows.Forms.Design.MenuCommands : System.ComponentModel.Design.StandardCommands
+---@field ComponentTrayMenu System.ComponentModel.Design.CommandID
+---@field ContainerMenu System.ComponentModel.Design.CommandID
+---@field DesignerProperties System.ComponentModel.Design.CommandID
+---@field KeyCancel System.ComponentModel.Design.CommandID
+---@field KeyDefaultAction System.ComponentModel.Design.CommandID
+---@field KeyMoveDown System.ComponentModel.Design.CommandID
+---@field KeyMoveLeft System.ComponentModel.Design.CommandID
+---@field KeyMoveRight System.ComponentModel.Design.CommandID
+---@field KeyMoveUp System.ComponentModel.Design.CommandID
+---@field KeyNudgeDown System.ComponentModel.Design.CommandID
+---@field KeyNudgeHeightDecrease System.ComponentModel.Design.CommandID
+---@field KeyNudgeHeightIncrease System.ComponentModel.Design.CommandID
+---@field KeyNudgeLeft System.ComponentModel.Design.CommandID
+---@field KeyNudgeRight System.ComponentModel.Design.CommandID
+---@field KeyNudgeUp System.ComponentModel.Design.CommandID
+---@field KeyNudgeWidthDecrease System.ComponentModel.Design.CommandID
+---@field KeyNudgeWidthIncrease System.ComponentModel.Design.CommandID
+---@field KeyReverseCancel System.ComponentModel.Design.CommandID
+---@field KeySelectNext System.ComponentModel.Design.CommandID
+---@field KeySelectPrevious System.ComponentModel.Design.CommandID
+---@field KeySizeHeightDecrease System.ComponentModel.Design.CommandID
+---@field KeySizeHeightIncrease System.ComponentModel.Design.CommandID
+---@field KeySizeWidthDecrease System.ComponentModel.Design.CommandID
+---@field KeySizeWidthIncrease System.ComponentModel.Design.CommandID
+---@field KeyTabOrderSelect System.ComponentModel.Design.CommandID
+---@field SelectionMenu System.ComponentModel.Design.CommandID
+---@field TraySelectionMenu System.ComponentModel.Design.CommandID
+---@field EditLabel System.ComponentModel.Design.CommandID
+---@field KeyEnd System.ComponentModel.Design.CommandID
+---@field KeyHome System.ComponentModel.Design.CommandID
+---@field KeyInvokeSmartTag System.ComponentModel.Design.CommandID
+---@field KeyShiftEnd System.ComponentModel.Design.CommandID
+---@field KeyShiftHome System.ComponentModel.Design.CommandID
+---@field SetStatusRectangle System.ComponentModel.Design.CommandID
+---@field SetStatusText System.ComponentModel.Design.CommandID
+System.Windows.Forms.Design.MenuCommands = {}
+---@alias CS.System.Windows.Forms.Design.MenuCommands System.Windows.Forms.Design.MenuCommands
+CS.System.Windows.Forms.Design.MenuCommands = System.Windows.Forms.Design.MenuCommands
+
+---@return System.Windows.Forms.Design.MenuCommands
+function System.Windows.Forms.Design.MenuCommands.New() end
+
+---@class System.Windows.Forms.Design.Native : System.Object
+System.Windows.Forms.Design.Native = {}
+---@alias CS.System.Windows.Forms.Design.Native System.Windows.Forms.Design.Native
+CS.System.Windows.Forms.Design.Native = System.Windows.Forms.Design.Native
+
+---@return System.Windows.Forms.Design.Native
+function System.Windows.Forms.Design.Native.New() end
+---@param ref_m System.Windows.Forms.Message
+---@return ,System.Windows.Forms.Message
+function System.Windows.Forms.Design.Native.DefWndProc(ref_m) end
+---@param hwnd System.IntPtr
+---@param message System.Windows.Forms.Design.Native.Msg
+---@param wParam System.IntPtr
+---@param lParam System.IntPtr
+---@return System.IntPtr
+function System.Windows.Forms.Design.Native.SendMessage(hwnd, message, wParam, lParam) end
+---@param control System.Windows.Forms.Control
+---@param point System.Drawing.Point
+---@return System.Drawing.Point
+function System.Windows.Forms.Design.Native.PointToClient(control, point) end
+---@param childHandle System.IntPtr
+---@param parentHandle System.IntPtr
+---@return System.IntPtr
+function System.Windows.Forms.Design.Native.SetParent(childHandle, parentHandle) end
+---@param dword number
+---@return number
+function System.Windows.Forms.Design.Native.HiWord(dword) end
+---@param dword number
+---@return number
+function System.Windows.Forms.Design.Native.LoWord(dword) end
+---@param hiword number
+---@param loword number
+---@return System.IntPtr
+function System.Windows.Forms.Design.Native.LParam(hiword, loword) end
+
+---@class System.Windows.Forms.Design.Native.Msg
+---@field WM_CREATE System.Windows.Forms.Design.Native.Msg
+---@field WM_SETFOCUS System.Windows.Forms.Design.Native.Msg
+---@field WM_PAINT System.Windows.Forms.Design.Native.Msg
+---@field WM_CANCELMODE System.Windows.Forms.Design.Native.Msg
+---@field WM_SETCURSOR System.Windows.Forms.Design.Native.Msg
+---@field WM_CONTEXTMENU System.Windows.Forms.Design.Native.Msg
+---@field WM_NCHITTEST System.Windows.Forms.Design.Native.Msg
+---@field WM_GETOBJECT System.Windows.Forms.Design.Native.Msg
+---@field WM_MOUSEFIRST System.Windows.Forms.Design.Native.Msg
+---@field WM_MOUSEMOVE System.Windows.Forms.Design.Native.Msg
+---@field WM_LBUTTONDOWN System.Windows.Forms.Design.Native.Msg
+---@field WM_LBUTTONUP System.Windows.Forms.Design.Native.Msg
+---@field WM_LBUTTONDBLCLK System.Windows.Forms.Design.Native.Msg
+---@field WM_RBUTTONDOWN System.Windows.Forms.Design.Native.Msg
+---@field WM_RBUTTONUP System.Windows.Forms.Design.Native.Msg
+---@field WM_RBUTTONDBLCLK System.Windows.Forms.Design.Native.Msg
+---@field WM_MBUTTONDOWN System.Windows.Forms.Design.Native.Msg
+---@field WM_MBUTTONUP System.Windows.Forms.Design.Native.Msg
+---@field WM_MBUTTONDBLCLK System.Windows.Forms.Design.Native.Msg
+---@field WM_MOUSEWHEEL System.Windows.Forms.Design.Native.Msg
+---@field WM_MOUSELAST System.Windows.Forms.Design.Native.Msg
+---@field WM_NCMOUSEHOVER System.Windows.Forms.Design.Native.Msg
+---@field WM_MOUSEHOVER System.Windows.Forms.Design.Native.Msg
+---@field WM_NCMOUSELEAVE System.Windows.Forms.Design.Native.Msg
+---@field WM_MOUSELEAVE System.Windows.Forms.Design.Native.Msg
+---@field WM_NCMOUSEMOVE System.Windows.Forms.Design.Native.Msg
+---@field WM_NCLBUTTONDOWN System.Windows.Forms.Design.Native.Msg
+---@field WM_NCLBUTTONUP System.Windows.Forms.Design.Native.Msg
+---@field WM_NCLBUTTONDBLCLK System.Windows.Forms.Design.Native.Msg
+---@field WM_NCRBUTTONDOWN System.Windows.Forms.Design.Native.Msg
+---@field WM_NCRBUTTONUP System.Windows.Forms.Design.Native.Msg
+---@field WM_NCRBUTTONDBLCLK System.Windows.Forms.Design.Native.Msg
+---@field WM_NCMBUTTONDOWN System.Windows.Forms.Design.Native.Msg
+---@field WM_NCMBUTTONUP System.Windows.Forms.Design.Native.Msg
+---@field WM_NCMBUTTONDBLCLK System.Windows.Forms.Design.Native.Msg
+---@field WM_KEYFIRST System.Windows.Forms.Design.Native.Msg
+---@field WM_KEYDOWN System.Windows.Forms.Design.Native.Msg
+---@field WM_KEYUP System.Windows.Forms.Design.Native.Msg
+---@field WM_CHAR System.Windows.Forms.Design.Native.Msg
+---@field WM_DEADCHAR System.Windows.Forms.Design.Native.Msg
+---@field WM_SYSKEYDOWN System.Windows.Forms.Design.Native.Msg
+---@field WM_SYSKEYUP System.Windows.Forms.Design.Native.Msg
+---@field WM_SYS1CHAR System.Windows.Forms.Design.Native.Msg
+---@field WM_SYSDEADCHAR System.Windows.Forms.Design.Native.Msg
+---@field WM_KEYLAST System.Windows.Forms.Design.Native.Msg
+---@field WM_HSCROLL System.Windows.Forms.Design.Native.Msg
+---@field WM_VSCROLL System.Windows.Forms.Design.Native.Msg
+---@field WM_IME_SETCONTEXT System.Windows.Forms.Design.Native.Msg
+---@field WM_IME_NOTIFY System.Windows.Forms.Design.Native.Msg
+---@field WM_IME_CONTROL System.Windows.Forms.Design.Native.Msg
+---@field WM_IME_COMPOSITIONFULL System.Windows.Forms.Design.Native.Msg
+---@field WM_IME_SELECT System.Windows.Forms.Design.Native.Msg
+---@field WM_IME_CHAR System.Windows.Forms.Design.Native.Msg
+---@field WM_IME_REQUEST System.Windows.Forms.Design.Native.Msg
+---@field WM_IME_KEYDOWN System.Windows.Forms.Design.Native.Msg
+---@field WM_IME_KEYUP System.Windows.Forms.Design.Native.Msg
+---@field WM_MOUSE_ENTER System.Windows.Forms.Design.Native.Msg
+System.Windows.Forms.Design.Native.Msg = {}
+---@alias CS.System.Windows.Forms.Design.Native.Msg System.Windows.Forms.Design.Native.Msg
+CS.System.Windows.Forms.Design.Native.Msg = System.Windows.Forms.Design.Native.Msg
+
+
+---@class System.Windows.Forms.Design.PanelDesigner : System.Windows.Forms.Design.ParentControlDesigner
+System.Windows.Forms.Design.PanelDesigner = {}
+---@alias CS.System.Windows.Forms.Design.PanelDesigner System.Windows.Forms.Design.PanelDesigner
+CS.System.Windows.Forms.Design.PanelDesigner = System.Windows.Forms.Design.PanelDesigner
+
+---@return System.Windows.Forms.Design.PanelDesigner
+function System.Windows.Forms.Design.PanelDesigner.New() end
+---@param component System.ComponentModel.IComponent
+function System.Windows.Forms.Design.PanelDesigner:Initialize(component) end
+
+---@class System.Windows.Forms.Design.ParentControlDesigner : System.Windows.Forms.Design.ControlDesigner
+---@field SnapLines System.Collections.IList
+System.Windows.Forms.Design.ParentControlDesigner = {}
+---@alias CS.System.Windows.Forms.Design.ParentControlDesigner System.Windows.Forms.Design.ParentControlDesigner
+CS.System.Windows.Forms.Design.ParentControlDesigner = System.Windows.Forms.Design.ParentControlDesigner
+
+---@return System.Windows.Forms.Design.ParentControlDesigner
+function System.Windows.Forms.Design.ParentControlDesigner.New() end
+---@param component System.ComponentModel.IComponent
+function System.Windows.Forms.Design.ParentControlDesigner:Initialize(component) end
+---@overload fun(self: System.Windows.Forms.Design.ParentControlDesigner, control: System.Windows.Forms.Control) : boolean
+---@param controlDesigner System.Windows.Forms.Design.ControlDesigner
+---@return boolean
+function System.Windows.Forms.Design.ParentControlDesigner:CanParent(controlDesigner) end
+---@param defaultValues System.Collections.IDictionary
+function System.Windows.Forms.Design.ParentControlDesigner:InitializeNewComponent(defaultValues) end
+---@param selectionType System.Windows.Forms.Design.Behavior.GlyphSelectionType
+---@return System.Windows.Forms.Design.Behavior.GlyphCollection
+function System.Windows.Forms.Design.ParentControlDesigner:GetGlyphs(selectionType) end
+
+---@class System.Windows.Forms.Design.ScrollableControlDesigner : System.Windows.Forms.Design.ParentControlDesigner
+System.Windows.Forms.Design.ScrollableControlDesigner = {}
+---@alias CS.System.Windows.Forms.Design.ScrollableControlDesigner System.Windows.Forms.Design.ScrollableControlDesigner
+CS.System.Windows.Forms.Design.ScrollableControlDesigner = System.Windows.Forms.Design.ScrollableControlDesigner
+
+---@return System.Windows.Forms.Design.ScrollableControlDesigner
+function System.Windows.Forms.Design.ScrollableControlDesigner.New() end
+
+---@class System.Windows.Forms.Design.SelectionFrame : System.Object
+---@field Bounds System.Drawing.Rectangle
+---@field Control System.Windows.Forms.Control
+---@field Parent System.Windows.Forms.Control
+System.Windows.Forms.Design.SelectionFrame = {}
+---@alias CS.System.Windows.Forms.Design.SelectionFrame System.Windows.Forms.Design.SelectionFrame
+CS.System.Windows.Forms.Design.SelectionFrame = System.Windows.Forms.Design.SelectionFrame
+
+---@param control System.Windows.Forms.Control
+---@return System.Windows.Forms.Design.SelectionFrame
+function System.Windows.Forms.Design.SelectionFrame.New(control) end
+---@param gfx System.Drawing.Graphics
+function System.Windows.Forms.Design.SelectionFrame:OnPaint(gfx) end
+---@param x number
+---@param y number
+---@return boolean
+function System.Windows.Forms.Design.SelectionFrame:SetCursor(x, y) end
+---@param x number
+---@param y number
+function System.Windows.Forms.Design.SelectionFrame:ResizeBegin(x, y) end
+---@param x number
+---@param y number
+---@return System.Drawing.Rectangle
+function System.Windows.Forms.Design.SelectionFrame:ResizeContinue(x, y) end
+---@param cancel boolean
+function System.Windows.Forms.Design.SelectionFrame:ResizeEnd(cancel) end
+---@param deltaBounds System.Drawing.Rectangle
+function System.Windows.Forms.Design.SelectionFrame:Resize(deltaBounds) end
+---@param x number
+---@param y number
+---@return boolean
+function System.Windows.Forms.Design.SelectionFrame:HitTest(x, y) end
+
+---@class System.Windows.Forms.Design.SelectionFrame.GrabHandle
+---@field None System.Windows.Forms.Design.SelectionFrame.GrabHandle
+---@field TopLeft System.Windows.Forms.Design.SelectionFrame.GrabHandle
+---@field TopMiddle System.Windows.Forms.Design.SelectionFrame.GrabHandle
+---@field TopRight System.Windows.Forms.Design.SelectionFrame.GrabHandle
+---@field Right System.Windows.Forms.Design.SelectionFrame.GrabHandle
+---@field BottomRight System.Windows.Forms.Design.SelectionFrame.GrabHandle
+---@field BottomMiddle System.Windows.Forms.Design.SelectionFrame.GrabHandle
+---@field BottomLeft System.Windows.Forms.Design.SelectionFrame.GrabHandle
+---@field Left System.Windows.Forms.Design.SelectionFrame.GrabHandle
+---@field Border System.Windows.Forms.Design.SelectionFrame.GrabHandle
+System.Windows.Forms.Design.SelectionFrame.GrabHandle = {}
+---@alias CS.System.Windows.Forms.Design.SelectionFrame.GrabHandle System.Windows.Forms.Design.SelectionFrame.GrabHandle
+CS.System.Windows.Forms.Design.SelectionFrame.GrabHandle = System.Windows.Forms.Design.SelectionFrame.GrabHandle
+
+
+---@class System.Windows.Forms.Design.SelectionRules
+---@field AllSizeable System.Windows.Forms.Design.SelectionRules
+---@field BottomSizeable System.Windows.Forms.Design.SelectionRules
+---@field LeftSizeable System.Windows.Forms.Design.SelectionRules
+---@field Locked System.Windows.Forms.Design.SelectionRules
+---@field Moveable System.Windows.Forms.Design.SelectionRules
+---@field None System.Windows.Forms.Design.SelectionRules
+---@field RightSizeable System.Windows.Forms.Design.SelectionRules
+---@field TopSizeable System.Windows.Forms.Design.SelectionRules
+---@field Visible System.Windows.Forms.Design.SelectionRules
+System.Windows.Forms.Design.SelectionRules = {}
+---@alias CS.System.Windows.Forms.Design.SelectionRules System.Windows.Forms.Design.SelectionRules
+CS.System.Windows.Forms.Design.SelectionRules = System.Windows.Forms.Design.SelectionRules
+
+
+---@class System.Windows.Forms.Design.ShortcutKeysEditor : System.Drawing.Design.UITypeEditor
+System.Windows.Forms.Design.ShortcutKeysEditor = {}
+---@alias CS.System.Windows.Forms.Design.ShortcutKeysEditor System.Windows.Forms.Design.ShortcutKeysEditor
+CS.System.Windows.Forms.Design.ShortcutKeysEditor = System.Windows.Forms.Design.ShortcutKeysEditor
+
+---@return System.Windows.Forms.Design.ShortcutKeysEditor
+function System.Windows.Forms.Design.ShortcutKeysEditor.New() end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@param provider System.IServiceProvider
+---@param value System.Object
+---@return System.Object
+function System.Windows.Forms.Design.ShortcutKeysEditor:EditValue(context, provider, value) end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@return System.Drawing.Design.UITypeEditorEditStyle
+function System.Windows.Forms.Design.ShortcutKeysEditor:GetEditStyle(context) end
+
+---@class System.Windows.Forms.Design.SplitContainerDesigner : System.Windows.Forms.Design.ParentControlDesigner
+System.Windows.Forms.Design.SplitContainerDesigner = {}
+---@alias CS.System.Windows.Forms.Design.SplitContainerDesigner System.Windows.Forms.Design.SplitContainerDesigner
+CS.System.Windows.Forms.Design.SplitContainerDesigner = System.Windows.Forms.Design.SplitContainerDesigner
+
+---@return System.Windows.Forms.Design.SplitContainerDesigner
+function System.Windows.Forms.Design.SplitContainerDesigner.New() end
+---@param component System.ComponentModel.IComponent
+function System.Windows.Forms.Design.SplitContainerDesigner:Initialize(component) end
+---@param internalControlIndex number
+---@return System.Windows.Forms.Design.ControlDesigner
+function System.Windows.Forms.Design.SplitContainerDesigner:InternalControlDesigner(internalControlIndex) end
+---@return number
+function System.Windows.Forms.Design.SplitContainerDesigner:NumberOfInternalControlDesigners() end
+
+---@class System.Windows.Forms.Design.StringArrayEditor : System.Windows.Forms.Design.StringCollectionEditor
+System.Windows.Forms.Design.StringArrayEditor = {}
+---@alias CS.System.Windows.Forms.Design.StringArrayEditor System.Windows.Forms.Design.StringArrayEditor
+CS.System.Windows.Forms.Design.StringArrayEditor = System.Windows.Forms.Design.StringArrayEditor
+
+---@param type System.Type
+---@return System.Windows.Forms.Design.StringArrayEditor
+function System.Windows.Forms.Design.StringArrayEditor.New(type) end
+
+---@class System.Windows.Forms.Design.StringCollectionEditor : System.ComponentModel.Design.CollectionEditor
+System.Windows.Forms.Design.StringCollectionEditor = {}
+---@alias CS.System.Windows.Forms.Design.StringCollectionEditor System.Windows.Forms.Design.StringCollectionEditor
+CS.System.Windows.Forms.Design.StringCollectionEditor = System.Windows.Forms.Design.StringCollectionEditor
+
+---@param type System.Type
+---@return System.Windows.Forms.Design.StringCollectionEditor
+function System.Windows.Forms.Design.StringCollectionEditor.New(type) end
+
+---@class System.Windows.Forms.Design.StringCollectionEditor.StringCollectionEditForm : System.ComponentModel.Design.CollectionEditor.CollectionForm
+System.Windows.Forms.Design.StringCollectionEditor.StringCollectionEditForm = {}
+---@alias CS.System.Windows.Forms.Design.StringCollectionEditor.StringCollectionEditForm System.Windows.Forms.Design.StringCollectionEditor.StringCollectionEditForm
+CS.System.Windows.Forms.Design.StringCollectionEditor.StringCollectionEditForm = System.Windows.Forms.Design.StringCollectionEditor.StringCollectionEditForm
+
+---@param editor System.ComponentModel.Design.CollectionEditor
+---@return System.Windows.Forms.Design.StringCollectionEditor.StringCollectionEditForm
+function System.Windows.Forms.Design.StringCollectionEditor.StringCollectionEditForm.New(editor) end
+
+---@class System.Windows.Forms.Design.TabPageCollectionEditor : System.ComponentModel.Design.CollectionEditor
+System.Windows.Forms.Design.TabPageCollectionEditor = {}
+---@alias CS.System.Windows.Forms.Design.TabPageCollectionEditor System.Windows.Forms.Design.TabPageCollectionEditor
+CS.System.Windows.Forms.Design.TabPageCollectionEditor = System.Windows.Forms.Design.TabPageCollectionEditor
+
+---@param type System.Type
+---@return System.Windows.Forms.Design.TabPageCollectionEditor
+function System.Windows.Forms.Design.TabPageCollectionEditor.New(type) end
+
+---@class System.Windows.Forms.Design.UISelectionService : System.Object
+---@field SelectionInProgress boolean
+---@field DragDropInProgress boolean
+---@field ResizeInProgress boolean
+---@field SelectionBounds System.Drawing.Rectangle
+System.Windows.Forms.Design.UISelectionService = {}
+---@alias CS.System.Windows.Forms.Design.UISelectionService System.Windows.Forms.Design.UISelectionService
+CS.System.Windows.Forms.Design.UISelectionService = System.Windows.Forms.Design.UISelectionService
+
+---@param serviceProvider System.IServiceProvider
+---@return System.Windows.Forms.Design.UISelectionService
+function System.Windows.Forms.Design.UISelectionService.New(serviceProvider) end
+---@param x number
+---@param y number
+---@return boolean
+function System.Windows.Forms.Design.UISelectionService:SetCursor(x, y) end
+---@param container System.Windows.Forms.Control
+---@param x number
+---@param y number
+function System.Windows.Forms.Design.UISelectionService:MouseDragBegin(container, x, y) end
+---@param x number
+---@param y number
+function System.Windows.Forms.Design.UISelectionService:MouseDragMove(x, y) end
+---@param cancel boolean
+function System.Windows.Forms.Design.UISelectionService:MouseDragEnd(cancel) end
+function System.Windows.Forms.Design.UISelectionService:DragBegin() end
+---@param container System.Windows.Forms.Control
+---@param x number
+---@param y number
+function System.Windows.Forms.Design.UISelectionService:DragOver(container, x, y) end
+---@param cancel boolean
+---@param container System.Windows.Forms.Control
+---@param x number
+---@param y number
+function System.Windows.Forms.Design.UISelectionService:DragDrop(cancel, container, x, y) end
+---@param control System.Windows.Forms.Control
+---@param x number
+---@param y number
+---@return boolean
+function System.Windows.Forms.Design.UISelectionService:AdornmentsHitTest(control, x, y) end
+---@param container System.Windows.Forms.Control
+---@param gfx System.Drawing.Graphics
+function System.Windows.Forms.Design.UISelectionService:PaintAdornments(container, gfx) end
+
+---@class System.Windows.Forms.Design.WindowsFormsDesignerOptionService : System.ComponentModel.Design.DesignerOptionService
+---@field CompatibilityOptions System.Windows.Forms.Design.DesignerOptions
+System.Windows.Forms.Design.WindowsFormsDesignerOptionService = {}
+---@alias CS.System.Windows.Forms.Design.WindowsFormsDesignerOptionService System.Windows.Forms.Design.WindowsFormsDesignerOptionService
+CS.System.Windows.Forms.Design.WindowsFormsDesignerOptionService = System.Windows.Forms.Design.WindowsFormsDesignerOptionService
+
+---@return System.Windows.Forms.Design.WindowsFormsDesignerOptionService
+function System.Windows.Forms.Design.WindowsFormsDesignerOptionService.New() end
+
+---@class System.Windows.Forms.Design.WndProcRouter : System.Object
+---@field Control System.Windows.Forms.Control
+---@field OldWindowTarget System.Windows.Forms.IWindowTarget
+System.Windows.Forms.Design.WndProcRouter = {}
+---@alias CS.System.Windows.Forms.Design.WndProcRouter System.Windows.Forms.Design.WndProcRouter
+CS.System.Windows.Forms.Design.WndProcRouter = System.Windows.Forms.Design.WndProcRouter
+
+---@param control System.Windows.Forms.Control
+---@param receiver System.Windows.Forms.Design.IMessageReceiver
+---@return System.Windows.Forms.Design.WndProcRouter
+function System.Windows.Forms.Design.WndProcRouter.New(control, receiver) end
+---@param ref_m System.Windows.Forms.Message
+---@return ,System.Windows.Forms.Message
+function System.Windows.Forms.Design.WndProcRouter:ToControl(ref_m) end
+---@param ref_m System.Windows.Forms.Message
+---@return ,System.Windows.Forms.Message
+function System.Windows.Forms.Design.WndProcRouter:ToSystem(ref_m) end
+function System.Windows.Forms.Design.WndProcRouter:Dispose() end
+
+---@class System.Windows.Forms.Design.Behavior.Adorner : System.Object
+---@field BehaviorService System.Windows.Forms.Design.Behavior.BehaviorService
+---@field Enabled boolean
+---@field Glyphs System.Windows.Forms.Design.Behavior.GlyphCollection
+System.Windows.Forms.Design.Behavior.Adorner = {}
+---@alias CS.System.Windows.Forms.Design.Behavior.Adorner System.Windows.Forms.Design.Behavior.Adorner
+CS.System.Windows.Forms.Design.Behavior.Adorner = System.Windows.Forms.Design.Behavior.Adorner
+
+---@return System.Windows.Forms.Design.Behavior.Adorner
+function System.Windows.Forms.Design.Behavior.Adorner.New() end
+---@overload fun()
+---@overload fun(self: System.Windows.Forms.Design.Behavior.Adorner, rectangle: System.Drawing.Rectangle)
+---@param region System.Drawing.Region
+function System.Windows.Forms.Design.Behavior.Adorner:Invalidate(region) end
+
+---@class System.Windows.Forms.Design.Behavior.Behavior : System.Object
+---@field Cursor System.Windows.Forms.Cursor
+---@field DisableAllCommands boolean
+System.Windows.Forms.Design.Behavior.Behavior = {}
+---@alias CS.System.Windows.Forms.Design.Behavior.Behavior System.Windows.Forms.Design.Behavior.Behavior
+CS.System.Windows.Forms.Design.Behavior.Behavior = System.Windows.Forms.Design.Behavior.Behavior
+
+---@param commandId System.ComponentModel.Design.CommandID
+---@return System.ComponentModel.Design.MenuCommand
+function System.Windows.Forms.Design.Behavior.Behavior:FindCommand(commandId) end
+---@param g System.Windows.Forms.Design.Behavior.Glyph
+---@param e System.Windows.Forms.DragEventArgs
+function System.Windows.Forms.Design.Behavior.Behavior:OnDragDrop(g, e) end
+---@param g System.Windows.Forms.Design.Behavior.Glyph
+---@param e System.Windows.Forms.DragEventArgs
+function System.Windows.Forms.Design.Behavior.Behavior:OnDragEnter(g, e) end
+---@param g System.Windows.Forms.Design.Behavior.Glyph
+---@param e System.EventArgs
+function System.Windows.Forms.Design.Behavior.Behavior:OnDragLeave(g, e) end
+---@param g System.Windows.Forms.Design.Behavior.Glyph
+---@param e System.Windows.Forms.DragEventArgs
+function System.Windows.Forms.Design.Behavior.Behavior:OnDragOver(g, e) end
+---@param g System.Windows.Forms.Design.Behavior.Glyph
+---@param e System.Windows.Forms.GiveFeedbackEventArgs
+function System.Windows.Forms.Design.Behavior.Behavior:OnGiveFeedback(g, e) end
+---@param g System.Windows.Forms.Design.Behavior.Glyph
+---@param e System.EventArgs
+function System.Windows.Forms.Design.Behavior.Behavior:OnLoseCapture(g, e) end
+---@param g System.Windows.Forms.Design.Behavior.Glyph
+---@param button System.Windows.Forms.MouseButtons
+---@param mouseLoc System.Drawing.Point
+---@return boolean
+function System.Windows.Forms.Design.Behavior.Behavior:OnMouseDoubleClick(g, button, mouseLoc) end
+---@param g System.Windows.Forms.Design.Behavior.Glyph
+---@param button System.Windows.Forms.MouseButtons
+---@param mouseLoc System.Drawing.Point
+---@return boolean
+function System.Windows.Forms.Design.Behavior.Behavior:OnMouseDown(g, button, mouseLoc) end
+---@param g System.Windows.Forms.Design.Behavior.Glyph
+---@return boolean
+function System.Windows.Forms.Design.Behavior.Behavior:OnMouseEnter(g) end
+---@param g System.Windows.Forms.Design.Behavior.Glyph
+---@param mouseLoc System.Drawing.Point
+---@return boolean
+function System.Windows.Forms.Design.Behavior.Behavior:OnMouseHover(g, mouseLoc) end
+---@param g System.Windows.Forms.Design.Behavior.Glyph
+---@return boolean
+function System.Windows.Forms.Design.Behavior.Behavior:OnMouseLeave(g) end
+---@param g System.Windows.Forms.Design.Behavior.Glyph
+---@param button System.Windows.Forms.MouseButtons
+---@param mouseLoc System.Drawing.Point
+---@return boolean
+function System.Windows.Forms.Design.Behavior.Behavior:OnMouseMove(g, button, mouseLoc) end
+---@param g System.Windows.Forms.Design.Behavior.Glyph
+---@param button System.Windows.Forms.MouseButtons
+---@return boolean
+function System.Windows.Forms.Design.Behavior.Behavior:OnMouseUp(g, button) end
+---@param g System.Windows.Forms.Design.Behavior.Glyph
+---@param e System.Windows.Forms.QueryContinueDragEventArgs
+function System.Windows.Forms.Design.Behavior.Behavior:OnQueryContinueDrag(g, e) end
+
+---@class System.Windows.Forms.Design.Behavior.BehaviorDragDropEventArgs : System.EventArgs
+---@field DragComponents System.Collections.ICollection
+System.Windows.Forms.Design.Behavior.BehaviorDragDropEventArgs = {}
+---@alias CS.System.Windows.Forms.Design.Behavior.BehaviorDragDropEventArgs System.Windows.Forms.Design.Behavior.BehaviorDragDropEventArgs
+CS.System.Windows.Forms.Design.Behavior.BehaviorDragDropEventArgs = System.Windows.Forms.Design.Behavior.BehaviorDragDropEventArgs
+
+---@param dragComponents System.Collections.ICollection
+---@return System.Windows.Forms.Design.Behavior.BehaviorDragDropEventArgs
+function System.Windows.Forms.Design.Behavior.BehaviorDragDropEventArgs.New(dragComponents) end
+
+---@class System.Windows.Forms.Design.Behavior.BehaviorDragDropEventHandler : System.MulticastDelegate
+System.Windows.Forms.Design.Behavior.BehaviorDragDropEventHandler = {}
+---@alias CS.System.Windows.Forms.Design.Behavior.BehaviorDragDropEventHandler System.Windows.Forms.Design.Behavior.BehaviorDragDropEventHandler
+CS.System.Windows.Forms.Design.Behavior.BehaviorDragDropEventHandler = System.Windows.Forms.Design.Behavior.BehaviorDragDropEventHandler
+
+---@param object System.Object
+---@param method System.IntPtr
+---@return System.Windows.Forms.Design.Behavior.BehaviorDragDropEventHandler
+function System.Windows.Forms.Design.Behavior.BehaviorDragDropEventHandler.New(object, method) end
+---@param sender System.Object
+---@param e System.Windows.Forms.Design.Behavior.BehaviorDragDropEventArgs
+function System.Windows.Forms.Design.Behavior.BehaviorDragDropEventHandler:Invoke(sender, e) end
+---@param sender System.Object
+---@param e System.Windows.Forms.Design.Behavior.BehaviorDragDropEventArgs
+---@param callback System.AsyncCallback
+---@param object System.Object
+---@return System.IAsyncResult
+function System.Windows.Forms.Design.Behavior.BehaviorDragDropEventHandler:BeginInvoke(sender, e, callback, object) end
+---@param result System.IAsyncResult
+function System.Windows.Forms.Design.Behavior.BehaviorDragDropEventHandler:EndInvoke(result) end
+
+---@class System.Windows.Forms.Design.Behavior.BehaviorService : System.Object
+---@field Adorners System.Windows.Forms.Design.Behavior.BehaviorServiceAdornerCollection
+---@field AdornerWindowGraphics System.Drawing.Graphics
+---@field CurrentBehavior System.Windows.Forms.Design.Behavior.Behavior
+System.Windows.Forms.Design.Behavior.BehaviorService = {}
+---@alias CS.System.Windows.Forms.Design.Behavior.BehaviorService System.Windows.Forms.Design.Behavior.BehaviorService
+CS.System.Windows.Forms.Design.Behavior.BehaviorService = System.Windows.Forms.Design.Behavior.BehaviorService
+
+---@param p System.Drawing.Point
+---@return System.Drawing.Point
+function System.Windows.Forms.Design.Behavior.BehaviorService:AdornerWindowPointToScreen(p) end
+---@return System.Drawing.Point
+function System.Windows.Forms.Design.Behavior.BehaviorService:AdornerWindowToScreen() end
+---@param c System.Windows.Forms.Control
+---@return System.Drawing.Rectangle
+function System.Windows.Forms.Design.Behavior.BehaviorService:ControlRectInAdornerWindow(c) end
+---@param c System.Windows.Forms.Control
+---@return System.Drawing.Point
+function System.Windows.Forms.Design.Behavior.BehaviorService:ControlToAdornerWindow(c) end
+function System.Windows.Forms.Design.Behavior.BehaviorService:Dispose() end
+---@param behavior System.Windows.Forms.Design.Behavior.Behavior
+---@return System.Windows.Forms.Design.Behavior.Behavior
+function System.Windows.Forms.Design.Behavior.BehaviorService:GetNextBehavior(behavior) end
+---@overload fun()
+---@overload fun(self: System.Windows.Forms.Design.Behavior.BehaviorService, rect: System.Drawing.Rectangle)
+---@param r System.Drawing.Region
+function System.Windows.Forms.Design.Behavior.BehaviorService:Invalidate(r) end
+---@param handle System.IntPtr
+---@param pt System.Drawing.Point
+---@return System.Drawing.Point
+function System.Windows.Forms.Design.Behavior.BehaviorService:MapAdornerWindowPoint(handle, pt) end
+---@param behavior System.Windows.Forms.Design.Behavior.Behavior
+---@return System.Windows.Forms.Design.Behavior.Behavior
+function System.Windows.Forms.Design.Behavior.BehaviorService:PopBehavior(behavior) end
+---@param behavior System.Windows.Forms.Design.Behavior.Behavior
+function System.Windows.Forms.Design.Behavior.BehaviorService:PushBehavior(behavior) end
+---@param behavior System.Windows.Forms.Design.Behavior.Behavior
+function System.Windows.Forms.Design.Behavior.BehaviorService:PushCaptureBehavior(behavior) end
+---@param p System.Drawing.Point
+---@return System.Drawing.Point
+function System.Windows.Forms.Design.Behavior.BehaviorService:ScreenToAdornerWindow(p) end
+function System.Windows.Forms.Design.Behavior.BehaviorService:SyncSelection() end
+
+---@class System.Windows.Forms.Design.Behavior.BehaviorServiceAdornerCollection : System.Collections.CollectionBase
+---@field Item System.Windows.Forms.Design.Behavior.Adorner
+System.Windows.Forms.Design.Behavior.BehaviorServiceAdornerCollection = {}
+---@alias CS.System.Windows.Forms.Design.Behavior.BehaviorServiceAdornerCollection System.Windows.Forms.Design.Behavior.BehaviorServiceAdornerCollection
+CS.System.Windows.Forms.Design.Behavior.BehaviorServiceAdornerCollection = System.Windows.Forms.Design.Behavior.BehaviorServiceAdornerCollection
+
+---@overload fun(behaviorService: System.Windows.Forms.Design.Behavior.BehaviorService) : System.Windows.Forms.Design.Behavior.BehaviorServiceAdornerCollection
+---@overload fun(value: System.Windows.Forms.Design.Behavior.Adorner[]) : System.Windows.Forms.Design.Behavior.BehaviorServiceAdornerCollection
+---@param value System.Windows.Forms.Design.Behavior.BehaviorServiceAdornerCollection
+---@return System.Windows.Forms.Design.Behavior.BehaviorServiceAdornerCollection
+function System.Windows.Forms.Design.Behavior.BehaviorServiceAdornerCollection.New(value) end
+---@param value System.Windows.Forms.Design.Behavior.Adorner
+---@return number
+function System.Windows.Forms.Design.Behavior.BehaviorServiceAdornerCollection:Add(value) end
+---@overload fun(self: System.Windows.Forms.Design.Behavior.BehaviorServiceAdornerCollection, value: System.Windows.Forms.Design.Behavior.Adorner[])
+---@param value System.Windows.Forms.Design.Behavior.BehaviorServiceAdornerCollection
+function System.Windows.Forms.Design.Behavior.BehaviorServiceAdornerCollection:AddRange(value) end
+---@param value System.Windows.Forms.Design.Behavior.Adorner
+---@return boolean
+function System.Windows.Forms.Design.Behavior.BehaviorServiceAdornerCollection:Contains(value) end
+---@param array System.Windows.Forms.Design.Behavior.Adorner[]
+---@param index number
+function System.Windows.Forms.Design.Behavior.BehaviorServiceAdornerCollection:CopyTo(array, index) end
+---@param value System.Windows.Forms.Design.Behavior.Adorner
+---@return number
+function System.Windows.Forms.Design.Behavior.BehaviorServiceAdornerCollection:IndexOf(value) end
+---@return System.Windows.Forms.Design.Behavior.BehaviorServiceAdornerCollectionEnumerator
+function System.Windows.Forms.Design.Behavior.BehaviorServiceAdornerCollection:GetEnumerator() end
+---@param index number
+---@param value System.Windows.Forms.Design.Behavior.Adorner
+function System.Windows.Forms.Design.Behavior.BehaviorServiceAdornerCollection:Insert(index, value) end
+---@param value System.Windows.Forms.Design.Behavior.Adorner
+function System.Windows.Forms.Design.Behavior.BehaviorServiceAdornerCollection:Remove(value) end
+
+---@class System.Windows.Forms.Design.Behavior.BehaviorServiceAdornerCollectionEnumerator : System.Object
+---@field Current System.Windows.Forms.Design.Behavior.Adorner
+System.Windows.Forms.Design.Behavior.BehaviorServiceAdornerCollectionEnumerator = {}
+---@alias CS.System.Windows.Forms.Design.Behavior.BehaviorServiceAdornerCollectionEnumerator System.Windows.Forms.Design.Behavior.BehaviorServiceAdornerCollectionEnumerator
+CS.System.Windows.Forms.Design.Behavior.BehaviorServiceAdornerCollectionEnumerator = System.Windows.Forms.Design.Behavior.BehaviorServiceAdornerCollectionEnumerator
+
+---@param mappings System.Windows.Forms.Design.Behavior.BehaviorServiceAdornerCollection
+---@return System.Windows.Forms.Design.Behavior.BehaviorServiceAdornerCollectionEnumerator
+function System.Windows.Forms.Design.Behavior.BehaviorServiceAdornerCollectionEnumerator.New(mappings) end
+---@return boolean
+function System.Windows.Forms.Design.Behavior.BehaviorServiceAdornerCollectionEnumerator:MoveNext() end
+function System.Windows.Forms.Design.Behavior.BehaviorServiceAdornerCollectionEnumerator:Reset() end
+
+---@class System.Windows.Forms.Design.Behavior.ComponentGlyph : System.Windows.Forms.Design.Behavior.Glyph
+---@field RelatedComponent System.ComponentModel.IComponent
+System.Windows.Forms.Design.Behavior.ComponentGlyph = {}
+---@alias CS.System.Windows.Forms.Design.Behavior.ComponentGlyph System.Windows.Forms.Design.Behavior.ComponentGlyph
+CS.System.Windows.Forms.Design.Behavior.ComponentGlyph = System.Windows.Forms.Design.Behavior.ComponentGlyph
+
+---@overload fun(relatedComponent: System.ComponentModel.IComponent) : System.Windows.Forms.Design.Behavior.ComponentGlyph
+---@param relatedComponent System.ComponentModel.IComponent
+---@param behavior System.Windows.Forms.Design.Behavior.Behavior
+---@return System.Windows.Forms.Design.Behavior.ComponentGlyph
+function System.Windows.Forms.Design.Behavior.ComponentGlyph.New(relatedComponent, behavior) end
+---@param p System.Drawing.Point
+---@return System.Windows.Forms.Cursor
+function System.Windows.Forms.Design.Behavior.ComponentGlyph:GetHitTest(p) end
+---@param pe System.Windows.Forms.PaintEventArgs
+function System.Windows.Forms.Design.Behavior.ComponentGlyph:Paint(pe) end
+
+---@class System.Windows.Forms.Design.Behavior.ControlBodyGlyph : System.Windows.Forms.Design.Behavior.ComponentGlyph
+---@field Bounds System.Drawing.Rectangle
+System.Windows.Forms.Design.Behavior.ControlBodyGlyph = {}
+---@alias CS.System.Windows.Forms.Design.Behavior.ControlBodyGlyph System.Windows.Forms.Design.Behavior.ControlBodyGlyph
+CS.System.Windows.Forms.Design.Behavior.ControlBodyGlyph = System.Windows.Forms.Design.Behavior.ControlBodyGlyph
+
+---@overload fun(bounds: System.Drawing.Rectangle, cursor: System.Windows.Forms.Cursor, relatedComponent: System.ComponentModel.IComponent, behavior: System.Windows.Forms.Design.Behavior.Behavior) : System.Windows.Forms.Design.Behavior.ControlBodyGlyph
+---@param bounds System.Drawing.Rectangle
+---@param cursor System.Windows.Forms.Cursor
+---@param relatedComponent System.ComponentModel.IComponent
+---@param designer System.Windows.Forms.Design.ControlDesigner
+---@return System.Windows.Forms.Design.Behavior.ControlBodyGlyph
+function System.Windows.Forms.Design.Behavior.ControlBodyGlyph.New(bounds, cursor, relatedComponent, designer) end
+---@param p System.Drawing.Point
+---@return System.Windows.Forms.Cursor
+function System.Windows.Forms.Design.Behavior.ControlBodyGlyph:GetHitTest(p) end
+
+---@class System.Windows.Forms.Design.Behavior.Glyph : System.Object
+---@field Behavior System.Windows.Forms.Design.Behavior.Behavior
+---@field Bounds System.Drawing.Rectangle
+System.Windows.Forms.Design.Behavior.Glyph = {}
+---@alias CS.System.Windows.Forms.Design.Behavior.Glyph System.Windows.Forms.Design.Behavior.Glyph
+CS.System.Windows.Forms.Design.Behavior.Glyph = System.Windows.Forms.Design.Behavior.Glyph
+
+---@param p System.Drawing.Point
+---@return System.Windows.Forms.Cursor
+function System.Windows.Forms.Design.Behavior.Glyph:GetHitTest(p) end
+---@param pe System.Windows.Forms.PaintEventArgs
+function System.Windows.Forms.Design.Behavior.Glyph:Paint(pe) end
+
+---@class System.Windows.Forms.Design.Behavior.GlyphCollection : System.Collections.CollectionBase
+---@field Item System.Windows.Forms.Design.Behavior.Glyph
+System.Windows.Forms.Design.Behavior.GlyphCollection = {}
+---@alias CS.System.Windows.Forms.Design.Behavior.GlyphCollection System.Windows.Forms.Design.Behavior.GlyphCollection
+CS.System.Windows.Forms.Design.Behavior.GlyphCollection = System.Windows.Forms.Design.Behavior.GlyphCollection
+
+---@overload fun() : System.Windows.Forms.Design.Behavior.GlyphCollection
+---@overload fun(value: System.Windows.Forms.Design.Behavior.Glyph[]) : System.Windows.Forms.Design.Behavior.GlyphCollection
+---@param value System.Windows.Forms.Design.Behavior.GlyphCollection
+---@return System.Windows.Forms.Design.Behavior.GlyphCollection
+function System.Windows.Forms.Design.Behavior.GlyphCollection.New(value) end
+---@param value System.Windows.Forms.Design.Behavior.Glyph
+---@return number
+function System.Windows.Forms.Design.Behavior.GlyphCollection:Add(value) end
+---@overload fun(self: System.Windows.Forms.Design.Behavior.GlyphCollection, value: System.Windows.Forms.Design.Behavior.Glyph[])
+---@param value System.Windows.Forms.Design.Behavior.GlyphCollection
+function System.Windows.Forms.Design.Behavior.GlyphCollection:AddRange(value) end
+---@param value System.Windows.Forms.Design.Behavior.Glyph
+---@return boolean
+function System.Windows.Forms.Design.Behavior.GlyphCollection:Contains(value) end
+---@param array System.Windows.Forms.Design.Behavior.Glyph[]
+---@param index number
+function System.Windows.Forms.Design.Behavior.GlyphCollection:CopyTo(array, index) end
+---@param value System.Windows.Forms.Design.Behavior.Glyph
+---@return number
+function System.Windows.Forms.Design.Behavior.GlyphCollection:IndexOf(value) end
+---@param index number
+---@param value System.Windows.Forms.Design.Behavior.Glyph
+function System.Windows.Forms.Design.Behavior.GlyphCollection:Insert(index, value) end
+---@param value System.Windows.Forms.Design.Behavior.Glyph
+function System.Windows.Forms.Design.Behavior.GlyphCollection:Remove(value) end
+
+---@class System.Windows.Forms.Design.Behavior.GlyphSelectionType
+---@field NotSelected System.Windows.Forms.Design.Behavior.GlyphSelectionType
+---@field Selected System.Windows.Forms.Design.Behavior.GlyphSelectionType
+---@field SelectedPrimary System.Windows.Forms.Design.Behavior.GlyphSelectionType
+System.Windows.Forms.Design.Behavior.GlyphSelectionType = {}
+---@alias CS.System.Windows.Forms.Design.Behavior.GlyphSelectionType System.Windows.Forms.Design.Behavior.GlyphSelectionType
+CS.System.Windows.Forms.Design.Behavior.GlyphSelectionType = System.Windows.Forms.Design.Behavior.GlyphSelectionType
+
+
+---@class System.Windows.Forms.Design.Behavior.SnapLine : System.Object
+---@field Filter string
+---@field IsHorizontal boolean
+---@field IsVertical boolean
+---@field Offset number
+---@field Priority System.Windows.Forms.Design.Behavior.SnapLinePriority
+---@field SnapLineType System.Windows.Forms.Design.Behavior.SnapLineType
+System.Windows.Forms.Design.Behavior.SnapLine = {}
+---@alias CS.System.Windows.Forms.Design.Behavior.SnapLine System.Windows.Forms.Design.Behavior.SnapLine
+CS.System.Windows.Forms.Design.Behavior.SnapLine = System.Windows.Forms.Design.Behavior.SnapLine
+
+---@overload fun(type: System.Windows.Forms.Design.Behavior.SnapLineType, offset: number) : System.Windows.Forms.Design.Behavior.SnapLine
+---@overload fun(type: System.Windows.Forms.Design.Behavior.SnapLineType, offset: number, filter: string) : System.Windows.Forms.Design.Behavior.SnapLine
+---@overload fun(type: System.Windows.Forms.Design.Behavior.SnapLineType, offset: number, priority: System.Windows.Forms.Design.Behavior.SnapLinePriority) : System.Windows.Forms.Design.Behavior.SnapLine
+---@param type System.Windows.Forms.Design.Behavior.SnapLineType
+---@param offset number
+---@param filter string
+---@param priority System.Windows.Forms.Design.Behavior.SnapLinePriority
+---@return System.Windows.Forms.Design.Behavior.SnapLine
+function System.Windows.Forms.Design.Behavior.SnapLine.New(type, offset, filter, priority) end
+---@param line1 System.Windows.Forms.Design.Behavior.SnapLine
+---@param line2 System.Windows.Forms.Design.Behavior.SnapLine
+---@return boolean
+function System.Windows.Forms.Design.Behavior.SnapLine.ShouldSnap(line1, line2) end
+---@param adjustment number
+function System.Windows.Forms.Design.Behavior.SnapLine:AdjustOffset(adjustment) end
+---@return string
+function System.Windows.Forms.Design.Behavior.SnapLine:ToString() end
+
+---@class System.Windows.Forms.Design.Behavior.SnapLinePriority
+---@field Low System.Windows.Forms.Design.Behavior.SnapLinePriority
+---@field Medium System.Windows.Forms.Design.Behavior.SnapLinePriority
+---@field High System.Windows.Forms.Design.Behavior.SnapLinePriority
+---@field Always System.Windows.Forms.Design.Behavior.SnapLinePriority
+System.Windows.Forms.Design.Behavior.SnapLinePriority = {}
+---@alias CS.System.Windows.Forms.Design.Behavior.SnapLinePriority System.Windows.Forms.Design.Behavior.SnapLinePriority
+CS.System.Windows.Forms.Design.Behavior.SnapLinePriority = System.Windows.Forms.Design.Behavior.SnapLinePriority
+
+
+---@class System.Windows.Forms.Design.Behavior.SnapLineType
+---@field Top System.Windows.Forms.Design.Behavior.SnapLineType
+---@field Bottom System.Windows.Forms.Design.Behavior.SnapLineType
+---@field Left System.Windows.Forms.Design.Behavior.SnapLineType
+---@field Right System.Windows.Forms.Design.Behavior.SnapLineType
+---@field Horizontal System.Windows.Forms.Design.Behavior.SnapLineType
+---@field Vertical System.Windows.Forms.Design.Behavior.SnapLineType
+---@field Baseline System.Windows.Forms.Design.Behavior.SnapLineType
+System.Windows.Forms.Design.Behavior.SnapLineType = {}
+---@alias CS.System.Windows.Forms.Design.Behavior.SnapLineType System.Windows.Forms.Design.Behavior.SnapLineType
+CS.System.Windows.Forms.Design.Behavior.SnapLineType = System.Windows.Forms.Design.Behavior.SnapLineType
+
+
+---@class System.Web.UI.Design.AppSettingsExpressionEditor : System.Web.UI.Design.ExpressionEditor
+System.Web.UI.Design.AppSettingsExpressionEditor = {}
+---@alias CS.System.Web.UI.Design.AppSettingsExpressionEditor System.Web.UI.Design.AppSettingsExpressionEditor
+CS.System.Web.UI.Design.AppSettingsExpressionEditor = System.Web.UI.Design.AppSettingsExpressionEditor
+
+---@return System.Web.UI.Design.AppSettingsExpressionEditor
+function System.Web.UI.Design.AppSettingsExpressionEditor.New() end
+---@param expression string
+---@param parseTimeData System.Object
+---@param propertyType System.Type
+---@param serviceProvider System.IServiceProvider
+---@return System.Object
+function System.Web.UI.Design.AppSettingsExpressionEditor:EvaluateExpression(expression, parseTimeData, propertyType, serviceProvider) end
+---@param expression string
+---@param serviceProvider System.IServiceProvider
+---@return System.Web.UI.Design.ExpressionEditorSheet
+function System.Web.UI.Design.AppSettingsExpressionEditor:GetExpressionEditorSheet(expression, serviceProvider) end
+
+---@class System.Web.UI.Design.CalendarDataBindingHandler : System.Web.UI.Design.DataBindingHandler
+System.Web.UI.Design.CalendarDataBindingHandler = {}
+---@alias CS.System.Web.UI.Design.CalendarDataBindingHandler System.Web.UI.Design.CalendarDataBindingHandler
+CS.System.Web.UI.Design.CalendarDataBindingHandler = System.Web.UI.Design.CalendarDataBindingHandler
+
+---@return System.Web.UI.Design.CalendarDataBindingHandler
+function System.Web.UI.Design.CalendarDataBindingHandler.New() end
+---@param designerHost System.ComponentModel.Design.IDesignerHost
+---@param control System.Web.UI.Control
+function System.Web.UI.Design.CalendarDataBindingHandler:DataBindControl(designerHost, control) end
+
+---@class System.Web.UI.Design.ClientScriptItem : System.Object
+---@field Id string
+---@field Language string
+---@field Source string
+---@field Text string
+---@field Type string
+System.Web.UI.Design.ClientScriptItem = {}
+---@alias CS.System.Web.UI.Design.ClientScriptItem System.Web.UI.Design.ClientScriptItem
+CS.System.Web.UI.Design.ClientScriptItem = System.Web.UI.Design.ClientScriptItem
+
+---@param text string
+---@param source string
+---@param language string
+---@param type string
+---@param id string
+---@return System.Web.UI.Design.ClientScriptItem
+function System.Web.UI.Design.ClientScriptItem.New(text, source, language, type, id) end
+
+---@class System.Web.UI.Design.ClientScriptItemCollection : System.Collections.ReadOnlyCollectionBase
+System.Web.UI.Design.ClientScriptItemCollection = {}
+---@alias CS.System.Web.UI.Design.ClientScriptItemCollection System.Web.UI.Design.ClientScriptItemCollection
+CS.System.Web.UI.Design.ClientScriptItemCollection = System.Web.UI.Design.ClientScriptItemCollection
+
+---@param clientScriptItems System.Web.UI.Design.ClientScriptItem[]
+---@return System.Web.UI.Design.ClientScriptItemCollection
+function System.Web.UI.Design.ClientScriptItemCollection.New(clientScriptItems) end
+
+---@class System.Web.UI.Design.ColorBuilder : System.Object
+System.Web.UI.Design.ColorBuilder = {}
+---@alias CS.System.Web.UI.Design.ColorBuilder System.Web.UI.Design.ColorBuilder
+CS.System.Web.UI.Design.ColorBuilder = System.Web.UI.Design.ColorBuilder
+
+---@param component System.ComponentModel.IComponent
+---@param owner System.Windows.Forms.Control
+---@param initialColor string
+---@return string
+function System.Web.UI.Design.ColorBuilder.BuildColor(component, owner, initialColor) end
+
+---@class System.Web.UI.Design.ConnectionStringEditor : System.Drawing.Design.UITypeEditor
+System.Web.UI.Design.ConnectionStringEditor = {}
+---@alias CS.System.Web.UI.Design.ConnectionStringEditor System.Web.UI.Design.ConnectionStringEditor
+CS.System.Web.UI.Design.ConnectionStringEditor = System.Web.UI.Design.ConnectionStringEditor
+
+---@return System.Web.UI.Design.ConnectionStringEditor
+function System.Web.UI.Design.ConnectionStringEditor.New() end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@param provider System.IServiceProvider
+---@param value System.Object
+---@return System.Object
+function System.Web.UI.Design.ConnectionStringEditor:EditValue(context, provider, value) end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@return System.Drawing.Design.UITypeEditorEditStyle
+function System.Web.UI.Design.ConnectionStringEditor:GetEditStyle(context) end
+
+---@class System.Web.UI.Design.ConnectionStringsExpressionEditor : System.Web.UI.Design.ExpressionEditor
+System.Web.UI.Design.ConnectionStringsExpressionEditor = {}
+---@alias CS.System.Web.UI.Design.ConnectionStringsExpressionEditor System.Web.UI.Design.ConnectionStringsExpressionEditor
+CS.System.Web.UI.Design.ConnectionStringsExpressionEditor = System.Web.UI.Design.ConnectionStringsExpressionEditor
+
+---@return System.Web.UI.Design.ConnectionStringsExpressionEditor
+function System.Web.UI.Design.ConnectionStringsExpressionEditor.New() end
+---@param expression string
+---@param parseTimeData System.Object
+---@param propertyType System.Type
+---@param serviceProvider System.IServiceProvider
+---@return System.Object
+function System.Web.UI.Design.ConnectionStringsExpressionEditor:EvaluateExpression(expression, parseTimeData, propertyType, serviceProvider) end
+---@param expression string
+---@param serviceProvider System.IServiceProvider
+---@return System.Web.UI.Design.ExpressionEditorSheet
+function System.Web.UI.Design.ConnectionStringsExpressionEditor:GetExpressionEditorSheet(expression, serviceProvider) end
+
+---@class System.Web.UI.Design.ContainerControlDesigner : System.Web.UI.Design.ControlDesigner
+---@field AllowResize boolean
+---@field FrameCaption string
+---@field FrameStyle System.Web.UI.WebControls.Style
+System.Web.UI.Design.ContainerControlDesigner = {}
+---@alias CS.System.Web.UI.Design.ContainerControlDesigner System.Web.UI.Design.ContainerControlDesigner
+CS.System.Web.UI.Design.ContainerControlDesigner = System.Web.UI.Design.ContainerControlDesigner
+
+---@return System.Web.UI.Design.ContainerControlDesigner
+function System.Web.UI.Design.ContainerControlDesigner.New() end
+---@return System.Collections.IDictionary
+function System.Web.UI.Design.ContainerControlDesigner:GetDesignTimeCssAttributes() end
+---@param regions System.Web.UI.Design.DesignerRegionCollection
+---@return string
+function System.Web.UI.Design.ContainerControlDesigner:GetDesignTimeHtml(regions) end
+---@param region System.Web.UI.Design.EditableDesignerRegion
+---@return string
+function System.Web.UI.Design.ContainerControlDesigner:GetEditableDesignerRegionContent(region) end
+---@return string
+function System.Web.UI.Design.ContainerControlDesigner:GetPersistenceContent() end
+---@param region System.Web.UI.Design.EditableDesignerRegion
+---@param content string
+function System.Web.UI.Design.ContainerControlDesigner:SetEditableDesignerRegionContent(region, content) end
+
+---@class System.Web.UI.Design.ContentDefinition : System.Object
+---@field ContentPlaceHolderID string
+---@field DefaultContent string
+---@field DefaultDesignTimeHtml string
+System.Web.UI.Design.ContentDefinition = {}
+---@alias CS.System.Web.UI.Design.ContentDefinition System.Web.UI.Design.ContentDefinition
+CS.System.Web.UI.Design.ContentDefinition = System.Web.UI.Design.ContentDefinition
+
+---@param id string
+---@param content string
+---@param designTimeHtml string
+---@return System.Web.UI.Design.ContentDefinition
+function System.Web.UI.Design.ContentDefinition.New(id, content, designTimeHtml) end
+
+---@class System.Web.UI.Design.ContentDesignerState
+---@field ShowDefaultContent System.Web.UI.Design.ContentDesignerState
+---@field ShowUserContent System.Web.UI.Design.ContentDesignerState
+System.Web.UI.Design.ContentDesignerState = {}
+---@alias CS.System.Web.UI.Design.ContentDesignerState System.Web.UI.Design.ContentDesignerState
+CS.System.Web.UI.Design.ContentDesignerState = System.Web.UI.Design.ContentDesignerState
+
+
+---@class System.Web.UI.Design.ControlDesigner : System.Web.UI.Design.HtmlControlDesigner
+---@field AllowResize boolean
+---@field ID string
+---@field ActionLists System.ComponentModel.Design.DesignerActionListCollection
+---@field AutoFormats System.Web.UI.Design.DesignerAutoFormatCollection
+---@field InTemplateMode boolean
+---@field TemplateGroups System.Web.UI.Design.TemplateGroupCollection
+---@field ViewControl System.Web.UI.Control
+---@field ViewControlCreated boolean
+System.Web.UI.Design.ControlDesigner = {}
+---@alias CS.System.Web.UI.Design.ControlDesigner System.Web.UI.Design.ControlDesigner
+CS.System.Web.UI.Design.ControlDesigner = System.Web.UI.Design.ControlDesigner
+
+---@return System.Web.UI.Design.ControlDesigner
+function System.Web.UI.Design.ControlDesigner.New() end
+---@param serviceProvider System.IServiceProvider
+---@return System.Web.UI.Design.DesignTimeResourceProviderFactory
+function System.Web.UI.Design.ControlDesigner.GetDesignTimeResourceProviderFactory(serviceProvider) end
+---@overload fun(control: System.Web.UI.Control) : System.Web.UI.Design.ViewRendering
+---@overload fun(designer: System.Web.UI.Design.ControlDesigner) : System.Web.UI.Design.ViewRendering
+---@return System.Web.UI.Design.ViewRendering
+function System.Web.UI.Design.ControlDesigner:GetViewRendering() end
+---@overload fun(component: System.ComponentModel.IComponent, callback: System.Web.UI.Design.TransactedChangeCallback, context: System.Object, description: string)
+---@overload fun(component: System.ComponentModel.IComponent, callback: System.Web.UI.Design.TransactedChangeCallback, context: System.Object, description: string, member: System.ComponentModel.MemberDescriptor)
+---@param serviceProvider System.IServiceProvider
+---@param component System.ComponentModel.IComponent
+---@param callback System.Web.UI.Design.TransactedChangeCallback
+---@param context System.Object
+---@param description string
+---@param member System.ComponentModel.MemberDescriptor
+function System.Web.UI.Design.ControlDesigner.InvokeTransactedChange(serviceProvider, component, callback, context, description, member) end
+---@overload fun() : string
+---@param regions System.Web.UI.Design.DesignerRegionCollection
+---@return string
+function System.Web.UI.Design.ControlDesigner:GetDesignTimeHtml(regions) end
+---@return System.Drawing.Rectangle
+function System.Web.UI.Design.ControlDesigner:GetBounds() end
+---@param region System.Web.UI.Design.EditableDesignerRegion
+---@return string
+function System.Web.UI.Design.ControlDesigner:GetEditableDesignerRegionContent(region) end
+---@param region System.Web.UI.Design.EditableDesignerRegion
+---@param content string
+function System.Web.UI.Design.ControlDesigner:SetEditableDesignerRegionContent(region, content) end
+---@return string
+function System.Web.UI.Design.ControlDesigner:GetPersistenceContent() end
+---@overload fun()
+---@param rectangle System.Drawing.Rectangle
+function System.Web.UI.Design.ControlDesigner:Invalidate(rectangle) end
+---@param resourceWriter System.Web.UI.Design.IDesignTimeResourceWriter
+function System.Web.UI.Design.ControlDesigner:Localize(resourceWriter) end
+---@param appliedAutoFormat System.Web.UI.Design.DesignerAutoFormat
+function System.Web.UI.Design.ControlDesigner:OnAutoFormatApplied(appliedAutoFormat) end
+---@param sender System.Object
+---@param ce System.ComponentModel.Design.ComponentChangingEventArgs
+function System.Web.UI.Design.ControlDesigner:OnComponentChanging(sender, ce) end
+---@param original System.Object
+---@param clone System.Object
+function System.Web.UI.Design.ControlDesigner:RegisterClone(original, clone) end
+---@param component System.ComponentModel.IComponent
+function System.Web.UI.Design.ControlDesigner:Initialize(component) end
+---@param sender System.Object
+---@param ce System.ComponentModel.Design.ComponentChangedEventArgs
+function System.Web.UI.Design.ControlDesigner:OnComponentChanged(sender, ce) end
+function System.Web.UI.Design.ControlDesigner:UpdateDesignTimeHtml() end
+
+---@class System.Web.UI.Design.ControlDesignerState : System.Object
+---@field Item System.Object
+System.Web.UI.Design.ControlDesignerState = {}
+---@alias CS.System.Web.UI.Design.ControlDesignerState System.Web.UI.Design.ControlDesignerState
+CS.System.Web.UI.Design.ControlDesignerState = System.Web.UI.Design.ControlDesignerState
+
+
+---@class System.Web.UI.Design.ControlLocation
+---@field Before System.Web.UI.Design.ControlLocation
+---@field After System.Web.UI.Design.ControlLocation
+---@field First System.Web.UI.Design.ControlLocation
+---@field Last System.Web.UI.Design.ControlLocation
+---@field FirstChild System.Web.UI.Design.ControlLocation
+---@field LastChild System.Web.UI.Design.ControlLocation
+System.Web.UI.Design.ControlLocation = {}
+---@alias CS.System.Web.UI.Design.ControlLocation System.Web.UI.Design.ControlLocation
+CS.System.Web.UI.Design.ControlLocation = System.Web.UI.Design.ControlLocation
+
+
+---@class System.Web.UI.Design.ControlParser : System.Object
+System.Web.UI.Design.ControlParser = {}
+---@alias CS.System.Web.UI.Design.ControlParser System.Web.UI.Design.ControlParser
+CS.System.Web.UI.Design.ControlParser = System.Web.UI.Design.ControlParser
+
+---@overload fun(designerHost: System.ComponentModel.Design.IDesignerHost, controlText: string) : System.Web.UI.Control
+---@param designerHost System.ComponentModel.Design.IDesignerHost
+---@param controlText string
+---@param directives string
+---@return System.Web.UI.Control
+function System.Web.UI.Design.ControlParser.ParseControl(designerHost, controlText, directives) end
+---@param designerHost System.ComponentModel.Design.IDesignerHost
+---@param controlText string
+---@return System.Web.UI.Control[]
+function System.Web.UI.Design.ControlParser.ParseControls(designerHost, controlText) end
+---@overload fun(designerHost: System.ComponentModel.Design.IDesignerHost, templateText: string) : System.Web.UI.ITemplate
+---@param designerHost System.ComponentModel.Design.IDesignerHost
+---@param templateText string
+---@param directives string
+---@return System.Web.UI.ITemplate
+function System.Web.UI.Design.ControlParser.ParseTemplate(designerHost, templateText, directives) end
+
+---@class System.Web.UI.Design.ControlPersister : System.Object
+System.Web.UI.Design.ControlPersister = {}
+---@alias CS.System.Web.UI.Design.ControlPersister System.Web.UI.Design.ControlPersister
+CS.System.Web.UI.Design.ControlPersister = System.Web.UI.Design.ControlPersister
+
+---@overload fun(control: System.Web.UI.Control) : string
+---@overload fun(sw: System.IO.TextWriter, control: System.Web.UI.Control)
+---@overload fun(control: System.Web.UI.Control, host: System.ComponentModel.Design.IDesignerHost) : string
+---@param sw System.IO.TextWriter
+---@param control System.Web.UI.Control
+---@param host System.ComponentModel.Design.IDesignerHost
+function System.Web.UI.Design.ControlPersister.PersistControl(sw, control, host) end
+---@overload fun(component: System.Object, host: System.ComponentModel.Design.IDesignerHost) : string
+---@param sw System.IO.TextWriter
+---@param component System.Object
+---@param host System.ComponentModel.Design.IDesignerHost
+function System.Web.UI.Design.ControlPersister.PersistInnerProperties(sw, component, host) end
+---@overload fun(template: System.Web.UI.ITemplate, host: System.ComponentModel.Design.IDesignerHost) : string
+---@param writer System.IO.TextWriter
+---@param template System.Web.UI.ITemplate
+---@param host System.ComponentModel.Design.IDesignerHost
+function System.Web.UI.Design.ControlPersister.PersistTemplate(writer, template, host) end
+
+---@class System.Web.UI.Design.DataBindingCollectionConverter : System.ComponentModel.TypeConverter
+System.Web.UI.Design.DataBindingCollectionConverter = {}
+---@alias CS.System.Web.UI.Design.DataBindingCollectionConverter System.Web.UI.Design.DataBindingCollectionConverter
+CS.System.Web.UI.Design.DataBindingCollectionConverter = System.Web.UI.Design.DataBindingCollectionConverter
+
+---@return System.Web.UI.Design.DataBindingCollectionConverter
+function System.Web.UI.Design.DataBindingCollectionConverter.New() end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@param culture System.Globalization.CultureInfo
+---@param value System.Object
+---@param destinationType System.Type
+---@return System.Object
+function System.Web.UI.Design.DataBindingCollectionConverter:ConvertTo(context, culture, value, destinationType) end
+
+---@class System.Web.UI.Design.DataBindingCollectionEditor : System.Drawing.Design.UITypeEditor
+System.Web.UI.Design.DataBindingCollectionEditor = {}
+---@alias CS.System.Web.UI.Design.DataBindingCollectionEditor System.Web.UI.Design.DataBindingCollectionEditor
+CS.System.Web.UI.Design.DataBindingCollectionEditor = System.Web.UI.Design.DataBindingCollectionEditor
+
+---@return System.Web.UI.Design.DataBindingCollectionEditor
+function System.Web.UI.Design.DataBindingCollectionEditor.New() end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@param provider System.IServiceProvider
+---@param value System.Object
+---@return System.Object
+function System.Web.UI.Design.DataBindingCollectionEditor:EditValue(context, provider, value) end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@return System.Drawing.Design.UITypeEditorEditStyle
+function System.Web.UI.Design.DataBindingCollectionEditor:GetEditStyle(context) end
+
+---@class System.Web.UI.Design.DataBindingHandler : System.Object
+System.Web.UI.Design.DataBindingHandler = {}
+---@alias CS.System.Web.UI.Design.DataBindingHandler System.Web.UI.Design.DataBindingHandler
+CS.System.Web.UI.Design.DataBindingHandler = System.Web.UI.Design.DataBindingHandler
+
+---@param designerHost System.ComponentModel.Design.IDesignerHost
+---@param control System.Web.UI.Control
+function System.Web.UI.Design.DataBindingHandler:DataBindControl(designerHost, control) end
+
+---@class System.Web.UI.Design.DataBindingValueUIHandler : System.Object
+System.Web.UI.Design.DataBindingValueUIHandler = {}
+---@alias CS.System.Web.UI.Design.DataBindingValueUIHandler System.Web.UI.Design.DataBindingValueUIHandler
+CS.System.Web.UI.Design.DataBindingValueUIHandler = System.Web.UI.Design.DataBindingValueUIHandler
+
+---@return System.Web.UI.Design.DataBindingValueUIHandler
+function System.Web.UI.Design.DataBindingValueUIHandler.New() end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@param propDesc System.ComponentModel.PropertyDescriptor
+---@param valueUIItemList System.Collections.ArrayList
+function System.Web.UI.Design.DataBindingValueUIHandler:OnGetUIValueItem(context, propDesc, valueUIItemList) end
+
+---@class System.Web.UI.Design.DataColumnSelectionConverter : System.ComponentModel.TypeConverter
+System.Web.UI.Design.DataColumnSelectionConverter = {}
+---@alias CS.System.Web.UI.Design.DataColumnSelectionConverter System.Web.UI.Design.DataColumnSelectionConverter
+CS.System.Web.UI.Design.DataColumnSelectionConverter = System.Web.UI.Design.DataColumnSelectionConverter
+
+---@return System.Web.UI.Design.DataColumnSelectionConverter
+function System.Web.UI.Design.DataColumnSelectionConverter.New() end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@param sourceType System.Type
+---@return boolean
+function System.Web.UI.Design.DataColumnSelectionConverter:CanConvertFrom(context, sourceType) end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@param culture System.Globalization.CultureInfo
+---@param value System.Object
+---@return System.Object
+function System.Web.UI.Design.DataColumnSelectionConverter:ConvertFrom(context, culture, value) end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@return System.ComponentModel.TypeConverter.StandardValuesCollection
+function System.Web.UI.Design.DataColumnSelectionConverter:GetStandardValues(context) end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@return boolean
+function System.Web.UI.Design.DataColumnSelectionConverter:GetStandardValuesExclusive(context) end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@return boolean
+function System.Web.UI.Design.DataColumnSelectionConverter:GetStandardValuesSupported(context) end
+
+---@class System.Web.UI.Design.DataFieldConverter : System.ComponentModel.TypeConverter
+System.Web.UI.Design.DataFieldConverter = {}
+---@alias CS.System.Web.UI.Design.DataFieldConverter System.Web.UI.Design.DataFieldConverter
+CS.System.Web.UI.Design.DataFieldConverter = System.Web.UI.Design.DataFieldConverter
+
+---@return System.Web.UI.Design.DataFieldConverter
+function System.Web.UI.Design.DataFieldConverter.New() end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@param sourceType System.Type
+---@return boolean
+function System.Web.UI.Design.DataFieldConverter:CanConvertFrom(context, sourceType) end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@param culture System.Globalization.CultureInfo
+---@param value System.Object
+---@return System.Object
+function System.Web.UI.Design.DataFieldConverter:ConvertFrom(context, culture, value) end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@return System.ComponentModel.TypeConverter.StandardValuesCollection
+function System.Web.UI.Design.DataFieldConverter:GetStandardValues(context) end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@return boolean
+function System.Web.UI.Design.DataFieldConverter:GetStandardValuesExclusive(context) end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@return boolean
+function System.Web.UI.Design.DataFieldConverter:GetStandardValuesSupported(context) end
+
+---@class System.Web.UI.Design.DataMemberConverter : System.ComponentModel.TypeConverter
+System.Web.UI.Design.DataMemberConverter = {}
+---@alias CS.System.Web.UI.Design.DataMemberConverter System.Web.UI.Design.DataMemberConverter
+CS.System.Web.UI.Design.DataMemberConverter = System.Web.UI.Design.DataMemberConverter
+
+---@return System.Web.UI.Design.DataMemberConverter
+function System.Web.UI.Design.DataMemberConverter.New() end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@param sourceType System.Type
+---@return boolean
+function System.Web.UI.Design.DataMemberConverter:CanConvertFrom(context, sourceType) end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@param culture System.Globalization.CultureInfo
+---@param value System.Object
+---@return System.Object
+function System.Web.UI.Design.DataMemberConverter:ConvertFrom(context, culture, value) end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@return System.ComponentModel.TypeConverter.StandardValuesCollection
+function System.Web.UI.Design.DataMemberConverter:GetStandardValues(context) end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@return boolean
+function System.Web.UI.Design.DataMemberConverter:GetStandardValuesExclusive(context) end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@return boolean
+function System.Web.UI.Design.DataMemberConverter:GetStandardValuesSupported(context) end
+
+---@class System.Web.UI.Design.DataSetFieldSchema : System.Object
+---@field DataType System.Type
+---@field Identity boolean
+---@field IsReadOnly boolean
+---@field IsUnique boolean
+---@field Length number
+---@field Name string
+---@field Nullable boolean
+---@field Precision number
+---@field PrimaryKey boolean
+---@field Scale number
+System.Web.UI.Design.DataSetFieldSchema = {}
+---@alias CS.System.Web.UI.Design.DataSetFieldSchema System.Web.UI.Design.DataSetFieldSchema
+CS.System.Web.UI.Design.DataSetFieldSchema = System.Web.UI.Design.DataSetFieldSchema
+
+---@param column System.Data.DataColumn
+---@return System.Web.UI.Design.DataSetFieldSchema
+function System.Web.UI.Design.DataSetFieldSchema.New(column) end
+
+---@class System.Web.UI.Design.DataSetSchema : System.Object
+System.Web.UI.Design.DataSetSchema = {}
+---@alias CS.System.Web.UI.Design.DataSetSchema System.Web.UI.Design.DataSetSchema
+CS.System.Web.UI.Design.DataSetSchema = System.Web.UI.Design.DataSetSchema
+
+---@param dataSet System.Data.DataSet
+---@return System.Web.UI.Design.DataSetSchema
+function System.Web.UI.Design.DataSetSchema.New(dataSet) end
+---@return System.Web.UI.Design.IDataSourceViewSchema[]
+function System.Web.UI.Design.DataSetSchema:GetViews() end
+
+---@class System.Web.UI.Design.DataSetViewSchema : System.Object
+---@field Name string
+System.Web.UI.Design.DataSetViewSchema = {}
+---@alias CS.System.Web.UI.Design.DataSetViewSchema System.Web.UI.Design.DataSetViewSchema
+CS.System.Web.UI.Design.DataSetViewSchema = System.Web.UI.Design.DataSetViewSchema
+
+---@param dataTable System.Data.DataTable
+---@return System.Web.UI.Design.DataSetViewSchema
+function System.Web.UI.Design.DataSetViewSchema.New(dataTable) end
+---@return System.Web.UI.Design.IDataSourceViewSchema[]
+function System.Web.UI.Design.DataSetViewSchema:GetChildren() end
+---@return System.Web.UI.Design.IDataSourceFieldSchema[]
+function System.Web.UI.Design.DataSetViewSchema:GetFields() end
+
+---@class System.Web.UI.Design.DataSourceBooleanViewSchemaConverter : System.Web.UI.Design.DataSourceViewSchemaConverter
+System.Web.UI.Design.DataSourceBooleanViewSchemaConverter = {}
+---@alias CS.System.Web.UI.Design.DataSourceBooleanViewSchemaConverter System.Web.UI.Design.DataSourceBooleanViewSchemaConverter
+CS.System.Web.UI.Design.DataSourceBooleanViewSchemaConverter = System.Web.UI.Design.DataSourceBooleanViewSchemaConverter
+
+---@return System.Web.UI.Design.DataSourceBooleanViewSchemaConverter
+function System.Web.UI.Design.DataSourceBooleanViewSchemaConverter.New() end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@return System.ComponentModel.TypeConverter.StandardValuesCollection
+function System.Web.UI.Design.DataSourceBooleanViewSchemaConverter:GetStandardValues(context) end
+
+---@class System.Web.UI.Design.DataSourceConverter : System.ComponentModel.TypeConverter
+System.Web.UI.Design.DataSourceConverter = {}
+---@alias CS.System.Web.UI.Design.DataSourceConverter System.Web.UI.Design.DataSourceConverter
+CS.System.Web.UI.Design.DataSourceConverter = System.Web.UI.Design.DataSourceConverter
+
+---@return System.Web.UI.Design.DataSourceConverter
+function System.Web.UI.Design.DataSourceConverter.New() end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@param sourceType System.Type
+---@return boolean
+function System.Web.UI.Design.DataSourceConverter:CanConvertFrom(context, sourceType) end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@param culture System.Globalization.CultureInfo
+---@param value System.Object
+---@return System.Object
+function System.Web.UI.Design.DataSourceConverter:ConvertFrom(context, culture, value) end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@return System.ComponentModel.TypeConverter.StandardValuesCollection
+function System.Web.UI.Design.DataSourceConverter:GetStandardValues(context) end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@return boolean
+function System.Web.UI.Design.DataSourceConverter:GetStandardValuesExclusive(context) end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@return boolean
+function System.Web.UI.Design.DataSourceConverter:GetStandardValuesSupported(context) end
+
+---@class System.Web.UI.Design.DataSourceDesigner : System.Web.UI.Design.ControlDesigner
+---@field ActionLists System.ComponentModel.Design.DesignerActionListCollection
+---@field CanConfigure boolean
+---@field CanRefreshSchema boolean
+System.Web.UI.Design.DataSourceDesigner = {}
+---@alias CS.System.Web.UI.Design.DataSourceDesigner System.Web.UI.Design.DataSourceDesigner
+CS.System.Web.UI.Design.DataSourceDesigner = System.Web.UI.Design.DataSourceDesigner
+
+---@return System.Web.UI.Design.DataSourceDesigner
+function System.Web.UI.Design.DataSourceDesigner.New() end
+---@param schema1 System.Web.UI.Design.IDataSourceSchema
+---@param schema2 System.Web.UI.Design.IDataSourceSchema
+---@return boolean
+function System.Web.UI.Design.DataSourceDesigner.SchemasEquivalent(schema1, schema2) end
+---@param viewSchema1 System.Web.UI.Design.IDataSourceViewSchema
+---@param viewSchema2 System.Web.UI.Design.IDataSourceViewSchema
+---@return boolean
+function System.Web.UI.Design.DataSourceDesigner.ViewSchemasEquivalent(viewSchema1, viewSchema2) end
+function System.Web.UI.Design.DataSourceDesigner:Configure() end
+---@return string
+function System.Web.UI.Design.DataSourceDesigner:GetDesignTimeHtml() end
+---@param viewName string
+---@return System.Web.UI.Design.DesignerDataSourceView
+function System.Web.UI.Design.DataSourceDesigner:GetView(viewName) end
+---@return System.String[]
+function System.Web.UI.Design.DataSourceDesigner:GetViewNames() end
+---@param preferSilent boolean
+function System.Web.UI.Design.DataSourceDesigner:RefreshSchema(preferSilent) end
+function System.Web.UI.Design.DataSourceDesigner:ResumeDataSourceEvents() end
+function System.Web.UI.Design.DataSourceDesigner:SuppressDataSourceEvents() end
+
+---@class System.Web.UI.Design.DataSourceViewSchemaConverter : System.ComponentModel.TypeConverter
+System.Web.UI.Design.DataSourceViewSchemaConverter = {}
+---@alias CS.System.Web.UI.Design.DataSourceViewSchemaConverter System.Web.UI.Design.DataSourceViewSchemaConverter
+CS.System.Web.UI.Design.DataSourceViewSchemaConverter = System.Web.UI.Design.DataSourceViewSchemaConverter
+
+---@return System.Web.UI.Design.DataSourceViewSchemaConverter
+function System.Web.UI.Design.DataSourceViewSchemaConverter.New() end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@param sourceType System.Type
+---@return boolean
+function System.Web.UI.Design.DataSourceViewSchemaConverter:CanConvertFrom(context, sourceType) end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@param culture System.Globalization.CultureInfo
+---@param value System.Object
+---@return System.Object
+function System.Web.UI.Design.DataSourceViewSchemaConverter:ConvertFrom(context, culture, value) end
+---@overload fun(self: System.Web.UI.Design.DataSourceViewSchemaConverter, context: System.ComponentModel.ITypeDescriptorContext) : System.ComponentModel.TypeConverter.StandardValuesCollection
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@param typeFilter System.Type
+---@return System.ComponentModel.TypeConverter.StandardValuesCollection
+function System.Web.UI.Design.DataSourceViewSchemaConverter:GetStandardValues(context, typeFilter) end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@return boolean
+function System.Web.UI.Design.DataSourceViewSchemaConverter:GetStandardValuesExclusive(context) end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@return boolean
+function System.Web.UI.Design.DataSourceViewSchemaConverter:GetStandardValuesSupported(context) end
+
+---@class System.Web.UI.Design.DesignTimeData : System.Object
+---@field DataBindingHandler System.EventHandler
+System.Web.UI.Design.DesignTimeData = {}
+---@alias CS.System.Web.UI.Design.DesignTimeData System.Web.UI.Design.DesignTimeData
+CS.System.Web.UI.Design.DesignTimeData = System.Web.UI.Design.DesignTimeData
+
+---@return System.Data.DataTable
+function System.Web.UI.Design.DesignTimeData.CreateDummyDataBoundDataTable() end
+---@return System.Data.DataTable
+function System.Web.UI.Design.DesignTimeData.CreateDummyDataTable() end
+---@overload fun(referenceData: System.Collections.IEnumerable) : System.Data.DataTable
+---@param referenceData System.Collections.IEnumerable
+---@param useDataBoundData boolean
+---@return System.Data.DataTable
+function System.Web.UI.Design.DesignTimeData.CreateSampleDataTable(referenceData, useDataBoundData) end
+---@param dataSource System.Collections.IEnumerable
+---@return System.ComponentModel.PropertyDescriptorCollection
+function System.Web.UI.Design.DesignTimeData.GetDataFields(dataSource) end
+---@param dataSource System.ComponentModel.IListSource
+---@param dataMember string
+---@return System.Collections.IEnumerable
+function System.Web.UI.Design.DesignTimeData.GetDataMember(dataSource, dataMember) end
+---@param dataSource System.Object
+---@return System.String[]
+function System.Web.UI.Design.DesignTimeData.GetDataMembers(dataSource) end
+---@param dataTable System.Data.DataTable
+---@param minimumRows number
+---@return System.Collections.IEnumerable
+function System.Web.UI.Design.DesignTimeData.GetDesignTimeDataSource(dataTable, minimumRows) end
+---@overload fun(component: System.ComponentModel.IComponent, dataSource: string) : System.Object
+---@param component System.ComponentModel.IComponent
+---@param dataSource string
+---@param dataMember string
+---@return System.Collections.IEnumerable
+function System.Web.UI.Design.DesignTimeData.GetSelectedDataSource(component, dataSource, dataMember) end
+
+---@class System.Web.UI.Design.DesignTimeResourceProviderFactory : System.Object
+System.Web.UI.Design.DesignTimeResourceProviderFactory = {}
+---@alias CS.System.Web.UI.Design.DesignTimeResourceProviderFactory System.Web.UI.Design.DesignTimeResourceProviderFactory
+CS.System.Web.UI.Design.DesignTimeResourceProviderFactory = System.Web.UI.Design.DesignTimeResourceProviderFactory
+
+---@param serviceProvider System.IServiceProvider
+---@param classKey string
+---@return System.Web.Compilation.IResourceProvider
+function System.Web.UI.Design.DesignTimeResourceProviderFactory:CreateDesignTimeGlobalResourceProvider(serviceProvider, classKey) end
+---@param serviceProvider System.IServiceProvider
+---@return System.Web.Compilation.IResourceProvider
+function System.Web.UI.Design.DesignTimeResourceProviderFactory:CreateDesignTimeLocalResourceProvider(serviceProvider) end
+---@param serviceProvider System.IServiceProvider
+---@return System.Web.UI.Design.IDesignTimeResourceWriter
+function System.Web.UI.Design.DesignTimeResourceProviderFactory:CreateDesignTimeLocalResourceWriter(serviceProvider) end
+
+---@class System.Web.UI.Design.DesignerAutoFormat : System.Object
+---@field Name string
+---@field Style System.Web.UI.Design.DesignerAutoFormatStyle
+System.Web.UI.Design.DesignerAutoFormat = {}
+---@alias CS.System.Web.UI.Design.DesignerAutoFormat System.Web.UI.Design.DesignerAutoFormat
+CS.System.Web.UI.Design.DesignerAutoFormat = System.Web.UI.Design.DesignerAutoFormat
+
+---@param control System.Web.UI.Control
+function System.Web.UI.Design.DesignerAutoFormat:Apply(control) end
+---@param runtimeControl System.Web.UI.Control
+---@return System.Web.UI.Control
+function System.Web.UI.Design.DesignerAutoFormat:GetPreviewControl(runtimeControl) end
+---@return string
+function System.Web.UI.Design.DesignerAutoFormat:ToString() end
+
+---@class System.Web.UI.Design.DesignerAutoFormatCollection : System.Object
+---@field Count number
+---@field Item System.Web.UI.Design.DesignerAutoFormat
+---@field PreviewSize System.Drawing.Size
+---@field SyncRoot System.Object
+System.Web.UI.Design.DesignerAutoFormatCollection = {}
+---@alias CS.System.Web.UI.Design.DesignerAutoFormatCollection System.Web.UI.Design.DesignerAutoFormatCollection
+CS.System.Web.UI.Design.DesignerAutoFormatCollection = System.Web.UI.Design.DesignerAutoFormatCollection
+
+---@return System.Web.UI.Design.DesignerAutoFormatCollection
+function System.Web.UI.Design.DesignerAutoFormatCollection.New() end
+---@param format System.Web.UI.Design.DesignerAutoFormat
+---@return number
+function System.Web.UI.Design.DesignerAutoFormatCollection:Add(format) end
+function System.Web.UI.Design.DesignerAutoFormatCollection:Clear() end
+---@param format System.Web.UI.Design.DesignerAutoFormat
+---@return boolean
+function System.Web.UI.Design.DesignerAutoFormatCollection:Contains(format) end
+---@param format System.Web.UI.Design.DesignerAutoFormat
+---@return number
+function System.Web.UI.Design.DesignerAutoFormatCollection:IndexOf(format) end
+---@param index number
+---@param format System.Web.UI.Design.DesignerAutoFormat
+function System.Web.UI.Design.DesignerAutoFormatCollection:Insert(index, format) end
+---@param format System.Web.UI.Design.DesignerAutoFormat
+function System.Web.UI.Design.DesignerAutoFormatCollection:Remove(format) end
+---@param index number
+function System.Web.UI.Design.DesignerAutoFormatCollection:RemoveAt(index) end
+
+---@class System.Web.UI.Design.DesignerAutoFormatStyle : System.Web.UI.WebControls.Style
+---@field VerticalAlign System.Web.UI.WebControls.VerticalAlign
+System.Web.UI.Design.DesignerAutoFormatStyle = {}
+---@alias CS.System.Web.UI.Design.DesignerAutoFormatStyle System.Web.UI.Design.DesignerAutoFormatStyle
+CS.System.Web.UI.Design.DesignerAutoFormatStyle = System.Web.UI.Design.DesignerAutoFormatStyle
+
+---@return System.Web.UI.Design.DesignerAutoFormatStyle
+function System.Web.UI.Design.DesignerAutoFormatStyle.New() end
+
+---@class System.Web.UI.Design.DesignerDataSourceView : System.Object
+---@field CanDelete boolean
+---@field CanInsert boolean
+---@field CanPage boolean
+---@field CanRetrieveTotalRowCount boolean
+---@field CanSort boolean
+---@field CanUpdate boolean
+---@field DataSourceDesigner System.Web.UI.Design.IDataSourceDesigner
+---@field Name string
+---@field Schema System.Web.UI.Design.IDataSourceViewSchema
+System.Web.UI.Design.DesignerDataSourceView = {}
+---@alias CS.System.Web.UI.Design.DesignerDataSourceView System.Web.UI.Design.DesignerDataSourceView
+CS.System.Web.UI.Design.DesignerDataSourceView = System.Web.UI.Design.DesignerDataSourceView
+
+---@param minimumRows number
+---@param out_isSampleData boolean
+---@return System.Collections.IEnumerable,boolean
+function System.Web.UI.Design.DesignerDataSourceView:GetDesignTimeData(minimumRows, out_isSampleData) end
+
+---@class System.Web.UI.Design.DesignerHierarchicalDataSourceView : System.Object
+---@field DataSourceDesigner System.Web.UI.Design.IHierarchicalDataSourceDesigner
+---@field Path string
+---@field Schema System.Web.UI.Design.IDataSourceSchema
+System.Web.UI.Design.DesignerHierarchicalDataSourceView = {}
+---@alias CS.System.Web.UI.Design.DesignerHierarchicalDataSourceView System.Web.UI.Design.DesignerHierarchicalDataSourceView
+CS.System.Web.UI.Design.DesignerHierarchicalDataSourceView = System.Web.UI.Design.DesignerHierarchicalDataSourceView
+
+---@param out_isSampleData boolean
+---@return System.Web.UI.IHierarchicalEnumerable,boolean
+function System.Web.UI.Design.DesignerHierarchicalDataSourceView:GetDesignTimeData(out_isSampleData) end
+
+---@class System.Web.UI.Design.DesignerObject : System.Object
+---@field Designer System.Web.UI.Design.ControlDesigner
+---@field Name string
+---@field Properties System.Collections.IDictionary
+System.Web.UI.Design.DesignerObject = {}
+---@alias CS.System.Web.UI.Design.DesignerObject System.Web.UI.Design.DesignerObject
+CS.System.Web.UI.Design.DesignerObject = System.Web.UI.Design.DesignerObject
+
+
+---@class System.Web.UI.Design.DesignerRegion : System.Web.UI.Design.DesignerObject
+---@field DesignerRegionAttributeName string
+---@field Description string
+---@field DisplayName string
+---@field EnsureSize boolean
+---@field Highlight boolean
+---@field Selectable boolean
+---@field Selected boolean
+---@field UserData System.Object
+System.Web.UI.Design.DesignerRegion = {}
+---@alias CS.System.Web.UI.Design.DesignerRegion System.Web.UI.Design.DesignerRegion
+CS.System.Web.UI.Design.DesignerRegion = System.Web.UI.Design.DesignerRegion
+
+---@overload fun(designer: System.Web.UI.Design.ControlDesigner, name: string) : System.Web.UI.Design.DesignerRegion
+---@param designer System.Web.UI.Design.ControlDesigner
+---@param name string
+---@param selectable boolean
+---@return System.Web.UI.Design.DesignerRegion
+function System.Web.UI.Design.DesignerRegion.New(designer, name, selectable) end
+---@return System.Drawing.Rectangle
+function System.Web.UI.Design.DesignerRegion:GetBounds() end
+
+---@class System.Web.UI.Design.DesignerRegionCollection : System.Object
+---@field Count number
+---@field IsFixedSize boolean
+---@field IsReadOnly boolean
+---@field IsSynchronized boolean
+---@field Item System.Web.UI.Design.DesignerRegion
+---@field Owner System.Web.UI.Design.ControlDesigner
+---@field SyncRoot System.Object
+System.Web.UI.Design.DesignerRegionCollection = {}
+---@alias CS.System.Web.UI.Design.DesignerRegionCollection System.Web.UI.Design.DesignerRegionCollection
+CS.System.Web.UI.Design.DesignerRegionCollection = System.Web.UI.Design.DesignerRegionCollection
+
+---@overload fun() : System.Web.UI.Design.DesignerRegionCollection
+---@param owner System.Web.UI.Design.ControlDesigner
+---@return System.Web.UI.Design.DesignerRegionCollection
+function System.Web.UI.Design.DesignerRegionCollection.New(owner) end
+---@param region System.Web.UI.Design.DesignerRegion
+---@return number
+function System.Web.UI.Design.DesignerRegionCollection:Add(region) end
+function System.Web.UI.Design.DesignerRegionCollection:Clear() end
+---@param region System.Web.UI.Design.DesignerRegion
+---@return boolean
+function System.Web.UI.Design.DesignerRegionCollection:Contains(region) end
+---@param array System.Array
+---@param index number
+function System.Web.UI.Design.DesignerRegionCollection:CopyTo(array, index) end
+---@return System.Collections.IEnumerator
+function System.Web.UI.Design.DesignerRegionCollection:GetEnumerator() end
+---@param region System.Web.UI.Design.DesignerRegion
+---@return number
+function System.Web.UI.Design.DesignerRegionCollection:IndexOf(region) end
+---@param index number
+---@param region System.Web.UI.Design.DesignerRegion
+function System.Web.UI.Design.DesignerRegionCollection:Insert(index, region) end
+---@param region System.Web.UI.Design.DesignerRegion
+function System.Web.UI.Design.DesignerRegionCollection:Remove(region) end
+---@param index number
+function System.Web.UI.Design.DesignerRegionCollection:RemoveAt(index) end
+
+---@class System.Web.UI.Design.DesignerRegionMouseEventArgs : System.EventArgs
+---@field Location System.Drawing.Point
+---@field Region System.Web.UI.Design.DesignerRegion
+System.Web.UI.Design.DesignerRegionMouseEventArgs = {}
+---@alias CS.System.Web.UI.Design.DesignerRegionMouseEventArgs System.Web.UI.Design.DesignerRegionMouseEventArgs
+CS.System.Web.UI.Design.DesignerRegionMouseEventArgs = System.Web.UI.Design.DesignerRegionMouseEventArgs
+
+---@param region System.Web.UI.Design.DesignerRegion
+---@param location System.Drawing.Point
+---@return System.Web.UI.Design.DesignerRegionMouseEventArgs
+function System.Web.UI.Design.DesignerRegionMouseEventArgs.New(region, location) end
+
+---@class System.Web.UI.Design.EditableDesignerRegion : System.Web.UI.Design.DesignerRegion
+---@field Content string
+---@field ServerControlsOnly boolean
+---@field SupportsDataBinding boolean
+System.Web.UI.Design.EditableDesignerRegion = {}
+---@alias CS.System.Web.UI.Design.EditableDesignerRegion System.Web.UI.Design.EditableDesignerRegion
+CS.System.Web.UI.Design.EditableDesignerRegion = System.Web.UI.Design.EditableDesignerRegion
+
+---@overload fun(owner: System.Web.UI.Design.ControlDesigner, name: string) : System.Web.UI.Design.EditableDesignerRegion
+---@param owner System.Web.UI.Design.ControlDesigner
+---@param name string
+---@param serverControlsOnly boolean
+---@return System.Web.UI.Design.EditableDesignerRegion
+function System.Web.UI.Design.EditableDesignerRegion.New(owner, name, serverControlsOnly) end
+---@param control System.Web.UI.Control
+---@return System.Web.UI.Design.ViewRendering
+function System.Web.UI.Design.EditableDesignerRegion:GetChildViewRendering(control) end
+
+---@class System.Web.UI.Design.ExpressionEditor : System.Object
+---@field ExpressionPrefix string
+System.Web.UI.Design.ExpressionEditor = {}
+---@alias CS.System.Web.UI.Design.ExpressionEditor System.Web.UI.Design.ExpressionEditor
+CS.System.Web.UI.Design.ExpressionEditor = System.Web.UI.Design.ExpressionEditor
+
+---@overload fun(expressionPrefix: string, serviceProvider: System.IServiceProvider) : System.Web.UI.Design.ExpressionEditor
+---@param expressionBuilderType System.Type
+---@param serviceProvider System.IServiceProvider
+---@return System.Web.UI.Design.ExpressionEditor
+function System.Web.UI.Design.ExpressionEditor.GetExpressionEditor(expressionBuilderType, serviceProvider) end
+---@param expression string
+---@param parseTimeData System.Object
+---@param propertyType System.Type
+---@param serviceProvider System.IServiceProvider
+---@return System.Object
+function System.Web.UI.Design.ExpressionEditor:EvaluateExpression(expression, parseTimeData, propertyType, serviceProvider) end
+---@param expression string
+---@param serviceProvider System.IServiceProvider
+---@return System.Web.UI.Design.ExpressionEditorSheet
+function System.Web.UI.Design.ExpressionEditor:GetExpressionEditorSheet(expression, serviceProvider) end
+
+---@class System.Web.UI.Design.ExpressionEditorSheet : System.Object
+---@field IsValid boolean
+---@field ServiceProvider System.IServiceProvider
+System.Web.UI.Design.ExpressionEditorSheet = {}
+---@alias CS.System.Web.UI.Design.ExpressionEditorSheet System.Web.UI.Design.ExpressionEditorSheet
+CS.System.Web.UI.Design.ExpressionEditorSheet = System.Web.UI.Design.ExpressionEditorSheet
+
+---@return string
+function System.Web.UI.Design.ExpressionEditorSheet:GetExpression() end
+
+---@class System.Web.UI.Design.ExpressionsCollectionConverter : System.ComponentModel.TypeConverter
+System.Web.UI.Design.ExpressionsCollectionConverter = {}
+---@alias CS.System.Web.UI.Design.ExpressionsCollectionConverter System.Web.UI.Design.ExpressionsCollectionConverter
+CS.System.Web.UI.Design.ExpressionsCollectionConverter = System.Web.UI.Design.ExpressionsCollectionConverter
+
+---@return System.Web.UI.Design.ExpressionsCollectionConverter
+function System.Web.UI.Design.ExpressionsCollectionConverter.New() end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@param culture System.Globalization.CultureInfo
+---@param value System.Object
+---@param destinationType System.Type
+---@return System.Object
+function System.Web.UI.Design.ExpressionsCollectionConverter:ConvertTo(context, culture, value, destinationType) end
+
+---@class System.Web.UI.Design.ExpressionsCollectionEditor : System.Drawing.Design.UITypeEditor
+System.Web.UI.Design.ExpressionsCollectionEditor = {}
+---@alias CS.System.Web.UI.Design.ExpressionsCollectionEditor System.Web.UI.Design.ExpressionsCollectionEditor
+CS.System.Web.UI.Design.ExpressionsCollectionEditor = System.Web.UI.Design.ExpressionsCollectionEditor
+
+---@return System.Web.UI.Design.ExpressionsCollectionEditor
+function System.Web.UI.Design.ExpressionsCollectionEditor.New() end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@param provider System.IServiceProvider
+---@param value System.Object
+---@return System.Object
+function System.Web.UI.Design.ExpressionsCollectionEditor:EditValue(context, provider, value) end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@return System.Drawing.Design.UITypeEditorEditStyle
+function System.Web.UI.Design.ExpressionsCollectionEditor:GetEditStyle(context) end
+
+---@class System.Web.UI.Design.HierarchicalDataSourceConverter : System.Web.UI.Design.DataSourceConverter
+System.Web.UI.Design.HierarchicalDataSourceConverter = {}
+---@alias CS.System.Web.UI.Design.HierarchicalDataSourceConverter System.Web.UI.Design.HierarchicalDataSourceConverter
+CS.System.Web.UI.Design.HierarchicalDataSourceConverter = System.Web.UI.Design.HierarchicalDataSourceConverter
+
+---@return System.Web.UI.Design.HierarchicalDataSourceConverter
+function System.Web.UI.Design.HierarchicalDataSourceConverter.New() end
+
+---@class System.Web.UI.Design.HierarchicalDataSourceDesigner : System.Web.UI.Design.ControlDesigner
+---@field ActionLists System.ComponentModel.Design.DesignerActionListCollection
+---@field CanConfigure boolean
+---@field CanRefreshSchema boolean
+System.Web.UI.Design.HierarchicalDataSourceDesigner = {}
+---@alias CS.System.Web.UI.Design.HierarchicalDataSourceDesigner System.Web.UI.Design.HierarchicalDataSourceDesigner
+CS.System.Web.UI.Design.HierarchicalDataSourceDesigner = System.Web.UI.Design.HierarchicalDataSourceDesigner
+
+---@return System.Web.UI.Design.HierarchicalDataSourceDesigner
+function System.Web.UI.Design.HierarchicalDataSourceDesigner.New() end
+function System.Web.UI.Design.HierarchicalDataSourceDesigner:Configure() end
+---@return string
+function System.Web.UI.Design.HierarchicalDataSourceDesigner:GetDesignTimeHtml() end
+---@param viewPath string
+---@return System.Web.UI.Design.DesignerHierarchicalDataSourceView
+function System.Web.UI.Design.HierarchicalDataSourceDesigner:GetView(viewPath) end
+---@param preferSilent boolean
+function System.Web.UI.Design.HierarchicalDataSourceDesigner:RefreshSchema(preferSilent) end
+function System.Web.UI.Design.HierarchicalDataSourceDesigner:ResumeDataSourceEvents() end
+function System.Web.UI.Design.HierarchicalDataSourceDesigner:SuppressDataSourceEvents() end
+
+---@class System.Web.UI.Design.HtmlControlDesigner : System.ComponentModel.Design.ComponentDesigner
+---@field DataBindings System.Web.UI.DataBindingCollection
+---@field Expressions System.Web.UI.ExpressionBindingCollection
+System.Web.UI.Design.HtmlControlDesigner = {}
+---@alias CS.System.Web.UI.Design.HtmlControlDesigner System.Web.UI.Design.HtmlControlDesigner
+CS.System.Web.UI.Design.HtmlControlDesigner = System.Web.UI.Design.HtmlControlDesigner
+
+---@return System.Web.UI.Design.HtmlControlDesigner
+function System.Web.UI.Design.HtmlControlDesigner.New() end
+function System.Web.UI.Design.HtmlControlDesigner:OnSetParent() end
+---@param component System.ComponentModel.IComponent
+function System.Web.UI.Design.HtmlControlDesigner:Initialize(component) end
+
+---@class System.Web.UI.Design.HtmlIntrinsicControlDesigner : System.Web.UI.Design.HtmlControlDesigner
+System.Web.UI.Design.HtmlIntrinsicControlDesigner = {}
+---@alias CS.System.Web.UI.Design.HtmlIntrinsicControlDesigner System.Web.UI.Design.HtmlIntrinsicControlDesigner
+CS.System.Web.UI.Design.HtmlIntrinsicControlDesigner = System.Web.UI.Design.HtmlIntrinsicControlDesigner
+
+---@return System.Web.UI.Design.HtmlIntrinsicControlDesigner
+function System.Web.UI.Design.HtmlIntrinsicControlDesigner.New() end
+
+---@class System.Web.UI.Design.HyperLinkDataBindingHandler : System.Web.UI.Design.DataBindingHandler
+System.Web.UI.Design.HyperLinkDataBindingHandler = {}
+---@alias CS.System.Web.UI.Design.HyperLinkDataBindingHandler System.Web.UI.Design.HyperLinkDataBindingHandler
+CS.System.Web.UI.Design.HyperLinkDataBindingHandler = System.Web.UI.Design.HyperLinkDataBindingHandler
+
+---@return System.Web.UI.Design.HyperLinkDataBindingHandler
+function System.Web.UI.Design.HyperLinkDataBindingHandler.New() end
+---@param designerHost System.ComponentModel.Design.IDesignerHost
+---@param control System.Web.UI.Control
+function System.Web.UI.Design.HyperLinkDataBindingHandler:DataBindControl(designerHost, control) end
+
+---@class System.Web.UI.Design.IContentResolutionService
+---@field ContentDefinitions System.Collections.IDictionary
+System.Web.UI.Design.IContentResolutionService = {}
+---@alias CS.System.Web.UI.Design.IContentResolutionService System.Web.UI.Design.IContentResolutionService
+CS.System.Web.UI.Design.IContentResolutionService = System.Web.UI.Design.IContentResolutionService
+
+---@param identifier string
+---@return System.Web.UI.Design.ContentDesignerState
+function System.Web.UI.Design.IContentResolutionService:GetContentDesignerState(identifier) end
+---@param identifier string
+---@param state System.Web.UI.Design.ContentDesignerState
+function System.Web.UI.Design.IContentResolutionService:SetContentDesignerState(identifier, state) end
+
+---@class System.Web.UI.Design.IControlDesignerBehavior
+---@field DesignTimeElementView System.Object
+---@field DesignTimeHtml string
+System.Web.UI.Design.IControlDesignerBehavior = {}
+---@alias CS.System.Web.UI.Design.IControlDesignerBehavior System.Web.UI.Design.IControlDesignerBehavior
+CS.System.Web.UI.Design.IControlDesignerBehavior = System.Web.UI.Design.IControlDesignerBehavior
+
+function System.Web.UI.Design.IControlDesignerBehavior:OnTemplateModeChanged() end
+
+---@class System.Web.UI.Design.IControlDesignerTag
+---@field IsDirty boolean
+System.Web.UI.Design.IControlDesignerTag = {}
+---@alias CS.System.Web.UI.Design.IControlDesignerTag System.Web.UI.Design.IControlDesignerTag
+CS.System.Web.UI.Design.IControlDesignerTag = System.Web.UI.Design.IControlDesignerTag
+
+---@param name string
+---@return string
+function System.Web.UI.Design.IControlDesignerTag:GetAttribute(name) end
+---@return string
+function System.Web.UI.Design.IControlDesignerTag:GetContent() end
+---@return string
+function System.Web.UI.Design.IControlDesignerTag:GetOuterContent() end
+---@param name string
+function System.Web.UI.Design.IControlDesignerTag:RemoveAttribute(name) end
+---@param name string
+---@param value string
+function System.Web.UI.Design.IControlDesignerTag:SetAttribute(name, value) end
+---@param content string
+function System.Web.UI.Design.IControlDesignerTag:SetContent(content) end
+---@param dirty boolean
+function System.Web.UI.Design.IControlDesignerTag:SetDirty(dirty) end
+
+---@class System.Web.UI.Design.IControlDesignerView
+---@field ContainingRegion System.Web.UI.Design.DesignerRegion
+---@field NamingContainerDesigner System.ComponentModel.Design.IDesigner
+---@field SupportsRegions boolean
+System.Web.UI.Design.IControlDesignerView = {}
+---@alias CS.System.Web.UI.Design.IControlDesignerView System.Web.UI.Design.IControlDesignerView
+CS.System.Web.UI.Design.IControlDesignerView = System.Web.UI.Design.IControlDesignerView
+
+---@param region System.Web.UI.Design.DesignerRegion
+---@return System.Drawing.Rectangle
+function System.Web.UI.Design.IControlDesignerView:GetBounds(region) end
+---@param rectangle System.Drawing.Rectangle
+function System.Web.UI.Design.IControlDesignerView:Invalidate(rectangle) end
+---@param viewFlags System.Web.UI.Design.ViewFlags
+---@param setFlag boolean
+function System.Web.UI.Design.IControlDesignerView:SetFlags(viewFlags, setFlag) end
+---@param region System.Web.UI.Design.EditableDesignerRegion
+---@param content string
+function System.Web.UI.Design.IControlDesignerView:SetRegionContent(region, content) end
+function System.Web.UI.Design.IControlDesignerView:Update() end
+
+---@class System.Web.UI.Design.IDataBindingSchemaProvider
+---@field CanRefreshSchema boolean
+---@field Schema System.Web.UI.Design.IDataSourceViewSchema
+System.Web.UI.Design.IDataBindingSchemaProvider = {}
+---@alias CS.System.Web.UI.Design.IDataBindingSchemaProvider System.Web.UI.Design.IDataBindingSchemaProvider
+CS.System.Web.UI.Design.IDataBindingSchemaProvider = System.Web.UI.Design.IDataBindingSchemaProvider
+
+---@param preferSilent boolean
+function System.Web.UI.Design.IDataBindingSchemaProvider:RefreshSchema(preferSilent) end
+
+---@class System.Web.UI.Design.IDataSourceDesigner
+---@field CanConfigure boolean
+---@field CanRefreshSchema boolean
+System.Web.UI.Design.IDataSourceDesigner = {}
+---@alias CS.System.Web.UI.Design.IDataSourceDesigner System.Web.UI.Design.IDataSourceDesigner
+CS.System.Web.UI.Design.IDataSourceDesigner = System.Web.UI.Design.IDataSourceDesigner
+
+function System.Web.UI.Design.IDataSourceDesigner:Configure() end
+---@param viewName string
+---@return System.Web.UI.Design.DesignerDataSourceView
+function System.Web.UI.Design.IDataSourceDesigner:GetView(viewName) end
+---@return System.String[]
+function System.Web.UI.Design.IDataSourceDesigner:GetViewNames() end
+---@param preferSilent boolean
+function System.Web.UI.Design.IDataSourceDesigner:RefreshSchema(preferSilent) end
+function System.Web.UI.Design.IDataSourceDesigner:ResumeDataSourceEvents() end
+function System.Web.UI.Design.IDataSourceDesigner:SuppressDataSourceEvents() end
+
+---@class System.Web.UI.Design.IDataSourceFieldSchema
+---@field DataType System.Type
+---@field Identity boolean
+---@field IsReadOnly boolean
+---@field IsUnique boolean
+---@field Length number
+---@field Name string
+---@field Nullable boolean
+---@field Precision number
+---@field PrimaryKey boolean
+---@field Scale number
+System.Web.UI.Design.IDataSourceFieldSchema = {}
+---@alias CS.System.Web.UI.Design.IDataSourceFieldSchema System.Web.UI.Design.IDataSourceFieldSchema
+CS.System.Web.UI.Design.IDataSourceFieldSchema = System.Web.UI.Design.IDataSourceFieldSchema
+
+
+---@class System.Web.UI.Design.IDataSourceProvider
+System.Web.UI.Design.IDataSourceProvider = {}
+---@alias CS.System.Web.UI.Design.IDataSourceProvider System.Web.UI.Design.IDataSourceProvider
+CS.System.Web.UI.Design.IDataSourceProvider = System.Web.UI.Design.IDataSourceProvider
+
+---@return System.Collections.IEnumerable
+function System.Web.UI.Design.IDataSourceProvider:GetResolvedSelectedDataSource() end
+---@return System.Object
+function System.Web.UI.Design.IDataSourceProvider:GetSelectedDataSource() end
+
+---@class System.Web.UI.Design.IDataSourceSchema
+System.Web.UI.Design.IDataSourceSchema = {}
+---@alias CS.System.Web.UI.Design.IDataSourceSchema System.Web.UI.Design.IDataSourceSchema
+CS.System.Web.UI.Design.IDataSourceSchema = System.Web.UI.Design.IDataSourceSchema
+
+---@return System.Web.UI.Design.IDataSourceViewSchema[]
+function System.Web.UI.Design.IDataSourceSchema:GetViews() end
+
+---@class System.Web.UI.Design.IDataSourceViewSchema
+---@field Name string
+System.Web.UI.Design.IDataSourceViewSchema = {}
+---@alias CS.System.Web.UI.Design.IDataSourceViewSchema System.Web.UI.Design.IDataSourceViewSchema
+CS.System.Web.UI.Design.IDataSourceViewSchema = System.Web.UI.Design.IDataSourceViewSchema
+
+---@return System.Web.UI.Design.IDataSourceViewSchema[]
+function System.Web.UI.Design.IDataSourceViewSchema:GetChildren() end
+---@return System.Web.UI.Design.IDataSourceFieldSchema[]
+function System.Web.UI.Design.IDataSourceViewSchema:GetFields() end
+
+---@class System.Web.UI.Design.IDesignTimeResourceProviderFactoryService
+System.Web.UI.Design.IDesignTimeResourceProviderFactoryService = {}
+---@alias CS.System.Web.UI.Design.IDesignTimeResourceProviderFactoryService System.Web.UI.Design.IDesignTimeResourceProviderFactoryService
+CS.System.Web.UI.Design.IDesignTimeResourceProviderFactoryService = System.Web.UI.Design.IDesignTimeResourceProviderFactoryService
+
+---@return System.Web.UI.Design.DesignTimeResourceProviderFactory
+function System.Web.UI.Design.IDesignTimeResourceProviderFactoryService:GetFactory() end
+
+---@class System.Web.UI.Design.IDesignTimeResourceWriter
+System.Web.UI.Design.IDesignTimeResourceWriter = {}
+---@alias CS.System.Web.UI.Design.IDesignTimeResourceWriter System.Web.UI.Design.IDesignTimeResourceWriter
+CS.System.Web.UI.Design.IDesignTimeResourceWriter = System.Web.UI.Design.IDesignTimeResourceWriter
+
+---@param resourceName string
+---@param obj System.Object
+---@return string
+function System.Web.UI.Design.IDesignTimeResourceWriter:CreateResourceKey(resourceName, obj) end
+
+---@class System.Web.UI.Design.IDocumentProjectItem
+System.Web.UI.Design.IDocumentProjectItem = {}
+---@alias CS.System.Web.UI.Design.IDocumentProjectItem System.Web.UI.Design.IDocumentProjectItem
+CS.System.Web.UI.Design.IDocumentProjectItem = System.Web.UI.Design.IDocumentProjectItem
+
+---@return System.IO.Stream
+function System.Web.UI.Design.IDocumentProjectItem:GetContents() end
+function System.Web.UI.Design.IDocumentProjectItem:Open() end
+
+---@class System.Web.UI.Design.IFolderProjectItem
+---@field Children System.Collections.ICollection
+System.Web.UI.Design.IFolderProjectItem = {}
+---@alias CS.System.Web.UI.Design.IFolderProjectItem System.Web.UI.Design.IFolderProjectItem
+CS.System.Web.UI.Design.IFolderProjectItem = System.Web.UI.Design.IFolderProjectItem
+
+---@param name string
+---@param content System.Byte[]
+---@return System.Web.UI.Design.IDocumentProjectItem
+function System.Web.UI.Design.IFolderProjectItem:AddDocument(name, content) end
+---@param name string
+---@return System.Web.UI.Design.IFolderProjectItem
+function System.Web.UI.Design.IFolderProjectItem:AddFolder(name) end
+
+---@class System.Web.UI.Design.IHierarchicalDataSourceDesigner
+---@field CanConfigure boolean
+---@field CanRefreshSchema boolean
+System.Web.UI.Design.IHierarchicalDataSourceDesigner = {}
+---@alias CS.System.Web.UI.Design.IHierarchicalDataSourceDesigner System.Web.UI.Design.IHierarchicalDataSourceDesigner
+CS.System.Web.UI.Design.IHierarchicalDataSourceDesigner = System.Web.UI.Design.IHierarchicalDataSourceDesigner
+
+function System.Web.UI.Design.IHierarchicalDataSourceDesigner:Configure() end
+---@param viewPath string
+---@return System.Web.UI.Design.DesignerHierarchicalDataSourceView
+function System.Web.UI.Design.IHierarchicalDataSourceDesigner:GetView(viewPath) end
+---@param preferSilent boolean
+function System.Web.UI.Design.IHierarchicalDataSourceDesigner:RefreshSchema(preferSilent) end
+function System.Web.UI.Design.IHierarchicalDataSourceDesigner:ResumeDataSourceEvents() end
+function System.Web.UI.Design.IHierarchicalDataSourceDesigner:SuppressDataSourceEvents() end
+
+---@class System.Web.UI.Design.IHtmlControlDesignerBehavior
+---@field Designer System.Web.UI.Design.HtmlControlDesigner
+---@field DesignTimeElement System.Object
+System.Web.UI.Design.IHtmlControlDesignerBehavior = {}
+---@alias CS.System.Web.UI.Design.IHtmlControlDesignerBehavior System.Web.UI.Design.IHtmlControlDesignerBehavior
+CS.System.Web.UI.Design.IHtmlControlDesignerBehavior = System.Web.UI.Design.IHtmlControlDesignerBehavior
+
+---@param attribute string
+---@param ignoreCase boolean
+---@return System.Object
+function System.Web.UI.Design.IHtmlControlDesignerBehavior:GetAttribute(attribute, ignoreCase) end
+---@param attribute string
+---@param designTimeOnly boolean
+---@param ignoreCase boolean
+---@return System.Object
+function System.Web.UI.Design.IHtmlControlDesignerBehavior:GetStyleAttribute(attribute, designTimeOnly, ignoreCase) end
+---@param attribute string
+---@param ignoreCase boolean
+function System.Web.UI.Design.IHtmlControlDesignerBehavior:RemoveAttribute(attribute, ignoreCase) end
+---@param attribute string
+---@param designTimeOnly boolean
+---@param ignoreCase boolean
+function System.Web.UI.Design.IHtmlControlDesignerBehavior:RemoveStyleAttribute(attribute, designTimeOnly, ignoreCase) end
+---@param attribute string
+---@param value System.Object
+---@param ignoreCase boolean
+function System.Web.UI.Design.IHtmlControlDesignerBehavior:SetAttribute(attribute, value, ignoreCase) end
+---@param attribute string
+---@param designTimeOnly boolean
+---@param value System.Object
+---@param ignoreCase boolean
+function System.Web.UI.Design.IHtmlControlDesignerBehavior:SetStyleAttribute(attribute, designTimeOnly, value, ignoreCase) end
+
+---@class System.Web.UI.Design.IProjectItem
+---@field AppRelativeUrl string
+---@field Name string
+---@field Parent System.Web.UI.Design.IProjectItem
+---@field PhysicalPath string
+System.Web.UI.Design.IProjectItem = {}
+---@alias CS.System.Web.UI.Design.IProjectItem System.Web.UI.Design.IProjectItem
+CS.System.Web.UI.Design.IProjectItem = System.Web.UI.Design.IProjectItem
+
+
+---@class System.Web.UI.Design.ITemplateEditingFrame
+---@field ControlStyle System.Web.UI.WebControls.Style
+---@field InitialHeight number
+---@field InitialWidth number
+---@field Name string
+---@field TemplateNames System.String[]
+---@field TemplateStyles System.Web.UI.WebControls.Style[]
+---@field Verb System.Web.UI.Design.TemplateEditingVerb
+System.Web.UI.Design.ITemplateEditingFrame = {}
+---@alias CS.System.Web.UI.Design.ITemplateEditingFrame System.Web.UI.Design.ITemplateEditingFrame
+CS.System.Web.UI.Design.ITemplateEditingFrame = System.Web.UI.Design.ITemplateEditingFrame
+
+---@param saveChanges boolean
+function System.Web.UI.Design.ITemplateEditingFrame:Close(saveChanges) end
+function System.Web.UI.Design.ITemplateEditingFrame:Open() end
+---@param width number
+---@param height number
+function System.Web.UI.Design.ITemplateEditingFrame:Resize(width, height) end
+function System.Web.UI.Design.ITemplateEditingFrame:Save() end
+---@param newName string
+function System.Web.UI.Design.ITemplateEditingFrame:UpdateControlName(newName) end
+
+---@class System.Web.UI.Design.ITemplateEditingService
+---@field SupportsNestedTemplateEditing boolean
+System.Web.UI.Design.ITemplateEditingService = {}
+---@alias CS.System.Web.UI.Design.ITemplateEditingService System.Web.UI.Design.ITemplateEditingService
+CS.System.Web.UI.Design.ITemplateEditingService = System.Web.UI.Design.ITemplateEditingService
+
+---@overload fun(self: System.Web.UI.Design.ITemplateEditingService, designer: System.Web.UI.Design.TemplatedControlDesigner, frameName: string, templateNames: System.String[]) : System.Web.UI.Design.ITemplateEditingFrame
+---@param designer System.Web.UI.Design.TemplatedControlDesigner
+---@param frameName string
+---@param templateNames System.String[]
+---@param controlStyle System.Web.UI.WebControls.Style
+---@param templateStyles System.Web.UI.WebControls.Style[]
+---@return System.Web.UI.Design.ITemplateEditingFrame
+function System.Web.UI.Design.ITemplateEditingService:CreateFrame(designer, frameName, templateNames, controlStyle, templateStyles) end
+---@param control System.Web.UI.Control
+---@return string
+function System.Web.UI.Design.ITemplateEditingService:GetContainingTemplateName(control) end
+
+---@class System.Web.UI.Design.IWebAdministrationService
+System.Web.UI.Design.IWebAdministrationService = {}
+---@alias CS.System.Web.UI.Design.IWebAdministrationService System.Web.UI.Design.IWebAdministrationService
+CS.System.Web.UI.Design.IWebAdministrationService = System.Web.UI.Design.IWebAdministrationService
+
+---@param arguments System.Collections.IDictionary
+function System.Web.UI.Design.IWebAdministrationService:Start(arguments) end
+
+---@class System.Web.UI.Design.IWebApplication
+---@field RootProjectItem System.Web.UI.Design.IProjectItem
+System.Web.UI.Design.IWebApplication = {}
+---@alias CS.System.Web.UI.Design.IWebApplication System.Web.UI.Design.IWebApplication
+CS.System.Web.UI.Design.IWebApplication = System.Web.UI.Design.IWebApplication
+
+---@param appRelativeUrl string
+---@return System.Web.UI.Design.IProjectItem
+function System.Web.UI.Design.IWebApplication:GetProjectItemFromUrl(appRelativeUrl) end
+---@param isReadOnly boolean
+---@return System.Configuration.Configuration
+function System.Web.UI.Design.IWebApplication:OpenWebConfiguration(isReadOnly) end
+
+---@class System.Web.UI.Design.IWebFormReferenceManager
+System.Web.UI.Design.IWebFormReferenceManager = {}
+---@alias CS.System.Web.UI.Design.IWebFormReferenceManager System.Web.UI.Design.IWebFormReferenceManager
+CS.System.Web.UI.Design.IWebFormReferenceManager = System.Web.UI.Design.IWebFormReferenceManager
+
+---@param tagPrefix string
+---@param typeName string
+---@return System.Type
+function System.Web.UI.Design.IWebFormReferenceManager:GetObjectType(tagPrefix, typeName) end
+---@return string
+function System.Web.UI.Design.IWebFormReferenceManager:GetRegisterDirectives() end
+---@param objectType System.Type
+---@return string
+function System.Web.UI.Design.IWebFormReferenceManager:GetTagPrefix(objectType) end
+
+---@class System.Web.UI.Design.IWebFormsBuilderUIService
+System.Web.UI.Design.IWebFormsBuilderUIService = {}
+---@alias CS.System.Web.UI.Design.IWebFormsBuilderUIService System.Web.UI.Design.IWebFormsBuilderUIService
+CS.System.Web.UI.Design.IWebFormsBuilderUIService = System.Web.UI.Design.IWebFormsBuilderUIService
+
+---@param owner System.Windows.Forms.Control
+---@param initialColor string
+---@return string
+function System.Web.UI.Design.IWebFormsBuilderUIService:BuildColor(owner, initialColor) end
+---@param owner System.Windows.Forms.Control
+---@param initialUrl string
+---@param baseUrl string
+---@param caption string
+---@param filter string
+---@param options System.Web.UI.Design.UrlBuilderOptions
+---@return string
+function System.Web.UI.Design.IWebFormsBuilderUIService:BuildUrl(owner, initialUrl, baseUrl, caption, filter, options) end
+
+---@class System.Web.UI.Design.IWebFormsDocumentService
+---@field DocumentUrl string
+---@field IsLoading boolean
+System.Web.UI.Design.IWebFormsDocumentService = {}
+---@alias CS.System.Web.UI.Design.IWebFormsDocumentService System.Web.UI.Design.IWebFormsDocumentService
+CS.System.Web.UI.Design.IWebFormsDocumentService = System.Web.UI.Design.IWebFormsDocumentService
+
+---@return System.Object
+function System.Web.UI.Design.IWebFormsDocumentService:CreateDiscardableUndoUnit() end
+---@param discardableUndoUnit System.Object
+function System.Web.UI.Design.IWebFormsDocumentService:DiscardUndoUnit(discardableUndoUnit) end
+---@param enable boolean
+function System.Web.UI.Design.IWebFormsDocumentService:EnableUndo(enable) end
+function System.Web.UI.Design.IWebFormsDocumentService:UpdateSelection() end
+
+---@class System.Web.UI.Design.ImageUrlEditor : System.Web.UI.Design.UrlEditor
+System.Web.UI.Design.ImageUrlEditor = {}
+---@alias CS.System.Web.UI.Design.ImageUrlEditor System.Web.UI.Design.ImageUrlEditor
+CS.System.Web.UI.Design.ImageUrlEditor = System.Web.UI.Design.ImageUrlEditor
+
+---@return System.Web.UI.Design.ImageUrlEditor
+function System.Web.UI.Design.ImageUrlEditor.New() end
+
+---@class System.Web.UI.Design.MailFileEditor : System.Web.UI.Design.UrlEditor
+System.Web.UI.Design.MailFileEditor = {}
+---@alias CS.System.Web.UI.Design.MailFileEditor System.Web.UI.Design.MailFileEditor
+CS.System.Web.UI.Design.MailFileEditor = System.Web.UI.Design.MailFileEditor
+
+---@return System.Web.UI.Design.MailFileEditor
+function System.Web.UI.Design.MailFileEditor.New() end
+
+---@class System.Web.UI.Design.MdbDataFileEditor : System.Web.UI.Design.UrlEditor
+System.Web.UI.Design.MdbDataFileEditor = {}
+---@alias CS.System.Web.UI.Design.MdbDataFileEditor System.Web.UI.Design.MdbDataFileEditor
+CS.System.Web.UI.Design.MdbDataFileEditor = System.Web.UI.Design.MdbDataFileEditor
+
+---@return System.Web.UI.Design.MdbDataFileEditor
+function System.Web.UI.Design.MdbDataFileEditor.New() end
+
+---@class System.Web.UI.Design.ReadWriteControlDesigner : System.Web.UI.Design.ControlDesigner
+System.Web.UI.Design.ReadWriteControlDesigner = {}
+---@alias CS.System.Web.UI.Design.ReadWriteControlDesigner System.Web.UI.Design.ReadWriteControlDesigner
+CS.System.Web.UI.Design.ReadWriteControlDesigner = System.Web.UI.Design.ReadWriteControlDesigner
+
+---@return System.Web.UI.Design.ReadWriteControlDesigner
+function System.Web.UI.Design.ReadWriteControlDesigner.New() end
+---@param sender System.Object
+---@param ce System.ComponentModel.Design.ComponentChangedEventArgs
+function System.Web.UI.Design.ReadWriteControlDesigner:OnComponentChanged(sender, ce) end
+---@return string
+function System.Web.UI.Design.ReadWriteControlDesigner:GetDesignTimeHtml() end
+function System.Web.UI.Design.ReadWriteControlDesigner:UpdateDesignTimeHtml() end
+
+---@class System.Web.UI.Design.ResourceExpressionEditor : System.Web.UI.Design.ExpressionEditor
+System.Web.UI.Design.ResourceExpressionEditor = {}
+---@alias CS.System.Web.UI.Design.ResourceExpressionEditor System.Web.UI.Design.ResourceExpressionEditor
+CS.System.Web.UI.Design.ResourceExpressionEditor = System.Web.UI.Design.ResourceExpressionEditor
+
+---@return System.Web.UI.Design.ResourceExpressionEditor
+function System.Web.UI.Design.ResourceExpressionEditor.New() end
+---@param expression string
+---@param parseTimeData System.Object
+---@param propertyType System.Type
+---@param serviceProvider System.IServiceProvider
+---@return System.Object
+function System.Web.UI.Design.ResourceExpressionEditor:EvaluateExpression(expression, parseTimeData, propertyType, serviceProvider) end
+---@param expression string
+---@param serviceProvider System.IServiceProvider
+---@return System.Web.UI.Design.ExpressionEditorSheet
+function System.Web.UI.Design.ResourceExpressionEditor:GetExpressionEditorSheet(expression, serviceProvider) end
+
+---@class System.Web.UI.Design.ResourceExpressionEditorSheet : System.Web.UI.Design.ExpressionEditorSheet
+---@field ClassKey string
+---@field IsValid boolean
+---@field ResourceKey string
+System.Web.UI.Design.ResourceExpressionEditorSheet = {}
+---@alias CS.System.Web.UI.Design.ResourceExpressionEditorSheet System.Web.UI.Design.ResourceExpressionEditorSheet
+CS.System.Web.UI.Design.ResourceExpressionEditorSheet = System.Web.UI.Design.ResourceExpressionEditorSheet
+
+---@param expression string
+---@param serviceProvider System.IServiceProvider
+---@return System.Web.UI.Design.ResourceExpressionEditorSheet
+function System.Web.UI.Design.ResourceExpressionEditorSheet.New(expression, serviceProvider) end
+---@return string
+function System.Web.UI.Design.ResourceExpressionEditorSheet:GetExpression() end
+
+---@class System.Web.UI.Design.SkinIDTypeConverter : System.ComponentModel.TypeConverter
+System.Web.UI.Design.SkinIDTypeConverter = {}
+---@alias CS.System.Web.UI.Design.SkinIDTypeConverter System.Web.UI.Design.SkinIDTypeConverter
+CS.System.Web.UI.Design.SkinIDTypeConverter = System.Web.UI.Design.SkinIDTypeConverter
+
+---@return System.Web.UI.Design.SkinIDTypeConverter
+function System.Web.UI.Design.SkinIDTypeConverter.New() end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@param sourceType System.Type
+---@return boolean
+function System.Web.UI.Design.SkinIDTypeConverter:CanConvertFrom(context, sourceType) end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@param destType System.Type
+---@return boolean
+function System.Web.UI.Design.SkinIDTypeConverter:CanConvertTo(context, destType) end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@param culture System.Globalization.CultureInfo
+---@param value System.Object
+---@return System.Object
+function System.Web.UI.Design.SkinIDTypeConverter:ConvertFrom(context, culture, value) end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@param culture System.Globalization.CultureInfo
+---@param value System.Object
+---@param destinationType System.Type
+---@return System.Object
+function System.Web.UI.Design.SkinIDTypeConverter:ConvertTo(context, culture, value, destinationType) end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@return System.ComponentModel.TypeConverter.StandardValuesCollection
+function System.Web.UI.Design.SkinIDTypeConverter:GetStandardValues(context) end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@return boolean
+function System.Web.UI.Design.SkinIDTypeConverter:GetStandardValuesSupported(context) end
+
+---@class System.Web.UI.Design.SupportsPreviewControlAttribute : System.Attribute
+---@field Default System.Web.UI.Design.SupportsPreviewControlAttribute
+---@field SupportsPreviewControl boolean
+System.Web.UI.Design.SupportsPreviewControlAttribute = {}
+---@alias CS.System.Web.UI.Design.SupportsPreviewControlAttribute System.Web.UI.Design.SupportsPreviewControlAttribute
+CS.System.Web.UI.Design.SupportsPreviewControlAttribute = System.Web.UI.Design.SupportsPreviewControlAttribute
+
+---@param supportsPreviewControl boolean
+---@return System.Web.UI.Design.SupportsPreviewControlAttribute
+function System.Web.UI.Design.SupportsPreviewControlAttribute.New(supportsPreviewControl) end
+---@param obj System.Object
+---@return boolean
+function System.Web.UI.Design.SupportsPreviewControlAttribute:Equals(obj) end
+---@return number
+function System.Web.UI.Design.SupportsPreviewControlAttribute:GetHashCode() end
+---@return boolean
+function System.Web.UI.Design.SupportsPreviewControlAttribute:IsDefaultAttribute() end
+
+---@class System.Web.UI.Design.TemplateDefinition : System.Web.UI.Design.DesignerObject
+---@field AllowEditing boolean
+---@field Content string
+---@field ServerControlsOnly boolean
+---@field Style System.Web.UI.WebControls.Style
+---@field SupportsDataBinding boolean
+---@field TemplatedObject System.Object
+---@field TemplatePropertyName string
+System.Web.UI.Design.TemplateDefinition = {}
+---@alias CS.System.Web.UI.Design.TemplateDefinition System.Web.UI.Design.TemplateDefinition
+CS.System.Web.UI.Design.TemplateDefinition = System.Web.UI.Design.TemplateDefinition
+
+---@overload fun(designer: System.Web.UI.Design.ControlDesigner, name: string, templatedObject: System.Object, templatePropertyName: string) : System.Web.UI.Design.TemplateDefinition
+---@overload fun(designer: System.Web.UI.Design.ControlDesigner, name: string, templatedObject: System.Object, templatePropertyName: string, serverControlsOnly: boolean) : System.Web.UI.Design.TemplateDefinition
+---@overload fun(designer: System.Web.UI.Design.ControlDesigner, name: string, templatedObject: System.Object, templatePropertyName: string, style: System.Web.UI.WebControls.Style) : System.Web.UI.Design.TemplateDefinition
+---@param designer System.Web.UI.Design.ControlDesigner
+---@param name string
+---@param templatedObject System.Object
+---@param templatePropertyName string
+---@param style System.Web.UI.WebControls.Style
+---@param serverControlsOnly boolean
+---@return System.Web.UI.Design.TemplateDefinition
+function System.Web.UI.Design.TemplateDefinition.New(designer, name, templatedObject, templatePropertyName, style, serverControlsOnly) end
+
+---@class System.Web.UI.Design.TemplateEditingService : System.Object
+---@field SupportsNestedTemplateEditing boolean
+System.Web.UI.Design.TemplateEditingService = {}
+---@alias CS.System.Web.UI.Design.TemplateEditingService System.Web.UI.Design.TemplateEditingService
+CS.System.Web.UI.Design.TemplateEditingService = System.Web.UI.Design.TemplateEditingService
+
+---@param designerHost System.ComponentModel.Design.IDesignerHost
+---@return System.Web.UI.Design.TemplateEditingService
+function System.Web.UI.Design.TemplateEditingService.New(designerHost) end
+---@overload fun(self: System.Web.UI.Design.TemplateEditingService, designer: System.Web.UI.Design.TemplatedControlDesigner, frameName: string, templateNames: System.String[]) : System.Web.UI.Design.ITemplateEditingFrame
+---@param designer System.Web.UI.Design.TemplatedControlDesigner
+---@param frameName string
+---@param templateNames System.String[]
+---@param controlStyle System.Web.UI.WebControls.Style
+---@param templateStyles System.Web.UI.WebControls.Style[]
+---@return System.Web.UI.Design.ITemplateEditingFrame
+function System.Web.UI.Design.TemplateEditingService:CreateFrame(designer, frameName, templateNames, controlStyle, templateStyles) end
+function System.Web.UI.Design.TemplateEditingService:Dispose() end
+---@param control System.Web.UI.Control
+---@return string
+function System.Web.UI.Design.TemplateEditingService:GetContainingTemplateName(control) end
+
+---@class System.Web.UI.Design.TemplateEditingVerb : System.ComponentModel.Design.DesignerVerb
+---@field Index number
+System.Web.UI.Design.TemplateEditingVerb = {}
+---@alias CS.System.Web.UI.Design.TemplateEditingVerb System.Web.UI.Design.TemplateEditingVerb
+CS.System.Web.UI.Design.TemplateEditingVerb = System.Web.UI.Design.TemplateEditingVerb
+
+---@overload fun(text: string, index: number) : System.Web.UI.Design.TemplateEditingVerb
+---@param text string
+---@param index number
+---@param designer System.Web.UI.Design.TemplatedControlDesigner
+---@return System.Web.UI.Design.TemplateEditingVerb
+function System.Web.UI.Design.TemplateEditingVerb.New(text, index, designer) end
+function System.Web.UI.Design.TemplateEditingVerb:Dispose() end
+
+---@class System.Web.UI.Design.TemplateGroup : System.Object
+---@field GroupName string
+---@field GroupStyle System.Web.UI.WebControls.Style
+---@field IsEmpty boolean
+---@field Templates System.Web.UI.Design.TemplateDefinition[]
+System.Web.UI.Design.TemplateGroup = {}
+---@alias CS.System.Web.UI.Design.TemplateGroup System.Web.UI.Design.TemplateGroup
+CS.System.Web.UI.Design.TemplateGroup = System.Web.UI.Design.TemplateGroup
+
+---@overload fun(groupName: string) : System.Web.UI.Design.TemplateGroup
+---@param groupName string
+---@param groupStyle System.Web.UI.WebControls.Style
+---@return System.Web.UI.Design.TemplateGroup
+function System.Web.UI.Design.TemplateGroup.New(groupName, groupStyle) end
+---@param templateDefinition System.Web.UI.Design.TemplateDefinition
+function System.Web.UI.Design.TemplateGroup:AddTemplateDefinition(templateDefinition) end
+
+---@class System.Web.UI.Design.TemplateGroupCollection : System.Object
+---@field Count number
+---@field Item System.Web.UI.Design.TemplateGroup
+System.Web.UI.Design.TemplateGroupCollection = {}
+---@alias CS.System.Web.UI.Design.TemplateGroupCollection System.Web.UI.Design.TemplateGroupCollection
+CS.System.Web.UI.Design.TemplateGroupCollection = System.Web.UI.Design.TemplateGroupCollection
+
+---@return System.Web.UI.Design.TemplateGroupCollection
+function System.Web.UI.Design.TemplateGroupCollection.New() end
+---@param group System.Web.UI.Design.TemplateGroup
+---@return number
+function System.Web.UI.Design.TemplateGroupCollection:Add(group) end
+---@param groups System.Web.UI.Design.TemplateGroupCollection
+function System.Web.UI.Design.TemplateGroupCollection:AddRange(groups) end
+function System.Web.UI.Design.TemplateGroupCollection:Clear() end
+---@param group System.Web.UI.Design.TemplateGroup
+---@return boolean
+function System.Web.UI.Design.TemplateGroupCollection:Contains(group) end
+---@param array System.Web.UI.Design.TemplateGroup[]
+---@param index number
+function System.Web.UI.Design.TemplateGroupCollection:CopyTo(array, index) end
+---@param group System.Web.UI.Design.TemplateGroup
+---@return number
+function System.Web.UI.Design.TemplateGroupCollection:IndexOf(group) end
+---@param index number
+---@param group System.Web.UI.Design.TemplateGroup
+function System.Web.UI.Design.TemplateGroupCollection:Insert(index, group) end
+---@param group System.Web.UI.Design.TemplateGroup
+function System.Web.UI.Design.TemplateGroupCollection:Remove(group) end
+---@param index number
+function System.Web.UI.Design.TemplateGroupCollection:RemoveAt(index) end
+
+---@class System.Web.UI.Design.TemplateModeChangedEventArgs : System.EventArgs
+---@field NewTemplateGroup System.Web.UI.Design.TemplateGroup
+System.Web.UI.Design.TemplateModeChangedEventArgs = {}
+---@alias CS.System.Web.UI.Design.TemplateModeChangedEventArgs System.Web.UI.Design.TemplateModeChangedEventArgs
+CS.System.Web.UI.Design.TemplateModeChangedEventArgs = System.Web.UI.Design.TemplateModeChangedEventArgs
+
+---@param newTemplateGroup System.Web.UI.Design.TemplateGroup
+---@return System.Web.UI.Design.TemplateModeChangedEventArgs
+function System.Web.UI.Design.TemplateModeChangedEventArgs.New(newTemplateGroup) end
+
+---@class System.Web.UI.Design.TemplatedControlDesigner : System.Web.UI.Design.ControlDesigner
+---@field TemplateGroups System.Web.UI.Design.TemplateGroupCollection
+---@field CanEnterTemplateMode boolean
+System.Web.UI.Design.TemplatedControlDesigner = {}
+---@alias CS.System.Web.UI.Design.TemplatedControlDesigner System.Web.UI.Design.TemplatedControlDesigner
+CS.System.Web.UI.Design.TemplatedControlDesigner = System.Web.UI.Design.TemplatedControlDesigner
+
+---@return System.Web.UI.Design.TemplatedControlDesigner
+function System.Web.UI.Design.TemplatedControlDesigner.New() end
+---@param component System.ComponentModel.IComponent
+function System.Web.UI.Design.TemplatedControlDesigner:Initialize(component) end
+---@param sender System.Object
+---@param ce System.ComponentModel.Design.ComponentChangedEventArgs
+function System.Web.UI.Design.TemplatedControlDesigner:OnComponentChanged(sender, ce) end
+function System.Web.UI.Design.TemplatedControlDesigner:OnSetParent() end
+function System.Web.UI.Design.TemplatedControlDesigner:UpdateDesignTimeHtml() end
+
+---@class System.Web.UI.Design.TemplatedEditableDesignerRegion : System.Web.UI.Design.EditableDesignerRegion
+---@field IsSingleInstanceTemplate boolean
+---@field SupportsDataBinding boolean
+---@field TemplateDefinition System.Web.UI.Design.TemplateDefinition
+System.Web.UI.Design.TemplatedEditableDesignerRegion = {}
+---@alias CS.System.Web.UI.Design.TemplatedEditableDesignerRegion System.Web.UI.Design.TemplatedEditableDesignerRegion
+CS.System.Web.UI.Design.TemplatedEditableDesignerRegion = System.Web.UI.Design.TemplatedEditableDesignerRegion
+
+---@param templateDefinition System.Web.UI.Design.TemplateDefinition
+---@return System.Web.UI.Design.TemplatedEditableDesignerRegion
+function System.Web.UI.Design.TemplatedEditableDesignerRegion.New(templateDefinition) end
+
+---@class System.Web.UI.Design.TextControlDesigner : System.Web.UI.Design.ControlDesigner
+System.Web.UI.Design.TextControlDesigner = {}
+---@alias CS.System.Web.UI.Design.TextControlDesigner System.Web.UI.Design.TextControlDesigner
+CS.System.Web.UI.Design.TextControlDesigner = System.Web.UI.Design.TextControlDesigner
+
+---@return System.Web.UI.Design.TextControlDesigner
+function System.Web.UI.Design.TextControlDesigner.New() end
+---@return string
+function System.Web.UI.Design.TextControlDesigner:GetDesignTimeHtml() end
+
+---@class System.Web.UI.Design.TextDataBindingHandler : System.Web.UI.Design.DataBindingHandler
+System.Web.UI.Design.TextDataBindingHandler = {}
+---@alias CS.System.Web.UI.Design.TextDataBindingHandler System.Web.UI.Design.TextDataBindingHandler
+CS.System.Web.UI.Design.TextDataBindingHandler = System.Web.UI.Design.TextDataBindingHandler
+
+---@return System.Web.UI.Design.TextDataBindingHandler
+function System.Web.UI.Design.TextDataBindingHandler.New() end
+---@param designerHost System.ComponentModel.Design.IDesignerHost
+---@param control System.Web.UI.Control
+function System.Web.UI.Design.TextDataBindingHandler:DataBindControl(designerHost, control) end
+
+---@class System.Web.UI.Design.TransactedChangeCallback : System.MulticastDelegate
+System.Web.UI.Design.TransactedChangeCallback = {}
+---@alias CS.System.Web.UI.Design.TransactedChangeCallback System.Web.UI.Design.TransactedChangeCallback
+CS.System.Web.UI.Design.TransactedChangeCallback = System.Web.UI.Design.TransactedChangeCallback
+
+---@param object System.Object
+---@param method System.IntPtr
+---@return System.Web.UI.Design.TransactedChangeCallback
+function System.Web.UI.Design.TransactedChangeCallback.New(object, method) end
+---@param context System.Object
+---@return boolean
+function System.Web.UI.Design.TransactedChangeCallback:Invoke(context) end
+---@param context System.Object
+---@param callback System.AsyncCallback
+---@param object System.Object
+---@return System.IAsyncResult
+function System.Web.UI.Design.TransactedChangeCallback:BeginInvoke(context, callback, object) end
+---@param result System.IAsyncResult
+---@return boolean
+function System.Web.UI.Design.TransactedChangeCallback:EndInvoke(result) end
+
+---@class System.Web.UI.Design.TypeSchema : System.Object
+System.Web.UI.Design.TypeSchema = {}
+---@alias CS.System.Web.UI.Design.TypeSchema System.Web.UI.Design.TypeSchema
+CS.System.Web.UI.Design.TypeSchema = System.Web.UI.Design.TypeSchema
+
+---@param type System.Type
+---@return System.Web.UI.Design.TypeSchema
+function System.Web.UI.Design.TypeSchema.New(type) end
+---@return System.Web.UI.Design.IDataSourceViewSchema[]
+function System.Web.UI.Design.TypeSchema:GetViews() end
+
+---@class System.Web.UI.Design.UrlBuilder : System.Object
+System.Web.UI.Design.UrlBuilder = {}
+---@alias CS.System.Web.UI.Design.UrlBuilder System.Web.UI.Design.UrlBuilder
+CS.System.Web.UI.Design.UrlBuilder = System.Web.UI.Design.UrlBuilder
+
+---@overload fun(component: System.ComponentModel.IComponent, owner: System.Windows.Forms.Control, initialUrl: string, caption: string, filter: string) : string
+---@overload fun(component: System.ComponentModel.IComponent, owner: System.Windows.Forms.Control, initialUrl: string, caption: string, filter: string, options: System.Web.UI.Design.UrlBuilderOptions) : string
+---@param serviceProvider System.IServiceProvider
+---@param owner System.Windows.Forms.Control
+---@param initialUrl string
+---@param caption string
+---@param filter string
+---@param options System.Web.UI.Design.UrlBuilderOptions
+---@return string
+function System.Web.UI.Design.UrlBuilder.BuildUrl(serviceProvider, owner, initialUrl, caption, filter, options) end
+
+---@class System.Web.UI.Design.UrlBuilderOptions
+---@field None System.Web.UI.Design.UrlBuilderOptions
+---@field NoAbsolute System.Web.UI.Design.UrlBuilderOptions
+System.Web.UI.Design.UrlBuilderOptions = {}
+---@alias CS.System.Web.UI.Design.UrlBuilderOptions System.Web.UI.Design.UrlBuilderOptions
+CS.System.Web.UI.Design.UrlBuilderOptions = System.Web.UI.Design.UrlBuilderOptions
+
+
+---@class System.Web.UI.Design.UrlEditor : System.Drawing.Design.UITypeEditor
+System.Web.UI.Design.UrlEditor = {}
+---@alias CS.System.Web.UI.Design.UrlEditor System.Web.UI.Design.UrlEditor
+CS.System.Web.UI.Design.UrlEditor = System.Web.UI.Design.UrlEditor
+
+---@return System.Web.UI.Design.UrlEditor
+function System.Web.UI.Design.UrlEditor.New() end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@param provider System.IServiceProvider
+---@param value System.Object
+---@return System.Object
+function System.Web.UI.Design.UrlEditor:EditValue(context, provider, value) end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@return System.Drawing.Design.UITypeEditorEditStyle
+function System.Web.UI.Design.UrlEditor:GetEditStyle(context) end
+
+---@class System.Web.UI.Design.UserControlDesigner : System.Web.UI.Design.ControlDesigner
+---@field ActionLists System.ComponentModel.Design.DesignerActionListCollection
+---@field AllowResize boolean
+System.Web.UI.Design.UserControlDesigner = {}
+---@alias CS.System.Web.UI.Design.UserControlDesigner System.Web.UI.Design.UserControlDesigner
+CS.System.Web.UI.Design.UserControlDesigner = System.Web.UI.Design.UserControlDesigner
+
+---@return System.Web.UI.Design.UserControlDesigner
+function System.Web.UI.Design.UserControlDesigner.New() end
+---@return string
+function System.Web.UI.Design.UserControlDesigner:GetDesignTimeHtml() end
+
+---@class System.Web.UI.Design.UserControlFileEditor : System.Web.UI.Design.UrlEditor
+System.Web.UI.Design.UserControlFileEditor = {}
+---@alias CS.System.Web.UI.Design.UserControlFileEditor System.Web.UI.Design.UserControlFileEditor
+CS.System.Web.UI.Design.UserControlFileEditor = System.Web.UI.Design.UserControlFileEditor
+
+---@return System.Web.UI.Design.UserControlFileEditor
+function System.Web.UI.Design.UserControlFileEditor.New() end
+
+---@class System.Web.UI.Design.ViewEvent : System.Object
+---@field Click System.Web.UI.Design.ViewEvent
+---@field Paint System.Web.UI.Design.ViewEvent
+---@field TemplateModeChanged System.Web.UI.Design.ViewEvent
+System.Web.UI.Design.ViewEvent = {}
+---@alias CS.System.Web.UI.Design.ViewEvent System.Web.UI.Design.ViewEvent
+CS.System.Web.UI.Design.ViewEvent = System.Web.UI.Design.ViewEvent
+
+
+---@class System.Web.UI.Design.ViewEventArgs : System.EventArgs
+---@field EventType System.Web.UI.Design.ViewEvent
+---@field Region System.Web.UI.Design.DesignerRegion
+---@field EventArgs System.EventArgs
+System.Web.UI.Design.ViewEventArgs = {}
+---@alias CS.System.Web.UI.Design.ViewEventArgs System.Web.UI.Design.ViewEventArgs
+CS.System.Web.UI.Design.ViewEventArgs = System.Web.UI.Design.ViewEventArgs
+
+---@param eventType System.Web.UI.Design.ViewEvent
+---@param region System.Web.UI.Design.DesignerRegion
+---@param eventArgs System.EventArgs
+---@return System.Web.UI.Design.ViewEventArgs
+function System.Web.UI.Design.ViewEventArgs.New(eventType, region, eventArgs) end
+
+---@class System.Web.UI.Design.ViewEventHandler : System.MulticastDelegate
+System.Web.UI.Design.ViewEventHandler = {}
+---@alias CS.System.Web.UI.Design.ViewEventHandler System.Web.UI.Design.ViewEventHandler
+CS.System.Web.UI.Design.ViewEventHandler = System.Web.UI.Design.ViewEventHandler
+
+---@param object System.Object
+---@param method System.IntPtr
+---@return System.Web.UI.Design.ViewEventHandler
+function System.Web.UI.Design.ViewEventHandler.New(object, method) end
+---@param sender System.Object
+---@param e System.Web.UI.Design.ViewEventArgs
+function System.Web.UI.Design.ViewEventHandler:Invoke(sender, e) end
+---@param sender System.Object
+---@param e System.Web.UI.Design.ViewEventArgs
+---@param callback System.AsyncCallback
+---@param object System.Object
+---@return System.IAsyncResult
+function System.Web.UI.Design.ViewEventHandler:BeginInvoke(sender, e, callback, object) end
+---@param result System.IAsyncResult
+function System.Web.UI.Design.ViewEventHandler:EndInvoke(result) end
+
+---@class System.Web.UI.Design.ViewFlags
+---@field CustomPaint System.Web.UI.Design.ViewFlags
+---@field DesignTimeHtmlRequiresLoadComplete System.Web.UI.Design.ViewFlags
+---@field TemplateEditing System.Web.UI.Design.ViewFlags
+System.Web.UI.Design.ViewFlags = {}
+---@alias CS.System.Web.UI.Design.ViewFlags System.Web.UI.Design.ViewFlags
+CS.System.Web.UI.Design.ViewFlags = System.Web.UI.Design.ViewFlags
+
+
+---@class System.Web.UI.Design.ViewRendering : System.Object
+---@field Content string
+---@field Regions System.Web.UI.Design.DesignerRegionCollection
+---@field Visible boolean
+System.Web.UI.Design.ViewRendering = {}
+---@alias CS.System.Web.UI.Design.ViewRendering System.Web.UI.Design.ViewRendering
+CS.System.Web.UI.Design.ViewRendering = System.Web.UI.Design.ViewRendering
+
+---@overload fun(content: string, regions: System.Web.UI.Design.DesignerRegionCollection) : System.Web.UI.Design.ViewRendering
+---@param content string
+---@param regions System.Web.UI.Design.DesignerRegionCollection
+---@param visible boolean
+---@return System.Web.UI.Design.ViewRendering
+function System.Web.UI.Design.ViewRendering.New(content, regions, visible) end
+
+---@class System.Web.UI.Design.WebControlToolboxItem : System.Drawing.Design.ToolboxItem
+System.Web.UI.Design.WebControlToolboxItem = {}
+---@alias CS.System.Web.UI.Design.WebControlToolboxItem System.Web.UI.Design.WebControlToolboxItem
+CS.System.Web.UI.Design.WebControlToolboxItem = System.Web.UI.Design.WebControlToolboxItem
+
+---@overload fun() : System.Web.UI.Design.WebControlToolboxItem
+---@param type System.Type
+---@return System.Web.UI.Design.WebControlToolboxItem
+function System.Web.UI.Design.WebControlToolboxItem.New(type) end
+---@param type System.Type
+function System.Web.UI.Design.WebControlToolboxItem:Initialize(type) end
+---@param host System.ComponentModel.Design.IDesignerHost
+---@param attributeType System.Type
+---@return System.Object
+function System.Web.UI.Design.WebControlToolboxItem:GetToolAttributeValue(host, attributeType) end
+---@param host System.ComponentModel.Design.IDesignerHost
+---@return string
+function System.Web.UI.Design.WebControlToolboxItem:GetToolHtml(host) end
+---@param host System.ComponentModel.Design.IDesignerHost
+---@return System.Type
+function System.Web.UI.Design.WebControlToolboxItem:GetToolType(host) end
+
+---@class System.Web.UI.Design.WebFormsDesignerActionService : System.ComponentModel.Design.DesignerActionService
+System.Web.UI.Design.WebFormsDesignerActionService = {}
+---@alias CS.System.Web.UI.Design.WebFormsDesignerActionService System.Web.UI.Design.WebFormsDesignerActionService
+CS.System.Web.UI.Design.WebFormsDesignerActionService = System.Web.UI.Design.WebFormsDesignerActionService
+
+---@param serviceProvider System.IServiceProvider
+---@return System.Web.UI.Design.WebFormsDesignerActionService
+function System.Web.UI.Design.WebFormsDesignerActionService.New(serviceProvider) end
+
+---@class System.Web.UI.Design.WebFormsReferenceManager : System.Object
+System.Web.UI.Design.WebFormsReferenceManager = {}
+---@alias CS.System.Web.UI.Design.WebFormsReferenceManager System.Web.UI.Design.WebFormsReferenceManager
+CS.System.Web.UI.Design.WebFormsReferenceManager = System.Web.UI.Design.WebFormsReferenceManager
+
+---@return System.Collections.ICollection
+function System.Web.UI.Design.WebFormsReferenceManager:GetRegisterDirectives() end
+---@param objectType System.Type
+---@return string
+function System.Web.UI.Design.WebFormsReferenceManager:GetTagPrefix(objectType) end
+---@param tagPrefix string
+---@param tagName string
+---@return System.Type
+function System.Web.UI.Design.WebFormsReferenceManager:GetType(tagPrefix, tagName) end
+---@param tagPrefix string
+---@param tagName string
+---@return string
+function System.Web.UI.Design.WebFormsReferenceManager:GetUserControlPath(tagPrefix, tagName) end
+---@param objectType System.Type
+---@return string
+function System.Web.UI.Design.WebFormsReferenceManager:RegisterTagPrefix(objectType) end
+
+---@class System.Web.UI.Design.WebFormsRootDesigner : System.Object
+---@field DocumentUrl string
+---@field IsDesignerViewLocked boolean
+---@field IsLoading boolean
+---@field ReferenceManager System.Web.UI.Design.WebFormsReferenceManager
+---@field Component System.ComponentModel.IComponent
+---@field CurrentCulture System.Globalization.CultureInfo
+System.Web.UI.Design.WebFormsRootDesigner = {}
+---@alias CS.System.Web.UI.Design.WebFormsRootDesigner System.Web.UI.Design.WebFormsRootDesigner
+CS.System.Web.UI.Design.WebFormsRootDesigner = System.Web.UI.Design.WebFormsRootDesigner
+
+---@param scriptItem System.Web.UI.Design.ClientScriptItem
+function System.Web.UI.Design.WebFormsRootDesigner:AddClientScriptToDocument(scriptItem) end
+---@param newControl System.Web.UI.Control
+---@param referenceControl System.Web.UI.Control
+---@param location System.Web.UI.Design.ControlLocation
+---@return string
+function System.Web.UI.Design.WebFormsRootDesigner:AddControlToDocument(newControl, referenceControl, location) end
+---@return System.Web.UI.Design.ClientScriptItemCollection
+function System.Web.UI.Design.WebFormsRootDesigner:GetClientScriptsInDocument() end
+---@param clientScriptId string
+function System.Web.UI.Design.WebFormsRootDesigner:RemoveClientScriptFromDocument(clientScriptId) end
+---@param control System.Web.UI.Control
+function System.Web.UI.Design.WebFormsRootDesigner:RemoveControlFromDocument(control) end
+---@param control System.Web.UI.Control
+---@return string
+function System.Web.UI.Design.WebFormsRootDesigner:GenerateEmptyDesignTimeHtml(control) end
+---@param control System.Web.UI.Control
+---@param e System.Exception
+---@param errorMessage string
+---@return string
+function System.Web.UI.Design.WebFormsRootDesigner:GenerateErrorDesignTimeHtml(control, e, errorMessage) end
+---@param component System.ComponentModel.IComponent
+function System.Web.UI.Design.WebFormsRootDesigner:Initialize(component) end
+---@param relativeUrl string
+---@return string
+function System.Web.UI.Design.WebFormsRootDesigner:ResolveUrl(relativeUrl) end
+---@param control System.Web.UI.Control
+---@param id string
+function System.Web.UI.Design.WebFormsRootDesigner:SetControlID(control, id) end
+
+---@class System.Web.UI.Design.XmlDataFileEditor : System.Web.UI.Design.UrlEditor
+System.Web.UI.Design.XmlDataFileEditor = {}
+---@alias CS.System.Web.UI.Design.XmlDataFileEditor System.Web.UI.Design.XmlDataFileEditor
+CS.System.Web.UI.Design.XmlDataFileEditor = System.Web.UI.Design.XmlDataFileEditor
+
+---@return System.Web.UI.Design.XmlDataFileEditor
+function System.Web.UI.Design.XmlDataFileEditor.New() end
+
+---@class System.Web.UI.Design.XmlDocumentSchema : System.Object
+System.Web.UI.Design.XmlDocumentSchema = {}
+---@alias CS.System.Web.UI.Design.XmlDocumentSchema System.Web.UI.Design.XmlDocumentSchema
+CS.System.Web.UI.Design.XmlDocumentSchema = System.Web.UI.Design.XmlDocumentSchema
+
+---@param xmlDocument System.Xml.XmlDocument
+---@param xPath string
+---@return System.Web.UI.Design.XmlDocumentSchema
+function System.Web.UI.Design.XmlDocumentSchema.New(xmlDocument, xPath) end
+---@return System.Web.UI.Design.IDataSourceViewSchema[]
+function System.Web.UI.Design.XmlDocumentSchema:GetViews() end
+
+---@class System.Web.UI.Design.XmlFileEditor : System.Drawing.Design.UITypeEditor
+System.Web.UI.Design.XmlFileEditor = {}
+---@alias CS.System.Web.UI.Design.XmlFileEditor System.Web.UI.Design.XmlFileEditor
+CS.System.Web.UI.Design.XmlFileEditor = System.Web.UI.Design.XmlFileEditor
+
+---@return System.Web.UI.Design.XmlFileEditor
+function System.Web.UI.Design.XmlFileEditor.New() end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@param provider System.IServiceProvider
+---@param value System.Object
+---@return System.Object
+function System.Web.UI.Design.XmlFileEditor:EditValue(context, provider, value) end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@return System.Drawing.Design.UITypeEditorEditStyle
+function System.Web.UI.Design.XmlFileEditor:GetEditStyle(context) end
+
+---@class System.Web.UI.Design.XmlUrlEditor : System.Web.UI.Design.UrlEditor
+System.Web.UI.Design.XmlUrlEditor = {}
+---@alias CS.System.Web.UI.Design.XmlUrlEditor System.Web.UI.Design.XmlUrlEditor
+CS.System.Web.UI.Design.XmlUrlEditor = System.Web.UI.Design.XmlUrlEditor
+
+---@return System.Web.UI.Design.XmlUrlEditor
+function System.Web.UI.Design.XmlUrlEditor.New() end
+
+---@class System.Web.UI.Design.XsdSchemaFileEditor : System.Web.UI.Design.UrlEditor
+System.Web.UI.Design.XsdSchemaFileEditor = {}
+---@alias CS.System.Web.UI.Design.XsdSchemaFileEditor System.Web.UI.Design.XsdSchemaFileEditor
+CS.System.Web.UI.Design.XsdSchemaFileEditor = System.Web.UI.Design.XsdSchemaFileEditor
+
+---@return System.Web.UI.Design.XsdSchemaFileEditor
+function System.Web.UI.Design.XsdSchemaFileEditor.New() end
+
+---@class System.Web.UI.Design.XslTransformFileEditor : System.Web.UI.Design.UrlEditor
+System.Web.UI.Design.XslTransformFileEditor = {}
+---@alias CS.System.Web.UI.Design.XslTransformFileEditor System.Web.UI.Design.XslTransformFileEditor
+CS.System.Web.UI.Design.XslTransformFileEditor = System.Web.UI.Design.XslTransformFileEditor
+
+---@return System.Web.UI.Design.XslTransformFileEditor
+function System.Web.UI.Design.XslTransformFileEditor.New() end
+
+---@class System.Web.UI.Design.XslUrlEditor : System.Web.UI.Design.UrlEditor
+System.Web.UI.Design.XslUrlEditor = {}
+---@alias CS.System.Web.UI.Design.XslUrlEditor System.Web.UI.Design.XslUrlEditor
+CS.System.Web.UI.Design.XslUrlEditor = System.Web.UI.Design.XslUrlEditor
+
+---@return System.Web.UI.Design.XslUrlEditor
+function System.Web.UI.Design.XslUrlEditor.New() end
+
+---@class System.Web.UI.Design.WebControls.AdRotatorDesigner : System.Web.UI.Design.ControlDesigner
+System.Web.UI.Design.WebControls.AdRotatorDesigner = {}
+---@alias CS.System.Web.UI.Design.WebControls.AdRotatorDesigner System.Web.UI.Design.WebControls.AdRotatorDesigner
+CS.System.Web.UI.Design.WebControls.AdRotatorDesigner = System.Web.UI.Design.WebControls.AdRotatorDesigner
+
+---@return System.Web.UI.Design.WebControls.AdRotatorDesigner
+function System.Web.UI.Design.WebControls.AdRotatorDesigner.New() end
+---@return string
+function System.Web.UI.Design.WebControls.AdRotatorDesigner:GetDesignTimeHtml() end
+
+---@class System.Web.UI.Design.WebControls.BaseDataBoundControlDesigner : System.Web.UI.Design.ControlDesigner
+---@field DataSource string
+---@field DataSourceID string
+System.Web.UI.Design.WebControls.BaseDataBoundControlDesigner = {}
+---@alias CS.System.Web.UI.Design.WebControls.BaseDataBoundControlDesigner System.Web.UI.Design.WebControls.BaseDataBoundControlDesigner
+CS.System.Web.UI.Design.WebControls.BaseDataBoundControlDesigner = System.Web.UI.Design.WebControls.BaseDataBoundControlDesigner
+
+---@param controlDesigner System.Web.UI.Design.ControlDesigner
+---@param dataSourceType System.Type
+---@param configure boolean
+---@param out_dataSourceID string
+---@return System.Windows.Forms.DialogResult,string
+function System.Web.UI.Design.WebControls.BaseDataBoundControlDesigner.ShowCreateDataSourceDialog(controlDesigner, dataSourceType, configure, out_dataSourceID) end
+---@return string
+function System.Web.UI.Design.WebControls.BaseDataBoundControlDesigner:GetDesignTimeHtml() end
+---@param component System.ComponentModel.IComponent
+function System.Web.UI.Design.WebControls.BaseDataBoundControlDesigner:Initialize(component) end
+
+---@class System.Web.UI.Design.WebControls.BaseDataListComponentEditor : System.Windows.Forms.Design.WindowsFormsComponentEditor
+System.Web.UI.Design.WebControls.BaseDataListComponentEditor = {}
+---@alias CS.System.Web.UI.Design.WebControls.BaseDataListComponentEditor System.Web.UI.Design.WebControls.BaseDataListComponentEditor
+CS.System.Web.UI.Design.WebControls.BaseDataListComponentEditor = System.Web.UI.Design.WebControls.BaseDataListComponentEditor
+
+---@param initialPage number
+---@return System.Web.UI.Design.WebControls.BaseDataListComponentEditor
+function System.Web.UI.Design.WebControls.BaseDataListComponentEditor.New(initialPage) end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@param obj System.Object
+---@param parent System.Windows.Forms.IWin32Window
+---@return boolean
+function System.Web.UI.Design.WebControls.BaseDataListComponentEditor:EditComponent(context, obj, parent) end
+
+---@class System.Web.UI.Design.WebControls.BaseDataListDesigner : System.Web.UI.Design.TemplatedControlDesigner
+---@field DataKeyField string
+---@field DataMember string
+---@field DataSource string
+---@field DesignTimeHtmlRequiresLoadComplete boolean
+---@field Verbs System.ComponentModel.Design.DesignerVerbCollection
+---@field DataSourceDesigner System.Web.UI.Design.IDataSourceDesigner
+---@field DataSourceID string
+---@field DesignerView System.Web.UI.Design.DesignerDataSourceView
+System.Web.UI.Design.WebControls.BaseDataListDesigner = {}
+---@alias CS.System.Web.UI.Design.WebControls.BaseDataListDesigner System.Web.UI.Design.WebControls.BaseDataListDesigner
+CS.System.Web.UI.Design.WebControls.BaseDataListDesigner = System.Web.UI.Design.WebControls.BaseDataListDesigner
+
+---@return System.Web.UI.Design.WebControls.BaseDataListDesigner
+function System.Web.UI.Design.WebControls.BaseDataListDesigner.New() end
+---@return System.Collections.IEnumerable
+function System.Web.UI.Design.WebControls.BaseDataListDesigner:GetResolvedSelectedDataSource() end
+---@return System.Object
+function System.Web.UI.Design.WebControls.BaseDataListDesigner:GetSelectedDataSource() end
+---@param templateName string
+---@return System.Collections.IEnumerable
+function System.Web.UI.Design.WebControls.BaseDataListDesigner:GetTemplateContainerDataSource(templateName) end
+---@param component System.ComponentModel.IComponent
+function System.Web.UI.Design.WebControls.BaseDataListDesigner:Initialize(component) end
+---@param sender System.Object
+---@param e System.ComponentModel.Design.ComponentChangedEventArgs
+function System.Web.UI.Design.WebControls.BaseDataListDesigner:OnComponentChanged(sender, e) end
+
+---@class System.Web.UI.Design.WebControls.BaseValidatorDesigner : System.Web.UI.Design.ControlDesigner
+System.Web.UI.Design.WebControls.BaseValidatorDesigner = {}
+---@alias CS.System.Web.UI.Design.WebControls.BaseValidatorDesigner System.Web.UI.Design.WebControls.BaseValidatorDesigner
+CS.System.Web.UI.Design.WebControls.BaseValidatorDesigner = System.Web.UI.Design.WebControls.BaseValidatorDesigner
+
+---@return System.Web.UI.Design.WebControls.BaseValidatorDesigner
+function System.Web.UI.Design.WebControls.BaseValidatorDesigner.New() end
+---@return string
+function System.Web.UI.Design.WebControls.BaseValidatorDesigner:GetDesignTimeHtml() end
+
+---@class System.Web.UI.Design.WebControls.ButtonDesigner : System.Web.UI.Design.ControlDesigner
+System.Web.UI.Design.WebControls.ButtonDesigner = {}
+---@alias CS.System.Web.UI.Design.WebControls.ButtonDesigner System.Web.UI.Design.WebControls.ButtonDesigner
+CS.System.Web.UI.Design.WebControls.ButtonDesigner = System.Web.UI.Design.WebControls.ButtonDesigner
+
+---@return System.Web.UI.Design.WebControls.ButtonDesigner
+function System.Web.UI.Design.WebControls.ButtonDesigner.New() end
+---@return string
+function System.Web.UI.Design.WebControls.ButtonDesigner:GetDesignTimeHtml() end
+
+---@class System.Web.UI.Design.WebControls.CalendarAutoFormatDialog : System.Windows.Forms.Form
+System.Web.UI.Design.WebControls.CalendarAutoFormatDialog = {}
+---@alias CS.System.Web.UI.Design.WebControls.CalendarAutoFormatDialog System.Web.UI.Design.WebControls.CalendarAutoFormatDialog
+CS.System.Web.UI.Design.WebControls.CalendarAutoFormatDialog = System.Web.UI.Design.WebControls.CalendarAutoFormatDialog
+
+---@param calendar System.Web.UI.WebControls.Calendar
+---@return System.Web.UI.Design.WebControls.CalendarAutoFormatDialog
+function System.Web.UI.Design.WebControls.CalendarAutoFormatDialog.New(calendar) end
+
+---@class System.Web.UI.Design.WebControls.CalendarDesigner : System.Web.UI.Design.ControlDesigner
+---@field Verbs System.ComponentModel.Design.DesignerVerbCollection
+System.Web.UI.Design.WebControls.CalendarDesigner = {}
+---@alias CS.System.Web.UI.Design.WebControls.CalendarDesigner System.Web.UI.Design.WebControls.CalendarDesigner
+CS.System.Web.UI.Design.WebControls.CalendarDesigner = System.Web.UI.Design.WebControls.CalendarDesigner
+
+---@return System.Web.UI.Design.WebControls.CalendarDesigner
+function System.Web.UI.Design.WebControls.CalendarDesigner.New() end
+---@param component System.ComponentModel.IComponent
+function System.Web.UI.Design.WebControls.CalendarDesigner:Initialize(component) end
+
+---@class System.Web.UI.Design.WebControls.CheckBoxDesigner : System.Web.UI.Design.ControlDesigner
+System.Web.UI.Design.WebControls.CheckBoxDesigner = {}
+---@alias CS.System.Web.UI.Design.WebControls.CheckBoxDesigner System.Web.UI.Design.WebControls.CheckBoxDesigner
+CS.System.Web.UI.Design.WebControls.CheckBoxDesigner = System.Web.UI.Design.WebControls.CheckBoxDesigner
+
+---@return System.Web.UI.Design.WebControls.CheckBoxDesigner
+function System.Web.UI.Design.WebControls.CheckBoxDesigner.New() end
+---@return string
+function System.Web.UI.Design.WebControls.CheckBoxDesigner:GetDesignTimeHtml() end
+
+---@class System.Web.UI.Design.WebControls.CompositeControlDesigner : System.Web.UI.Design.ControlDesigner
+System.Web.UI.Design.WebControls.CompositeControlDesigner = {}
+---@alias CS.System.Web.UI.Design.WebControls.CompositeControlDesigner System.Web.UI.Design.WebControls.CompositeControlDesigner
+CS.System.Web.UI.Design.WebControls.CompositeControlDesigner = System.Web.UI.Design.WebControls.CompositeControlDesigner
+
+---@return System.Web.UI.Design.WebControls.CompositeControlDesigner
+function System.Web.UI.Design.WebControls.CompositeControlDesigner.New() end
+---@overload fun() : string
+---@param regions System.Web.UI.Design.DesignerRegionCollection
+---@return string
+function System.Web.UI.Design.WebControls.CompositeControlDesigner:GetDesignTimeHtml(regions) end
+---@param component System.ComponentModel.IComponent
+function System.Web.UI.Design.WebControls.CompositeControlDesigner:Initialize(component) end
+
+---@class System.Web.UI.Design.WebControls.DataBoundControlDesigner : System.Web.UI.Design.WebControls.BaseDataBoundControlDesigner
+---@field ActionLists System.ComponentModel.Design.DesignerActionListCollection
+---@field DataMember string
+---@field DataSourceDesigner System.Web.UI.Design.IDataSourceDesigner
+---@field DesignerView System.Web.UI.Design.DesignerDataSourceView
+System.Web.UI.Design.WebControls.DataBoundControlDesigner = {}
+---@alias CS.System.Web.UI.Design.WebControls.DataBoundControlDesigner System.Web.UI.Design.WebControls.DataBoundControlDesigner
+CS.System.Web.UI.Design.WebControls.DataBoundControlDesigner = System.Web.UI.Design.WebControls.DataBoundControlDesigner
+
+---@return System.Web.UI.Design.WebControls.DataBoundControlDesigner
+function System.Web.UI.Design.WebControls.DataBoundControlDesigner.New() end
+
+---@class System.Web.UI.Design.WebControls.DataListComponentEditor : System.Web.UI.Design.WebControls.BaseDataListComponentEditor
+System.Web.UI.Design.WebControls.DataListComponentEditor = {}
+---@alias CS.System.Web.UI.Design.WebControls.DataListComponentEditor System.Web.UI.Design.WebControls.DataListComponentEditor
+CS.System.Web.UI.Design.WebControls.DataListComponentEditor = System.Web.UI.Design.WebControls.DataListComponentEditor
+
+---@overload fun() : System.Web.UI.Design.WebControls.DataListComponentEditor
+---@param initialPage number
+---@return System.Web.UI.Design.WebControls.DataListComponentEditor
+function System.Web.UI.Design.WebControls.DataListComponentEditor.New(initialPage) end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@param obj System.Object
+---@param parent System.Windows.Forms.IWin32Window
+---@return boolean
+function System.Web.UI.Design.WebControls.DataListComponentEditor:EditComponent(context, obj, parent) end
+
+---@class System.Web.UI.Design.WebControls.DataProviderNameConverter : System.ComponentModel.StringConverter
+System.Web.UI.Design.WebControls.DataProviderNameConverter = {}
+---@alias CS.System.Web.UI.Design.WebControls.DataProviderNameConverter System.Web.UI.Design.WebControls.DataProviderNameConverter
+CS.System.Web.UI.Design.WebControls.DataProviderNameConverter = System.Web.UI.Design.WebControls.DataProviderNameConverter
+
+---@return System.Web.UI.Design.WebControls.DataProviderNameConverter
+function System.Web.UI.Design.WebControls.DataProviderNameConverter.New() end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@return System.ComponentModel.TypeConverter.StandardValuesCollection
+function System.Web.UI.Design.WebControls.DataProviderNameConverter:GetStandardValues(context) end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@return boolean
+function System.Web.UI.Design.WebControls.DataProviderNameConverter:GetStandardValuesExclusive(context) end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@return boolean
+function System.Web.UI.Design.WebControls.DataProviderNameConverter:GetStandardValuesSupported(context) end
+
+---@class System.Web.UI.Design.WebControls.DataSourceIDConverter : System.ComponentModel.TypeConverter
+System.Web.UI.Design.WebControls.DataSourceIDConverter = {}
+---@alias CS.System.Web.UI.Design.WebControls.DataSourceIDConverter System.Web.UI.Design.WebControls.DataSourceIDConverter
+CS.System.Web.UI.Design.WebControls.DataSourceIDConverter = System.Web.UI.Design.WebControls.DataSourceIDConverter
+
+---@return System.Web.UI.Design.WebControls.DataSourceIDConverter
+function System.Web.UI.Design.WebControls.DataSourceIDConverter.New() end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@param sourceType System.Type
+---@return boolean
+function System.Web.UI.Design.WebControls.DataSourceIDConverter:CanConvertFrom(context, sourceType) end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@param culture System.Globalization.CultureInfo
+---@param value System.Object
+---@return System.Object
+function System.Web.UI.Design.WebControls.DataSourceIDConverter:ConvertFrom(context, culture, value) end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@return System.ComponentModel.TypeConverter.StandardValuesCollection
+function System.Web.UI.Design.WebControls.DataSourceIDConverter:GetStandardValues(context) end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@return boolean
+function System.Web.UI.Design.WebControls.DataSourceIDConverter:GetStandardValuesExclusive(context) end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@return boolean
+function System.Web.UI.Design.WebControls.DataSourceIDConverter:GetStandardValuesSupported(context) end
+
+---@class System.Web.UI.Design.WebControls.HierarchicalDataBoundControlDesigner : System.Web.UI.Design.WebControls.BaseDataBoundControlDesigner
+---@field ActionLists System.ComponentModel.Design.DesignerActionListCollection
+---@field DataSourceDesigner System.Web.UI.Design.IHierarchicalDataSourceDesigner
+---@field DesignerView System.Web.UI.Design.DesignerHierarchicalDataSourceView
+System.Web.UI.Design.WebControls.HierarchicalDataBoundControlDesigner = {}
+---@alias CS.System.Web.UI.Design.WebControls.HierarchicalDataBoundControlDesigner System.Web.UI.Design.WebControls.HierarchicalDataBoundControlDesigner
+CS.System.Web.UI.Design.WebControls.HierarchicalDataBoundControlDesigner = System.Web.UI.Design.WebControls.HierarchicalDataBoundControlDesigner
+
+---@return System.Web.UI.Design.WebControls.HierarchicalDataBoundControlDesigner
+function System.Web.UI.Design.WebControls.HierarchicalDataBoundControlDesigner.New() end
+
+---@class System.Web.UI.Design.WebControls.HyperLinkDesigner : System.Web.UI.Design.TextControlDesigner
+System.Web.UI.Design.WebControls.HyperLinkDesigner = {}
+---@alias CS.System.Web.UI.Design.WebControls.HyperLinkDesigner System.Web.UI.Design.WebControls.HyperLinkDesigner
+CS.System.Web.UI.Design.WebControls.HyperLinkDesigner = System.Web.UI.Design.WebControls.HyperLinkDesigner
+
+---@return System.Web.UI.Design.WebControls.HyperLinkDesigner
+function System.Web.UI.Design.WebControls.HyperLinkDesigner.New() end
+---@return string
+function System.Web.UI.Design.WebControls.HyperLinkDesigner:GetDesignTimeHtml() end
+
+---@class System.Web.UI.Design.WebControls.LabelDesigner : System.Web.UI.Design.TextControlDesigner
+System.Web.UI.Design.WebControls.LabelDesigner = {}
+---@alias CS.System.Web.UI.Design.WebControls.LabelDesigner System.Web.UI.Design.WebControls.LabelDesigner
+CS.System.Web.UI.Design.WebControls.LabelDesigner = System.Web.UI.Design.WebControls.LabelDesigner
+
+---@return System.Web.UI.Design.WebControls.LabelDesigner
+function System.Web.UI.Design.WebControls.LabelDesigner.New() end
+
+---@class System.Web.UI.Design.WebControls.LinkButtonDesigner : System.Web.UI.Design.TextControlDesigner
+System.Web.UI.Design.WebControls.LinkButtonDesigner = {}
+---@alias CS.System.Web.UI.Design.WebControls.LinkButtonDesigner System.Web.UI.Design.WebControls.LinkButtonDesigner
+CS.System.Web.UI.Design.WebControls.LinkButtonDesigner = System.Web.UI.Design.WebControls.LinkButtonDesigner
+
+---@return System.Web.UI.Design.WebControls.LinkButtonDesigner
+function System.Web.UI.Design.WebControls.LinkButtonDesigner.New() end
+
+---@class System.Web.UI.Design.WebControls.ListControlDataBindingHandler : System.Web.UI.Design.DataBindingHandler
+System.Web.UI.Design.WebControls.ListControlDataBindingHandler = {}
+---@alias CS.System.Web.UI.Design.WebControls.ListControlDataBindingHandler System.Web.UI.Design.WebControls.ListControlDataBindingHandler
+CS.System.Web.UI.Design.WebControls.ListControlDataBindingHandler = System.Web.UI.Design.WebControls.ListControlDataBindingHandler
+
+---@return System.Web.UI.Design.WebControls.ListControlDataBindingHandler
+function System.Web.UI.Design.WebControls.ListControlDataBindingHandler.New() end
+---@param designerHost System.ComponentModel.Design.IDesignerHost
+---@param control System.Web.UI.Control
+function System.Web.UI.Design.WebControls.ListControlDataBindingHandler:DataBindControl(designerHost, control) end
+
+---@class System.Web.UI.Design.WebControls.ListControlDesigner : System.Web.UI.Design.WebControls.DataBoundControlDesigner
+---@field ActionLists System.ComponentModel.Design.DesignerActionListCollection
+---@field DataKeyField string
+---@field DataTextField string
+---@field DataValueField string
+System.Web.UI.Design.WebControls.ListControlDesigner = {}
+---@alias CS.System.Web.UI.Design.WebControls.ListControlDesigner System.Web.UI.Design.WebControls.ListControlDesigner
+CS.System.Web.UI.Design.WebControls.ListControlDesigner = System.Web.UI.Design.WebControls.ListControlDesigner
+
+---@return System.Web.UI.Design.WebControls.ListControlDesigner
+function System.Web.UI.Design.WebControls.ListControlDesigner.New() end
+---@param component System.ComponentModel.IComponent
+function System.Web.UI.Design.WebControls.ListControlDesigner:Initialize(component) end
+---@return string
+function System.Web.UI.Design.WebControls.ListControlDesigner:GetDesignTimeHtml() end
+---@return System.Collections.IEnumerable
+function System.Web.UI.Design.WebControls.ListControlDesigner:GetResolvedSelectedDataSource() end
+---@return System.Object
+function System.Web.UI.Design.WebControls.ListControlDesigner:GetSelectedDataSource() end
+---@param sender System.Object
+---@param e System.ComponentModel.Design.ComponentChangedEventArgs
+function System.Web.UI.Design.WebControls.ListControlDesigner:OnComponentChanged(sender, e) end
+
+---@class System.Web.UI.Design.WebControls.PanelDesigner : System.Web.UI.Design.ReadWriteControlDesigner
+System.Web.UI.Design.WebControls.PanelDesigner = {}
+---@alias CS.System.Web.UI.Design.WebControls.PanelDesigner System.Web.UI.Design.WebControls.PanelDesigner
+CS.System.Web.UI.Design.WebControls.PanelDesigner = System.Web.UI.Design.WebControls.PanelDesigner
+
+---@return System.Web.UI.Design.WebControls.PanelDesigner
+function System.Web.UI.Design.WebControls.PanelDesigner.New() end
+
+---@class System.Web.UI.Design.WebControls.RegexEditorDialog : System.Windows.Forms.Form
+---@field RegularExpression string
+System.Web.UI.Design.WebControls.RegexEditorDialog = {}
+---@alias CS.System.Web.UI.Design.WebControls.RegexEditorDialog System.Web.UI.Design.WebControls.RegexEditorDialog
+CS.System.Web.UI.Design.WebControls.RegexEditorDialog = System.Web.UI.Design.WebControls.RegexEditorDialog
+
+---@overload fun() : System.Web.UI.Design.WebControls.RegexEditorDialog
+---@param site System.ComponentModel.ISite
+---@return System.Web.UI.Design.WebControls.RegexEditorDialog
+function System.Web.UI.Design.WebControls.RegexEditorDialog.New(site) end
+
+---@class System.Web.UI.Design.WebControls.RegexTypeEditor : System.Drawing.Design.UITypeEditor
+System.Web.UI.Design.WebControls.RegexTypeEditor = {}
+---@alias CS.System.Web.UI.Design.WebControls.RegexTypeEditor System.Web.UI.Design.WebControls.RegexTypeEditor
+CS.System.Web.UI.Design.WebControls.RegexTypeEditor = System.Web.UI.Design.WebControls.RegexTypeEditor
+
+---@return System.Web.UI.Design.WebControls.RegexTypeEditor
+function System.Web.UI.Design.WebControls.RegexTypeEditor.New() end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@param provider System.IServiceProvider
+---@param value System.Object
+---@return System.Object
+function System.Web.UI.Design.WebControls.RegexTypeEditor:EditValue(context, provider, value) end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@return System.Drawing.Design.UITypeEditorEditStyle
+function System.Web.UI.Design.WebControls.RegexTypeEditor:GetEditStyle(context) end
+
+---@class System.Web.UI.Design.WebControls.RepeaterDesigner : System.Web.UI.Design.ControlDesigner
+---@field DataMember string
+---@field DataSource string
+---@field DataSourceDesigner System.Web.UI.Design.IDataSourceDesigner
+---@field DataSourceID string
+---@field DesignerView System.Web.UI.Design.DesignerDataSourceView
+System.Web.UI.Design.WebControls.RepeaterDesigner = {}
+---@alias CS.System.Web.UI.Design.WebControls.RepeaterDesigner System.Web.UI.Design.WebControls.RepeaterDesigner
+CS.System.Web.UI.Design.WebControls.RepeaterDesigner = System.Web.UI.Design.WebControls.RepeaterDesigner
+
+---@return System.Web.UI.Design.WebControls.RepeaterDesigner
+function System.Web.UI.Design.WebControls.RepeaterDesigner.New() end
+---@return string
+function System.Web.UI.Design.WebControls.RepeaterDesigner:GetDesignTimeHtml() end
+---@return System.Collections.IEnumerable
+function System.Web.UI.Design.WebControls.RepeaterDesigner:GetResolvedSelectedDataSource() end
+---@return System.Object
+function System.Web.UI.Design.WebControls.RepeaterDesigner:GetSelectedDataSource() end
+---@param component System.ComponentModel.IComponent
+function System.Web.UI.Design.WebControls.RepeaterDesigner:Initialize(component) end
+---@param source System.Object
+---@param ce System.ComponentModel.Design.ComponentChangedEventArgs
+function System.Web.UI.Design.WebControls.RepeaterDesigner:OnComponentChanged(source, ce) end
+
+---@class System.Web.UI.Design.WebControls.TableCellsCollectionEditor : System.ComponentModel.Design.CollectionEditor
+System.Web.UI.Design.WebControls.TableCellsCollectionEditor = {}
+---@alias CS.System.Web.UI.Design.WebControls.TableCellsCollectionEditor System.Web.UI.Design.WebControls.TableCellsCollectionEditor
+CS.System.Web.UI.Design.WebControls.TableCellsCollectionEditor = System.Web.UI.Design.WebControls.TableCellsCollectionEditor
+
+---@param type System.Type
+---@return System.Web.UI.Design.WebControls.TableCellsCollectionEditor
+function System.Web.UI.Design.WebControls.TableCellsCollectionEditor.New(type) end
+
+---@class System.Web.UI.Design.WebControls.TableDesigner : System.Web.UI.Design.ControlDesigner
+System.Web.UI.Design.WebControls.TableDesigner = {}
+---@alias CS.System.Web.UI.Design.WebControls.TableDesigner System.Web.UI.Design.WebControls.TableDesigner
+CS.System.Web.UI.Design.WebControls.TableDesigner = System.Web.UI.Design.WebControls.TableDesigner
+
+---@return System.Web.UI.Design.WebControls.TableDesigner
+function System.Web.UI.Design.WebControls.TableDesigner.New() end
+---@return string
+function System.Web.UI.Design.WebControls.TableDesigner:GetDesignTimeHtml() end
+---@return string
+function System.Web.UI.Design.WebControls.TableDesigner:GetPersistInnerHtml() end
+
+---@class System.Web.UI.Design.WebControls.TableRowsCollectionEditor : System.ComponentModel.Design.CollectionEditor
+System.Web.UI.Design.WebControls.TableRowsCollectionEditor = {}
+---@alias CS.System.Web.UI.Design.WebControls.TableRowsCollectionEditor System.Web.UI.Design.WebControls.TableRowsCollectionEditor
+CS.System.Web.UI.Design.WebControls.TableRowsCollectionEditor = System.Web.UI.Design.WebControls.TableRowsCollectionEditor
+
+---@param type System.Type
+---@return System.Web.UI.Design.WebControls.TableRowsCollectionEditor
+function System.Web.UI.Design.WebControls.TableRowsCollectionEditor.New(type) end
+
+---@class System.Web.UI.Design.WebControls.XmlDesigner : System.Web.UI.Design.ControlDesigner
+System.Web.UI.Design.WebControls.XmlDesigner = {}
+---@alias CS.System.Web.UI.Design.WebControls.XmlDesigner System.Web.UI.Design.WebControls.XmlDesigner
+CS.System.Web.UI.Design.WebControls.XmlDesigner = System.Web.UI.Design.WebControls.XmlDesigner
+
+---@return System.Web.UI.Design.WebControls.XmlDesigner
+function System.Web.UI.Design.WebControls.XmlDesigner.New() end
+---@return string
+function System.Web.UI.Design.WebControls.XmlDesigner:GetDesignTimeHtml() end
+---@param component System.ComponentModel.IComponent
+function System.Web.UI.Design.WebControls.XmlDesigner:Initialize(component) end
+
+---@class System.Web.UI.Design.Util.DummyClass : System.Object
+System.Web.UI.Design.Util.DummyClass = {}
+---@alias CS.System.Web.UI.Design.Util.DummyClass System.Web.UI.Design.Util.DummyClass
+CS.System.Web.UI.Design.Util.DummyClass = System.Web.UI.Design.Util.DummyClass
+
+---@return System.Web.UI.Design.Util.DummyClass
+function System.Web.UI.Design.Util.DummyClass.New() end
+
+---@class System.ServiceProcess.Design.ServiceControllerDesigner : System.ComponentModel.Design.ComponentDesigner
+System.ServiceProcess.Design.ServiceControllerDesigner = {}
+---@alias CS.System.ServiceProcess.Design.ServiceControllerDesigner System.ServiceProcess.Design.ServiceControllerDesigner
+CS.System.ServiceProcess.Design.ServiceControllerDesigner = System.ServiceProcess.Design.ServiceControllerDesigner
+
+---@return System.ServiceProcess.Design.ServiceControllerDesigner
+function System.ServiceProcess.Design.ServiceControllerDesigner.New() end
+
+---@class System.Resources.Tools.StronglyTypedResourceBuilder : System.Object
+System.Resources.Tools.StronglyTypedResourceBuilder = {}
+---@alias CS.System.Resources.Tools.StronglyTypedResourceBuilder System.Resources.Tools.StronglyTypedResourceBuilder
+CS.System.Resources.Tools.StronglyTypedResourceBuilder = System.Resources.Tools.StronglyTypedResourceBuilder
+
+---@overload fun(resxFile: string, baseName: string, generatedCodeNamespace: string, codeProvider: System.CodeDom.Compiler.CodeDomProvider, internalClass: boolean, out_unmatchable: System.String[]) : System.CodeDom.CodeCompileUnit, System.String[]
+---@overload fun(resxFile: string, baseName: string, generatedCodeNamespace: string, resourcesNamespace: string, codeProvider: System.CodeDom.Compiler.CodeDomProvider, internalClass: boolean, out_unmatchable: System.String[]) : System.CodeDom.CodeCompileUnit, System.String[]
+---@overload fun(resourceList: System.Collections.IDictionary, baseName: string, generatedCodeNamespace: string, codeProvider: System.CodeDom.Compiler.CodeDomProvider, internalClass: boolean, out_unmatchable: System.String[]) : System.CodeDom.CodeCompileUnit, System.String[]
+---@param resourceList System.Collections.IDictionary
+---@param baseName string
+---@param generatedCodeNamespace string
+---@param resourcesNamespace string
+---@param codeProvider System.CodeDom.Compiler.CodeDomProvider
+---@param internalClass boolean
+---@param out_unmatchable System.String[]
+---@return System.CodeDom.CodeCompileUnit,System.String[]
+function System.Resources.Tools.StronglyTypedResourceBuilder.Create(resourceList, baseName, generatedCodeNamespace, resourcesNamespace, codeProvider, internalClass, out_unmatchable) end
+---@param key string
+---@param provider System.CodeDom.Compiler.CodeDomProvider
+---@return string
+function System.Resources.Tools.StronglyTypedResourceBuilder.VerifyResourceName(key, provider) end
+
+---@class System.Resources.Tools.StronglyTypedResourceBuilder.ResourceItem : System.Object
+---@field VerifiedKey string
+---@field Resource System.Object
+---@field isUnmatchable boolean
+---@field toIgnore boolean
+System.Resources.Tools.StronglyTypedResourceBuilder.ResourceItem = {}
+---@alias CS.System.Resources.Tools.StronglyTypedResourceBuilder.ResourceItem System.Resources.Tools.StronglyTypedResourceBuilder.ResourceItem
+CS.System.Resources.Tools.StronglyTypedResourceBuilder.ResourceItem = System.Resources.Tools.StronglyTypedResourceBuilder.ResourceItem
+
+---@param value System.Object
+---@return System.Resources.Tools.StronglyTypedResourceBuilder.ResourceItem
+function System.Resources.Tools.StronglyTypedResourceBuilder.ResourceItem.New(value) end
+
+---@class System.Messaging.Design.MessageDesigner : System.ComponentModel.Design.ComponentDesigner
+System.Messaging.Design.MessageDesigner = {}
+---@alias CS.System.Messaging.Design.MessageDesigner System.Messaging.Design.MessageDesigner
+CS.System.Messaging.Design.MessageDesigner = System.Messaging.Design.MessageDesigner
+
+---@return System.Messaging.Design.MessageDesigner
+function System.Messaging.Design.MessageDesigner.New() end
+
+---@class System.Diagnostics.Design.LogConverter : System.ComponentModel.TypeConverter
+System.Diagnostics.Design.LogConverter = {}
+---@alias CS.System.Diagnostics.Design.LogConverter System.Diagnostics.Design.LogConverter
+CS.System.Diagnostics.Design.LogConverter = System.Diagnostics.Design.LogConverter
+
+---@return System.Diagnostics.Design.LogConverter
+function System.Diagnostics.Design.LogConverter.New() end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@param sourceType System.Type
+---@return boolean
+function System.Diagnostics.Design.LogConverter:CanConvertFrom(context, sourceType) end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@param culture System.Globalization.CultureInfo
+---@param value System.Object
+---@return System.Object
+function System.Diagnostics.Design.LogConverter:ConvertFrom(context, culture, value) end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@return System.ComponentModel.TypeConverter.StandardValuesCollection
+function System.Diagnostics.Design.LogConverter:GetStandardValues(context) end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@return boolean
+function System.Diagnostics.Design.LogConverter:GetStandardValuesSupported(context) end
+
+---@class System.Diagnostics.Design.ProcessDesigner : System.ComponentModel.Design.ComponentDesigner
+System.Diagnostics.Design.ProcessDesigner = {}
+---@alias CS.System.Diagnostics.Design.ProcessDesigner System.Diagnostics.Design.ProcessDesigner
+CS.System.Diagnostics.Design.ProcessDesigner = System.Diagnostics.Design.ProcessDesigner
+
+---@return System.Diagnostics.Design.ProcessDesigner
+function System.Diagnostics.Design.ProcessDesigner.New() end
+
+---@class System.Diagnostics.Design.ProcessModuleDesigner : System.ComponentModel.Design.ComponentDesigner
+System.Diagnostics.Design.ProcessModuleDesigner = {}
+---@alias CS.System.Diagnostics.Design.ProcessModuleDesigner System.Diagnostics.Design.ProcessModuleDesigner
+CS.System.Diagnostics.Design.ProcessModuleDesigner = System.Diagnostics.Design.ProcessModuleDesigner
+
+---@return System.Diagnostics.Design.ProcessModuleDesigner
+function System.Diagnostics.Design.ProcessModuleDesigner.New() end
+
+---@class System.Diagnostics.Design.ProcessThreadDesigner : System.ComponentModel.Design.ComponentDesigner
+System.Diagnostics.Design.ProcessThreadDesigner = {}
+---@alias CS.System.Diagnostics.Design.ProcessThreadDesigner System.Diagnostics.Design.ProcessThreadDesigner
+CS.System.Diagnostics.Design.ProcessThreadDesigner = System.Diagnostics.Design.ProcessThreadDesigner
+
+---@return System.Diagnostics.Design.ProcessThreadDesigner
+function System.Diagnostics.Design.ProcessThreadDesigner.New() end
+
+---@class System.Diagnostics.Design.StringValueConverter : System.ComponentModel.TypeConverter
+System.Diagnostics.Design.StringValueConverter = {}
+---@alias CS.System.Diagnostics.Design.StringValueConverter System.Diagnostics.Design.StringValueConverter
+CS.System.Diagnostics.Design.StringValueConverter = System.Diagnostics.Design.StringValueConverter
+
+---@return System.Diagnostics.Design.StringValueConverter
+function System.Diagnostics.Design.StringValueConverter.New() end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@param sourceType System.Type
+---@return boolean
+function System.Diagnostics.Design.StringValueConverter:CanConvertFrom(context, sourceType) end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@param culture System.Globalization.CultureInfo
+---@param value System.Object
+---@return System.Object
+function System.Diagnostics.Design.StringValueConverter:ConvertFrom(context, culture, value) end
+
+---@class System.Design.DummyClass : System.Object
+System.Design.DummyClass = {}
+---@alias CS.System.Design.DummyClass System.Design.DummyClass
+CS.System.Design.DummyClass = System.Design.DummyClass
+
+---@return System.Design.DummyClass
+function System.Design.DummyClass.New() end
+
+---@class System.Data.Design.MethodSignatureGenerator : System.Object
+---@field CodeProvider System.CodeDom.Compiler.CodeDomProvider
+---@field ContainerParameterType System.Type
+---@field DataSetClassName string
+---@field IsGetMethod boolean
+---@field PagingMethod boolean
+---@field ParameterOption System.Data.Design.ParameterGenerationOption
+---@field TableClassName string
+System.Data.Design.MethodSignatureGenerator = {}
+---@alias CS.System.Data.Design.MethodSignatureGenerator System.Data.Design.MethodSignatureGenerator
+CS.System.Data.Design.MethodSignatureGenerator = System.Data.Design.MethodSignatureGenerator
+
+---@return System.Data.Design.MethodSignatureGenerator
+function System.Data.Design.MethodSignatureGenerator.New() end
+---@return System.CodeDom.CodeMemberMethod
+function System.Data.Design.MethodSignatureGenerator:GenerateMethod() end
+---@return string
+function System.Data.Design.MethodSignatureGenerator:GenerateMethodSignature() end
+---@return System.CodeDom.CodeTypeDeclaration
+function System.Data.Design.MethodSignatureGenerator:GenerateUpdatingMethods() end
+---@param designTableContent string
+function System.Data.Design.MethodSignatureGenerator:SetDesignTableContent(designTableContent) end
+---@param methodSourceContent string
+function System.Data.Design.MethodSignatureGenerator:SetMethodSourceContent(methodSourceContent) end
+
+---@class System.Data.Design.ParameterGenerationOption
+---@field ClrTypes System.Data.Design.ParameterGenerationOption
+---@field SqlTypes System.Data.Design.ParameterGenerationOption
+---@field Objects System.Data.Design.ParameterGenerationOption
+System.Data.Design.ParameterGenerationOption = {}
+---@alias CS.System.Data.Design.ParameterGenerationOption System.Data.Design.ParameterGenerationOption
+CS.System.Data.Design.ParameterGenerationOption = System.Data.Design.ParameterGenerationOption
+
+
+---@class System.Data.Design.TypedDataSetGenerator : System.Object
+---@field ReferencedAssemblies System.Collections.Generic.ICollection
+System.Data.Design.TypedDataSetGenerator = {}
+---@alias CS.System.Data.Design.TypedDataSetGenerator System.Data.Design.TypedDataSetGenerator
+CS.System.Data.Design.TypedDataSetGenerator = System.Data.Design.TypedDataSetGenerator
+
+---@overload fun(dataSet: System.Data.DataSet, codeNamespace: System.CodeDom.CodeNamespace, codeProvider: System.CodeDom.Compiler.CodeDomProvider) : string
+---@overload fun(inputFileContent: string, compileUnit: System.CodeDom.CodeCompileUnit, mainNamespace: System.CodeDom.CodeNamespace, codeProvider: System.CodeDom.Compiler.CodeDomProvider) : string
+---@overload fun(inputFileContent: string, compileUnit: System.CodeDom.CodeCompileUnit, mainNamespace: System.CodeDom.CodeNamespace, codeProvider: System.CodeDom.Compiler.CodeDomProvider, customDBProviders: System.Collections.Hashtable)
+---@overload fun(inputFileContent: string, compileUnit: System.CodeDom.CodeCompileUnit, mainNamespace: System.CodeDom.CodeNamespace, codeProvider: System.CodeDom.Compiler.CodeDomProvider, specifiedFactory: System.Data.Common.DbProviderFactory)
+---@overload fun(inputFileContent: string, compileUnit: System.CodeDom.CodeCompileUnit, mainNamespace: System.CodeDom.CodeNamespace, codeProvider: System.CodeDom.Compiler.CodeDomProvider, option: System.Data.Design.TypedDataSetGenerator.GenerateOption) : string
+---@overload fun(inputFileContent: string, compileUnit: System.CodeDom.CodeCompileUnit, mainNamespace: System.CodeDom.CodeNamespace, codeProvider: System.CodeDom.Compiler.CodeDomProvider, customDBProviders: System.Collections.Hashtable, option: System.Data.Design.TypedDataSetGenerator.GenerateOption)
+---@overload fun(inputFileContent: string, compileUnit: System.CodeDom.CodeCompileUnit, mainNamespace: System.CodeDom.CodeNamespace, codeProvider: System.CodeDom.Compiler.CodeDomProvider, customDBProviders: System.Collections.Hashtable, option: System.Data.Design.TypedDataSetGenerator.GenerateOption, dataSetNamespace: string)
+---@overload fun(inputFileContent: string, compileUnit: System.CodeDom.CodeCompileUnit, mainNamespace: System.CodeDom.CodeNamespace, codeProvider: System.CodeDom.Compiler.CodeDomProvider, customDBProviders: System.Collections.Hashtable, option: System.Data.Design.TypedDataSetGenerator.GenerateOption, dataSetNamespace: string, basePath: string)
+---@overload fun(inputFileContent: string, compileUnit: System.CodeDom.CodeCompileUnit, mainNamespace: System.CodeDom.CodeNamespace, codeProvider: System.CodeDom.Compiler.CodeDomProvider, option: System.Data.Design.TypedDataSetGenerator.GenerateOption, dataSetNamespace: string) : string
+---@param inputFileContent string
+---@param compileUnit System.CodeDom.CodeCompileUnit
+---@param mainNamespace System.CodeDom.CodeNamespace
+---@param codeProvider System.CodeDom.Compiler.CodeDomProvider
+---@param option System.Data.Design.TypedDataSetGenerator.GenerateOption
+---@param dataSetNamespace string
+---@param basePath string
+---@return string
+function System.Data.Design.TypedDataSetGenerator.Generate(inputFileContent, compileUnit, mainNamespace, codeProvider, option, dataSetNamespace, basePath) end
+---@overload fun(inputFileContent: string) : string
+---@param inputFileContent string
+---@param tableName string
+---@return string
+function System.Data.Design.TypedDataSetGenerator.GetProviderName(inputFileContent, tableName) end
+
+---@class System.Data.Design.TypedDataSetGenerator.GenerateOption
+---@field None System.Data.Design.TypedDataSetGenerator.GenerateOption
+---@field HierarchicalUpdate System.Data.Design.TypedDataSetGenerator.GenerateOption
+---@field LinqOverTypedDatasets System.Data.Design.TypedDataSetGenerator.GenerateOption
+System.Data.Design.TypedDataSetGenerator.GenerateOption = {}
+---@alias CS.System.Data.Design.TypedDataSetGenerator.GenerateOption System.Data.Design.TypedDataSetGenerator.GenerateOption
+CS.System.Data.Design.TypedDataSetGenerator.GenerateOption = System.Data.Design.TypedDataSetGenerator.GenerateOption
+
+
+---@class System.Data.Design.TypedDataSetGeneratorException : System.Data.DataException
+---@field ErrorList System.Collections.IList
+System.Data.Design.TypedDataSetGeneratorException = {}
+---@alias CS.System.Data.Design.TypedDataSetGeneratorException System.Data.Design.TypedDataSetGeneratorException
+CS.System.Data.Design.TypedDataSetGeneratorException = System.Data.Design.TypedDataSetGeneratorException
+
+---@overload fun() : System.Data.Design.TypedDataSetGeneratorException
+---@overload fun(list: System.Collections.IList) : System.Data.Design.TypedDataSetGeneratorException
+---@overload fun(message: string) : System.Data.Design.TypedDataSetGeneratorException
+---@param message string
+---@param innerException System.Exception
+---@return System.Data.Design.TypedDataSetGeneratorException
+function System.Data.Design.TypedDataSetGeneratorException.New(message, innerException) end
+---@param info System.Runtime.Serialization.SerializationInfo
+---@param context System.Runtime.Serialization.StreamingContext
+function System.Data.Design.TypedDataSetGeneratorException:GetObjectData(info, context) end
+
+---@class System.Data.Design.TypedDataSetSchemaImporterExtension : System.Xml.Serialization.Advanced.SchemaImporterExtension
+System.Data.Design.TypedDataSetSchemaImporterExtension = {}
+---@alias CS.System.Data.Design.TypedDataSetSchemaImporterExtension System.Data.Design.TypedDataSetSchemaImporterExtension
+CS.System.Data.Design.TypedDataSetSchemaImporterExtension = System.Data.Design.TypedDataSetSchemaImporterExtension
+
+---@return System.Data.Design.TypedDataSetSchemaImporterExtension
+function System.Data.Design.TypedDataSetSchemaImporterExtension.New() end
+---@overload fun(self: System.Data.Design.TypedDataSetSchemaImporterExtension, type: System.Xml.Schema.XmlSchemaType, context: System.Xml.Schema.XmlSchemaObject, schemas: System.Xml.Serialization.XmlSchemas, importer: System.Xml.Serialization.XmlSchemaImporter, compileUnit: System.CodeDom.CodeCompileUnit, mainNamespace: System.CodeDom.CodeNamespace, options: System.Xml.Serialization.CodeGenerationOptions, codeProvider: System.CodeDom.Compiler.CodeDomProvider) : string
+---@param name string
+---@param namespaceName string
+---@param context System.Xml.Schema.XmlSchemaObject
+---@param schemas System.Xml.Serialization.XmlSchemas
+---@param importer System.Xml.Serialization.XmlSchemaImporter
+---@param compileUnit System.CodeDom.CodeCompileUnit
+---@param mainNamespace System.CodeDom.CodeNamespace
+---@param options System.Xml.Serialization.CodeGenerationOptions
+---@param codeProvider System.CodeDom.Compiler.CodeDomProvider
+---@return string
+function System.Data.Design.TypedDataSetSchemaImporterExtension:ImportSchemaType(name, namespaceName, context, schemas, importer, compileUnit, mainNamespace, options, codeProvider) end
+
+---@class System.ComponentModel.Design.ActiveDesignSurfaceChangedEventArgs : System.EventArgs
+---@field OldSurface System.ComponentModel.Design.DesignSurface
+---@field NewSurface System.ComponentModel.Design.DesignSurface
+System.ComponentModel.Design.ActiveDesignSurfaceChangedEventArgs = {}
+---@alias CS.System.ComponentModel.Design.ActiveDesignSurfaceChangedEventArgs System.ComponentModel.Design.ActiveDesignSurfaceChangedEventArgs
+CS.System.ComponentModel.Design.ActiveDesignSurfaceChangedEventArgs = System.ComponentModel.Design.ActiveDesignSurfaceChangedEventArgs
+
+---@param oldSurface System.ComponentModel.Design.DesignSurface
+---@param newSurface System.ComponentModel.Design.DesignSurface
+---@return System.ComponentModel.Design.ActiveDesignSurfaceChangedEventArgs
+function System.ComponentModel.Design.ActiveDesignSurfaceChangedEventArgs.New(oldSurface, newSurface) end
+
+---@class System.ComponentModel.Design.ActiveDesignSurfaceChangedEventHandler : System.MulticastDelegate
+System.ComponentModel.Design.ActiveDesignSurfaceChangedEventHandler = {}
+---@alias CS.System.ComponentModel.Design.ActiveDesignSurfaceChangedEventHandler System.ComponentModel.Design.ActiveDesignSurfaceChangedEventHandler
+CS.System.ComponentModel.Design.ActiveDesignSurfaceChangedEventHandler = System.ComponentModel.Design.ActiveDesignSurfaceChangedEventHandler
+
+---@param object System.Object
+---@param method System.IntPtr
+---@return System.ComponentModel.Design.ActiveDesignSurfaceChangedEventHandler
+function System.ComponentModel.Design.ActiveDesignSurfaceChangedEventHandler.New(object, method) end
+---@param sender System.Object
+---@param e System.ComponentModel.Design.ActiveDesignSurfaceChangedEventArgs
+function System.ComponentModel.Design.ActiveDesignSurfaceChangedEventHandler:Invoke(sender, e) end
+---@param sender System.Object
+---@param e System.ComponentModel.Design.ActiveDesignSurfaceChangedEventArgs
+---@param callback System.AsyncCallback
+---@param object System.Object
+---@return System.IAsyncResult
+function System.ComponentModel.Design.ActiveDesignSurfaceChangedEventHandler:BeginInvoke(sender, e, callback, object) end
+---@param result System.IAsyncResult
+function System.ComponentModel.Design.ActiveDesignSurfaceChangedEventHandler:EndInvoke(result) end
+
+---@class System.ComponentModel.Design.ArrayEditor : System.ComponentModel.Design.CollectionEditor
+System.ComponentModel.Design.ArrayEditor = {}
+---@alias CS.System.ComponentModel.Design.ArrayEditor System.ComponentModel.Design.ArrayEditor
+CS.System.ComponentModel.Design.ArrayEditor = System.ComponentModel.Design.ArrayEditor
+
+---@param type System.Type
+---@return System.ComponentModel.Design.ArrayEditor
+function System.ComponentModel.Design.ArrayEditor.New(type) end
+
+---@class System.ComponentModel.Design.BinaryEditor : System.Drawing.Design.UITypeEditor
+System.ComponentModel.Design.BinaryEditor = {}
+---@alias CS.System.ComponentModel.Design.BinaryEditor System.ComponentModel.Design.BinaryEditor
+CS.System.ComponentModel.Design.BinaryEditor = System.ComponentModel.Design.BinaryEditor
+
+---@return System.ComponentModel.Design.BinaryEditor
+function System.ComponentModel.Design.BinaryEditor.New() end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@param provider System.IServiceProvider
+---@param value System.Object
+---@return System.Object
+function System.ComponentModel.Design.BinaryEditor:EditValue(context, provider, value) end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@return System.Drawing.Design.UITypeEditorEditStyle
+function System.ComponentModel.Design.BinaryEditor:GetEditStyle(context) end
+
+---@class System.ComponentModel.Design.ByteViewer : System.Windows.Forms.TableLayoutPanel
+System.ComponentModel.Design.ByteViewer = {}
+---@alias CS.System.ComponentModel.Design.ByteViewer System.ComponentModel.Design.ByteViewer
+CS.System.ComponentModel.Design.ByteViewer = System.ComponentModel.Design.ByteViewer
+
+---@return System.ComponentModel.Design.ByteViewer
+function System.ComponentModel.Design.ByteViewer.New() end
+---@return System.ComponentModel.Design.DisplayMode
+function System.ComponentModel.Design.ByteViewer:GetDisplayMode() end
+---@param path string
+function System.ComponentModel.Design.ByteViewer:SaveToFile(path) end
+---@return System.Byte[]
+function System.ComponentModel.Design.ByteViewer:GetBytes() end
+---@param bytes System.Byte[]
+function System.ComponentModel.Design.ByteViewer:SetBytes(bytes) end
+---@param mode System.ComponentModel.Design.DisplayMode
+function System.ComponentModel.Design.ByteViewer:SetDisplayMode(mode) end
+---@param path string
+function System.ComponentModel.Design.ByteViewer:SetFile(path) end
+---@param line number
+function System.ComponentModel.Design.ByteViewer:SetStartLine(line) end
+
+---@class System.ComponentModel.Design.CollectionEditor : System.Drawing.Design.UITypeEditor
+System.ComponentModel.Design.CollectionEditor = {}
+---@alias CS.System.ComponentModel.Design.CollectionEditor System.ComponentModel.Design.CollectionEditor
+CS.System.ComponentModel.Design.CollectionEditor = System.ComponentModel.Design.CollectionEditor
+
+---@param type System.Type
+---@return System.ComponentModel.Design.CollectionEditor
+function System.ComponentModel.Design.CollectionEditor.New(type) end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@param provider System.IServiceProvider
+---@param value System.Object
+---@return System.Object
+function System.ComponentModel.Design.CollectionEditor:EditValue(context, provider, value) end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@return System.Drawing.Design.UITypeEditorEditStyle
+function System.ComponentModel.Design.CollectionEditor:GetEditStyle(context) end
+
+---@class System.ComponentModel.Design.CollectionEditor.CollectionForm : System.Windows.Forms.Form
+---@field EditValue System.Object
+System.ComponentModel.Design.CollectionEditor.CollectionForm = {}
+---@alias CS.System.ComponentModel.Design.CollectionEditor.CollectionForm System.ComponentModel.Design.CollectionEditor.CollectionForm
+CS.System.ComponentModel.Design.CollectionEditor.CollectionForm = System.ComponentModel.Design.CollectionEditor.CollectionForm
+
+---@param editor System.ComponentModel.Design.CollectionEditor
+---@return System.ComponentModel.Design.CollectionEditor.CollectionForm
+function System.ComponentModel.Design.CollectionEditor.CollectionForm.New(editor) end
+
+---@class System.ComponentModel.Design.CollectionEditor.ConcreteCollectionForm : System.ComponentModel.Design.CollectionEditor.CollectionForm
+System.ComponentModel.Design.CollectionEditor.ConcreteCollectionForm = {}
+---@alias CS.System.ComponentModel.Design.CollectionEditor.ConcreteCollectionForm System.ComponentModel.Design.CollectionEditor.ConcreteCollectionForm
+CS.System.ComponentModel.Design.CollectionEditor.ConcreteCollectionForm = System.ComponentModel.Design.CollectionEditor.ConcreteCollectionForm
+
+---@param editor System.ComponentModel.Design.CollectionEditor
+---@return System.ComponentModel.Design.CollectionEditor.ConcreteCollectionForm
+function System.ComponentModel.Design.CollectionEditor.ConcreteCollectionForm.New(editor) end
+
+---@class System.ComponentModel.Design.CollectionEditor.ConcreteCollectionForm.ObjectContainerConverter : System.ComponentModel.TypeConverter
+System.ComponentModel.Design.CollectionEditor.ConcreteCollectionForm.ObjectContainerConverter = {}
+---@alias CS.System.ComponentModel.Design.CollectionEditor.ConcreteCollectionForm.ObjectContainerConverter System.ComponentModel.Design.CollectionEditor.ConcreteCollectionForm.ObjectContainerConverter
+CS.System.ComponentModel.Design.CollectionEditor.ConcreteCollectionForm.ObjectContainerConverter = System.ComponentModel.Design.CollectionEditor.ConcreteCollectionForm.ObjectContainerConverter
+
+---@return System.ComponentModel.Design.CollectionEditor.ConcreteCollectionForm.ObjectContainerConverter
+function System.ComponentModel.Design.CollectionEditor.ConcreteCollectionForm.ObjectContainerConverter.New() end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@param value System.Object
+---@param attributes System.Attribute[]
+---@return System.ComponentModel.PropertyDescriptorCollection
+function System.ComponentModel.Design.CollectionEditor.ConcreteCollectionForm.ObjectContainerConverter:GetProperties(context, value, attributes) end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@return boolean
+function System.ComponentModel.Design.CollectionEditor.ConcreteCollectionForm.ObjectContainerConverter:GetPropertiesSupported(context) end
+
+---@class System.ComponentModel.Design.CollectionEditor.ConcreteCollectionForm.ObjectContainerConverter.ObjectContainerPropertyDescriptor : System.ComponentModel.TypeConverter.SimplePropertyDescriptor
+---@field Attributes System.ComponentModel.AttributeCollection
+System.ComponentModel.Design.CollectionEditor.ConcreteCollectionForm.ObjectContainerConverter.ObjectContainerPropertyDescriptor = {}
+---@alias CS.System.ComponentModel.Design.CollectionEditor.ConcreteCollectionForm.ObjectContainerConverter.ObjectContainerPropertyDescriptor System.ComponentModel.Design.CollectionEditor.ConcreteCollectionForm.ObjectContainerConverter.ObjectContainerPropertyDescriptor
+CS.System.ComponentModel.Design.CollectionEditor.ConcreteCollectionForm.ObjectContainerConverter.ObjectContainerPropertyDescriptor = System.ComponentModel.Design.CollectionEditor.ConcreteCollectionForm.ObjectContainerConverter.ObjectContainerPropertyDescriptor
+
+---@param componentType System.Type
+---@param propertyType System.Type
+---@return System.ComponentModel.Design.CollectionEditor.ConcreteCollectionForm.ObjectContainerConverter.ObjectContainerPropertyDescriptor
+function System.ComponentModel.Design.CollectionEditor.ConcreteCollectionForm.ObjectContainerConverter.ObjectContainerPropertyDescriptor.New(componentType, propertyType) end
+---@param component System.Object
+---@return System.Object
+function System.ComponentModel.Design.CollectionEditor.ConcreteCollectionForm.ObjectContainerConverter.ObjectContainerPropertyDescriptor:GetValue(component) end
+---@param component System.Object
+---@param value System.Object
+function System.ComponentModel.Design.CollectionEditor.ConcreteCollectionForm.ObjectContainerConverter.ObjectContainerPropertyDescriptor:SetValue(component, value) end
+
+---@class System.ComponentModel.Design.CollectionEditor.ConcreteCollectionForm.ObjectContainer : System.Object
+System.ComponentModel.Design.CollectionEditor.ConcreteCollectionForm.ObjectContainer = {}
+---@alias CS.System.ComponentModel.Design.CollectionEditor.ConcreteCollectionForm.ObjectContainer System.ComponentModel.Design.CollectionEditor.ConcreteCollectionForm.ObjectContainer
+CS.System.ComponentModel.Design.CollectionEditor.ConcreteCollectionForm.ObjectContainer = System.ComponentModel.Design.CollectionEditor.ConcreteCollectionForm.ObjectContainer
+
+---@param obj System.Object
+---@param editor System.ComponentModel.Design.CollectionEditor
+---@return System.ComponentModel.Design.CollectionEditor.ConcreteCollectionForm.ObjectContainer
+function System.ComponentModel.Design.CollectionEditor.ConcreteCollectionForm.ObjectContainer.New(obj, editor) end
+---@return string
+function System.ComponentModel.Design.CollectionEditor.ConcreteCollectionForm.ObjectContainer:ToString() end
+
+---@class System.ComponentModel.Design.CollectionEditor.ConcreteCollectionForm.UpdateableListbox : System.Windows.Forms.ListBox
+System.ComponentModel.Design.CollectionEditor.ConcreteCollectionForm.UpdateableListbox = {}
+---@alias CS.System.ComponentModel.Design.CollectionEditor.ConcreteCollectionForm.UpdateableListbox System.ComponentModel.Design.CollectionEditor.ConcreteCollectionForm.UpdateableListbox
+CS.System.ComponentModel.Design.CollectionEditor.ConcreteCollectionForm.UpdateableListbox = System.ComponentModel.Design.CollectionEditor.ConcreteCollectionForm.UpdateableListbox
+
+---@return System.ComponentModel.Design.CollectionEditor.ConcreteCollectionForm.UpdateableListbox
+function System.ComponentModel.Design.CollectionEditor.ConcreteCollectionForm.UpdateableListbox.New() end
+---@param index number
+function System.ComponentModel.Design.CollectionEditor.ConcreteCollectionForm.UpdateableListbox:DoRefreshItem(index) end
+
+---@class System.ComponentModel.Design.ComponentActionsType
+---@field All System.ComponentModel.Design.ComponentActionsType
+---@field Component System.ComponentModel.Design.ComponentActionsType
+---@field Service System.ComponentModel.Design.ComponentActionsType
+System.ComponentModel.Design.ComponentActionsType = {}
+---@alias CS.System.ComponentModel.Design.ComponentActionsType System.ComponentModel.Design.ComponentActionsType
+CS.System.ComponentModel.Design.ComponentActionsType = System.ComponentModel.Design.ComponentActionsType
+
+
+---@class System.ComponentModel.Design.ComponentDesigner : System.Object
+---@field AssociatedComponents System.Collections.ICollection
+---@field Component System.ComponentModel.IComponent
+---@field Verbs System.ComponentModel.Design.DesignerVerbCollection
+---@field ActionLists System.ComponentModel.Design.DesignerActionListCollection
+System.ComponentModel.Design.ComponentDesigner = {}
+---@alias CS.System.ComponentModel.Design.ComponentDesigner System.ComponentModel.Design.ComponentDesigner
+CS.System.ComponentModel.Design.ComponentDesigner = System.ComponentModel.Design.ComponentDesigner
+
+---@return System.ComponentModel.Design.ComponentDesigner
+function System.ComponentModel.Design.ComponentDesigner.New() end
+---@param defaultValues System.Collections.IDictionary
+function System.ComponentModel.Design.ComponentDesigner:InitializeNewComponent(defaultValues) end
+---@param defaultValues System.Collections.IDictionary
+function System.ComponentModel.Design.ComponentDesigner:InitializeExistingComponent(defaultValues) end
+---@param component System.ComponentModel.IComponent
+function System.ComponentModel.Design.ComponentDesigner:Initialize(component) end
+function System.ComponentModel.Design.ComponentDesigner:DoDefaultAction() end
+function System.ComponentModel.Design.ComponentDesigner:Dispose() end
+
+---@class System.ComponentModel.Design.ComponentDesigner.ShadowPropertyCollection : System.Object
+---@field Item System.Object
+System.ComponentModel.Design.ComponentDesigner.ShadowPropertyCollection = {}
+---@alias CS.System.ComponentModel.Design.ComponentDesigner.ShadowPropertyCollection System.ComponentModel.Design.ComponentDesigner.ShadowPropertyCollection
+CS.System.ComponentModel.Design.ComponentDesigner.ShadowPropertyCollection = System.ComponentModel.Design.ComponentDesigner.ShadowPropertyCollection
+
+---@param propertyName string
+---@return boolean
+function System.ComponentModel.Design.ComponentDesigner.ShadowPropertyCollection:Contains(propertyName) end
+
+---@class System.ComponentModel.Design.DateTimeEditor : System.Drawing.Design.UITypeEditor
+System.ComponentModel.Design.DateTimeEditor = {}
+---@alias CS.System.ComponentModel.Design.DateTimeEditor System.ComponentModel.Design.DateTimeEditor
+CS.System.ComponentModel.Design.DateTimeEditor = System.ComponentModel.Design.DateTimeEditor
+
+---@return System.ComponentModel.Design.DateTimeEditor
+function System.ComponentModel.Design.DateTimeEditor.New() end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@param provider System.IServiceProvider
+---@param value System.Object
+---@return System.Object
+function System.ComponentModel.Design.DateTimeEditor:EditValue(context, provider, value) end
+---@param context System.ComponentModel.ITypeDescriptorContext
+---@return System.Drawing.Design.UITypeEditorEditStyle
+function System.ComponentModel.Design.DateTimeEditor:GetEditStyle(context) end
+
+---@class System.ComponentModel.Design.DateTimeEditor.EditorControl : System.Windows.Forms.MonthCalendar
+System.ComponentModel.Design.DateTimeEditor.EditorControl = {}
+---@alias CS.System.ComponentModel.Design.DateTimeEditor.EditorControl System.ComponentModel.Design.DateTimeEditor.EditorControl
+CS.System.ComponentModel.Design.DateTimeEditor.EditorControl = System.ComponentModel.Design.DateTimeEditor.EditorControl
+
+---@return System.ComponentModel.Design.DateTimeEditor.EditorControl
+function System.ComponentModel.Design.DateTimeEditor.EditorControl.New() end
+
+---@class System.ComponentModel.Design.DesignModeNestedContainer : System.ComponentModel.NestedContainer
+System.ComponentModel.Design.DesignModeNestedContainer = {}
+---@alias CS.System.ComponentModel.Design.DesignModeNestedContainer System.ComponentModel.Design.DesignModeNestedContainer
+CS.System.ComponentModel.Design.DesignModeNestedContainer = System.ComponentModel.Design.DesignModeNestedContainer
+
+---@param owner System.ComponentModel.IComponent
+---@param containerName string
+---@return System.ComponentModel.Design.DesignModeNestedContainer
+function System.ComponentModel.Design.DesignModeNestedContainer.New(owner, containerName) end
+---@param component System.ComponentModel.IComponent
+---@param name string
+function System.ComponentModel.Design.DesignModeNestedContainer:Add(component, name) end
+---@param component System.ComponentModel.IComponent
+function System.ComponentModel.Design.DesignModeNestedContainer:Remove(component) end
+
+---@class System.ComponentModel.Design.DesignModeNestedContainer.Site : System.ComponentModel.Design.DesignModeSite
+---@field FullName string
+System.ComponentModel.Design.DesignModeNestedContainer.Site = {}
+---@alias CS.System.ComponentModel.Design.DesignModeNestedContainer.Site System.ComponentModel.Design.DesignModeNestedContainer.Site
+CS.System.ComponentModel.Design.DesignModeNestedContainer.Site = System.ComponentModel.Design.DesignModeNestedContainer.Site
+
+---@param component System.ComponentModel.IComponent
+---@param name string
+---@param container System.ComponentModel.IContainer
+---@param serviceProvider System.IServiceProvider
+---@return System.ComponentModel.Design.DesignModeNestedContainer.Site
+function System.ComponentModel.Design.DesignModeNestedContainer.Site.New(component, name, container, serviceProvider) end
+
+---@class System.ComponentModel.Design.DesignModeSite : System.Object
+---@field Component System.ComponentModel.IComponent
+---@field Container System.ComponentModel.IContainer
+---@field DesignMode boolean
+---@field Name string
+System.ComponentModel.Design.DesignModeSite = {}
+---@alias CS.System.ComponentModel.Design.DesignModeSite System.ComponentModel.Design.DesignModeSite
+CS.System.ComponentModel.Design.DesignModeSite = System.ComponentModel.Design.DesignModeSite
+
+---@param component System.ComponentModel.IComponent
+---@param name string
+---@param container System.ComponentModel.IContainer
+---@param serviceProvider System.IServiceProvider
+---@return System.ComponentModel.Design.DesignModeSite
+function System.ComponentModel.Design.DesignModeSite.New(component, name, container, serviceProvider) end
+---@param service System.Type
+---@return System.Object
+function System.ComponentModel.Design.DesignModeSite:GetService(service) end
+
+---@class System.ComponentModel.Design.DesignSurface : System.Object
+---@field ComponentContainer System.ComponentModel.IContainer
+---@field IsLoaded boolean
+---@field LoadErrors System.Collections.ICollection
+---@field View System.Object
+---@field DtelLoading boolean
+System.ComponentModel.Design.DesignSurface = {}
+---@alias CS.System.ComponentModel.Design.DesignSurface System.ComponentModel.Design.DesignSurface
+CS.System.ComponentModel.Design.DesignSurface = System.ComponentModel.Design.DesignSurface
+
+---@overload fun() : System.ComponentModel.Design.DesignSurface
+---@overload fun(rootComponentType: System.Type) : System.ComponentModel.Design.DesignSurface
+---@overload fun(parentProvider: System.IServiceProvider, rootComponentType: System.Type) : System.ComponentModel.Design.DesignSurface
+---@param parentProvider System.IServiceProvider
+---@return System.ComponentModel.Design.DesignSurface
+function System.ComponentModel.Design.DesignSurface.New(parentProvider) end
+---@overload fun(self: System.ComponentModel.Design.DesignSurface, rootComponentType: System.Type)
+---@param loader System.ComponentModel.Design.Serialization.DesignerLoader
+function System.ComponentModel.Design.DesignSurface:BeginLoad(loader) end
+function System.ComponentModel.Design.DesignSurface:Dispose() end
+function System.ComponentModel.Design.DesignSurface:Flush() end
+---@overload fun(self: System.ComponentModel.Design.DesignSurface, owningComponent: System.ComponentModel.IComponent) : System.ComponentModel.INestedContainer
+---@param owningComponent System.ComponentModel.IComponent
+---@param containerName string
+---@return System.ComponentModel.INestedContainer
+function System.ComponentModel.Design.DesignSurface:CreateNestedContainer(owningComponent, containerName) end
+---@param serviceType System.Type
+---@return System.Object
+function System.ComponentModel.Design.DesignSurface:GetService(serviceType) end
+
+---@class System.ComponentModel.Design.DesignSurface.DefaultDesignerLoader : System.ComponentModel.Design.Serialization.DesignerLoader
+---@field Loading boolean
+System.ComponentModel.Design.DesignSurface.DefaultDesignerLoader = {}
+---@alias CS.System.ComponentModel.Design.DesignSurface.DefaultDesignerLoader System.ComponentModel.Design.DesignSurface.DefaultDesignerLoader
+CS.System.ComponentModel.Design.DesignSurface.DefaultDesignerLoader = System.ComponentModel.Design.DesignSurface.DefaultDesignerLoader
+
+---@param componentType System.Type
+---@return System.ComponentModel.Design.DesignSurface.DefaultDesignerLoader
+function System.ComponentModel.Design.DesignSurface.DefaultDesignerLoader.New(componentType) end
+---@param loaderHost System.ComponentModel.Design.Serialization.IDesignerLoaderHost
+function System.ComponentModel.Design.DesignSurface.DefaultDesignerLoader:BeginLoad(loaderHost) end
+function System.ComponentModel.Design.DesignSurface.DefaultDesignerLoader:Dispose() end
+
+---@class System.ComponentModel.Design.DesignSurfaceCollection : System.Object
+---@field Count number
+---@field Item System.ComponentModel.Design.DesignSurface
+System.ComponentModel.Design.DesignSurfaceCollection = {}
+---@alias CS.System.ComponentModel.Design.DesignSurfaceCollection System.ComponentModel.Design.DesignSurfaceCollection
+CS.System.ComponentModel.Design.DesignSurfaceCollection = System.ComponentModel.Design.DesignSurfaceCollection
+
+---@param array System.ComponentModel.Design.DesignSurface[]
+---@param index number
+function System.ComponentModel.Design.DesignSurfaceCollection:CopyTo(array, index) end
+---@return System.Collections.IEnumerator
+function System.ComponentModel.Design.DesignSurfaceCollection:GetEnumerator() end
+
+---@class System.ComponentModel.Design.DesignSurfaceCollection.DesignSurfaceEnumerator : System.Object
+---@field Current System.Object
+System.ComponentModel.Design.DesignSurfaceCollection.DesignSurfaceEnumerator = {}
+---@alias CS.System.ComponentModel.Design.DesignSurfaceCollection.DesignSurfaceEnumerator System.ComponentModel.Design.DesignSurfaceCollection.DesignSurfaceEnumerator
+CS.System.ComponentModel.Design.DesignSurfaceCollection.DesignSurfaceEnumerator = System.ComponentModel.Design.DesignSurfaceCollection.DesignSurfaceEnumerator
+
+---@param designerCollectionEnumerator System.Collections.IEnumerator
+---@return System.ComponentModel.Design.DesignSurfaceCollection.DesignSurfaceEnumerator
+function System.ComponentModel.Design.DesignSurfaceCollection.DesignSurfaceEnumerator.New(designerCollectionEnumerator) end
+---@return boolean
+function System.ComponentModel.Design.DesignSurfaceCollection.DesignSurfaceEnumerator:MoveNext() end
+function System.ComponentModel.Design.DesignSurfaceCollection.DesignSurfaceEnumerator:Reset() end
+
+---@class System.ComponentModel.Design.DesignSurfaceEventArgs : System.EventArgs
+---@field Surface System.ComponentModel.Design.DesignSurface
+System.ComponentModel.Design.DesignSurfaceEventArgs = {}
+---@alias CS.System.ComponentModel.Design.DesignSurfaceEventArgs System.ComponentModel.Design.DesignSurfaceEventArgs
+CS.System.ComponentModel.Design.DesignSurfaceEventArgs = System.ComponentModel.Design.DesignSurfaceEventArgs
+
+---@param surface System.ComponentModel.Design.DesignSurface
+---@return System.ComponentModel.Design.DesignSurfaceEventArgs
+function System.ComponentModel.Design.DesignSurfaceEventArgs.New(surface) end
+
+---@class System.ComponentModel.Design.DesignSurfaceEventHandler : System.MulticastDelegate
+System.ComponentModel.Design.DesignSurfaceEventHandler = {}
+---@alias CS.System.ComponentModel.Design.DesignSurfaceEventHandler System.ComponentModel.Design.DesignSurfaceEventHandler
+CS.System.ComponentModel.Design.DesignSurfaceEventHandler = System.ComponentModel.Design.DesignSurfaceEventHandler
+
+---@param object System.Object
+---@param method System.IntPtr
+---@return System.ComponentModel.Design.DesignSurfaceEventHandler
+function System.ComponentModel.Design.DesignSurfaceEventHandler.New(object, method) end
+---@param sender System.Object
+---@param e System.ComponentModel.Design.DesignSurfaceEventArgs
+function System.ComponentModel.Design.DesignSurfaceEventHandler:Invoke(sender, e) end
+---@param sender System.Object
+---@param e System.ComponentModel.Design.DesignSurfaceEventArgs
+---@param callback System.AsyncCallback
+---@param object System.Object
+---@return System.IAsyncResult
+function System.ComponentModel.Design.DesignSurfaceEventHandler:BeginInvoke(sender, e, callback, object) end
+---@param result System.IAsyncResult
+function System.ComponentModel.Design.DesignSurfaceEventHandler:EndInvoke(result) end
+
+---@class System.ComponentModel.Design.DesignSurfaceManager : System.Object
+---@field ActiveDesignSurface System.ComponentModel.Design.DesignSurface
+---@field DesignSurfaces System.ComponentModel.Design.DesignSurfaceCollection
+System.ComponentModel.Design.DesignSurfaceManager = {}
+---@alias CS.System.ComponentModel.Design.DesignSurfaceManager System.ComponentModel.Design.DesignSurfaceManager
+CS.System.ComponentModel.Design.DesignSurfaceManager = System.ComponentModel.Design.DesignSurfaceManager
+
+---@overload fun() : System.ComponentModel.Design.DesignSurfaceManager
+---@param parentProvider System.IServiceProvider
+---@return System.ComponentModel.Design.DesignSurfaceManager
+function System.ComponentModel.Design.DesignSurfaceManager.New(parentProvider) end
+---@overload fun() : System.ComponentModel.Design.DesignSurface
+---@param parentProvider System.IServiceProvider
+---@return System.ComponentModel.Design.DesignSurface
+function System.ComponentModel.Design.DesignSurfaceManager:CreateDesignSurface(parentProvider) end
+---@param serviceType System.Type
+---@return System.Object
+function System.ComponentModel.Design.DesignSurfaceManager:GetService(serviceType) end
+function System.ComponentModel.Design.DesignSurfaceManager:Dispose() end
+
+---@class System.ComponentModel.Design.DesignSurfaceManager.MergedServiceProvider : System.Object
+System.ComponentModel.Design.DesignSurfaceManager.MergedServiceProvider = {}
+---@alias CS.System.ComponentModel.Design.DesignSurfaceManager.MergedServiceProvider System.ComponentModel.Design.DesignSurfaceManager.MergedServiceProvider
+CS.System.ComponentModel.Design.DesignSurfaceManager.MergedServiceProvider = System.ComponentModel.Design.DesignSurfaceManager.MergedServiceProvider
+
+---@param primary System.IServiceProvider
+---@param secondary System.IServiceProvider
+---@return System.ComponentModel.Design.DesignSurfaceManager.MergedServiceProvider
+function System.ComponentModel.Design.DesignSurfaceManager.MergedServiceProvider.New(primary, secondary) end
+---@param service System.Type
+---@return System.Object
+function System.ComponentModel.Design.DesignSurfaceManager.MergedServiceProvider:GetService(service) end
+
+---@class System.ComponentModel.Design.DesignSurfaceServiceContainer : System.ComponentModel.Design.ServiceContainer
+System.ComponentModel.Design.DesignSurfaceServiceContainer = {}
+---@alias CS.System.ComponentModel.Design.DesignSurfaceServiceContainer System.ComponentModel.Design.DesignSurfaceServiceContainer
+CS.System.ComponentModel.Design.DesignSurfaceServiceContainer = System.ComponentModel.Design.DesignSurfaceServiceContainer
+
+---@overload fun() : System.ComponentModel.Design.DesignSurfaceServiceContainer
+---@param parentProvider System.IServiceProvider
+---@return System.ComponentModel.Design.DesignSurfaceServiceContainer
+function System.ComponentModel.Design.DesignSurfaceServiceContainer.New(parentProvider) end
+---@param serviceType System.Type
+---@param promote boolean
+function System.ComponentModel.Design.DesignSurfaceServiceContainer:RemoveService(serviceType, promote) end
+
+---@class System.ComponentModel.Design.DesignerActionHeaderItem : System.ComponentModel.Design.DesignerActionTextItem
+System.ComponentModel.Design.DesignerActionHeaderItem = {}
+---@alias CS.System.ComponentModel.Design.DesignerActionHeaderItem System.ComponentModel.Design.DesignerActionHeaderItem
+CS.System.ComponentModel.Design.DesignerActionHeaderItem = System.ComponentModel.Design.DesignerActionHeaderItem
+
+---@overload fun(displayName: string) : System.ComponentModel.Design.DesignerActionHeaderItem
+---@param displayName string
+---@param category string
+---@return System.ComponentModel.Design.DesignerActionHeaderItem
+function System.ComponentModel.Design.DesignerActionHeaderItem.New(displayName, category) end
+
+---@class System.ComponentModel.Design.DesignerActionItem : System.Object
+---@field AllowAssociate boolean
+---@field Category string
+---@field Description string
+---@field DisplayName string
+---@field Properties System.Collections.IDictionary
+---@field ShowInSourceView boolean
+System.ComponentModel.Design.DesignerActionItem = {}
+---@alias CS.System.ComponentModel.Design.DesignerActionItem System.ComponentModel.Design.DesignerActionItem
+CS.System.ComponentModel.Design.DesignerActionItem = System.ComponentModel.Design.DesignerActionItem
+
+---@param displayName string
+---@param category string
+---@param description string
+---@return System.ComponentModel.Design.DesignerActionItem
+function System.ComponentModel.Design.DesignerActionItem.New(displayName, category, description) end
+
+---@class System.ComponentModel.Design.DesignerActionItemCollection : System.Collections.CollectionBase
+---@field Item System.ComponentModel.Design.DesignerActionItem
+System.ComponentModel.Design.DesignerActionItemCollection = {}
+---@alias CS.System.ComponentModel.Design.DesignerActionItemCollection System.ComponentModel.Design.DesignerActionItemCollection
+CS.System.ComponentModel.Design.DesignerActionItemCollection = System.ComponentModel.Design.DesignerActionItemCollection
+
+---@return System.ComponentModel.Design.DesignerActionItemCollection
+function System.ComponentModel.Design.DesignerActionItemCollection.New() end
+---@param value System.ComponentModel.Design.DesignerActionItem
+---@return number
+function System.ComponentModel.Design.DesignerActionItemCollection:Add(value) end
+---@param value System.ComponentModel.Design.DesignerActionItem
+---@return boolean
+function System.ComponentModel.Design.DesignerActionItemCollection:Contains(value) end
+---@param array System.ComponentModel.Design.DesignerActionItem[]
+---@param index number
+function System.ComponentModel.Design.DesignerActionItemCollection:CopyTo(array, index) end
+---@param value System.ComponentModel.Design.DesignerActionItem
+---@return number
+function System.ComponentModel.Design.DesignerActionItemCollection:IndexOf(value) end
+---@param index number
+---@param value System.ComponentModel.Design.DesignerActionItem
+function System.ComponentModel.Design.DesignerActionItemCollection:Insert(index, value) end
+---@param value System.ComponentModel.Design.DesignerActionItem
+function System.ComponentModel.Design.DesignerActionItemCollection:Remove(value) end
+
+---@class System.ComponentModel.Design.DesignerActionList : System.Object
+---@field AutoShow boolean
+---@field Component System.ComponentModel.IComponent
+System.ComponentModel.Design.DesignerActionList = {}
+---@alias CS.System.ComponentModel.Design.DesignerActionList System.ComponentModel.Design.DesignerActionList
+CS.System.ComponentModel.Design.DesignerActionList = System.ComponentModel.Design.DesignerActionList
+
+---@param component System.ComponentModel.IComponent
+---@return System.ComponentModel.Design.DesignerActionList
+function System.ComponentModel.Design.DesignerActionList.New(component) end
+---@param serviceType System.Type
+---@return System.Object
+function System.ComponentModel.Design.DesignerActionList:GetService(serviceType) end
+---@return System.ComponentModel.Design.DesignerActionItemCollection
+function System.ComponentModel.Design.DesignerActionList:GetSortedActionItems() end
+
+---@class System.ComponentModel.Design.DesignerActionListCollection : System.Collections.CollectionBase
+---@field Item System.ComponentModel.Design.DesignerActionList
+System.ComponentModel.Design.DesignerActionListCollection = {}
+---@alias CS.System.ComponentModel.Design.DesignerActionListCollection System.ComponentModel.Design.DesignerActionListCollection
+CS.System.ComponentModel.Design.DesignerActionListCollection = System.ComponentModel.Design.DesignerActionListCollection
+
+---@overload fun() : System.ComponentModel.Design.DesignerActionListCollection
+---@param value System.ComponentModel.Design.DesignerActionList[]
+---@return System.ComponentModel.Design.DesignerActionListCollection
+function System.ComponentModel.Design.DesignerActionListCollection.New(value) end
+---@param value System.ComponentModel.Design.DesignerActionList
+---@return number
+function System.ComponentModel.Design.DesignerActionListCollection:Add(value) end
+---@overload fun(self: System.ComponentModel.Design.DesignerActionListCollection, value: System.ComponentModel.Design.DesignerActionList[])
+---@param value System.ComponentModel.Design.DesignerActionListCollection
+function System.ComponentModel.Design.DesignerActionListCollection:AddRange(value) end
+---@param value System.ComponentModel.Design.DesignerActionList
+---@return boolean
+function System.ComponentModel.Design.DesignerActionListCollection:Contains(value) end
+---@param array System.ComponentModel.Design.DesignerActionList[]
+---@param index number
+function System.ComponentModel.Design.DesignerActionListCollection:CopyTo(array, index) end
+---@param value System.ComponentModel.Design.DesignerActionList
+---@return number
+function System.ComponentModel.Design.DesignerActionListCollection:IndexOf(value) end
+---@param index number
+---@param value System.ComponentModel.Design.DesignerActionList
+function System.ComponentModel.Design.DesignerActionListCollection:Insert(index, value) end
+---@param value System.ComponentModel.Design.DesignerActionList
+function System.ComponentModel.Design.DesignerActionListCollection:Remove(value) end
+
+---@class System.ComponentModel.Design.DesignerActionListsChangedEventArgs : System.EventArgs
+---@field ActionLists System.ComponentModel.Design.DesignerActionListCollection
+---@field ChangeType System.ComponentModel.Design.DesignerActionListsChangedType
+---@field RelatedObject System.Object
+System.ComponentModel.Design.DesignerActionListsChangedEventArgs = {}
+---@alias CS.System.ComponentModel.Design.DesignerActionListsChangedEventArgs System.ComponentModel.Design.DesignerActionListsChangedEventArgs
+CS.System.ComponentModel.Design.DesignerActionListsChangedEventArgs = System.ComponentModel.Design.DesignerActionListsChangedEventArgs
+
+---@param relatedObject System.Object
+---@param changeType System.ComponentModel.Design.DesignerActionListsChangedType
+---@param actionLists System.ComponentModel.Design.DesignerActionListCollection
+---@return System.ComponentModel.Design.DesignerActionListsChangedEventArgs
+function System.ComponentModel.Design.DesignerActionListsChangedEventArgs.New(relatedObject, changeType, actionLists) end
+
+---@class System.ComponentModel.Design.DesignerActionListsChangedEventHandler : System.MulticastDelegate
+System.ComponentModel.Design.DesignerActionListsChangedEventHandler = {}
+---@alias CS.System.ComponentModel.Design.DesignerActionListsChangedEventHandler System.ComponentModel.Design.DesignerActionListsChangedEventHandler
+CS.System.ComponentModel.Design.DesignerActionListsChangedEventHandler = System.ComponentModel.Design.DesignerActionListsChangedEventHandler
+
+---@param object System.Object
+---@param method System.IntPtr
+---@return System.ComponentModel.Design.DesignerActionListsChangedEventHandler
+function System.ComponentModel.Design.DesignerActionListsChangedEventHandler.New(object, method) end
+---@param sender System.Object
+---@param e System.ComponentModel.Design.DesignerActionListsChangedEventArgs
+function System.ComponentModel.Design.DesignerActionListsChangedEventHandler:Invoke(sender, e) end
+---@param sender System.Object
+---@param e System.ComponentModel.Design.DesignerActionListsChangedEventArgs
+---@param callback System.AsyncCallback
+---@param object System.Object
+---@return System.IAsyncResult
+function System.ComponentModel.Design.DesignerActionListsChangedEventHandler:BeginInvoke(sender, e, callback, object) end
+---@param result System.IAsyncResult
+function System.ComponentModel.Design.DesignerActionListsChangedEventHandler:EndInvoke(result) end
+
+---@class System.ComponentModel.Design.DesignerActionListsChangedType
+---@field ActionListsAdded System.ComponentModel.Design.DesignerActionListsChangedType
+---@field ActionListsRemoved System.ComponentModel.Design.DesignerActionListsChangedType
+System.ComponentModel.Design.DesignerActionListsChangedType = {}
+---@alias CS.System.ComponentModel.Design.DesignerActionListsChangedType System.ComponentModel.Design.DesignerActionListsChangedType
+CS.System.ComponentModel.Design.DesignerActionListsChangedType = System.ComponentModel.Design.DesignerActionListsChangedType
+
+
+---@class System.ComponentModel.Design.DesignerActionMethodItem : System.ComponentModel.Design.DesignerActionItem
+---@field IncludeAsDesignerVerb boolean
+---@field MemberName string
+---@field RelatedComponent System.ComponentModel.IComponent
+System.ComponentModel.Design.DesignerActionMethodItem = {}
+---@alias CS.System.ComponentModel.Design.DesignerActionMethodItem System.ComponentModel.Design.DesignerActionMethodItem
+CS.System.ComponentModel.Design.DesignerActionMethodItem = System.ComponentModel.Design.DesignerActionMethodItem
+
+---@overload fun(actionList: System.ComponentModel.Design.DesignerActionList, memberName: string, displayName: string) : System.ComponentModel.Design.DesignerActionMethodItem
+---@overload fun(actionList: System.ComponentModel.Design.DesignerActionList, memberName: string, displayName: string, includeAsDesignerVerb: boolean) : System.ComponentModel.Design.DesignerActionMethodItem
+---@overload fun(actionList: System.ComponentModel.Design.DesignerActionList, memberName: string, displayName: string, category: string) : System.ComponentModel.Design.DesignerActionMethodItem
+---@overload fun(actionList: System.ComponentModel.Design.DesignerActionList, memberName: string, displayName: string, category: string, includeAsDesignerVerb: boolean) : System.ComponentModel.Design.DesignerActionMethodItem
+---@overload fun(actionList: System.ComponentModel.Design.DesignerActionList, memberName: string, displayName: string, category: string, description: string) : System.ComponentModel.Design.DesignerActionMethodItem
+---@param actionList System.ComponentModel.Design.DesignerActionList
+---@param memberName string
+---@param displayName string
+---@param category string
+---@param description string
+---@param includeAsDesignerVerb boolean
+---@return System.ComponentModel.Design.DesignerActionMethodItem
+function System.ComponentModel.Design.DesignerActionMethodItem.New(actionList, memberName, displayName, category, description, includeAsDesignerVerb) end
+function System.ComponentModel.Design.DesignerActionMethodItem:Invoke() end
+
+---@class System.ComponentModel.Design.DesignerActionPropertyItem : System.ComponentModel.Design.DesignerActionItem
+---@field MemberName string
+---@field RelatedComponent System.ComponentModel.IComponent
+System.ComponentModel.Design.DesignerActionPropertyItem = {}
+---@alias CS.System.ComponentModel.Design.DesignerActionPropertyItem System.ComponentModel.Design.DesignerActionPropertyItem
+CS.System.ComponentModel.Design.DesignerActionPropertyItem = System.ComponentModel.Design.DesignerActionPropertyItem
+
+---@overload fun(memberName: string, displayName: string) : System.ComponentModel.Design.DesignerActionPropertyItem
+---@overload fun(memberName: string, displayName: string, category: string) : System.ComponentModel.Design.DesignerActionPropertyItem
+---@param memberName string
+---@param displayName string
+---@param category string
+---@param description string
+---@return System.ComponentModel.Design.DesignerActionPropertyItem
+function System.ComponentModel.Design.DesignerActionPropertyItem.New(memberName, displayName, category, description) end
+
+---@class System.ComponentModel.Design.DesignerActionService : System.Object
+System.ComponentModel.Design.DesignerActionService = {}
+---@alias CS.System.ComponentModel.Design.DesignerActionService System.ComponentModel.Design.DesignerActionService
+CS.System.ComponentModel.Design.DesignerActionService = System.ComponentModel.Design.DesignerActionService
+
+---@param serviceProvider System.IServiceProvider
+---@return System.ComponentModel.Design.DesignerActionService
+function System.ComponentModel.Design.DesignerActionService.New(serviceProvider) end
+---@overload fun(self: System.ComponentModel.Design.DesignerActionService, comp: System.ComponentModel.IComponent, actionList: System.ComponentModel.Design.DesignerActionList)
+---@param comp System.ComponentModel.IComponent
+---@param designerActionListCollection System.ComponentModel.Design.DesignerActionListCollection
+function System.ComponentModel.Design.DesignerActionService:Add(comp, designerActionListCollection) end
+function System.ComponentModel.Design.DesignerActionService:Clear() end
+---@param comp System.ComponentModel.IComponent
+---@return boolean
+function System.ComponentModel.Design.DesignerActionService:Contains(comp) end
+function System.ComponentModel.Design.DesignerActionService:Dispose() end
+---@overload fun(self: System.ComponentModel.Design.DesignerActionService, component: System.ComponentModel.IComponent) : System.ComponentModel.Design.DesignerActionListCollection
+---@param component System.ComponentModel.IComponent
+---@param type System.ComponentModel.Design.ComponentActionsType
+---@return System.ComponentModel.Design.DesignerActionListCollection
+function System.ComponentModel.Design.DesignerActionService:GetComponentActions(component, type) end
+---@overload fun(self: System.ComponentModel.Design.DesignerActionService, actionList: System.ComponentModel.Design.DesignerActionList)
+---@overload fun(self: System.ComponentModel.Design.DesignerActionService, comp: System.ComponentModel.IComponent)
+---@param comp System.ComponentModel.IComponent
+---@param actionList System.ComponentModel.Design.DesignerActionList
+function System.ComponentModel.Design.DesignerActionService:Remove(comp, actionList) end
+
+---@class System.ComponentModel.Design.DesignerActionTextItem : System.ComponentModel.Design.DesignerActionItem
+System.ComponentModel.Design.DesignerActionTextItem = {}
+---@alias CS.System.ComponentModel.Design.DesignerActionTextItem System.ComponentModel.Design.DesignerActionTextItem
+CS.System.ComponentModel.Design.DesignerActionTextItem = System.ComponentModel.Design.DesignerActionTextItem
+
+---@param displayName string
+---@param category string
+---@return System.ComponentModel.Design.DesignerActionTextItem
+function System.ComponentModel.Design.DesignerActionTextItem.New(displayName, category) end
+
+---@class System.ComponentModel.Design.DesignerActionUIService : System.Object
+System.ComponentModel.Design.DesignerActionUIService = {}
+---@alias CS.System.ComponentModel.Design.DesignerActionUIService System.ComponentModel.Design.DesignerActionUIService
+CS.System.ComponentModel.Design.DesignerActionUIService = System.ComponentModel.Design.DesignerActionUIService
+
+function System.ComponentModel.Design.DesignerActionUIService:Dispose() end
+---@param component System.ComponentModel.IComponent
+function System.ComponentModel.Design.DesignerActionUIService:ShowUI(component) end
+---@param component System.ComponentModel.IComponent
+function System.ComponentModel.Design.DesignerActionUIService:HideUI(component) end
+---@param component System.ComponentModel.IComponent
+function System.ComponentModel.Design.DesignerActionUIService:Refresh(component) end
+---@param component System.ComponentModel.IComponent
+---@return boolean
+function System.ComponentModel.Design.DesignerActionUIService:ShouldAutoShow(component) end
+
+---@class System.ComponentModel.Design.DesignerActionUIStateChangeEventArgs : System.EventArgs
+---@field ChangeType System.ComponentModel.Design.DesignerActionUIStateChangeType
+---@field RelatedObject System.Object
+System.ComponentModel.Design.DesignerActionUIStateChangeEventArgs = {}
+---@alias CS.System.ComponentModel.Design.DesignerActionUIStateChangeEventArgs System.ComponentModel.Design.DesignerActionUIStateChangeEventArgs
+CS.System.ComponentModel.Design.DesignerActionUIStateChangeEventArgs = System.ComponentModel.Design.DesignerActionUIStateChangeEventArgs
+
+---@param relatedObject System.Object
+---@param changeType System.ComponentModel.Design.DesignerActionUIStateChangeType
+---@return System.ComponentModel.Design.DesignerActionUIStateChangeEventArgs
+function System.ComponentModel.Design.DesignerActionUIStateChangeEventArgs.New(relatedObject, changeType) end
+
+---@class System.ComponentModel.Design.DesignerActionUIStateChangeEventHandler : System.MulticastDelegate
+System.ComponentModel.Design.DesignerActionUIStateChangeEventHandler = {}
+---@alias CS.System.ComponentModel.Design.DesignerActionUIStateChangeEventHandler System.ComponentModel.Design.DesignerActionUIStateChangeEventHandler
+CS.System.ComponentModel.Design.DesignerActionUIStateChangeEventHandler = System.ComponentModel.Design.DesignerActionUIStateChangeEventHandler
+
+---@param object System.Object
+---@param method System.IntPtr
+---@return System.ComponentModel.Design.DesignerActionUIStateChangeEventHandler
+function System.ComponentModel.Design.DesignerActionUIStateChangeEventHandler.New(object, method) end
+---@param sender System.Object
+---@param e System.ComponentModel.Design.DesignerActionUIStateChangeEventArgs
+function System.ComponentModel.Design.DesignerActionUIStateChangeEventHandler:Invoke(sender, e) end
+---@param sender System.Object
+---@param e System.ComponentModel.Design.DesignerActionUIStateChangeEventArgs
+---@param callback System.AsyncCallback
+---@param object System.Object
+---@return System.IAsyncResult
+function System.ComponentModel.Design.DesignerActionUIStateChangeEventHandler:BeginInvoke(sender, e, callback, object) end
+---@param result System.IAsyncResult
+function System.ComponentModel.Design.DesignerActionUIStateChangeEventHandler:EndInvoke(result) end
+
+---@class System.ComponentModel.Design.DesignerActionUIStateChangeType
+---@field Show System.ComponentModel.Design.DesignerActionUIStateChangeType
+---@field Hide System.ComponentModel.Design.DesignerActionUIStateChangeType
+---@field Refresh System.ComponentModel.Design.DesignerActionUIStateChangeType
+System.ComponentModel.Design.DesignerActionUIStateChangeType = {}
+---@alias CS.System.ComponentModel.Design.DesignerActionUIStateChangeType System.ComponentModel.Design.DesignerActionUIStateChangeType
+CS.System.ComponentModel.Design.DesignerActionUIStateChangeType = System.ComponentModel.Design.DesignerActionUIStateChangeType
+
+
+---@class System.ComponentModel.Design.DesignerCommandSet : System.Object
+---@field ActionLists System.ComponentModel.Design.DesignerActionListCollection
+---@field Verbs System.ComponentModel.Design.DesignerVerbCollection
+System.ComponentModel.Design.DesignerCommandSet = {}
+---@alias CS.System.ComponentModel.Design.DesignerCommandSet System.ComponentModel.Design.DesignerCommandSet
+CS.System.ComponentModel.Design.DesignerCommandSet = System.ComponentModel.Design.DesignerCommandSet
+
+---@return System.ComponentModel.Design.DesignerCommandSet
+function System.ComponentModel.Design.DesignerCommandSet.New() end
+---@param name string
+---@return System.Collections.ICollection
+function System.ComponentModel.Design.DesignerCommandSet:GetCommands(name) end
+
+---@class System.ComponentModel.Design.DesignerEventService : System.Object
+---@field ActiveDesigner System.ComponentModel.Design.IDesignerHost
+---@field Designers System.ComponentModel.Design.DesignerCollection
+System.ComponentModel.Design.DesignerEventService = {}
+---@alias CS.System.ComponentModel.Design.DesignerEventService System.ComponentModel.Design.DesignerEventService
+CS.System.ComponentModel.Design.DesignerEventService = System.ComponentModel.Design.DesignerEventService
+
+---@return System.ComponentModel.Design.DesignerEventService
+function System.ComponentModel.Design.DesignerEventService.New() end
+---@param host System.ComponentModel.Design.IDesignerHost
+function System.ComponentModel.Design.DesignerEventService:RaiseDesignerCreated(host) end
+---@param host System.ComponentModel.Design.IDesignerHost
+function System.ComponentModel.Design.DesignerEventService:RaiseDesignerDisposed(host) end
+function System.ComponentModel.Design.DesignerEventService:RaiseSelectionChanged() end
+
+---@class System.ComponentModel.Design.DesignerHost : System.ComponentModel.Container
+---@field Container System.ComponentModel.IContainer
+---@field InTransaction boolean
+---@field Loading boolean
+---@field RootComponent System.ComponentModel.IComponent
+---@field RootComponentClassName string
+---@field TransactionDescription string
+System.ComponentModel.Design.DesignerHost = {}
+---@alias CS.System.ComponentModel.Design.DesignerHost System.ComponentModel.Design.DesignerHost
+CS.System.ComponentModel.Design.DesignerHost = System.ComponentModel.Design.DesignerHost
+
+---@param serviceProvider System.IServiceProvider
+---@return System.ComponentModel.Design.DesignerHost
+function System.ComponentModel.Design.DesignerHost.New(serviceProvider) end
+---@param component System.ComponentModel.IComponent
+---@param name string
+function System.ComponentModel.Design.DesignerHost:Add(component, name) end
+---@param component System.ComponentModel.IComponent
+function System.ComponentModel.Design.DesignerHost:Remove(component) end
+function System.ComponentModel.Design.DesignerHost:Activate() end
+---@overload fun(self: System.ComponentModel.Design.DesignerHost, componentClass: System.Type) : System.ComponentModel.IComponent
+---@param componentClass System.Type
+---@param name string
+---@return System.ComponentModel.IComponent
+function System.ComponentModel.Design.DesignerHost:CreateComponent(componentClass, name) end
+---@param component System.ComponentModel.IComponent
+function System.ComponentModel.Design.DesignerHost:DestroyComponent(component) end
+---@param component System.ComponentModel.IComponent
+---@return System.ComponentModel.Design.IDesigner
+function System.ComponentModel.Design.DesignerHost:GetDesigner(component) end
+---@overload fun() : System.ComponentModel.Design.DesignerTransaction
+---@param description string
+---@return System.ComponentModel.Design.DesignerTransaction
+function System.ComponentModel.Design.DesignerHost:CreateTransaction(description) end
+---@param typeName string
+---@return System.Type
+function System.ComponentModel.Design.DesignerHost:GetType(typeName) end
+---@param rootClassName string
+---@param successful boolean
+---@param errorCollection System.Collections.ICollection
+function System.ComponentModel.Design.DesignerHost:EndLoad(rootClassName, successful, errorCollection) end
+function System.ComponentModel.Design.DesignerHost:Reload() end
+---@param component System.Object
+---@param member System.ComponentModel.MemberDescriptor
+---@param oldValue System.Object
+---@param newValue System.Object
+function System.ComponentModel.Design.DesignerHost:OnComponentChanged(component, member, oldValue, newValue) end
+---@param component System.Object
+---@param member System.ComponentModel.MemberDescriptor
+function System.ComponentModel.Design.DesignerHost:OnComponentChanging(component, member) end
+---@overload fun(self: System.ComponentModel.Design.DesignerHost, serviceType: System.Type, serviceInstance: System.Object)
+---@overload fun(self: System.ComponentModel.Design.DesignerHost, serviceType: System.Type, serviceInstance: System.Object, promote: boolean)
+---@overload fun(self: System.ComponentModel.Design.DesignerHost, serviceType: System.Type, callback: System.ComponentModel.Design.ServiceCreatorCallback)
+---@param serviceType System.Type
+---@param callback System.ComponentModel.Design.ServiceCreatorCallback
+---@param promote boolean
+function System.ComponentModel.Design.DesignerHost:AddService(serviceType, callback, promote) end
+---@overload fun(self: System.ComponentModel.Design.DesignerHost, serviceType: System.Type)
+---@param serviceType System.Type
+---@param promote boolean
+function System.ComponentModel.Design.DesignerHost:RemoveService(serviceType, promote) end
+---@param serviceType System.Type
+---@return System.Object
+function System.ComponentModel.Design.DesignerHost:GetService(serviceType) end
+
+---@class System.ComponentModel.Design.DesignerHost.TransactionAction
+---@field Commit System.ComponentModel.Design.DesignerHost.TransactionAction
+---@field Cancel System.ComponentModel.Design.DesignerHost.TransactionAction
+System.ComponentModel.Design.DesignerHost.TransactionAction = {}
+---@alias CS.System.ComponentModel.Design.DesignerHost.TransactionAction System.ComponentModel.Design.DesignerHost.TransactionAction
+CS.System.ComponentModel.Design.DesignerHost.TransactionAction = System.ComponentModel.Design.DesignerHost.TransactionAction
+
+
+---@class System.ComponentModel.Design.DesignerHost.DesignerHostTransaction : System.ComponentModel.Design.DesignerTransaction
+System.ComponentModel.Design.DesignerHost.DesignerHostTransaction = {}
+---@alias CS.System.ComponentModel.Design.DesignerHost.DesignerHostTransaction System.ComponentModel.Design.DesignerHost.DesignerHostTransaction
+CS.System.ComponentModel.Design.DesignerHost.DesignerHostTransaction = System.ComponentModel.Design.DesignerHost.DesignerHostTransaction
+
+---@param host System.ComponentModel.Design.DesignerHost
+---@param description string
+---@return System.ComponentModel.Design.DesignerHost.DesignerHostTransaction
+function System.ComponentModel.Design.DesignerHost.DesignerHostTransaction.New(host, description) end
+
+---@class System.ComponentModel.Design.DisplayMode
+---@field Ansi System.ComponentModel.Design.DisplayMode
+---@field Auto System.ComponentModel.Design.DisplayMode
+---@field Hexdump System.ComponentModel.Design.DisplayMode
+---@field Unicode System.ComponentModel.Design.DisplayMode
+System.ComponentModel.Design.DisplayMode = {}
+---@alias CS.System.ComponentModel.Design.DisplayMode System.ComponentModel.Design.DisplayMode
+CS.System.ComponentModel.Design.DisplayMode = System.ComponentModel.Design.DisplayMode
+
+
+---@class System.ComponentModel.Design.EventBindingService : System.Object
+System.ComponentModel.Design.EventBindingService = {}
+---@alias CS.System.ComponentModel.Design.EventBindingService System.ComponentModel.Design.EventBindingService
+CS.System.ComponentModel.Design.EventBindingService = System.ComponentModel.Design.EventBindingService
+
+
+---@class System.ComponentModel.Design.EventPropertyDescriptor : System.ComponentModel.PropertyDescriptor
+---@field ComponentType System.Type
+---@field IsReadOnly boolean
+---@field PropertyType System.Type
+---@field Converter System.ComponentModel.TypeConverter
+System.ComponentModel.Design.EventPropertyDescriptor = {}
+---@alias CS.System.ComponentModel.Design.EventPropertyDescriptor System.ComponentModel.Design.EventPropertyDescriptor
+CS.System.ComponentModel.Design.EventPropertyDescriptor = System.ComponentModel.Design.EventPropertyDescriptor
+
+---@param eventDescriptor System.ComponentModel.EventDescriptor
+---@return System.ComponentModel.Design.EventPropertyDescriptor
+function System.ComponentModel.Design.EventPropertyDescriptor.New(eventDescriptor) end
+---@param component System.Object
+---@return boolean
+function System.ComponentModel.Design.EventPropertyDescriptor:CanResetValue(component) end
+---@param component System.Object
+function System.ComponentModel.Design.EventPropertyDescriptor:ResetValue(component) end
+---@param component System.Object
+---@return System.Object
+function System.ComponentModel.Design.EventPropertyDescriptor:GetValue(component) end
+---@param component System.Object
+---@param value System.Object
+function System.ComponentModel.Design.EventPropertyDescriptor:SetValue(component, value) end
+---@param component System.Object
+---@return boolean
+function System.ComponentModel.Design.EventPropertyDescriptor:ShouldSerializeValue(component) end

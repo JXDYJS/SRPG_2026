@@ -1,5 +1,609 @@
 ---@meta
 
+
+---@class UnityEngine.Rendering.ReloadAttribute.Package
+---@field Builtin UnityEngine.Rendering.ReloadAttribute.Package
+---@field Root UnityEngine.Rendering.ReloadAttribute.Package
+---@field BuiltinExtra UnityEngine.Rendering.ReloadAttribute.Package
+UnityEngine.Rendering.ReloadAttribute.Package = {}
+---@alias CS.UnityEngine.Rendering.ReloadAttribute.Package UnityEngine.Rendering.ReloadAttribute.Package
+CS.UnityEngine.Rendering.ReloadAttribute.Package = UnityEngine.Rendering.ReloadAttribute.Package
+
+
+---@class UnityEngine.Rendering.SceneRenderPipeline.SceneRenderPipelineAnalytic : System.Object
+UnityEngine.Rendering.SceneRenderPipeline.SceneRenderPipelineAnalytic = {}
+---@alias CS.UnityEngine.Rendering.SceneRenderPipeline.SceneRenderPipelineAnalytic UnityEngine.Rendering.SceneRenderPipeline.SceneRenderPipelineAnalytic
+CS.UnityEngine.Rendering.SceneRenderPipeline.SceneRenderPipelineAnalytic = UnityEngine.Rendering.SceneRenderPipeline.SceneRenderPipelineAnalytic
+
+
+---@class UnityEngine.Rendering.VolumeComponent.Indent : UnityEngine.PropertyAttribute
+---@field relativeAmount number
+UnityEngine.Rendering.VolumeComponent.Indent = {}
+---@alias CS.UnityEngine.Rendering.VolumeComponent.Indent UnityEngine.Rendering.VolumeComponent.Indent
+CS.UnityEngine.Rendering.VolumeComponent.Indent = UnityEngine.Rendering.VolumeComponent.Indent
+
+---@param relativeAmount number
+---@return UnityEngine.Rendering.VolumeComponent.Indent
+function UnityEngine.Rendering.VolumeComponent.Indent.New(relativeAmount) end
+
+---@class UnityEngine.Rendering.BoolParameter.DisplayType
+---@field Checkbox UnityEngine.Rendering.BoolParameter.DisplayType
+---@field EnumPopup UnityEngine.Rendering.BoolParameter.DisplayType
+UnityEngine.Rendering.BoolParameter.DisplayType = {}
+---@alias CS.UnityEngine.Rendering.BoolParameter.DisplayType UnityEngine.Rendering.BoolParameter.DisplayType
+CS.UnityEngine.Rendering.BoolParameter.DisplayType = UnityEngine.Rendering.BoolParameter.DisplayType
+
+
+---@class UnityEngine.Rendering.DynamicArray.RangeEnumerable.RangeIterator : System.ValueType
+---@field Current T&
+UnityEngine.Rendering.DynamicArray.RangeEnumerable.RangeIterator = {}
+---@alias CS.UnityEngine.Rendering.DynamicArray.RangeEnumerable.RangeIterator UnityEngine.Rendering.DynamicArray.RangeEnumerable.RangeIterator
+CS.UnityEngine.Rendering.DynamicArray.RangeEnumerable.RangeIterator = UnityEngine.Rendering.DynamicArray.RangeEnumerable.RangeIterator
+
+---@param setOwner UnityEngine.Rendering.DynamicArray[T]
+---@param first number
+---@param numItems number
+---@return UnityEngine.Rendering.DynamicArray.RangeEnumerable.RangeIterator
+function UnityEngine.Rendering.DynamicArray.RangeEnumerable.RangeIterator.New(setOwner, first, numItems) end
+---@return boolean
+function UnityEngine.Rendering.DynamicArray.RangeEnumerable.RangeIterator:MoveNext() end
+function UnityEngine.Rendering.DynamicArray.RangeEnumerable.RangeIterator:Reset() end
+
+---@class UnityEngine.Rendering.DebugUI.Foldout.ContextMenuItem : System.ValueType
+---@field displayName string
+---@field action System.Action
+UnityEngine.Rendering.DebugUI.Foldout.ContextMenuItem = {}
+---@alias CS.UnityEngine.Rendering.DebugUI.Foldout.ContextMenuItem UnityEngine.Rendering.DebugUI.Foldout.ContextMenuItem
+CS.UnityEngine.Rendering.DebugUI.Foldout.ContextMenuItem = UnityEngine.Rendering.DebugUI.Foldout.ContextMenuItem
+
+
+---@class UnityEngine.Rendering.DebugUI.Table.Row : UnityEngine.Rendering.DebugUI.Foldout
+UnityEngine.Rendering.DebugUI.Table.Row = {}
+---@alias CS.UnityEngine.Rendering.DebugUI.Table.Row UnityEngine.Rendering.DebugUI.Table.Row
+CS.UnityEngine.Rendering.DebugUI.Table.Row = UnityEngine.Rendering.DebugUI.Table.Row
+
+---@return UnityEngine.Rendering.DebugUI.Table.Row
+function UnityEngine.Rendering.DebugUI.Table.Row.New() end
+
+---@class UnityEngine.Rendering.DebugUI.Widget.NameAndTooltip : System.ValueType
+---@field name string
+---@field tooltip string
+UnityEngine.Rendering.DebugUI.Widget.NameAndTooltip = {}
+---@alias CS.UnityEngine.Rendering.DebugUI.Widget.NameAndTooltip UnityEngine.Rendering.DebugUI.Widget.NameAndTooltip
+CS.UnityEngine.Rendering.DebugUI.Widget.NameAndTooltip = UnityEngine.Rendering.DebugUI.Widget.NameAndTooltip
+
+
+---@class UnityEngine.Rendering.DebugUI.MessageBox.Style
+---@field Info UnityEngine.Rendering.DebugUI.MessageBox.Style
+---@field Warning UnityEngine.Rendering.DebugUI.MessageBox.Style
+---@field Error UnityEngine.Rendering.DebugUI.MessageBox.Style
+UnityEngine.Rendering.DebugUI.MessageBox.Style = {}
+---@alias CS.UnityEngine.Rendering.DebugUI.MessageBox.Style UnityEngine.Rendering.DebugUI.MessageBox.Style
+CS.UnityEngine.Rendering.DebugUI.MessageBox.Style = UnityEngine.Rendering.DebugUI.MessageBox.Style
+
+
+---@class UnityEngine.Rendering.ProbeReferenceVolume.Cell.PerScenarioData : System.ValueType
+---@field shL0L1RxData Unity.Collections.NativeArray
+---@field shL1GL1RyData Unity.Collections.NativeArray
+---@field shL1BL1RzData Unity.Collections.NativeArray
+---@field shL2Data_0 Unity.Collections.NativeArray
+---@field shL2Data_1 Unity.Collections.NativeArray
+---@field shL2Data_2 Unity.Collections.NativeArray
+---@field shL2Data_3 Unity.Collections.NativeArray
+UnityEngine.Rendering.ProbeReferenceVolume.Cell.PerScenarioData = {}
+---@alias CS.UnityEngine.Rendering.ProbeReferenceVolume.Cell.PerScenarioData UnityEngine.Rendering.ProbeReferenceVolume.Cell.PerScenarioData
+CS.UnityEngine.Rendering.ProbeReferenceVolume.Cell.PerScenarioData = UnityEngine.Rendering.ProbeReferenceVolume.Cell.PerScenarioData
+
+
+---@class UnityEngine.Rendering.GIContributors.TerrainContributor.TreePrototype : System.ValueType
+---@field component UnityEngine.MeshRenderer
+---@field transform UnityEngine.Matrix4x4
+---@field prefabBounds UnityEngine.Bounds
+---@field instances System.Collections.Generic.List
+UnityEngine.Rendering.GIContributors.TerrainContributor.TreePrototype = {}
+---@alias CS.UnityEngine.Rendering.GIContributors.TerrainContributor.TreePrototype UnityEngine.Rendering.GIContributors.TerrainContributor.TreePrototype
+CS.UnityEngine.Rendering.GIContributors.TerrainContributor.TreePrototype = UnityEngine.Rendering.GIContributors.TerrainContributor.TreePrototype
+
+
+---@class UnityEngine.Rendering.AtlasAllocatorDynamic.AtlasNode.AtlasNodeFlags
+---@field IsOccupied UnityEngine.Rendering.AtlasAllocatorDynamic.AtlasNode.AtlasNodeFlags
+UnityEngine.Rendering.AtlasAllocatorDynamic.AtlasNode.AtlasNodeFlags = {}
+---@alias CS.UnityEngine.Rendering.AtlasAllocatorDynamic.AtlasNode.AtlasNodeFlags UnityEngine.Rendering.AtlasAllocatorDynamic.AtlasNode.AtlasNodeFlags
+CS.UnityEngine.Rendering.AtlasAllocatorDynamic.AtlasNode.AtlasNodeFlags = UnityEngine.Rendering.AtlasAllocatorDynamic.AtlasNode.AtlasNodeFlags
+
+
+---@class UnityEngine.Rendering.SceneRenderPipeline.SceneRenderPipelineAnalytic.Data : System.ValueType
+---@field scene_guid string
+UnityEngine.Rendering.SceneRenderPipeline.SceneRenderPipelineAnalytic.Data = {}
+---@alias CS.UnityEngine.Rendering.SceneRenderPipeline.SceneRenderPipelineAnalytic.Data UnityEngine.Rendering.SceneRenderPipeline.SceneRenderPipelineAnalytic.Data
+CS.UnityEngine.Rendering.SceneRenderPipeline.SceneRenderPipelineAnalytic.Data = UnityEngine.Rendering.SceneRenderPipeline.SceneRenderPipelineAnalytic.Data
+
+
+---@class UnityEngine.Rendering.SceneRenderPipeline.SceneRenderPipelineAnalytic.SceneExtensions : System.Object
+UnityEngine.Rendering.SceneRenderPipeline.SceneRenderPipelineAnalytic.SceneExtensions = {}
+---@alias CS.UnityEngine.Rendering.SceneRenderPipeline.SceneRenderPipelineAnalytic.SceneExtensions UnityEngine.Rendering.SceneRenderPipeline.SceneRenderPipelineAnalytic.SceneExtensions
+CS.UnityEngine.Rendering.SceneRenderPipeline.SceneRenderPipelineAnalytic.SceneExtensions = UnityEngine.Rendering.SceneRenderPipeline.SceneRenderPipelineAnalytic.SceneExtensions
+
+---@param scene UnityEngine.SceneManagement.Scene
+---@return string
+function UnityEngine.Rendering.SceneRenderPipeline.SceneRenderPipelineAnalytic.SceneExtensions.GetGUID(scene) end
+
+---@class UnityEngine.Rendering.SceneRenderPipeline.SceneRenderPipelineAnalytic.EditorAnalyticsExtensions : System.Object
+UnityEngine.Rendering.SceneRenderPipeline.SceneRenderPipelineAnalytic.EditorAnalyticsExtensions = {}
+---@alias CS.UnityEngine.Rendering.SceneRenderPipeline.SceneRenderPipelineAnalytic.EditorAnalyticsExtensions UnityEngine.Rendering.SceneRenderPipeline.SceneRenderPipelineAnalytic.EditorAnalyticsExtensions
+CS.UnityEngine.Rendering.SceneRenderPipeline.SceneRenderPipelineAnalytic.EditorAnalyticsExtensions = UnityEngine.Rendering.SceneRenderPipeline.SceneRenderPipelineAnalytic.EditorAnalyticsExtensions
+
+---@param eventName string
+---@param maxEventPerHour number
+---@param maxItems number
+---@param vendorKey string
+---@return boolean
+function UnityEngine.Rendering.SceneRenderPipeline.SceneRenderPipelineAnalytic.EditorAnalyticsExtensions.RegisterEventWithLimit(eventName, maxEventPerHour, maxItems, vendorKey) end
+---@param eventName string
+---@param parameters System.Object
+---@return boolean
+function UnityEngine.Rendering.SceneRenderPipeline.SceneRenderPipelineAnalytic.EditorAnalyticsExtensions.SendEventWithLimit(eventName, parameters) end
+
+---@class CinemachineShotClipEditor : UnityEditor.Timeline.ClipEditor
+---@field TimelineGlobalToLocalTime CinemachineShotClipEditor.TimelineGlobalToLocalTimeDelegate
+CinemachineShotClipEditor = {}
+---@alias CS.CinemachineShotClipEditor CinemachineShotClipEditor
+CS.CinemachineShotClipEditor = CinemachineShotClipEditor
+
+---@return CinemachineShotClipEditor
+function CinemachineShotClipEditor.New() end
+---@param clip UnityEngine.Timeline.TimelineClip
+---@return UnityEditor.Timeline.ClipDrawOptions
+function CinemachineShotClipEditor:GetClipOptions(clip) end
+---@param clip UnityEngine.Timeline.TimelineClip
+function CinemachineShotClipEditor:OnClipChanged(clip) end
+---@param clip UnityEngine.Timeline.TimelineClip
+---@param track UnityEngine.Timeline.TrackAsset
+---@param clonedFrom UnityEngine.Timeline.TimelineClip
+function CinemachineShotClipEditor:OnCreate(clip, track, clonedFrom) end
+---@param clip UnityEngine.Timeline.TimelineClip
+---@param region UnityEditor.Timeline.ClipBackgroundRegion
+function CinemachineShotClipEditor:DrawBackground(clip, region) end
+
+---@class CinemachineShotEditor : Cinemachine.Editor.BaseEditor
+---@field AutoCreateShotFromSceneView boolean
+---@field UseScrubbingCache boolean
+CinemachineShotEditor = {}
+---@alias CS.CinemachineShotEditor CinemachineShotEditor
+CS.CinemachineShotEditor = CinemachineShotEditor
+
+---@return CinemachineShotEditor
+function CinemachineShotEditor.New() end
+---@return Cinemachine.CinemachineVirtualCameraBase
+function CinemachineShotEditor.CreatePassiveVcamFromSceneView() end
+function CinemachineShotEditor:OnInspectorGUI() end
+
+---@class UnitySourceGeneratedAssemblyMonoScriptTypes_v1 : System.Object
+UnitySourceGeneratedAssemblyMonoScriptTypes_v1 = {}
+---@alias CS.UnitySourceGeneratedAssemblyMonoScriptTypes_v1 UnitySourceGeneratedAssemblyMonoScriptTypes_v1
+CS.UnitySourceGeneratedAssemblyMonoScriptTypes_v1 = UnitySourceGeneratedAssemblyMonoScriptTypes_v1
+
+---@return UnitySourceGeneratedAssemblyMonoScriptTypes_v1
+function UnitySourceGeneratedAssemblyMonoScriptTypes_v1.New() end
+
+---@class CinemachineShotClipEditor.EditorInitialize : System.Object
+CinemachineShotClipEditor.EditorInitialize = {}
+---@alias CS.CinemachineShotClipEditor.EditorInitialize CinemachineShotClipEditor.EditorInitialize
+CS.CinemachineShotClipEditor.EditorInitialize = CinemachineShotClipEditor.EditorInitialize
+
+---@return CinemachineShotClipEditor.EditorInitialize
+function CinemachineShotClipEditor.EditorInitialize.New() end
+
+---@class CinemachineShotClipEditor.TimelineGlobalToLocalTimeDelegate : System.MulticastDelegate
+CinemachineShotClipEditor.TimelineGlobalToLocalTimeDelegate = {}
+---@alias CS.CinemachineShotClipEditor.TimelineGlobalToLocalTimeDelegate CinemachineShotClipEditor.TimelineGlobalToLocalTimeDelegate
+CS.CinemachineShotClipEditor.TimelineGlobalToLocalTimeDelegate = CinemachineShotClipEditor.TimelineGlobalToLocalTimeDelegate
+
+---@param object System.Object
+---@param method System.IntPtr
+---@return CinemachineShotClipEditor.TimelineGlobalToLocalTimeDelegate
+function CinemachineShotClipEditor.TimelineGlobalToLocalTimeDelegate.New(object, method) end
+---@param globalTime number
+---@return number
+function CinemachineShotClipEditor.TimelineGlobalToLocalTimeDelegate:Invoke(globalTime) end
+---@param globalTime number
+---@param callback System.AsyncCallback
+---@param object System.Object
+---@return System.IAsyncResult
+function CinemachineShotClipEditor.TimelineGlobalToLocalTimeDelegate:BeginInvoke(globalTime, callback, object) end
+---@param result System.IAsyncResult
+---@return number
+function CinemachineShotClipEditor.TimelineGlobalToLocalTimeDelegate:EndInvoke(result) end
+
+---@class CinemachineShotEditor.SyncCacheEnabledSetting : System.Object
+CinemachineShotEditor.SyncCacheEnabledSetting = {}
+---@alias CS.CinemachineShotEditor.SyncCacheEnabledSetting CinemachineShotEditor.SyncCacheEnabledSetting
+CS.CinemachineShotEditor.SyncCacheEnabledSetting = CinemachineShotEditor.SyncCacheEnabledSetting
+
+---@return CinemachineShotEditor.SyncCacheEnabledSetting
+function CinemachineShotEditor.SyncCacheEnabledSetting.New() end
+
+---@class UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData : System.ValueType
+---@field FilePathsData System.Byte[]
+---@field TypesData System.Byte[]
+---@field TotalTypes number
+---@field TotalFiles number
+---@field IsEditorOnly boolean
+UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData = {}
+---@alias CS.UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData
+CS.UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData = UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData
+
+
+---@class UnitySourceGeneratedAssemblyMonoScriptTypes_v1 : System.Object
+UnitySourceGeneratedAssemblyMonoScriptTypes_v1 = {}
+---@alias CS.UnitySourceGeneratedAssemblyMonoScriptTypes_v1 UnitySourceGeneratedAssemblyMonoScriptTypes_v1
+CS.UnitySourceGeneratedAssemblyMonoScriptTypes_v1 = UnitySourceGeneratedAssemblyMonoScriptTypes_v1
+
+---@return UnitySourceGeneratedAssemblyMonoScriptTypes_v1
+function UnitySourceGeneratedAssemblyMonoScriptTypes_v1.New() end
+
+---@class UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData : System.ValueType
+---@field FilePathsData System.Byte[]
+---@field TypesData System.Byte[]
+---@field TotalTypes number
+---@field TotalFiles number
+---@field IsEditorOnly boolean
+UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData = {}
+---@alias CS.UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData
+CS.UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData = UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData
+
+
+---@class UnitySourceGeneratedAssemblyMonoScriptTypes_v1 : System.Object
+UnitySourceGeneratedAssemblyMonoScriptTypes_v1 = {}
+---@alias CS.UnitySourceGeneratedAssemblyMonoScriptTypes_v1 UnitySourceGeneratedAssemblyMonoScriptTypes_v1
+CS.UnitySourceGeneratedAssemblyMonoScriptTypes_v1 = UnitySourceGeneratedAssemblyMonoScriptTypes_v1
+
+---@return UnitySourceGeneratedAssemblyMonoScriptTypes_v1
+function UnitySourceGeneratedAssemblyMonoScriptTypes_v1.New() end
+
+---@class UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData : System.ValueType
+---@field FilePathsData System.Byte[]
+---@field TypesData System.Byte[]
+---@field TotalTypes number
+---@field TotalFiles number
+---@field IsEditorOnly boolean
+UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData = {}
+---@alias CS.UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData
+CS.UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData = UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData
+
+
+---@class UnitySourceGeneratedAssemblyMonoScriptTypes_v1 : System.Object
+UnitySourceGeneratedAssemblyMonoScriptTypes_v1 = {}
+---@alias CS.UnitySourceGeneratedAssemblyMonoScriptTypes_v1 UnitySourceGeneratedAssemblyMonoScriptTypes_v1
+CS.UnitySourceGeneratedAssemblyMonoScriptTypes_v1 = UnitySourceGeneratedAssemblyMonoScriptTypes_v1
+
+---@return UnitySourceGeneratedAssemblyMonoScriptTypes_v1
+function UnitySourceGeneratedAssemblyMonoScriptTypes_v1.New() end
+
+---@class UnityEngine.ProBuilder.Stl.FileType
+---@field Ascii UnityEngine.ProBuilder.Stl.FileType
+---@field Binary UnityEngine.ProBuilder.Stl.FileType
+UnityEngine.ProBuilder.Stl.FileType = {}
+---@alias CS.UnityEngine.ProBuilder.Stl.FileType UnityEngine.ProBuilder.Stl.FileType
+CS.UnityEngine.ProBuilder.Stl.FileType = UnityEngine.ProBuilder.Stl.FileType
+
+
+---@class UnityEngine.ProBuilder.Stl.pb_Stl : System.Object
+UnityEngine.ProBuilder.Stl.pb_Stl = {}
+---@alias CS.UnityEngine.ProBuilder.Stl.pb_Stl UnityEngine.ProBuilder.Stl.pb_Stl
+CS.UnityEngine.ProBuilder.Stl.pb_Stl = UnityEngine.ProBuilder.Stl.pb_Stl
+
+---@overload fun(path: string, mesh: UnityEngine.Mesh, type: UnityEngine.ProBuilder.Stl.FileType, convertToRightHandedCoordinates: boolean) : boolean
+---@param path string
+---@param meshes System.Collections.Generic.IList
+---@param type UnityEngine.ProBuilder.Stl.FileType
+---@param convertToRightHandedCoordinates boolean
+---@return boolean
+function UnityEngine.ProBuilder.Stl.pb_Stl.WriteFile(path, meshes, type, convertToRightHandedCoordinates) end
+---@overload fun(mesh: UnityEngine.Mesh, convertToRightHandedCoordinates: boolean) : string
+---@param meshes System.Collections.Generic.IList
+---@param convertToRightHandedCoordinates boolean
+---@return string
+function UnityEngine.ProBuilder.Stl.pb_Stl.WriteString(meshes, convertToRightHandedCoordinates) end
+
+---@class UnityEngine.ProBuilder.Stl.pb_Stl_Exporter : System.Object
+UnityEngine.ProBuilder.Stl.pb_Stl_Exporter = {}
+---@alias CS.UnityEngine.ProBuilder.Stl.pb_Stl_Exporter UnityEngine.ProBuilder.Stl.pb_Stl_Exporter
+CS.UnityEngine.ProBuilder.Stl.pb_Stl_Exporter = UnityEngine.ProBuilder.Stl.pb_Stl_Exporter
+
+---@param path string
+---@param gameObjects UnityEngine.GameObject[]
+---@param type UnityEngine.ProBuilder.Stl.FileType
+---@return boolean
+function UnityEngine.ProBuilder.Stl.pb_Stl_Exporter.Export(path, gameObjects, type) end
+
+---@class UnityEngine.ProBuilder.Stl.pb_Stl_Importer : System.Object
+UnityEngine.ProBuilder.Stl.pb_Stl_Importer = {}
+---@alias CS.UnityEngine.ProBuilder.Stl.pb_Stl_Importer UnityEngine.ProBuilder.Stl.pb_Stl_Importer
+CS.UnityEngine.ProBuilder.Stl.pb_Stl_Importer = UnityEngine.ProBuilder.Stl.pb_Stl_Importer
+
+---@param path string
+---@return UnityEngine.Mesh[]
+function UnityEngine.ProBuilder.Stl.pb_Stl_Importer.Import(path) end
+
+---@class UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData : System.ValueType
+---@field FilePathsData System.Byte[]
+---@field TypesData System.Byte[]
+---@field TotalTypes number
+---@field TotalFiles number
+---@field IsEditorOnly boolean
+UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData = {}
+---@alias CS.UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData
+CS.UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData = UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData
+
+
+---@class UnityEngine.ProBuilder.Stl.pb_Stl_Importer.Facet : System.Object
+---@field normal UnityEngine.Vector3
+---@field a UnityEngine.Vector3
+---@field b UnityEngine.Vector3
+---@field c UnityEngine.Vector3
+UnityEngine.ProBuilder.Stl.pb_Stl_Importer.Facet = {}
+---@alias CS.UnityEngine.ProBuilder.Stl.pb_Stl_Importer.Facet UnityEngine.ProBuilder.Stl.pb_Stl_Importer.Facet
+CS.UnityEngine.ProBuilder.Stl.pb_Stl_Importer.Facet = UnityEngine.ProBuilder.Stl.pb_Stl_Importer.Facet
+
+---@return UnityEngine.ProBuilder.Stl.pb_Stl_Importer.Facet
+function UnityEngine.ProBuilder.Stl.pb_Stl_Importer.Facet.New() end
+---@return string
+function UnityEngine.ProBuilder.Stl.pb_Stl_Importer.Facet:ToString() end
+
+---@class System.Runtime.CompilerServices.IsUnmanagedAttribute : System.Attribute
+System.Runtime.CompilerServices.IsUnmanagedAttribute = {}
+---@alias CS.System.Runtime.CompilerServices.IsUnmanagedAttribute System.Runtime.CompilerServices.IsUnmanagedAttribute
+CS.System.Runtime.CompilerServices.IsUnmanagedAttribute = System.Runtime.CompilerServices.IsUnmanagedAttribute
+
+---@return System.Runtime.CompilerServices.IsUnmanagedAttribute
+function System.Runtime.CompilerServices.IsUnmanagedAttribute.New() end
+
+---@class DelegateList : System.Object
+---@field Count number
+DelegateList = {}
+---@alias CS.DelegateList DelegateList
+CS.DelegateList = DelegateList
+
+---@param acquireFunc System.Func[System.Action[T],System.Collections.Generic.LinkedListNode[System.Action[T]]]
+---@param releaseFunc System.Action[System.Collections.Generic.LinkedListNode[System.Action[T]]]
+---@return DelegateList
+function DelegateList.New(acquireFunc, releaseFunc) end
+---@return DelegateList
+function DelegateList.CreateWithGlobalCache() end
+---@param action System.Action[T]
+function DelegateList:Add(action) end
+---@param action System.Action[T]
+function DelegateList:Remove(action) end
+---@param res T
+function DelegateList:Invoke(res) end
+function DelegateList:Clear() end
+
+---@class ListWithEvents : System.Object
+---@field Item T
+---@field Count number
+---@field IsReadOnly boolean
+ListWithEvents = {}
+---@alias CS.ListWithEvents ListWithEvents
+CS.ListWithEvents = ListWithEvents
+
+---@return ListWithEvents
+function ListWithEvents.New() end
+---@param item T
+function ListWithEvents:Add(item) end
+function ListWithEvents:Clear() end
+---@param item T
+---@return boolean
+function ListWithEvents:Contains(item) end
+---@param array T[]
+---@param arrayIndex number
+function ListWithEvents:CopyTo(array, arrayIndex) end
+---@return System.Collections.Generic.IEnumerator[T]
+function ListWithEvents:GetEnumerator() end
+---@param item T
+---@return number
+function ListWithEvents:IndexOf(item) end
+---@param index number
+---@param item T
+function ListWithEvents:Insert(index, item) end
+---@param item T
+---@return boolean
+function ListWithEvents:Remove(item) end
+---@param index number
+function ListWithEvents:RemoveAt(index) end
+
+---@class MonoBehaviourCallbackHooks : UnityEngine.ResourceManagement.Util.ComponentSingleton
+---@field Instance MonoBehaviourCallbackHooks -- infered from UnityEngine.ResourceManagement.Util.ComponentSingleton`1[MonoBehaviourCallbackHooks]
+MonoBehaviourCallbackHooks = {}
+---@alias CS.MonoBehaviourCallbackHooks MonoBehaviourCallbackHooks
+CS.MonoBehaviourCallbackHooks = MonoBehaviourCallbackHooks
+
+
+---@class UnitySourceGeneratedAssemblyMonoScriptTypes_v1 : System.Object
+UnitySourceGeneratedAssemblyMonoScriptTypes_v1 = {}
+---@alias CS.UnitySourceGeneratedAssemblyMonoScriptTypes_v1 UnitySourceGeneratedAssemblyMonoScriptTypes_v1
+CS.UnitySourceGeneratedAssemblyMonoScriptTypes_v1 = UnitySourceGeneratedAssemblyMonoScriptTypes_v1
+
+---@return UnitySourceGeneratedAssemblyMonoScriptTypes_v1
+function UnitySourceGeneratedAssemblyMonoScriptTypes_v1.New() end
+
+---@class UnityEngine.ResourceManagement.ChainOperation : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationBase[TObject]
+UnityEngine.ResourceManagement.ChainOperation = {}
+---@alias CS.UnityEngine.ResourceManagement.ChainOperation UnityEngine.ResourceManagement.ChainOperation
+CS.UnityEngine.ResourceManagement.ChainOperation = UnityEngine.ResourceManagement.ChainOperation
+
+---@return UnityEngine.ResourceManagement.ChainOperation
+function UnityEngine.ResourceManagement.ChainOperation.New() end
+---@param deps System.Collections.Generic.List
+function UnityEngine.ResourceManagement.ChainOperation:GetDependencies(deps) end
+---@param dependentOp UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle[TObjectDependency]
+---@param callback System.Func[UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle[TObjectDependency],UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle[TObject]]
+---@param releaseDependenciesOnFailure boolean
+function UnityEngine.ResourceManagement.ChainOperation:Init(dependentOp, callback, releaseDependenciesOnFailure) end
+
+---@class UnityEngine.ResourceManagement.ChainOperationTypelessDepedency : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationBase[TObject]
+UnityEngine.ResourceManagement.ChainOperationTypelessDepedency = {}
+---@alias CS.UnityEngine.ResourceManagement.ChainOperationTypelessDepedency UnityEngine.ResourceManagement.ChainOperationTypelessDepedency
+CS.UnityEngine.ResourceManagement.ChainOperationTypelessDepedency = UnityEngine.ResourceManagement.ChainOperationTypelessDepedency
+
+---@return UnityEngine.ResourceManagement.ChainOperationTypelessDepedency
+function UnityEngine.ResourceManagement.ChainOperationTypelessDepedency.New() end
+---@param deps System.Collections.Generic.List
+function UnityEngine.ResourceManagement.ChainOperationTypelessDepedency:GetDependencies(deps) end
+---@param dependentOp UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+---@param callback System.Func[UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle,UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle[TObject]]
+---@param releaseDependenciesOnFailure boolean
+function UnityEngine.ResourceManagement.ChainOperationTypelessDepedency:Init(dependentOp, callback, releaseDependenciesOnFailure) end
+
+---@class UnityEngine.ResourceManagement.ResourceManager : System.Object
+---@field ExceptionHandler System.Action
+---@field InternalIdTransformFunc System.Func
+---@field WebRequestOverride System.Action
+---@field Allocator UnityEngine.ResourceManagement.Util.IAllocationStrategy
+---@field ResourceProviders System.Collections.Generic.IList
+---@field CertificateHandlerInstance UnityEngine.Networking.CertificateHandler
+UnityEngine.ResourceManagement.ResourceManager = {}
+---@alias CS.UnityEngine.ResourceManagement.ResourceManager UnityEngine.ResourceManagement.ResourceManager
+CS.UnityEngine.ResourceManagement.ResourceManager = UnityEngine.ResourceManagement.ResourceManager
+
+---@param alloc UnityEngine.ResourceManagement.Util.IAllocationStrategy
+---@return UnityEngine.ResourceManagement.ResourceManager
+function UnityEngine.ResourceManagement.ResourceManager.New(alloc) end
+---@param location UnityEngine.ResourceManagement.ResourceLocations.IResourceLocation
+---@return string
+function UnityEngine.ResourceManagement.ResourceManager:TransformInternalId(location) end
+---@param receiver UnityEngine.ResourceManagement.IUpdateReceiver
+function UnityEngine.ResourceManagement.ResourceManager:AddUpdateReceiver(receiver) end
+---@param receiver UnityEngine.ResourceManagement.IUpdateReceiver
+function UnityEngine.ResourceManagement.ResourceManager:RemoveUpdateReciever(receiver) end
+function UnityEngine.ResourceManagement.ResourceManager:ClearDiagnosticCallbacks() end
+---@param func System.Action
+function UnityEngine.ResourceManagement.ResourceManager:UnregisterDiagnosticCallback(func) end
+---@param func System.Action
+function UnityEngine.ResourceManagement.ResourceManager:RegisterDiagnosticCallback(func) end
+---@param t System.Type
+---@param location UnityEngine.ResourceManagement.ResourceLocations.IResourceLocation
+---@return UnityEngine.ResourceManagement.ResourceProviders.IResourceProvider
+function UnityEngine.ResourceManagement.ResourceManager:GetResourceProvider(t, location) end
+---@param handle UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+function UnityEngine.ResourceManagement.ResourceManager:Release(handle) end
+---@param handle UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+function UnityEngine.ResourceManagement.ResourceManager:Acquire(handle) end
+---@param operations System.Collections.Generic.List
+---@param releasedCachedOpOnComplete boolean
+---@return UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+function UnityEngine.ResourceManagement.ResourceManager:CreateGenericGroupOperation(operations, releasedCachedOpOnComplete) end
+---@overload fun(self: UnityEngine.ResourceManagement.ResourceManager, sceneProvider: UnityEngine.ResourceManagement.ResourceProviders.ISceneProvider, location: UnityEngine.ResourceManagement.ResourceLocations.IResourceLocation, loadSceneMode: UnityEngine.SceneManagement.LoadSceneMode, activateOnLoad: boolean, priority: number) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+---@param sceneProvider UnityEngine.ResourceManagement.ResourceProviders.ISceneProvider
+---@param location UnityEngine.ResourceManagement.ResourceLocations.IResourceLocation
+---@param loadSceneParameters UnityEngine.SceneManagement.LoadSceneParameters
+---@param activateOnLoad boolean
+---@param priority number
+---@return UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+function UnityEngine.ResourceManagement.ResourceManager:ProvideScene(sceneProvider, location, loadSceneParameters, activateOnLoad, priority) end
+---@param sceneProvider UnityEngine.ResourceManagement.ResourceProviders.ISceneProvider
+---@param sceneLoadHandle UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+---@return UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+function UnityEngine.ResourceManagement.ResourceManager:ReleaseScene(sceneProvider, sceneLoadHandle) end
+---@param provider UnityEngine.ResourceManagement.ResourceProviders.IInstanceProvider
+---@param location UnityEngine.ResourceManagement.ResourceLocations.IResourceLocation
+---@param instantiateParameters UnityEngine.ResourceManagement.ResourceProviders.InstantiationParameters
+---@return UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
+function UnityEngine.ResourceManagement.ResourceManager:ProvideInstance(provider, location, instantiateParameters) end
+---@param scene UnityEngine.SceneManagement.Scene
+function UnityEngine.ResourceManagement.ResourceManager:CleanupSceneInstances(scene) end
+function UnityEngine.ResourceManagement.ResourceManager:Dispose() end
+
+---@class UnityEngine.ResourceManagement.IUpdateReceiver
+UnityEngine.ResourceManagement.IUpdateReceiver = {}
+---@alias CS.UnityEngine.ResourceManagement.IUpdateReceiver UnityEngine.ResourceManagement.IUpdateReceiver
+CS.UnityEngine.ResourceManagement.IUpdateReceiver = UnityEngine.ResourceManagement.IUpdateReceiver
+
+---@param unscaledDeltaTime number
+function UnityEngine.ResourceManagement.IUpdateReceiver:Update(unscaledDeltaTime) end
+
+---@class UnityEngine.ResourceManagement.WebRequestQueueOperation : System.Object
+---@field Result UnityEngine.Networking.UnityWebRequestAsyncOperation
+---@field OnComplete System.Action
+---@field IsDone boolean
+---@field WebRequest UnityEngine.Networking.UnityWebRequest
+UnityEngine.ResourceManagement.WebRequestQueueOperation = {}
+---@alias CS.UnityEngine.ResourceManagement.WebRequestQueueOperation UnityEngine.ResourceManagement.WebRequestQueueOperation
+CS.UnityEngine.ResourceManagement.WebRequestQueueOperation = UnityEngine.ResourceManagement.WebRequestQueueOperation
+
+---@param request UnityEngine.Networking.UnityWebRequest
+---@return UnityEngine.ResourceManagement.WebRequestQueueOperation
+function UnityEngine.ResourceManagement.WebRequestQueueOperation.New(request) end
+
+---@class UnityEngine.ResourceManagement.WebRequestQueue : System.Object
+UnityEngine.ResourceManagement.WebRequestQueue = {}
+---@alias CS.UnityEngine.ResourceManagement.WebRequestQueue UnityEngine.ResourceManagement.WebRequestQueue
+CS.UnityEngine.ResourceManagement.WebRequestQueue = UnityEngine.ResourceManagement.WebRequestQueue
+
+---@param maxRequests number
+function UnityEngine.ResourceManagement.WebRequestQueue.SetMaxConcurrentRequests(maxRequests) end
+---@param request UnityEngine.Networking.UnityWebRequest
+---@return UnityEngine.ResourceManagement.WebRequestQueueOperation
+function UnityEngine.ResourceManagement.WebRequestQueue.QueueRequest(request) end
+---@param request UnityEngine.ResourceManagement.WebRequestQueueOperation
+---@param millisecondsTimeout number
+function UnityEngine.ResourceManagement.WebRequestQueue.WaitForRequestToBeActive(request, millisecondsTimeout) end
+
+---@class UnityEngine.ResourceManagement.Exceptions.ResourceManagerException : System.Exception
+UnityEngine.ResourceManagement.Exceptions.ResourceManagerException = {}
+---@alias CS.UnityEngine.ResourceManagement.Exceptions.ResourceManagerException UnityEngine.ResourceManagement.Exceptions.ResourceManagerException
+CS.UnityEngine.ResourceManagement.Exceptions.ResourceManagerException = UnityEngine.ResourceManagement.Exceptions.ResourceManagerException
+
+---@overload fun() : UnityEngine.ResourceManagement.Exceptions.ResourceManagerException
+---@overload fun(message: string) : UnityEngine.ResourceManagement.Exceptions.ResourceManagerException
+---@param message string
+---@param innerException System.Exception
+---@return UnityEngine.ResourceManagement.Exceptions.ResourceManagerException
+function UnityEngine.ResourceManagement.Exceptions.ResourceManagerException.New(message, innerException) end
+---@return string
+function UnityEngine.ResourceManagement.Exceptions.ResourceManagerException:ToString() end
+
+---@class UnityEngine.ResourceManagement.Exceptions.UnknownResourceProviderException : UnityEngine.ResourceManagement.Exceptions.ResourceManagerException
+---@field Location UnityEngine.ResourceManagement.ResourceLocations.IResourceLocation
+---@field Message string
+UnityEngine.ResourceManagement.Exceptions.UnknownResourceProviderException = {}
+---@alias CS.UnityEngine.ResourceManagement.Exceptions.UnknownResourceProviderException UnityEngine.ResourceManagement.Exceptions.UnknownResourceProviderException
+CS.UnityEngine.ResourceManagement.Exceptions.UnknownResourceProviderException = UnityEngine.ResourceManagement.Exceptions.UnknownResourceProviderException
+
+---@overload fun(location: UnityEngine.ResourceManagement.ResourceLocations.IResourceLocation) : UnityEngine.ResourceManagement.Exceptions.UnknownResourceProviderException
+---@overload fun() : UnityEngine.ResourceManagement.Exceptions.UnknownResourceProviderException
+---@overload fun(message: string) : UnityEngine.ResourceManagement.Exceptions.UnknownResourceProviderException
+---@param message string
+---@param innerException System.Exception
+---@return UnityEngine.ResourceManagement.Exceptions.UnknownResourceProviderException
+function UnityEngine.ResourceManagement.Exceptions.UnknownResourceProviderException.New(message, innerException) end
+---@return string
+function UnityEngine.ResourceManagement.Exceptions.UnknownResourceProviderException:ToString() end
+
+---@class UnityEngine.ResourceManagement.Exceptions.OperationException : System.Exception
+UnityEngine.ResourceManagement.Exceptions.OperationException = {}
+---@alias CS.UnityEngine.ResourceManagement.Exceptions.OperationException UnityEngine.ResourceManagement.Exceptions.OperationException
+CS.UnityEngine.ResourceManagement.Exceptions.OperationException = UnityEngine.ResourceManagement.Exceptions.OperationException
+
+---@param message string
+---@param innerException System.Exception
+---@return UnityEngine.ResourceManagement.Exceptions.OperationException
+function UnityEngine.ResourceManagement.Exceptions.OperationException.New(message, innerException) end
+---@return string
+function UnityEngine.ResourceManagement.Exceptions.OperationException:ToString() end
+
+---@class UnityEngine.ResourceManagement.Exceptions.ProviderException : UnityEngine.ResourceManagement.Exceptions.OperationException
+---@field Location UnityEngine.ResourceManagement.ResourceLocations.IResourceLocation
+UnityEngine.ResourceManagement.Exceptions.ProviderException = {}
+---@alias CS.UnityEngine.ResourceManagement.Exceptions.ProviderException UnityEngine.ResourceManagement.Exceptions.ProviderException
+CS.UnityEngine.ResourceManagement.Exceptions.ProviderException = UnityEngine.ResourceManagement.Exceptions.ProviderException
+
+---@param message string
+---@param location UnityEngine.ResourceManagement.ResourceLocations.IResourceLocation
+---@param innerException System.Exception
+---@return UnityEngine.ResourceManagement.Exceptions.ProviderException
+function UnityEngine.ResourceManagement.Exceptions.ProviderException.New(message, location, innerException) end
+
 ---@class UnityEngine.ResourceManagement.Exceptions.RemoteProviderException : UnityEngine.ResourceManagement.Exceptions.ProviderException
 ---@field Message string
 ---@field WebRequestResult UnityEngine.ResourceManagement.Util.UnityWebRequestResult
@@ -19403,603 +20007,3 @@ function UnityEngine.Timeline.SignalAsset.New() end
 UnityEngine.Timeline.SignalEmitter = {}
 ---@alias CS.UnityEngine.Timeline.SignalEmitter UnityEngine.Timeline.SignalEmitter
 CS.UnityEngine.Timeline.SignalEmitter = UnityEngine.Timeline.SignalEmitter
-
----@return UnityEngine.Timeline.SignalEmitter
-function UnityEngine.Timeline.SignalEmitter.New() end
-
----@class UnityEngine.Timeline.SignalReceiver : UnityEngine.MonoBehaviour
-UnityEngine.Timeline.SignalReceiver = {}
----@alias CS.UnityEngine.Timeline.SignalReceiver UnityEngine.Timeline.SignalReceiver
-CS.UnityEngine.Timeline.SignalReceiver = UnityEngine.Timeline.SignalReceiver
-
----@param origin UnityEngine.Playables.Playable
----@param notification UnityEngine.Playables.INotification
----@param context System.Object
-function UnityEngine.Timeline.SignalReceiver:OnNotify(origin, notification, context) end
----@param asset UnityEngine.Timeline.SignalAsset
----@param reaction UnityEngine.Events.UnityEvent
-function UnityEngine.Timeline.SignalReceiver:AddReaction(asset, reaction) end
----@param reaction UnityEngine.Events.UnityEvent
----@return number
-function UnityEngine.Timeline.SignalReceiver:AddEmptyReaction(reaction) end
----@param asset UnityEngine.Timeline.SignalAsset
-function UnityEngine.Timeline.SignalReceiver:Remove(asset) end
----@return System.Collections.Generic.IEnumerable
-function UnityEngine.Timeline.SignalReceiver:GetRegisteredSignals() end
----@param key UnityEngine.Timeline.SignalAsset
----@return UnityEngine.Events.UnityEvent
-function UnityEngine.Timeline.SignalReceiver:GetReaction(key) end
----@return number
-function UnityEngine.Timeline.SignalReceiver:Count() end
----@param idx number
----@param newKey UnityEngine.Timeline.SignalAsset
-function UnityEngine.Timeline.SignalReceiver:ChangeSignalAtIndex(idx, newKey) end
----@param idx number
-function UnityEngine.Timeline.SignalReceiver:RemoveAtIndex(idx) end
----@param idx number
----@param reaction UnityEngine.Events.UnityEvent
-function UnityEngine.Timeline.SignalReceiver:ChangeReactionAtIndex(idx, reaction) end
----@param idx number
----@return UnityEngine.Events.UnityEvent
-function UnityEngine.Timeline.SignalReceiver:GetReactionAtIndex(idx) end
----@param idx number
----@return UnityEngine.Timeline.SignalAsset
-function UnityEngine.Timeline.SignalReceiver:GetSignalAssetAtIndex(idx) end
-
----@class UnityEngine.Timeline.SignalTrack : UnityEngine.Timeline.MarkerTrack
-UnityEngine.Timeline.SignalTrack = {}
----@alias CS.UnityEngine.Timeline.SignalTrack UnityEngine.Timeline.SignalTrack
-CS.UnityEngine.Timeline.SignalTrack = UnityEngine.Timeline.SignalTrack
-
----@return UnityEngine.Timeline.SignalTrack
-function UnityEngine.Timeline.SignalTrack.New() end
-
----@class UnityEngine.Timeline.TrackAssetExtensions : System.Object
-UnityEngine.Timeline.TrackAssetExtensions = {}
----@alias CS.UnityEngine.Timeline.TrackAssetExtensions UnityEngine.Timeline.TrackAssetExtensions
-CS.UnityEngine.Timeline.TrackAssetExtensions = UnityEngine.Timeline.TrackAssetExtensions
-
----@param asset UnityEngine.Timeline.TrackAsset
----@return UnityEngine.Timeline.GroupTrack
-function UnityEngine.Timeline.TrackAssetExtensions.GetGroup(asset) end
----@param asset UnityEngine.Timeline.TrackAsset
----@param group UnityEngine.Timeline.GroupTrack
-function UnityEngine.Timeline.TrackAssetExtensions.SetGroup(asset, group) end
-
----@class UnityEngine.Timeline.GroupTrack : UnityEngine.Timeline.TrackAsset
----@field outputs System.Collections.Generic.IEnumerable
-UnityEngine.Timeline.GroupTrack = {}
----@alias CS.UnityEngine.Timeline.GroupTrack UnityEngine.Timeline.GroupTrack
-CS.UnityEngine.Timeline.GroupTrack = UnityEngine.Timeline.GroupTrack
-
----@return UnityEngine.Timeline.GroupTrack
-function UnityEngine.Timeline.GroupTrack.New() end
-
----@class UnityEngine.Timeline.ILayerable
-UnityEngine.Timeline.ILayerable = {}
----@alias CS.UnityEngine.Timeline.ILayerable UnityEngine.Timeline.ILayerable
-CS.UnityEngine.Timeline.ILayerable = UnityEngine.Timeline.ILayerable
-
----@param graph UnityEngine.Playables.PlayableGraph
----@param go UnityEngine.GameObject
----@param inputCount number
----@return UnityEngine.Playables.Playable
-function UnityEngine.Timeline.ILayerable:CreateLayerMixer(graph, go, inputCount) end
-
----@class UnityEngine.Timeline.ActivationControlPlayable : UnityEngine.Playables.PlayableBehaviour
----@field gameObject UnityEngine.GameObject
----@field postPlayback UnityEngine.Timeline.ActivationControlPlayable.PostPlaybackState
-UnityEngine.Timeline.ActivationControlPlayable = {}
----@alias CS.UnityEngine.Timeline.ActivationControlPlayable UnityEngine.Timeline.ActivationControlPlayable
-CS.UnityEngine.Timeline.ActivationControlPlayable = UnityEngine.Timeline.ActivationControlPlayable
-
----@return UnityEngine.Timeline.ActivationControlPlayable
-function UnityEngine.Timeline.ActivationControlPlayable.New() end
----@param graph UnityEngine.Playables.PlayableGraph
----@param gameObject UnityEngine.GameObject
----@param postPlaybackState UnityEngine.Timeline.ActivationControlPlayable.PostPlaybackState
----@return UnityEngine.Playables.ScriptPlayable
-function UnityEngine.Timeline.ActivationControlPlayable.Create(graph, gameObject, postPlaybackState) end
----@param playable UnityEngine.Playables.Playable
----@param info UnityEngine.Playables.FrameData
-function UnityEngine.Timeline.ActivationControlPlayable:OnBehaviourPlay(playable, info) end
----@param playable UnityEngine.Playables.Playable
----@param info UnityEngine.Playables.FrameData
-function UnityEngine.Timeline.ActivationControlPlayable:OnBehaviourPause(playable, info) end
----@param playable UnityEngine.Playables.Playable
----@param info UnityEngine.Playables.FrameData
----@param userData System.Object
-function UnityEngine.Timeline.ActivationControlPlayable:ProcessFrame(playable, info, userData) end
----@param playable UnityEngine.Playables.Playable
-function UnityEngine.Timeline.ActivationControlPlayable:OnGraphStart(playable) end
----@param playable UnityEngine.Playables.Playable
-function UnityEngine.Timeline.ActivationControlPlayable:OnPlayableDestroy(playable) end
-
----@class UnityEngine.Timeline.BasicPlayableBehaviour : UnityEngine.ScriptableObject
----@field duration number
----@field outputs System.Collections.Generic.IEnumerable
-UnityEngine.Timeline.BasicPlayableBehaviour = {}
----@alias CS.UnityEngine.Timeline.BasicPlayableBehaviour UnityEngine.Timeline.BasicPlayableBehaviour
-CS.UnityEngine.Timeline.BasicPlayableBehaviour = UnityEngine.Timeline.BasicPlayableBehaviour
-
----@return UnityEngine.Timeline.BasicPlayableBehaviour
-function UnityEngine.Timeline.BasicPlayableBehaviour.New() end
----@param playable UnityEngine.Playables.Playable
-function UnityEngine.Timeline.BasicPlayableBehaviour:OnGraphStart(playable) end
----@param playable UnityEngine.Playables.Playable
-function UnityEngine.Timeline.BasicPlayableBehaviour:OnGraphStop(playable) end
----@param playable UnityEngine.Playables.Playable
-function UnityEngine.Timeline.BasicPlayableBehaviour:OnPlayableCreate(playable) end
----@param playable UnityEngine.Playables.Playable
-function UnityEngine.Timeline.BasicPlayableBehaviour:OnPlayableDestroy(playable) end
----@param playable UnityEngine.Playables.Playable
----@param info UnityEngine.Playables.FrameData
-function UnityEngine.Timeline.BasicPlayableBehaviour:OnBehaviourPlay(playable, info) end
----@param playable UnityEngine.Playables.Playable
----@param info UnityEngine.Playables.FrameData
-function UnityEngine.Timeline.BasicPlayableBehaviour:OnBehaviourPause(playable, info) end
----@param playable UnityEngine.Playables.Playable
----@param info UnityEngine.Playables.FrameData
-function UnityEngine.Timeline.BasicPlayableBehaviour:PrepareFrame(playable, info) end
----@param playable UnityEngine.Playables.Playable
----@param info UnityEngine.Playables.FrameData
----@param playerData System.Object
-function UnityEngine.Timeline.BasicPlayableBehaviour:ProcessFrame(playable, info, playerData) end
----@param graph UnityEngine.Playables.PlayableGraph
----@param owner UnityEngine.GameObject
----@return UnityEngine.Playables.Playable
-function UnityEngine.Timeline.BasicPlayableBehaviour:CreatePlayable(graph, owner) end
-
----@class UnityEngine.Timeline.DirectorControlPlayable : UnityEngine.Playables.PlayableBehaviour
----@field director UnityEngine.Playables.PlayableDirector
-UnityEngine.Timeline.DirectorControlPlayable = {}
----@alias CS.UnityEngine.Timeline.DirectorControlPlayable UnityEngine.Timeline.DirectorControlPlayable
-CS.UnityEngine.Timeline.DirectorControlPlayable = UnityEngine.Timeline.DirectorControlPlayable
-
----@return UnityEngine.Timeline.DirectorControlPlayable
-function UnityEngine.Timeline.DirectorControlPlayable.New() end
----@param graph UnityEngine.Playables.PlayableGraph
----@param director UnityEngine.Playables.PlayableDirector
----@return UnityEngine.Playables.ScriptPlayable
-function UnityEngine.Timeline.DirectorControlPlayable.Create(graph, director) end
----@param playable UnityEngine.Playables.Playable
-function UnityEngine.Timeline.DirectorControlPlayable:OnPlayableDestroy(playable) end
----@param playable UnityEngine.Playables.Playable
----@param info UnityEngine.Playables.FrameData
-function UnityEngine.Timeline.DirectorControlPlayable:PrepareFrame(playable, info) end
----@param playable UnityEngine.Playables.Playable
----@param info UnityEngine.Playables.FrameData
-function UnityEngine.Timeline.DirectorControlPlayable:OnBehaviourPlay(playable, info) end
----@param playable UnityEngine.Playables.Playable
----@param info UnityEngine.Playables.FrameData
-function UnityEngine.Timeline.DirectorControlPlayable:OnBehaviourPause(playable, info) end
----@param playable UnityEngine.Playables.Playable
----@param info UnityEngine.Playables.FrameData
----@param playerData System.Object
-function UnityEngine.Timeline.DirectorControlPlayable:ProcessFrame(playable, info, playerData) end
-
----@class UnityEngine.Timeline.ITimeControl
-UnityEngine.Timeline.ITimeControl = {}
----@alias CS.UnityEngine.Timeline.ITimeControl UnityEngine.Timeline.ITimeControl
-CS.UnityEngine.Timeline.ITimeControl = UnityEngine.Timeline.ITimeControl
-
----@param time number
-function UnityEngine.Timeline.ITimeControl:SetTime(time) end
-function UnityEngine.Timeline.ITimeControl:OnControlTimeStart() end
-function UnityEngine.Timeline.ITimeControl:OnControlTimeStop() end
-
----@class UnityEngine.Timeline.NotificationFlags
----@field TriggerInEditMode UnityEngine.Timeline.NotificationFlags
----@field Retroactive UnityEngine.Timeline.NotificationFlags
----@field TriggerOnce UnityEngine.Timeline.NotificationFlags
-UnityEngine.Timeline.NotificationFlags = {}
----@alias CS.UnityEngine.Timeline.NotificationFlags UnityEngine.Timeline.NotificationFlags
-CS.UnityEngine.Timeline.NotificationFlags = UnityEngine.Timeline.NotificationFlags
-
-
----@class UnityEngine.Timeline.ParticleControlPlayable : UnityEngine.Playables.PlayableBehaviour
----@field particleSystem UnityEngine.ParticleSystem
-UnityEngine.Timeline.ParticleControlPlayable = {}
----@alias CS.UnityEngine.Timeline.ParticleControlPlayable UnityEngine.Timeline.ParticleControlPlayable
-CS.UnityEngine.Timeline.ParticleControlPlayable = UnityEngine.Timeline.ParticleControlPlayable
-
----@return UnityEngine.Timeline.ParticleControlPlayable
-function UnityEngine.Timeline.ParticleControlPlayable.New() end
----@param graph UnityEngine.Playables.PlayableGraph
----@param component UnityEngine.ParticleSystem
----@param randomSeed number
----@return UnityEngine.Playables.ScriptPlayable
-function UnityEngine.Timeline.ParticleControlPlayable.Create(graph, component, randomSeed) end
----@param ps UnityEngine.ParticleSystem
----@param randomSeed number
-function UnityEngine.Timeline.ParticleControlPlayable:Initialize(ps, randomSeed) end
----@param playable UnityEngine.Playables.Playable
-function UnityEngine.Timeline.ParticleControlPlayable:OnPlayableDestroy(playable) end
----@param playable UnityEngine.Playables.Playable
----@param data UnityEngine.Playables.FrameData
-function UnityEngine.Timeline.ParticleControlPlayable:PrepareFrame(playable, data) end
----@param playable UnityEngine.Playables.Playable
----@param info UnityEngine.Playables.FrameData
-function UnityEngine.Timeline.ParticleControlPlayable:OnBehaviourPlay(playable, info) end
----@param playable UnityEngine.Playables.Playable
----@param info UnityEngine.Playables.FrameData
-function UnityEngine.Timeline.ParticleControlPlayable:OnBehaviourPause(playable, info) end
-
----@class UnityEngine.Timeline.PrefabControlPlayable : UnityEngine.Playables.PlayableBehaviour
----@field prefabInstance UnityEngine.GameObject
-UnityEngine.Timeline.PrefabControlPlayable = {}
----@alias CS.UnityEngine.Timeline.PrefabControlPlayable UnityEngine.Timeline.PrefabControlPlayable
-CS.UnityEngine.Timeline.PrefabControlPlayable = UnityEngine.Timeline.PrefabControlPlayable
-
----@return UnityEngine.Timeline.PrefabControlPlayable
-function UnityEngine.Timeline.PrefabControlPlayable.New() end
----@param graph UnityEngine.Playables.PlayableGraph
----@param prefabGameObject UnityEngine.GameObject
----@param parentTransform UnityEngine.Transform
----@return UnityEngine.Playables.ScriptPlayable
-function UnityEngine.Timeline.PrefabControlPlayable.Create(graph, prefabGameObject, parentTransform) end
----@param prefabGameObject UnityEngine.GameObject
----@param parentTransform UnityEngine.Transform
----@return UnityEngine.GameObject
-function UnityEngine.Timeline.PrefabControlPlayable:Initialize(prefabGameObject, parentTransform) end
----@param playable UnityEngine.Playables.Playable
-function UnityEngine.Timeline.PrefabControlPlayable:OnPlayableDestroy(playable) end
----@param playable UnityEngine.Playables.Playable
----@param info UnityEngine.Playables.FrameData
-function UnityEngine.Timeline.PrefabControlPlayable:OnBehaviourPlay(playable, info) end
----@param playable UnityEngine.Playables.Playable
----@param info UnityEngine.Playables.FrameData
-function UnityEngine.Timeline.PrefabControlPlayable:OnBehaviourPause(playable, info) end
-
----@class UnityEngine.Timeline.TimeControlPlayable : UnityEngine.Playables.PlayableBehaviour
-UnityEngine.Timeline.TimeControlPlayable = {}
----@alias CS.UnityEngine.Timeline.TimeControlPlayable UnityEngine.Timeline.TimeControlPlayable
-CS.UnityEngine.Timeline.TimeControlPlayable = UnityEngine.Timeline.TimeControlPlayable
-
----@return UnityEngine.Timeline.TimeControlPlayable
-function UnityEngine.Timeline.TimeControlPlayable.New() end
----@param graph UnityEngine.Playables.PlayableGraph
----@param timeControl UnityEngine.Timeline.ITimeControl
----@return UnityEngine.Playables.ScriptPlayable
-function UnityEngine.Timeline.TimeControlPlayable.Create(graph, timeControl) end
----@param timeControl UnityEngine.Timeline.ITimeControl
-function UnityEngine.Timeline.TimeControlPlayable:Initialize(timeControl) end
----@param playable UnityEngine.Playables.Playable
----@param info UnityEngine.Playables.FrameData
-function UnityEngine.Timeline.TimeControlPlayable:PrepareFrame(playable, info) end
----@param playable UnityEngine.Playables.Playable
----@param info UnityEngine.Playables.FrameData
-function UnityEngine.Timeline.TimeControlPlayable:OnBehaviourPlay(playable, info) end
----@param playable UnityEngine.Playables.Playable
----@param info UnityEngine.Playables.FrameData
-function UnityEngine.Timeline.TimeControlPlayable:OnBehaviourPause(playable, info) end
-
----@class UnityEngine.Timeline.TimeNotificationBehaviour : UnityEngine.Playables.PlayableBehaviour
----@field timeSource UnityEngine.Playables.Playable
-UnityEngine.Timeline.TimeNotificationBehaviour = {}
----@alias CS.UnityEngine.Timeline.TimeNotificationBehaviour UnityEngine.Timeline.TimeNotificationBehaviour
-CS.UnityEngine.Timeline.TimeNotificationBehaviour = UnityEngine.Timeline.TimeNotificationBehaviour
-
----@return UnityEngine.Timeline.TimeNotificationBehaviour
-function UnityEngine.Timeline.TimeNotificationBehaviour.New() end
----@param graph UnityEngine.Playables.PlayableGraph
----@param duration number
----@param loopMode UnityEngine.Playables.DirectorWrapMode
----@return UnityEngine.Playables.ScriptPlayable
-function UnityEngine.Timeline.TimeNotificationBehaviour.Create(graph, duration, loopMode) end
----@param time number
----@param payload UnityEngine.Playables.INotification
----@param flags UnityEngine.Timeline.NotificationFlags
-function UnityEngine.Timeline.TimeNotificationBehaviour:AddNotification(time, payload, flags) end
----@param playable UnityEngine.Playables.Playable
-function UnityEngine.Timeline.TimeNotificationBehaviour:OnGraphStart(playable) end
----@param playable UnityEngine.Playables.Playable
----@param info UnityEngine.Playables.FrameData
-function UnityEngine.Timeline.TimeNotificationBehaviour:OnBehaviourPause(playable, info) end
----@param playable UnityEngine.Playables.Playable
----@param info UnityEngine.Playables.FrameData
-function UnityEngine.Timeline.TimeNotificationBehaviour:PrepareFrame(playable, info) end
-
----@class UnityEngine.Timeline.PlayableTrack : UnityEngine.Timeline.TrackAsset
-UnityEngine.Timeline.PlayableTrack = {}
----@alias CS.UnityEngine.Timeline.PlayableTrack UnityEngine.Timeline.PlayableTrack
-CS.UnityEngine.Timeline.PlayableTrack = UnityEngine.Timeline.PlayableTrack
-
----@return UnityEngine.Timeline.PlayableTrack
-function UnityEngine.Timeline.PlayableTrack.New() end
-
----@class UnityEngine.Timeline.TrackMediaType : System.Attribute
----@field m_MediaType UnityEngine.Timeline.TimelineAsset.MediaType
-UnityEngine.Timeline.TrackMediaType = {}
----@alias CS.UnityEngine.Timeline.TrackMediaType UnityEngine.Timeline.TrackMediaType
-CS.UnityEngine.Timeline.TrackMediaType = UnityEngine.Timeline.TrackMediaType
-
----@param mt UnityEngine.Timeline.TimelineAsset.MediaType
----@return UnityEngine.Timeline.TrackMediaType
-function UnityEngine.Timeline.TrackMediaType.New(mt) end
-
----@class UnityEngine.Timeline.TrackClipTypeAttribute : System.Attribute
----@field inspectedType System.Type
----@field allowAutoCreate boolean
-UnityEngine.Timeline.TrackClipTypeAttribute = {}
----@alias CS.UnityEngine.Timeline.TrackClipTypeAttribute UnityEngine.Timeline.TrackClipTypeAttribute
-CS.UnityEngine.Timeline.TrackClipTypeAttribute = UnityEngine.Timeline.TrackClipTypeAttribute
-
----@overload fun(clipClass: System.Type) : UnityEngine.Timeline.TrackClipTypeAttribute
----@param clipClass System.Type
----@param allowAutoCreate boolean
----@return UnityEngine.Timeline.TrackClipTypeAttribute
-function UnityEngine.Timeline.TrackClipTypeAttribute.New(clipClass, allowAutoCreate) end
-
----@class UnityEngine.Timeline.NotKeyableAttribute : System.Attribute
-UnityEngine.Timeline.NotKeyableAttribute = {}
----@alias CS.UnityEngine.Timeline.NotKeyableAttribute UnityEngine.Timeline.NotKeyableAttribute
-CS.UnityEngine.Timeline.NotKeyableAttribute = UnityEngine.Timeline.NotKeyableAttribute
-
----@return UnityEngine.Timeline.NotKeyableAttribute
-function UnityEngine.Timeline.NotKeyableAttribute.New() end
-
----@class UnityEngine.Timeline.TrackBindingFlags
----@field None UnityEngine.Timeline.TrackBindingFlags
----@field AllowCreateComponent UnityEngine.Timeline.TrackBindingFlags
----@field All UnityEngine.Timeline.TrackBindingFlags
-UnityEngine.Timeline.TrackBindingFlags = {}
----@alias CS.UnityEngine.Timeline.TrackBindingFlags UnityEngine.Timeline.TrackBindingFlags
-CS.UnityEngine.Timeline.TrackBindingFlags = UnityEngine.Timeline.TrackBindingFlags
-
-
----@class UnityEngine.Timeline.TrackBindingTypeAttribute : System.Attribute
----@field type System.Type
----@field flags UnityEngine.Timeline.TrackBindingFlags
-UnityEngine.Timeline.TrackBindingTypeAttribute = {}
----@alias CS.UnityEngine.Timeline.TrackBindingTypeAttribute UnityEngine.Timeline.TrackBindingTypeAttribute
-CS.UnityEngine.Timeline.TrackBindingTypeAttribute = UnityEngine.Timeline.TrackBindingTypeAttribute
-
----@overload fun(type: System.Type) : UnityEngine.Timeline.TrackBindingTypeAttribute
----@param type System.Type
----@param flags UnityEngine.Timeline.TrackBindingFlags
----@return UnityEngine.Timeline.TrackBindingTypeAttribute
-function UnityEngine.Timeline.TrackBindingTypeAttribute.New(type, flags) end
-
----@class UnityEngine.Timeline.SupportsChildTracksAttribute : System.Attribute
----@field childType System.Type
----@field levels number
-UnityEngine.Timeline.SupportsChildTracksAttribute = {}
----@alias CS.UnityEngine.Timeline.SupportsChildTracksAttribute UnityEngine.Timeline.SupportsChildTracksAttribute
-CS.UnityEngine.Timeline.SupportsChildTracksAttribute = UnityEngine.Timeline.SupportsChildTracksAttribute
-
----@param childType System.Type
----@param levels number
----@return UnityEngine.Timeline.SupportsChildTracksAttribute
-function UnityEngine.Timeline.SupportsChildTracksAttribute.New(childType, levels) end
-
----@class UnityEngine.Timeline.IgnoreOnPlayableTrackAttribute : System.Attribute
-UnityEngine.Timeline.IgnoreOnPlayableTrackAttribute = {}
----@alias CS.UnityEngine.Timeline.IgnoreOnPlayableTrackAttribute UnityEngine.Timeline.IgnoreOnPlayableTrackAttribute
-CS.UnityEngine.Timeline.IgnoreOnPlayableTrackAttribute = UnityEngine.Timeline.IgnoreOnPlayableTrackAttribute
-
----@return UnityEngine.Timeline.IgnoreOnPlayableTrackAttribute
-function UnityEngine.Timeline.IgnoreOnPlayableTrackAttribute.New() end
-
----@class UnityEngine.Timeline.TimeFieldAttribute : UnityEngine.PropertyAttribute
----@field useEditMode UnityEngine.Timeline.TimeFieldAttribute.UseEditMode
-UnityEngine.Timeline.TimeFieldAttribute = {}
----@alias CS.UnityEngine.Timeline.TimeFieldAttribute UnityEngine.Timeline.TimeFieldAttribute
-CS.UnityEngine.Timeline.TimeFieldAttribute = UnityEngine.Timeline.TimeFieldAttribute
-
----@param useEditMode UnityEngine.Timeline.TimeFieldAttribute.UseEditMode
----@return UnityEngine.Timeline.TimeFieldAttribute
-function UnityEngine.Timeline.TimeFieldAttribute.New(useEditMode) end
-
----@class UnityEngine.Timeline.FrameRateFieldAttribute : UnityEngine.PropertyAttribute
-UnityEngine.Timeline.FrameRateFieldAttribute = {}
----@alias CS.UnityEngine.Timeline.FrameRateFieldAttribute UnityEngine.Timeline.FrameRateFieldAttribute
-CS.UnityEngine.Timeline.FrameRateFieldAttribute = UnityEngine.Timeline.FrameRateFieldAttribute
-
----@return UnityEngine.Timeline.FrameRateFieldAttribute
-function UnityEngine.Timeline.FrameRateFieldAttribute.New() end
-
----@class UnityEngine.Timeline.HideInMenuAttribute : System.Attribute
-UnityEngine.Timeline.HideInMenuAttribute = {}
----@alias CS.UnityEngine.Timeline.HideInMenuAttribute UnityEngine.Timeline.HideInMenuAttribute
-CS.UnityEngine.Timeline.HideInMenuAttribute = UnityEngine.Timeline.HideInMenuAttribute
-
----@return UnityEngine.Timeline.HideInMenuAttribute
-function UnityEngine.Timeline.HideInMenuAttribute.New() end
-
----@class UnityEngine.Timeline.CustomStyleAttribute : System.Attribute
----@field ussStyle string
-UnityEngine.Timeline.CustomStyleAttribute = {}
----@alias CS.UnityEngine.Timeline.CustomStyleAttribute UnityEngine.Timeline.CustomStyleAttribute
-CS.UnityEngine.Timeline.CustomStyleAttribute = UnityEngine.Timeline.CustomStyleAttribute
-
----@param ussStyle string
----@return UnityEngine.Timeline.CustomStyleAttribute
-function UnityEngine.Timeline.CustomStyleAttribute.New(ussStyle) end
-
----@class UnityEngine.Timeline.MenuCategoryAttribute : System.Attribute
----@field category string
-UnityEngine.Timeline.MenuCategoryAttribute = {}
----@alias CS.UnityEngine.Timeline.MenuCategoryAttribute UnityEngine.Timeline.MenuCategoryAttribute
-CS.UnityEngine.Timeline.MenuCategoryAttribute = UnityEngine.Timeline.MenuCategoryAttribute
-
----@param category string
----@return UnityEngine.Timeline.MenuCategoryAttribute
-function UnityEngine.Timeline.MenuCategoryAttribute.New(category) end
-
----@class UnityEngine.Timeline.ITimelineClipAsset
----@field clipCaps UnityEngine.Timeline.ClipCaps
-UnityEngine.Timeline.ITimelineClipAsset = {}
----@alias CS.UnityEngine.Timeline.ITimelineClipAsset UnityEngine.Timeline.ITimelineClipAsset
-CS.UnityEngine.Timeline.ITimelineClipAsset = UnityEngine.Timeline.ITimelineClipAsset
-
-
----@class UnityEngine.Timeline.ITimelineEvaluateCallback
-UnityEngine.Timeline.ITimelineEvaluateCallback = {}
----@alias CS.UnityEngine.Timeline.ITimelineEvaluateCallback UnityEngine.Timeline.ITimelineEvaluateCallback
-CS.UnityEngine.Timeline.ITimelineEvaluateCallback = UnityEngine.Timeline.ITimelineEvaluateCallback
-
-function UnityEngine.Timeline.ITimelineEvaluateCallback:Evaluate() end
-
----@class UnityEngine.Timeline.IntervalTreeRebalancer : System.Object
-UnityEngine.Timeline.IntervalTreeRebalancer = {}
----@alias CS.UnityEngine.Timeline.IntervalTreeRebalancer UnityEngine.Timeline.IntervalTreeRebalancer
-CS.UnityEngine.Timeline.IntervalTreeRebalancer = UnityEngine.Timeline.IntervalTreeRebalancer
-
----@param tree UnityEngine.Timeline.IntervalTree
----@return UnityEngine.Timeline.IntervalTreeRebalancer
-function UnityEngine.Timeline.IntervalTreeRebalancer.New(tree) end
----@return boolean
-function UnityEngine.Timeline.IntervalTreeRebalancer:Rebalance() end
-
----@class UnityEngine.Timeline.TimelinePlayable : UnityEngine.Playables.PlayableBehaviour
-UnityEngine.Timeline.TimelinePlayable = {}
----@alias CS.UnityEngine.Timeline.TimelinePlayable UnityEngine.Timeline.TimelinePlayable
-CS.UnityEngine.Timeline.TimelinePlayable = UnityEngine.Timeline.TimelinePlayable
-
----@return UnityEngine.Timeline.TimelinePlayable
-function UnityEngine.Timeline.TimelinePlayable.New() end
----@param graph UnityEngine.Playables.PlayableGraph
----@param tracks System.Collections.Generic.IEnumerable
----@param go UnityEngine.GameObject
----@param autoRebalance boolean
----@param createOutputs boolean
----@return UnityEngine.Playables.ScriptPlayable
-function UnityEngine.Timeline.TimelinePlayable.Create(graph, tracks, go, autoRebalance, createOutputs) end
----@param graph UnityEngine.Playables.PlayableGraph
----@param timelinePlayable UnityEngine.Playables.Playable
----@param tracks System.Collections.Generic.IEnumerable
----@param go UnityEngine.GameObject
----@param autoRebalance boolean
----@param createOutputs boolean
-function UnityEngine.Timeline.TimelinePlayable:Compile(graph, timelinePlayable, tracks, go, autoRebalance, createOutputs) end
----@param playable UnityEngine.Playables.Playable
----@param info UnityEngine.Playables.FrameData
-function UnityEngine.Timeline.TimelinePlayable:PrepareFrame(playable, info) end
-
----@class UnityEngine.Timeline.AnimationPreviewUtilities : System.Object
-UnityEngine.Timeline.AnimationPreviewUtilities = {}
----@alias CS.UnityEngine.Timeline.AnimationPreviewUtilities UnityEngine.Timeline.AnimationPreviewUtilities
-CS.UnityEngine.Timeline.AnimationPreviewUtilities = UnityEngine.Timeline.AnimationPreviewUtilities
-
-function UnityEngine.Timeline.AnimationPreviewUtilities.ClearCaches() end
----@param animatorRoot UnityEngine.GameObject
----@param clips System.Collections.Generic.IEnumerable
----@return UnityEditor.EditorCurveBinding[]
-function UnityEngine.Timeline.AnimationPreviewUtilities.GetBindings(animatorRoot, clips) end
----@param clips System.Collections.Generic.List
----@return number
-function UnityEngine.Timeline.AnimationPreviewUtilities.GetClipHash(clips) end
----@param animatorRoot UnityEngine.GameObject
----@param keys System.Collections.Generic.IEnumerable
-function UnityEngine.Timeline.AnimationPreviewUtilities.PreviewFromCurves(animatorRoot, keys) end
----@param animatorRoot UnityEngine.GameObject
----@param keys System.Collections.Generic.IEnumerable
----@return UnityEngine.AnimationClip
-function UnityEngine.Timeline.AnimationPreviewUtilities.CreateDefaultClip(animatorRoot, keys) end
----@param binding UnityEditor.EditorCurveBinding
----@return boolean
-function UnityEngine.Timeline.AnimationPreviewUtilities.IsRootMotion(binding) end
-
----@class UnityEngine.Timeline.AnimatorBindingCache : System.Object
----@field TRPlaceHolder string
----@field ScalePlaceholder string
-UnityEngine.Timeline.AnimatorBindingCache = {}
----@alias CS.UnityEngine.Timeline.AnimatorBindingCache UnityEngine.Timeline.AnimatorBindingCache
-CS.UnityEngine.Timeline.AnimatorBindingCache = UnityEngine.Timeline.AnimatorBindingCache
-
----@return UnityEngine.Timeline.AnimatorBindingCache
-function UnityEngine.Timeline.AnimatorBindingCache.New() end
----@param gameObject UnityEngine.GameObject
----@return UnityEditor.EditorCurveBinding[]
-function UnityEngine.Timeline.AnimatorBindingCache:GetAnimatorBindings(gameObject) end
----@param clip UnityEngine.AnimationClip
----@return UnityEditor.EditorCurveBinding[]
-function UnityEngine.Timeline.AnimatorBindingCache:GetCurveBindings(clip) end
-function UnityEngine.Timeline.AnimatorBindingCache:Clear() end
-
----@class UnityEngine.Timeline.Extrapolation : System.Object
-UnityEngine.Timeline.Extrapolation = {}
----@alias CS.UnityEngine.Timeline.Extrapolation UnityEngine.Timeline.Extrapolation
-CS.UnityEngine.Timeline.Extrapolation = UnityEngine.Timeline.Extrapolation
-
-
----@class UnityEngine.Timeline.HashUtility : System.Object
-UnityEngine.Timeline.HashUtility = {}
----@alias CS.UnityEngine.Timeline.HashUtility UnityEngine.Timeline.HashUtility
-CS.UnityEngine.Timeline.HashUtility = UnityEngine.Timeline.HashUtility
-
----@overload fun(h1: number, h2: number) : number
----@overload fun(h1: number, h2: number, h3: number) : number
----@overload fun(h1: number, h2: number, h3: number, h4: number) : number
----@overload fun(h1: number, h2: number, h3: number, h4: number, h5: number) : number
----@overload fun(h1: number, h2: number, h3: number, h4: number, h5: number, h6: number) : number
----@overload fun(h1: number, h2: number, h3: number, h4: number, h5: number, h6: number, h7: number) : number
----@param hashes System.Int32[]
----@return number
-function UnityEngine.Timeline.HashUtility.CombineHash(hashes) end
-
----@class UnityEngine.Timeline.IPropertyCollector
-UnityEngine.Timeline.IPropertyCollector = {}
----@alias CS.UnityEngine.Timeline.IPropertyCollector UnityEngine.Timeline.IPropertyCollector
-CS.UnityEngine.Timeline.IPropertyCollector = UnityEngine.Timeline.IPropertyCollector
-
----@param gameObject UnityEngine.GameObject
-function UnityEngine.Timeline.IPropertyCollector:PushActiveGameObject(gameObject) end
-function UnityEngine.Timeline.IPropertyCollector:PopActiveGameObject() end
----@overload fun(self: UnityEngine.Timeline.IPropertyCollector, clip: UnityEngine.AnimationClip)
----@param obj UnityEngine.GameObject
----@param clip UnityEngine.AnimationClip
-function UnityEngine.Timeline.IPropertyCollector:AddFromClip(obj, clip) end
----@overload fun(self: UnityEngine.Timeline.IPropertyCollector, clips: System.Collections.Generic.IEnumerable)
----@param obj UnityEngine.GameObject
----@param clips System.Collections.Generic.IEnumerable
-function UnityEngine.Timeline.IPropertyCollector:AddFromClips(obj, clips) end
----@overload fun(self: UnityEngine.Timeline.IPropertyCollector, name: string)
----@overload fun(self: UnityEngine.Timeline.IPropertyCollector, obj: UnityEngine.GameObject, name: string)
----@param component UnityEngine.Component
----@param name string
-function UnityEngine.Timeline.IPropertyCollector:AddFromName(component, name) end
----@param obj UnityEngine.GameObject
----@param component UnityEngine.Component
-function UnityEngine.Timeline.IPropertyCollector:AddFromComponent(obj, component) end
----@param obj UnityEngine.Object
----@param clip UnityEngine.AnimationClip
-function UnityEngine.Timeline.IPropertyCollector:AddObjectProperties(obj, clip) end
-
----@class UnityEngine.Timeline.IPropertyPreview
-UnityEngine.Timeline.IPropertyPreview = {}
----@alias CS.UnityEngine.Timeline.IPropertyPreview UnityEngine.Timeline.IPropertyPreview
-CS.UnityEngine.Timeline.IPropertyPreview = UnityEngine.Timeline.IPropertyPreview
-
----@param director UnityEngine.Playables.PlayableDirector
----@param driver UnityEngine.Timeline.IPropertyCollector
-function UnityEngine.Timeline.IPropertyPreview:GatherProperties(director, driver) end
-
----@class UnityEngine.Timeline.NotificationUtilities : System.Object
-UnityEngine.Timeline.NotificationUtilities = {}
----@alias CS.UnityEngine.Timeline.NotificationUtilities UnityEngine.Timeline.NotificationUtilities
-CS.UnityEngine.Timeline.NotificationUtilities = UnityEngine.Timeline.NotificationUtilities
-
----@overload fun(graph: UnityEngine.Playables.PlayableGraph, markers: System.Collections.Generic.IEnumerable, director: UnityEngine.Playables.PlayableDirector) : UnityEngine.Playables.ScriptPlayable
----@param graph UnityEngine.Playables.PlayableGraph
----@param markers System.Collections.Generic.IEnumerable
----@param timelineAsset UnityEngine.Timeline.TimelineAsset
----@return UnityEngine.Playables.ScriptPlayable
-function UnityEngine.Timeline.NotificationUtilities.CreateNotificationsPlayable(graph, markers, timelineAsset) end
----@param type System.Type
----@return boolean
-function UnityEngine.Timeline.NotificationUtilities.TrackTypeSupportsNotifications(type) end
-
----@class UnityEngine.Timeline.TimelineClipExtensions : System.Object
-UnityEngine.Timeline.TimelineClipExtensions = {}
----@alias CS.UnityEngine.Timeline.TimelineClipExtensions UnityEngine.Timeline.TimelineClipExtensions
-CS.UnityEngine.Timeline.TimelineClipExtensions = UnityEngine.Timeline.TimelineClipExtensions
-
----@param clip UnityEngine.Timeline.TimelineClip
----@param destinationTrack UnityEngine.Timeline.TrackAsset
-function UnityEngine.Timeline.TimelineClipExtensions.MoveToTrack(clip, destinationTrack) end
----@param clip UnityEngine.Timeline.TimelineClip
----@param destinationTrack UnityEngine.Timeline.TrackAsset
----@return boolean
-function UnityEngine.Timeline.TimelineClipExtensions.TryMoveToTrack(clip, destinationTrack) end

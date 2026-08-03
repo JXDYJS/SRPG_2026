@@ -16,12 +16,14 @@ namespace GamePlay.Buff
         private void OnEnable()
         {
             if (string.IsNullOrEmpty(Name)) Name = "Retribution";
+            MaxStacks = 999;
         }
 
         public override void OnApply(MapUnit owner)
         {
             base.OnApply(owner);
             Initialize(owner);
+            //Debug.Log($"{owner.GetUnitName()} 获得惩戒 Buff，当前层数: {Stacks}");
         }
 
         public override void OnBeHurt(DamageInfo damageInfo)
@@ -37,7 +39,7 @@ namespace GamePlay.Buff
             damageInfo.sourceUnit.TakeDamage(reflectInfo);
             _isReflecting = false;
 
-            Debug.Log($"{Owner.name} 的惩戒反弹 {reflectDamage} 点真实伤害给 {damageInfo.sourceUnit.name}");
+            //Debug.Log($"{Owner.name} 的惩戒反弹 {reflectDamage} 点真实伤害给 {damageInfo.sourceUnit.name}");
         }
     }
 }

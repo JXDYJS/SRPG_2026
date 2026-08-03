@@ -20,17 +20,22 @@ MonoBehaviour:
     - RequiredLevel: 0
       SkillData: {fileID: 11400000, guid: 31f1ac8c14e3542478363a0ec53dfe02, type: 2}
   - SlotType: 1
-    SlotDisplayName: FireBall
+    SlotDisplayName: HeavySlash
     EvolutionChain:
     - RequiredLevel: 0
-      SkillData: {fileID: 11400000, guid: 42e02e674db46fc499bcddedc075bbb0, type: 2}
+      SkillData: {fileID: 11400000, guid: 545dbbfd927d18c40bb2d13b66948dba, type: 2}
   - SlotType: 2
-    SlotDisplayName: Dash
+    SlotDisplayName: HeavySlash
     EvolutionChain:
     - RequiredLevel: 0
-      SkillData: {fileID: 11400000, guid: 56a10c32a8c6c0c418ffd4b1908af481, type: 2}
+      SkillData: {fileID: 11400000, guid: f4893b4e5b6adc449ad77abbc7068951, type: 2}
   - SlotType: 3
-    SlotDisplayName: Strength
+    SlotDisplayName: BattleCry
     EvolutionChain:
     - RequiredLevel: 0
-      SkillData: {fileID: 11400000, guid: 743fc0c9fe194494abafe987598b4c2e, type: 2}
+      SkillData: {fileID: 11400000, guid: bf4fd478c4080a84a89f91343ba22679, type: 2}
+  - SlotType: 5
+    SlotDisplayName: BattleCry
+    EvolutionChain:
+    - RequiredLevel: 0
+      SkillData: {fileID: 11400000, guid: 649e81293743e0d498e3b4e920ee69f5, type: 2}

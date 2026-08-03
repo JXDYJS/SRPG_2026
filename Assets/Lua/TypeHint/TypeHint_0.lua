@@ -53,6 +53,21 @@ Core = {}
 ---@alias CS.Core Core
 CS.Core = {}
 
+---@class Global
+Global = {}
+---@alias CS.Global Global
+CS.Global = {}
+
+---@class Managers
+Managers = {}
+---@alias CS.Managers Managers
+CS.Managers = {}
+
+---@class Command
+Command = {}
+---@alias CS.Command Command
+CS.Command = {}
+
 ---@class System.Runtime.CompilerServices.IsUnmanagedAttribute : System.Attribute
 System.Runtime.CompilerServices.IsUnmanagedAttribute = {}
 ---@alias CS.System.Runtime.CompilerServices.IsUnmanagedAttribute System.Runtime.CompilerServices.IsUnmanagedAttribute

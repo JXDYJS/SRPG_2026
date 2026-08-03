@@ -129,6 +129,44 @@ namespace GamePlay.View
             Debug.Log($"播放 Buff 特效: {buffName}");
         }
 
+        // ================= 嘲讽状态可视 =================
+
+        private static readonly int TauntBaseColorId = Shader.PropertyToID("_BaseColor");
+        private static readonly int TauntColorId = Shader.PropertyToID("_Color");
+        private static readonly Color TauntTintColor = new Color(1f, 0.55f, 0f, 1f);
+        private MaterialPropertyBlock _tauntBlock;
+
+        /// <summary>
+        /// 切换嘲讽橙色着色（MaterialPropertyBlock 实现，逐渲染器覆盖，不改共享材质）。
+        /// 同时设置 _BaseColor / _Color 以兼容 URP 与 Standard 系 shader，未知属性被静默忽略。
+        /// </summary>
+        public void SetTauntTint(bool active)
+        {
+            if (_renderers == null || _renderers.Length == 0) return;
+
+            if (active)
+            {
+                if (_tauntBlock == null) _tauntBlock = new MaterialPropertyBlock();
+                _tauntBlock.SetColor(TauntBaseColorId, TauntTintColor);
+                _tauntBlock.SetColor(TauntColorId, TauntTintColor);
+
+                foreach (Renderer r in _renderers)
+                {
+                    if (r != null) r.SetPropertyBlock(_tauntBlock);
+                }
+            }
+            else
+            {
+                // 传空 PropertyBlock 清除 per-renderer 覆盖，回落到材质默认颜色
+                MaterialPropertyBlock emptyBlock = new MaterialPropertyBlock();
+                foreach (Renderer r in _renderers)
+                {
+                    if (r == null) continue;
+                    r.SetPropertyBlock(emptyBlock);
+                }
+            }
+        }
+
         public void HideModel()
         {
             gameObject.SetActive(false);

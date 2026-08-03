@@ -68,9 +68,17 @@ namespace GamePlay.AI
         {
             List<MapUnit> players = UnitManager.Instance.GetAllAlivePlayers();
 
+            // 嘲讽约束：普攻永远单体。若嘲讽者"移动后可被单体手段打到"，其余玩家的攻击任务全部作废。
+            MapUnit forcedTarget = TauntSystem.GetForcedTarget(unit, ctx);
+
             foreach (MapUnit player in players)
             {
-                if (player == null || player.Character.statSystem.currentHP <= 0)
+                if (player == null || !player.IsAlive)
+                {
+                    continue;
+                }
+
+                if (forcedTarget != null && player != forcedTarget)
                 {
                     continue;
                 }
@@ -116,7 +124,7 @@ namespace GamePlay.AI
 
                 foreach (MapUnit ally in allies)
                 {
-                    if (ally.Character.statSystem.currentHP <= 0)
+                    if (!ally.IsAlive)
                     {
                         continue;
                     }
@@ -214,10 +222,19 @@ namespace GamePlay.AI
                     continue;
                 }
 
+                // 嘲讽约束（逐技能）：仅"单体进攻型"技能受限制——若嘲讽者可被该技能打到，
+                // 该技能的目标池收窄到嘲讽者；AoE/Global/辅助技能不受限，保留完整目标池。
+                MapUnit forcedTarget = TauntSystem.GetForcedTargetForSkill(unit, skill, ctx);
+
                 List<MapUnit> targets = GetValidTargetsForSkill(unit, skill);
 
                 foreach (MapUnit target in targets)
                 {
+                    if (forcedTarget != null && target != forcedTarget)
+                    {
+                        continue;
+                    }
+
                     if (!IsTargetInSkillRange(unit, skill, target, ctx))
                     {
                         continue;
@@ -270,7 +287,7 @@ namespace GamePlay.AI
                     continue;
                 if (enemy.Faction == unit.Faction)
                     continue;
-                if (enemy.Character == null || enemy.Character.statSystem.currentHP <= 0)
+                if (!enemy.IsAlive)
                     continue;
 
                 // 战略评分 (SharedTaskBoard 综合了 HP紧迫+威胁+职业+覆盖)
@@ -328,8 +345,12 @@ namespace GamePlay.AI
                 if (accumulatedCost > ctx.MoveRange)
                     break;
 
-                if (UnitManager.Instance.GetUnitAt(tile) != null)
+                if (!ctx.ReachableTiles.Contains(tile))
                 {
+                    // 不可达的推进格直接排除（评分视为 0）：
+                    // ReachableTiles 已预计算一步可达集（含占用/高度/移动力约束），
+                    // 保证生成的 MoveTask 目标一定可达，不会在竞价时被 MoveTask.CalculateUtilityFor 的
+                    // ReachableTiles 门槛 SKIPPED，从而保住"前压"任务
                     lastPos = tile;
                     continue;
                 }

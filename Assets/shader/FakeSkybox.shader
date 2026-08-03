@@ -27,10 +27,16 @@ Shader "Skybox/Fakeskybox"
         [Header(Tonemapping)]
         [Toggle] _UseCustomTonemap ("Use Built-in Robobo1221 Tonemap", Float) = 1
         _Exposure ("Built-in Exposure", Float) = 0.5
+
+        [Header(Volumetric Clouds)]
+        [Toggle] _EnableClouds ("Enable Volumetric Clouds", Float) = 1
+        _CloudWetness ("Cloud Wetness", Range(0, 1)) = 0.0
+        [NoScaleOffset] _CloudNoise3D ("Cloud Noise 3D (128^3 RGBA8)", 3D) = "white" {}
     }
 
-    CGINCLUDE
-    #include "UnityCG.cginc"
+    HLSLINCLUDE
+    #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+    #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 
     float _SunIntensity;
     float3 _SunColor;
@@ -42,6 +48,9 @@ Shader "Skybox/Fakeskybox"
 
     float _UseCustomTonemap;
     float _Exposure;
+
+    float _EnableClouds;
+    float _CloudWetness;
 
     #define d0(x) (abs(x) + 1e-8)
 
@@ -57,10 +66,10 @@ Shader "Skybox/Fakeskybox"
 
     float rayleighPhase(float x) { return 0.375 * (1.0 + x * x); }
     float hgPhase(float x, float g) {
-        float g2 = g * g;
-        return 0.25 * ((1.0 - g2) * pow(1.0 + g2 - 2.0 * g * x, -1.5));
+        float g2 = saturate(g) * saturate(g);
+        return 0.25 * ((1.0 - g2) * pow(abs(1.0 + g2 - 2.0 * g * x), -1.5));
     }
-    float miePhaseSky(float x, float depth) { return hgPhase(x, exp2(-0.000003 * depth)); }
+    float miePhaseSky(float x, float depth) { return hgPhase(x, max(exp2(-0.000003 * depth), 1e-6)); }
 
     float3 ApplyLMS(float3 color) {
         float3x3 lms = float3x3(_LMS_Row1.xyz, _LMS_Row2.xyz, _LMS_Row3.xyz);
@@ -123,7 +132,61 @@ Shader "Skybox/Fakeskybox"
         
         return max(color, 0.0); 
     }
-    ENDCG
+
+    // === 体积云接入（离散体素云） ===
+    #include "Assets/shader/VolumetricClouds.hlsl"
+
+    // 合成公式（NUBIS 三段式，替代原 skyColor*ω*(1-trans) 的过度简化）：
+    //   final = skyColor * trans               ① 天空透过云（∝T，厚云该路递减）
+    //         + cloudColor * atmoTrans         ② 云自身散射光 × 大气透射率（相机→云）
+    //         + aerial * (1 - trans)           ③ 大气透视（含瑞利/Mie 相位），按云遮挡比例混合
+    float3 CompositeClouds(float3 skyColor, float3 viewDir, float3 sunDir, float3 sunColor, float wetness) {
+        float3 cloudColor = float3(0.0, 0.0, 0.0);
+        float cloudTransmittance = 1.0;
+        float cloudDistance = 1e6;
+
+        float2 cloudAltitude = float2(CLOUD_CLEAR_ALTITUDE, CLOUD_CLEAR_ALTITUDE + CLOUD_CLEAR_THICKNESS);
+        cloudAltitude = lerp(cloudAltitude,
+            float2(CLOUD_RAIN_ALTITUDE, CLOUD_RAIN_ALTITUDE + CLOUD_RAIN_THICKNESS), wetness);
+
+        // 风：windDirection 是世界米位移 = wind(原始) * CLOUD_WIND_TO_METERS。
+        // windDirection.y 必须保持 0：否则网格相对固定云层高度带上下滑，
+        // 会出现块凭空生长/消失。调风速改 CloudSettings.hlsl 的 CLOUD_WIND_TO_METERS。
+        float wind = CLOUD_WIND_FACTOR * (_Time.y * CLOUD_SPEED + 10.0 * CLOUD_FTC_OFFSET);
+        float3 windDirection = float3(1.0, 0.0, 0.0) * wind * CLOUD_WIND_TO_METERS;
+
+        NubisCumulusDiscrete(cloudColor, viewDir, _WorldSpaceCameraPos,
+            cloudAltitude, sunDir, sunColor, skyColor, windDirection, wetness,
+            cloudTransmittance, cloudDistance);
+
+        // ② 大气透射率（相机→云）：用 DDA 求出的精确距离做指数大气积分，
+        //    而非整段大气近似。τ = totalCoeff * H/μ * (1 - exp(-μ*d/H))，
+        //    近处雾少（τ≈0），远处地平线雾多（τ 大），不会把地平线云叠亮。
+        float mu = max(dot(float3(0.0, 1.0, 0.0), viewDir), 0.01);
+        float3 totalCoeff = float3(_RayleighRed, _RayleighGreen, _RayleighBlue) * 1e-5
+                          + float3(0.5e-6, 0.5e-6, 0.5e-6);
+        float opticalDepth = (CLOUD_ATMO_SCALE_HEIGHT / mu)
+                           * (1.0 - exp(-mu * cloudDistance / CLOUD_ATMO_SCALE_HEIGHT));
+        float3 atmoTrans = absorb(totalCoeff, opticalDepth);
+
+        // ③ 大气透视：相机→云之间那段雾的散射 = 整段天空散射 - 云后(透射)部分的散射
+        float3 aerial = calcAtmosphericScatter(sunDir, viewDir) * (1.0 - atmoTrans);
+
+        // ④ 距离淡出（移植 iterationRP NUBIS 的 CLOUD_FADE）：
+        //    fade = exp2(-cloudDistance * CLOUD_FADE_RATE)，连续指数衰减，不是硬 step。
+        //    cloudDistance 是相机到第一块云的精确距离（NubisCumulusDiscrete 已传出）。
+        //    远云 fade→0：transFaded→1、cloudColor→0，露出的是另算的 skyColor（平滑天空），
+        //    而不是用白色雾去填 —— 地平线"白花花一团"的根源就在这。
+        float fade = saturate(exp2(-cloudDistance * CLOUD_FADE_RATE));
+        float transFaded = lerp(1.0, cloudTransmittance, fade);
+        cloudColor *= fade;
+
+        //return cloudTransmittance;
+        return skyColor * transFaded
+             + cloudColor * atmoTrans
+             + aerial * (1.0 - transFaded);
+    }
+    ENDHLSL
 
     SubShader
     {
@@ -132,7 +195,7 @@ Shader "Skybox/Fakeskybox"
 
         Pass
         {
-            CGPROGRAM
+            HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
             #pragma target 3.0
@@ -150,39 +213,38 @@ Shader "Skybox/Fakeskybox"
 
             v2f vert (appdata_t v) {
                 v2f o;
-                o.vertex = UnityObjectToClipPos(v.vertex);
+                o.vertex = TransformObjectToHClip(v.vertex.xyz);
                 o.texcoord = v.texcoord; 
                 return o;
             }
 
-            fixed4 frag (v2f i) : SV_Target {
+            float4 frag (v2f i) : SV_Target {
                 float3 viewDir;
                 
                 #if BAKE_MODE
                     // 开启烘焙时，把传入的 2D 坐标（i.texcoord.xy）当作经纬度，映射为 3D 球面射线
-                    float phi = i.texcoord.x * UNITY_TWO_PI;
-                    float theta = (i.texcoord.y - 0.5) * UNITY_PI;
+                    float phi = i.texcoord.x * 2.0 * PI;
+                    float theta = (i.texcoord.y - 0.5) * PI;
                     viewDir = float3(cos(theta) * sin(phi), sin(theta), cos(theta) * cos(phi));
                 #else
                     // 正常天空盒渲染时，直接使用 3D 射线
                     viewDir = normalize(i.texcoord);
                 #endif
 
-                float3 sunDir = normalize(_WorldSpaceLightPos0.xyz);
-                float3 color = GetFinalSkyColor(normalize(viewDir), sunDir);
+                // 场景主光（URP）：与 Water.shader 颜色来源一致（_MainLightColor），
+                // 跟随场景 Directional Light 的颜色/强度，避免云与水光照不同步。
+                // 用无参 GetMainLight()：天空盒无表面点，不采样阴影贴图。
+                Light mainLight = GetMainLight();
+                float3 sunDir = mainLight.direction;
+                float3 skyColor = GetFinalSkyColor(normalize(viewDir), sunDir);
 
-                // === DEBUG: 左上角像素标记 tonemap 状态 ===
-                // if (i.texcoord.x < 0.02 && i.texcoord.y < 0.02)
-                // {
-                //     if (_UseCustomTonemap > -0.5)
-                //         color = float3(0, 10, 0); // 绿 = tonemap ON
-                //     else
-                //         color = float3(10, 0, 0); // 红 = tonemap OFF
-                // }
-
+                // 太阳散射光：URP 场景光颜色（已含 强度 x 颜色），乘倍率增强云上亮度
+                float3 sunColor = mainLight.color * _SunIntensity;
+                float3 skyColorWithClouds = CompositeClouds(skyColor, viewDir, sunDir, sunColor, _CloudWetness);
+                float3 color = lerp(skyColor, skyColorWithClouds, _EnableClouds);
                 return float4(color, 1.0);
             }
-            ENDCG
+            ENDHLSL
         }
     }
 }

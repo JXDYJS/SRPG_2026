@@ -8,6 +8,8 @@ using System.Reflection;
 using System;
 using Managers;
 using Global;
+using GamePlay.Units;
+using GamePlay.Buff;
 
 namespace DebugSystem
 {
@@ -109,6 +111,47 @@ namespace DebugSystem
                         DamageMethod.Normal));
                 }
             }
+        }
+
+        [ConsoleMethod("listUnits", "List all alive units (index/name/faction/position/state)")]
+        public static void ListUnits()
+        {
+            var units = UnitManager.Instance.GetAllAliveUnit();
+            Debug.Log($"[Debug] listUnits: 共 {units.Count} 个存活单位");
+            for (int i = 0; i < units.Count; i++)
+            {
+                var unit = units[i];
+                if (unit == null) continue;
+                Debug.Log($"[Debug] [{i}] go={unit.name} char={unit.GetUnitName()} faction={unit.Faction} pos={unit.gridPosition} state={unit.CurrentState} buffs={unit.ActiveBuffs.Count}");
+            }
+        }
+
+        [ConsoleMethod("addBuff", "Add buff to unit at grid (x,y,z), stacks=1")]
+        public static void AddBuff(string buffID, int x, int y, int z)
+        {
+            AddBuff(buffID, x, y, z, 1);
+        }
+
+        [ConsoleMethod("addBuff", "Add/remove buff to unit at grid (x,y,z); stacks<0 removes by amount")]
+        public static void AddBuff(string buffID, int x, int y, int z, int stacks)
+        {
+            if (string.IsNullOrEmpty(buffID))
+            {
+                Debug.LogError("[Debug] addBuff: buffID 为空");
+                return;
+            }
+
+            var pos = new Vector3Int(x, y, z);
+            var unit = UnitManager.Instance != null ? UnitManager.Instance.GetUnitAt(pos) : null;
+            if (unit == null)
+            {
+                Debug.LogError($"[Debug] addBuff: 位置 {pos} 没有单位，先执行 listUnits 查看坐标");
+                return;
+            }
+
+            BuffManager.ApplyBuffToUnit(unit, buffID, stacks);
+            var after = BuffManager.FindBuffByID(unit, buffID);
+            Debug.Log($"[Debug] addBuff: {unit.GetUnitName()}@{pos} {(stacks >= 0 ? "添加" : "移除")} {buffID} stacks={stacks} → 当前层数={after?.Stacks ?? 0}");
         }
     }
 }

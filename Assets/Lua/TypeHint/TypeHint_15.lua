@@ -1,5 +1,630 @@
 ---@meta
 
+---@class System.Web.UI.WebControls.BaseDataList : System.Web.UI.WebControls.WebControl
+---@field Caption string
+---@field CaptionAlign System.Web.UI.WebControls.TableCaptionAlign
+---@field CellPadding number
+---@field CellSpacing number
+---@field Controls System.Web.UI.ControlCollection
+---@field DataKeyField string
+---@field DataKeys System.Web.UI.WebControls.DataKeyCollection
+---@field DataMember string
+---@field DataSource System.Object
+---@field GridLines System.Web.UI.WebControls.GridLines
+---@field HorizontalAlign System.Web.UI.WebControls.HorizontalAlign
+---@field UseAccessibleHeader boolean
+---@field DataSourceID string
+---@field SupportsDisabledAttribute boolean
+System.Web.UI.WebControls.BaseDataList = {}
+---@alias CS.System.Web.UI.WebControls.BaseDataList System.Web.UI.WebControls.BaseDataList
+CS.System.Web.UI.WebControls.BaseDataList = System.Web.UI.WebControls.BaseDataList
+
+---@param type System.Type
+---@return boolean
+function System.Web.UI.WebControls.BaseDataList.IsBindableType(type) end
+function System.Web.UI.WebControls.BaseDataList:DataBind() end
+
+---@class System.Web.UI.WebControls.BaseMenuRenderer : System.Object
+---@field Tag System.Web.UI.HtmlTextWriterTag
+System.Web.UI.WebControls.BaseMenuRenderer = {}
+---@alias CS.System.Web.UI.WebControls.BaseMenuRenderer System.Web.UI.WebControls.BaseMenuRenderer
+CS.System.Web.UI.WebControls.BaseMenuRenderer = System.Web.UI.WebControls.BaseMenuRenderer
+
+---@param owner System.Web.UI.WebControls.Menu
+---@return System.Web.UI.WebControls.BaseMenuRenderer
+function System.Web.UI.WebControls.BaseMenuRenderer.New(owner) end
+---@param writer System.Web.UI.HtmlTextWriter
+function System.Web.UI.WebControls.BaseMenuRenderer:AddAttributesToRender(writer) end
+---@param page System.Web.UI.Page
+---@param head System.Web.UI.HtmlControls.HtmlHead
+---@param csm System.Web.UI.ClientScriptManager
+---@param cmenu string
+---@param script System.Text.StringBuilder
+function System.Web.UI.WebControls.BaseMenuRenderer:PreRender(page, head, csm, cmenu, script) end
+---@param writer System.Web.UI.HtmlTextWriter
+---@param dynamic boolean
+---@param menuLevel number
+function System.Web.UI.WebControls.BaseMenuRenderer:RenderMenuBeginTag(writer, dynamic, menuLevel) end
+---@param writer System.Web.UI.HtmlTextWriter
+---@param items System.Web.UI.WebControls.MenuItemCollection
+---@param vertical boolean
+---@param dynamic boolean
+---@param notLast boolean
+function System.Web.UI.WebControls.BaseMenuRenderer:RenderMenuBody(writer, items, vertical, dynamic, notLast) end
+---@param writer System.Web.UI.HtmlTextWriter
+---@param skipLinkText string
+function System.Web.UI.WebControls.BaseMenuRenderer:RenderBeginTag(writer, skipLinkText) end
+---@param writer System.Web.UI.HtmlTextWriter
+function System.Web.UI.WebControls.BaseMenuRenderer:RenderEndTag(writer) end
+---@param writer System.Web.UI.HtmlTextWriter
+function System.Web.UI.WebControls.BaseMenuRenderer:RenderContents(writer) end
+---@overload fun(self: System.Web.UI.WebControls.BaseMenuRenderer, owner: System.Web.UI.WebControls.Menu, item: System.Web.UI.WebControls.MenuItem) : boolean
+---@param item System.Web.UI.WebControls.MenuItem
+---@return boolean
+function System.Web.UI.WebControls.BaseMenuRenderer:IsDynamicItem(item) end
+---@param writer System.Web.UI.HtmlTextWriter
+---@param item System.Web.UI.WebControls.MenuItem
+---@param notLast boolean
+---@param isFirst boolean
+function System.Web.UI.WebControls.BaseMenuRenderer:RenderMenuItem(writer, item, notLast, isFirst) end
+---@param writer System.Web.UI.HtmlTextWriter
+---@param dynamic boolean
+---@param menuLevel number
+function System.Web.UI.WebControls.BaseMenuRenderer:RenderMenuEndTag(writer, dynamic, menuLevel) end
+---@param writer System.Web.UI.HtmlTextWriter
+---@param item System.Web.UI.WebControls.MenuItem
+---@param isDynamicItem boolean
+function System.Web.UI.WebControls.BaseMenuRenderer:RenderItemContent(writer, item, isDynamicItem) end
+---@param style System.Web.UI.WebControls.Style
+---@param cssClass string
+function System.Web.UI.WebControls.BaseMenuRenderer:AddCssClass(style, cssClass) end
+---@param ownerClientID string
+---@param item System.Web.UI.WebControls.MenuItem
+---@param suffix string
+---@return string
+function System.Web.UI.WebControls.BaseMenuRenderer:GetItemClientId(ownerClientID, item, suffix) end
+---@param owner System.Web.UI.WebControls.Menu
+---@param writer System.Web.UI.HtmlTextWriter
+---@param item System.Web.UI.WebControls.MenuItem
+function System.Web.UI.WebControls.BaseMenuRenderer:RenderItemHref(owner, writer, item) end
+---@param owner System.Web.UI.WebControls.Menu
+---@param item System.Web.UI.WebControls.MenuItem
+---@param isDynamicItem boolean
+---@return string
+function System.Web.UI.WebControls.BaseMenuRenderer:GetPopOutImage(owner, item, isDynamicItem) end
+---@param owner System.Web.UI.WebControls.Menu
+---@return string
+function System.Web.UI.WebControls.BaseMenuRenderer:GetArrowResourceUrl(owner) end
+---@param header System.Web.UI.HtmlControls.HtmlHead
+---@param dynamic boolean
+---@param menuLevel number
+---@param style System.Web.UI.WebControls.SubMenuStyle
+function System.Web.UI.WebControls.BaseMenuRenderer:FillMenuStyle(header, dynamic, menuLevel, style) end
+---@overload fun(self: System.Web.UI.WebControls.BaseMenuRenderer, baseStyle: System.Web.UI.WebControls.Style, linkStyle: System.Web.UI.WebControls.Style, head: System.Web.UI.HtmlControls.HtmlHead)
+---@overload fun(self: System.Web.UI.WebControls.BaseMenuRenderer, baseStyle: System.Web.UI.WebControls.Style, linkStyle: System.Web.UI.WebControls.Style, className: string, head: System.Web.UI.HtmlControls.HtmlHead)
+---@overload fun(self: System.Web.UI.WebControls.BaseMenuRenderer, baseStyle: System.Web.UI.WebControls.Style, head: System.Web.UI.HtmlControls.HtmlHead)
+---@param baseStyle System.Web.UI.WebControls.Style
+---@param className string
+---@param head System.Web.UI.HtmlControls.HtmlHead
+function System.Web.UI.WebControls.BaseMenuRenderer:RegisterStyle(baseStyle, className, head) end
+---@param owner System.Web.UI.WebControls.Menu
+---@param writer System.Web.UI.HtmlTextWriter
+---@param url string
+---@param standardsCompliant boolean
+function System.Web.UI.WebControls.BaseMenuRenderer:RenderSeparatorImage(owner, writer, url, standardsCompliant) end
+
+---@class System.Web.UI.WebControls.BaseMenuRenderer.OwnerContext : System.Object
+---@field StaticMenuItemStyle System.Web.UI.WebControls.MenuItemStyle
+---@field DynamicMenuItemStyle System.Web.UI.WebControls.MenuItemStyle
+---@field LevelMenuItemStyles System.Web.UI.WebControls.MenuItemStyleCollection
+---@field ControlLinkStyle System.Web.UI.WebControls.Style
+---@field Header System.Web.UI.HtmlControls.HtmlHead
+---@field ClientID string
+---@field StaticDisplayLevels number
+---@field IsVertical boolean
+---@field SelectedItem System.Web.UI.WebControls.MenuItem
+---@field StaticSubMenuIndent System.Web.UI.WebControls.Unit
+---@field StaticPopOutImageTextFormatString string
+---@field DynamicPopOutImageTextFormatString string
+---@field DynamicTopSeparatorImageUrl string
+---@field DynamicBottomSeparatorImageUrl string
+---@field StaticTopSeparatorImageUrl string
+---@field StaticBottomSeparatorImageUrl string
+---@field LevelMenuItemLinkStyles System.Collections.Generic.List
+---@field LevelSelectedLinkStyles System.Collections.Generic.List
+---@field StaticMenuItemLinkStyle System.Web.UI.WebControls.Style
+---@field DynamicMenuItemLinkStyle System.Web.UI.WebControls.Style
+---@field StaticSelectedStyle System.Web.UI.WebControls.MenuItemStyle
+---@field DynamicSelectedStyle System.Web.UI.WebControls.MenuItemStyle
+---@field StaticSelectedLinkStyle System.Web.UI.WebControls.Style
+---@field DynamicSelectedLinkStyle System.Web.UI.WebControls.Style
+---@field LevelSelectedStyles System.Web.UI.WebControls.MenuItemStyleCollection
+---@field DynamicItemTemplate System.Web.UI.ITemplate
+System.Web.UI.WebControls.BaseMenuRenderer.OwnerContext = {}
+---@alias CS.System.Web.UI.WebControls.BaseMenuRenderer.OwnerContext System.Web.UI.WebControls.BaseMenuRenderer.OwnerContext
+CS.System.Web.UI.WebControls.BaseMenuRenderer.OwnerContext = System.Web.UI.WebControls.BaseMenuRenderer.OwnerContext
+
+---@param container System.Web.UI.WebControls.BaseMenuRenderer
+---@return System.Web.UI.WebControls.BaseMenuRenderer.OwnerContext
+function System.Web.UI.WebControls.BaseMenuRenderer.OwnerContext.New(container) end
+
+---@class System.Web.UI.WebControls.BaseValidator : System.Web.UI.WebControls.Label
+---@field AssociatedControlID string
+---@field ValidationGroup string
+---@field SetFocusOnError boolean
+---@field Text string
+---@field ControlToValidate string
+---@field Display System.Web.UI.WebControls.ValidatorDisplay
+---@field EnableClientScript boolean
+---@field Enabled boolean
+---@field ErrorMessage string
+---@field ForeColor System.Drawing.Color
+---@field IsValid boolean
+System.Web.UI.WebControls.BaseValidator = {}
+---@alias CS.System.Web.UI.WebControls.BaseValidator System.Web.UI.WebControls.BaseValidator
+CS.System.Web.UI.WebControls.BaseValidator = System.Web.UI.WebControls.BaseValidator
+
+---@param component System.Object
+---@return System.ComponentModel.PropertyDescriptor
+function System.Web.UI.WebControls.BaseValidator.GetValidationProperty(component) end
+function System.Web.UI.WebControls.BaseValidator:Validate() end
+
+---@class System.Web.UI.WebControls.BoundColumn : System.Web.UI.WebControls.DataGridColumn
+---@field thisExpr string
+---@field DataField string
+---@field DataFormatString string
+---@field ReadOnly boolean
+System.Web.UI.WebControls.BoundColumn = {}
+---@alias CS.System.Web.UI.WebControls.BoundColumn System.Web.UI.WebControls.BoundColumn
+CS.System.Web.UI.WebControls.BoundColumn = System.Web.UI.WebControls.BoundColumn
+
+---@return System.Web.UI.WebControls.BoundColumn
+function System.Web.UI.WebControls.BoundColumn.New() end
+function System.Web.UI.WebControls.BoundColumn:Initialize() end
+---@param cell System.Web.UI.WebControls.TableCell
+---@param columnIndex number
+---@param itemType System.Web.UI.WebControls.ListItemType
+function System.Web.UI.WebControls.BoundColumn:InitializeCell(cell, columnIndex, itemType) end
+
+---@class System.Web.UI.WebControls.BoundField : System.Web.UI.WebControls.DataControlField
+---@field ThisExpression string
+---@field ApplyFormatInEditMode boolean
+---@field ConvertEmptyStringToNull boolean
+---@field DataField string
+---@field DataFormatString string
+---@field HeaderText string
+---@field NullDisplayText string
+---@field ReadOnly boolean
+---@field HtmlEncode boolean
+---@field HtmlEncodeFormatString boolean
+---@field ValidateRequestMode System.Web.UI.ValidateRequestMode
+System.Web.UI.WebControls.BoundField = {}
+---@alias CS.System.Web.UI.WebControls.BoundField System.Web.UI.WebControls.BoundField
+CS.System.Web.UI.WebControls.BoundField = System.Web.UI.WebControls.BoundField
+
+---@return System.Web.UI.WebControls.BoundField
+function System.Web.UI.WebControls.BoundField.New() end
+---@param dictionary System.Collections.Specialized.IOrderedDictionary
+---@param cell System.Web.UI.WebControls.DataControlFieldCell
+---@param rowState System.Web.UI.WebControls.DataControlRowState
+---@param includeReadOnly boolean
+function System.Web.UI.WebControls.BoundField:ExtractValuesFromCell(dictionary, cell, rowState, includeReadOnly) end
+---@param enableSorting boolean
+---@param control System.Web.UI.Control
+---@return boolean
+function System.Web.UI.WebControls.BoundField:Initialize(enableSorting, control) end
+---@param cell System.Web.UI.WebControls.DataControlFieldCell
+---@param cellType System.Web.UI.WebControls.DataControlCellType
+---@param rowState System.Web.UI.WebControls.DataControlRowState
+---@param rowIndex number
+function System.Web.UI.WebControls.BoundField:InitializeCell(cell, cellType, rowState, rowIndex) end
+function System.Web.UI.WebControls.BoundField:ValidateSupportsCallback() end
+
+---@class System.Web.UI.WebControls.BulletStyle
+---@field NotSet System.Web.UI.WebControls.BulletStyle
+---@field Numbered System.Web.UI.WebControls.BulletStyle
+---@field LowerAlpha System.Web.UI.WebControls.BulletStyle
+---@field UpperAlpha System.Web.UI.WebControls.BulletStyle
+---@field LowerRoman System.Web.UI.WebControls.BulletStyle
+---@field UpperRoman System.Web.UI.WebControls.BulletStyle
+---@field Disc System.Web.UI.WebControls.BulletStyle
+---@field Circle System.Web.UI.WebControls.BulletStyle
+---@field Square System.Web.UI.WebControls.BulletStyle
+---@field CustomImage System.Web.UI.WebControls.BulletStyle
+System.Web.UI.WebControls.BulletStyle = {}
+---@alias CS.System.Web.UI.WebControls.BulletStyle System.Web.UI.WebControls.BulletStyle
+CS.System.Web.UI.WebControls.BulletStyle = System.Web.UI.WebControls.BulletStyle
+
+
+---@class System.Web.UI.WebControls.BulletedList : System.Web.UI.WebControls.ListControl
+---@field AutoPostBack boolean
+---@field SelectedIndex number
+---@field SelectedItem System.Web.UI.WebControls.ListItem
+---@field SelectedValue string
+---@field BulletImageUrl string
+---@field BulletStyle System.Web.UI.WebControls.BulletStyle
+---@field Controls System.Web.UI.ControlCollection
+---@field DisplayMode System.Web.UI.WebControls.BulletedListDisplayMode
+---@field FirstBulletNumber number
+---@field Target string
+---@field Text string
+---@field RenderWhenDataEmpty boolean
+System.Web.UI.WebControls.BulletedList = {}
+---@alias CS.System.Web.UI.WebControls.BulletedList System.Web.UI.WebControls.BulletedList
+CS.System.Web.UI.WebControls.BulletedList = System.Web.UI.WebControls.BulletedList
+
+---@return System.Web.UI.WebControls.BulletedList
+function System.Web.UI.WebControls.BulletedList.New() end
+
+---@class System.Web.UI.WebControls.BulletedListDisplayMode
+---@field Text System.Web.UI.WebControls.BulletedListDisplayMode
+---@field HyperLink System.Web.UI.WebControls.BulletedListDisplayMode
+---@field LinkButton System.Web.UI.WebControls.BulletedListDisplayMode
+System.Web.UI.WebControls.BulletedListDisplayMode = {}
+---@alias CS.System.Web.UI.WebControls.BulletedListDisplayMode System.Web.UI.WebControls.BulletedListDisplayMode
+CS.System.Web.UI.WebControls.BulletedListDisplayMode = System.Web.UI.WebControls.BulletedListDisplayMode
+
+
+---@class System.Web.UI.WebControls.Button : System.Web.UI.WebControls.WebControl
+---@field CausesValidation boolean
+---@field CommandArgument string
+---@field CommandName string
+---@field OnClientClick string
+---@field Text string
+---@field UseSubmitBehavior boolean
+---@field PostBackUrl string
+---@field ValidationGroup string
+System.Web.UI.WebControls.Button = {}
+---@alias CS.System.Web.UI.WebControls.Button System.Web.UI.WebControls.Button
+CS.System.Web.UI.WebControls.Button = System.Web.UI.WebControls.Button
+
+---@return System.Web.UI.WebControls.Button
+function System.Web.UI.WebControls.Button.New() end
+
+---@class System.Web.UI.WebControls.ButtonColumn : System.Web.UI.WebControls.DataGridColumn
+---@field ButtonType System.Web.UI.WebControls.ButtonColumnType
+---@field CommandName string
+---@field CausesValidation boolean
+---@field DataTextField string
+---@field DataTextFormatString string
+---@field Text string
+---@field ValidationGroup string
+System.Web.UI.WebControls.ButtonColumn = {}
+---@alias CS.System.Web.UI.WebControls.ButtonColumn System.Web.UI.WebControls.ButtonColumn
+CS.System.Web.UI.WebControls.ButtonColumn = System.Web.UI.WebControls.ButtonColumn
+
+---@return System.Web.UI.WebControls.ButtonColumn
+function System.Web.UI.WebControls.ButtonColumn.New() end
+function System.Web.UI.WebControls.ButtonColumn:Initialize() end
+---@param cell System.Web.UI.WebControls.TableCell
+---@param columnIndex number
+---@param itemType System.Web.UI.WebControls.ListItemType
+function System.Web.UI.WebControls.ButtonColumn:InitializeCell(cell, columnIndex, itemType) end
+
+---@class System.Web.UI.WebControls.ButtonField : System.Web.UI.WebControls.ButtonFieldBase
+---@field CommandName string
+---@field DataTextField string
+---@field DataTextFormatString string
+---@field ImageUrl string
+---@field Text string
+System.Web.UI.WebControls.ButtonField = {}
+---@alias CS.System.Web.UI.WebControls.ButtonField System.Web.UI.WebControls.ButtonField
+CS.System.Web.UI.WebControls.ButtonField = System.Web.UI.WebControls.ButtonField
+
+---@return System.Web.UI.WebControls.ButtonField
+function System.Web.UI.WebControls.ButtonField.New() end
+---@param sortingEnabled boolean
+---@param control System.Web.UI.Control
+---@return boolean
+function System.Web.UI.WebControls.ButtonField:Initialize(sortingEnabled, control) end
+---@param cell System.Web.UI.WebControls.DataControlFieldCell
+---@param cellType System.Web.UI.WebControls.DataControlCellType
+---@param rowState System.Web.UI.WebControls.DataControlRowState
+---@param rowIndex number
+function System.Web.UI.WebControls.ButtonField:InitializeCell(cell, cellType, rowState, rowIndex) end
+function System.Web.UI.WebControls.ButtonField:ValidateSupportsCallback() end
+
+---@class System.Web.UI.WebControls.ButtonFieldBase : System.Web.UI.WebControls.DataControlField
+---@field ButtonType System.Web.UI.WebControls.ButtonType
+---@field CausesValidation boolean
+---@field ShowHeader boolean
+---@field ValidationGroup string
+System.Web.UI.WebControls.ButtonFieldBase = {}
+---@alias CS.System.Web.UI.WebControls.ButtonFieldBase System.Web.UI.WebControls.ButtonFieldBase
+CS.System.Web.UI.WebControls.ButtonFieldBase = System.Web.UI.WebControls.ButtonFieldBase
+
+
+---@class System.Web.UI.WebControls.Calendar : System.Web.UI.WebControls.WebControl
+---@field Caption string
+---@field CaptionAlign System.Web.UI.WebControls.TableCaptionAlign
+---@field CellPadding number
+---@field CellSpacing number
+---@field DayHeaderStyle System.Web.UI.WebControls.TableItemStyle
+---@field DayNameFormat System.Web.UI.WebControls.DayNameFormat
+---@field DayStyle System.Web.UI.WebControls.TableItemStyle
+---@field FirstDayOfWeek System.Web.UI.WebControls.FirstDayOfWeek
+---@field NextMonthText string
+---@field NextPrevFormat System.Web.UI.WebControls.NextPrevFormat
+---@field NextPrevStyle System.Web.UI.WebControls.TableItemStyle
+---@field OtherMonthDayStyle System.Web.UI.WebControls.TableItemStyle
+---@field PrevMonthText string
+---@field SelectedDate System.DateTime
+---@field SelectedDates System.Web.UI.WebControls.SelectedDatesCollection
+---@field SelectedDayStyle System.Web.UI.WebControls.TableItemStyle
+---@field SelectionMode System.Web.UI.WebControls.CalendarSelectionMode
+---@field SelectMonthText string
+---@field SelectorStyle System.Web.UI.WebControls.TableItemStyle
+---@field SelectWeekText string
+---@field ShowDayHeader boolean
+---@field ShowGridLines boolean
+---@field ShowNextPrevMonth boolean
+---@field ShowTitle boolean
+---@field TitleFormat System.Web.UI.WebControls.TitleFormat
+---@field TitleStyle System.Web.UI.WebControls.TableItemStyle
+---@field TodayDayStyle System.Web.UI.WebControls.TableItemStyle
+---@field TodaysDate System.DateTime
+---@field UseAccessibleHeader boolean
+---@field VisibleDate System.DateTime
+---@field WeekendDayStyle System.Web.UI.WebControls.TableItemStyle
+---@field SupportsDisabledAttribute boolean
+System.Web.UI.WebControls.Calendar = {}
+---@alias CS.System.Web.UI.WebControls.Calendar System.Web.UI.WebControls.Calendar
+CS.System.Web.UI.WebControls.Calendar = System.Web.UI.WebControls.Calendar
+
+---@return System.Web.UI.WebControls.Calendar
+function System.Web.UI.WebControls.Calendar.New() end
+
+---@class System.Web.UI.WebControls.CalendarDay : System.Object
+---@field Date System.DateTime
+---@field DayNumberText string
+---@field IsOtherMonth boolean
+---@field IsSelectable boolean
+---@field IsSelected boolean
+---@field IsToday boolean
+---@field IsWeekend boolean
+System.Web.UI.WebControls.CalendarDay = {}
+---@alias CS.System.Web.UI.WebControls.CalendarDay System.Web.UI.WebControls.CalendarDay
+CS.System.Web.UI.WebControls.CalendarDay = System.Web.UI.WebControls.CalendarDay
+
+---@param date System.DateTime
+---@param isWeekend boolean
+---@param isToday boolean
+---@param isSelected boolean
+---@param isOtherMonth boolean
+---@param dayNumberText string
+---@return System.Web.UI.WebControls.CalendarDay
+function System.Web.UI.WebControls.CalendarDay.New(date, isWeekend, isToday, isSelected, isOtherMonth, dayNumberText) end
+
+---@class System.Web.UI.WebControls.ChangePassword : System.Web.UI.WebControls.CompositeControl
+---@field CancelButtonCommandName string
+---@field ChangePasswordButtonCommandName string
+---@field ContinueButtonCommandName string
+---@field BorderPadding number
+---@field CancelButtonImageUrl string
+---@field CancelButtonStyle System.Web.UI.WebControls.Style
+---@field CancelButtonText string
+---@field CancelButtonType System.Web.UI.WebControls.ButtonType
+---@field CancelDestinationPageUrl string
+---@field ChangePasswordButtonImageUrl string
+---@field ChangePasswordButtonStyle System.Web.UI.WebControls.Style
+---@field ChangePasswordButtonText string
+---@field ChangePasswordButtonType System.Web.UI.WebControls.ButtonType
+---@field ChangePasswordFailureText string
+---@field ChangePasswordTemplate System.Web.UI.ITemplate
+---@field ChangePasswordTemplateContainer System.Web.UI.Control
+---@field ChangePasswordTitleText string
+---@field ConfirmNewPassword string
+---@field ConfirmNewPasswordLabelText string
+---@field ConfirmPasswordCompareErrorMessage string
+---@field ConfirmPasswordRequiredErrorMessage string
+---@field ContinueButtonImageUrl string
+---@field ContinueButtonStyle System.Web.UI.WebControls.Style
+---@field ContinueButtonText string
+---@field ContinueButtonType System.Web.UI.WebControls.ButtonType
+---@field ContinueDestinationPageUrl string
+---@field CreateUserIconUrl string
+---@field CreateUserText string
+---@field CreateUserUrl string
+---@field CurrentPassword string
+---@field DisplayUserName boolean
+---@field EditProfileIconUrl string
+---@field EditProfileText string
+---@field EditProfileUrl string
+---@field FailureTextStyle System.Web.UI.WebControls.TableItemStyle
+---@field HelpPageIconUrl string
+---@field HelpPageText string
+---@field HelpPageUrl string
+---@field HyperLinkStyle System.Web.UI.WebControls.TableItemStyle
+---@field InstructionText string
+---@field InstructionTextStyle System.Web.UI.WebControls.TableItemStyle
+---@field LabelStyle System.Web.UI.WebControls.TableItemStyle
+---@field MailDefinition System.Web.UI.WebControls.MailDefinition
+---@field MembershipProvider string
+---@field NewPassword string
+---@field NewPasswordLabelText string
+---@field NewPasswordRegularExpression string
+---@field NewPasswordRegularExpressionErrorMessage string
+---@field NewPasswordRequiredErrorMessage string
+---@field PasswordHintStyle System.Web.UI.WebControls.TableItemStyle
+---@field PasswordHintText string
+---@field PasswordLabelText string
+---@field PasswordRecoveryIconUrl string
+---@field PasswordRecoveryText string
+---@field PasswordRecoveryUrl string
+---@field PasswordRequiredErrorMessage string
+---@field RenderOuterTable boolean
+---@field SuccessPageUrl string
+---@field SuccessTemplate System.Web.UI.ITemplate
+---@field SuccessTemplateContainer System.Web.UI.Control
+---@field SuccessText string
+---@field SuccessTextStyle System.Web.UI.WebControls.TableItemStyle
+---@field SuccessTitleText string
+---@field TextBoxStyle System.Web.UI.WebControls.Style
+---@field TitleTextStyle System.Web.UI.WebControls.TableItemStyle
+---@field UserName string
+---@field UserNameLabelText string
+---@field UserNameRequiredErrorMessage string
+---@field ValidatorTextStyle System.Web.UI.WebControls.Style
+System.Web.UI.WebControls.ChangePassword = {}
+---@alias CS.System.Web.UI.WebControls.ChangePassword System.Web.UI.WebControls.ChangePassword
+CS.System.Web.UI.WebControls.ChangePassword = System.Web.UI.WebControls.ChangePassword
+
+---@return System.Web.UI.WebControls.ChangePassword
+function System.Web.UI.WebControls.ChangePassword.New() end
+
+---@class System.Web.UI.WebControls.ChangePassword.BaseChangePasswordContainer : System.Web.UI.Control
+System.Web.UI.WebControls.ChangePassword.BaseChangePasswordContainer = {}
+---@alias CS.System.Web.UI.WebControls.ChangePassword.BaseChangePasswordContainer System.Web.UI.WebControls.ChangePassword.BaseChangePasswordContainer
+CS.System.Web.UI.WebControls.ChangePassword.BaseChangePasswordContainer = System.Web.UI.WebControls.ChangePassword.BaseChangePasswordContainer
+
+---@param owner System.Web.UI.WebControls.ChangePassword
+---@return System.Web.UI.WebControls.ChangePassword.BaseChangePasswordContainer
+function System.Web.UI.WebControls.ChangePassword.BaseChangePasswordContainer.New(owner) end
+---@param template System.Web.UI.ITemplate
+function System.Web.UI.WebControls.ChangePassword.BaseChangePasswordContainer:InstantiateTemplate(template) end
+
+---@class System.Web.UI.WebControls.ChangePassword.ChangePasswordContainer : System.Web.UI.WebControls.ChangePassword.BaseChangePasswordContainer
+---@field UserNameTextBox System.Web.UI.IEditableTextControl
+---@field CurrentPasswordTextBox System.Web.UI.IEditableTextControl
+---@field NewPasswordTextBox System.Web.UI.IEditableTextControl
+---@field ConfirmNewPasswordTextBox System.Web.UI.IEditableTextControl
+---@field CancelButton System.Web.UI.Control
+---@field ChangePasswordButton System.Web.UI.Control
+---@field FailureTextLiteral System.Web.UI.ITextControl
+System.Web.UI.WebControls.ChangePassword.ChangePasswordContainer = {}
+---@alias CS.System.Web.UI.WebControls.ChangePassword.ChangePasswordContainer System.Web.UI.WebControls.ChangePassword.ChangePasswordContainer
+CS.System.Web.UI.WebControls.ChangePassword.ChangePasswordContainer = System.Web.UI.WebControls.ChangePassword.ChangePasswordContainer
+
+---@param owner System.Web.UI.WebControls.ChangePassword
+---@return System.Web.UI.WebControls.ChangePassword.ChangePasswordContainer
+function System.Web.UI.WebControls.ChangePassword.ChangePasswordContainer.New(owner) end
+
+---@class System.Web.UI.WebControls.ChangePassword.ChangePasswordDeafultTemplate : System.Object
+System.Web.UI.WebControls.ChangePassword.ChangePasswordDeafultTemplate = {}
+---@alias CS.System.Web.UI.WebControls.ChangePassword.ChangePasswordDeafultTemplate System.Web.UI.WebControls.ChangePassword.ChangePasswordDeafultTemplate
+CS.System.Web.UI.WebControls.ChangePassword.ChangePasswordDeafultTemplate = System.Web.UI.WebControls.ChangePassword.ChangePasswordDeafultTemplate
+
+---@param container System.Web.UI.Control
+function System.Web.UI.WebControls.ChangePassword.ChangePasswordDeafultTemplate:InstantiateIn(container) end
+
+---@class System.Web.UI.WebControls.ChangePassword.SuccessDefaultTemplate : System.Object
+System.Web.UI.WebControls.ChangePassword.SuccessDefaultTemplate = {}
+---@alias CS.System.Web.UI.WebControls.ChangePassword.SuccessDefaultTemplate System.Web.UI.WebControls.ChangePassword.SuccessDefaultTemplate
+CS.System.Web.UI.WebControls.ChangePassword.SuccessDefaultTemplate = System.Web.UI.WebControls.ChangePassword.SuccessDefaultTemplate
+
+---@param container System.Web.UI.Control
+function System.Web.UI.WebControls.ChangePassword.SuccessDefaultTemplate:InstantiateIn(container) end
+
+---@class System.Web.UI.WebControls.ChangePassword.SuccessContainer : System.Web.UI.WebControls.ChangePassword.BaseChangePasswordContainer
+---@field ChangePasswordButton System.Web.UI.Control
+System.Web.UI.WebControls.ChangePassword.SuccessContainer = {}
+---@alias CS.System.Web.UI.WebControls.ChangePassword.SuccessContainer System.Web.UI.WebControls.ChangePassword.SuccessContainer
+CS.System.Web.UI.WebControls.ChangePassword.SuccessContainer = System.Web.UI.WebControls.ChangePassword.SuccessContainer
+
+---@param owner System.Web.UI.WebControls.ChangePassword
+---@return System.Web.UI.WebControls.ChangePassword.SuccessContainer
+function System.Web.UI.WebControls.ChangePassword.SuccessContainer.New(owner) end
+
+---@class System.Web.UI.WebControls.CheckBox : System.Web.UI.WebControls.WebControl
+---@field AutoPostBack boolean
+---@field CausesValidation boolean
+---@field Checked boolean
+---@field InputAttributes System.Web.UI.AttributeCollection
+---@field LabelAttributes System.Web.UI.AttributeCollection
+---@field Text string
+---@field TextAlign System.Web.UI.WebControls.TextAlign
+---@field ValidationGroup string
+System.Web.UI.WebControls.CheckBox = {}
+---@alias CS.System.Web.UI.WebControls.CheckBox System.Web.UI.WebControls.CheckBox
+CS.System.Web.UI.WebControls.CheckBox = System.Web.UI.WebControls.CheckBox
+
+---@return System.Web.UI.WebControls.CheckBox
+function System.Web.UI.WebControls.CheckBox.New() end
+
+---@class System.Web.UI.WebControls.CheckBoxField : System.Web.UI.WebControls.BoundField
+---@field ApplyFormatInEditMode boolean
+---@field ConvertEmptyStringToNull boolean
+---@field DataField string
+---@field DataFormatString string
+---@field HtmlEncode boolean
+---@field HtmlEncodeFormatString boolean
+---@field NullDisplayText string
+---@field Text string
+System.Web.UI.WebControls.CheckBoxField = {}
+---@alias CS.System.Web.UI.WebControls.CheckBoxField System.Web.UI.WebControls.CheckBoxField
+CS.System.Web.UI.WebControls.CheckBoxField = System.Web.UI.WebControls.CheckBoxField
+
+---@return System.Web.UI.WebControls.CheckBoxField
+function System.Web.UI.WebControls.CheckBoxField.New() end
+---@param dictionary System.Collections.Specialized.IOrderedDictionary
+---@param cell System.Web.UI.WebControls.DataControlFieldCell
+---@param rowState System.Web.UI.WebControls.DataControlRowState
+---@param includeReadOnly boolean
+function System.Web.UI.WebControls.CheckBoxField:ExtractValuesFromCell(dictionary, cell, rowState, includeReadOnly) end
+function System.Web.UI.WebControls.CheckBoxField:ValidateSupportsCallback() end
+
+---@class System.Web.UI.WebControls.CheckBoxList : System.Web.UI.WebControls.ListControl
+---@field CellPadding number
+---@field CellSpacing number
+---@field RepeatColumns number
+---@field RepeatDirection System.Web.UI.WebControls.RepeatDirection
+---@field RepeatLayout System.Web.UI.WebControls.RepeatLayout
+---@field TextAlign System.Web.UI.WebControls.TextAlign
+---@field RenderWhenDataEmpty boolean
+System.Web.UI.WebControls.CheckBoxList = {}
+---@alias CS.System.Web.UI.WebControls.CheckBoxList System.Web.UI.WebControls.CheckBoxList
+CS.System.Web.UI.WebControls.CheckBoxList = System.Web.UI.WebControls.CheckBoxList
+
+---@return System.Web.UI.WebControls.CheckBoxList
+function System.Web.UI.WebControls.CheckBoxList.New() end
+
+---@class System.Web.UI.WebControls.ChildTable : System.Web.UI.WebControls.Table
+System.Web.UI.WebControls.ChildTable = {}
+---@alias CS.System.Web.UI.WebControls.ChildTable System.Web.UI.WebControls.ChildTable
+CS.System.Web.UI.WebControls.ChildTable = System.Web.UI.WebControls.ChildTable
+
+---@param parent System.Web.UI.Control
+---@return System.Web.UI.WebControls.ChildTable
+function System.Web.UI.WebControls.ChildTable.New(parent) end
+
+---@class System.Web.UI.WebControls.CircleHotSpot : System.Web.UI.WebControls.HotSpot
+---@field Radius number
+---@field X number
+---@field Y number
+System.Web.UI.WebControls.CircleHotSpot = {}
+---@alias CS.System.Web.UI.WebControls.CircleHotSpot System.Web.UI.WebControls.CircleHotSpot
+CS.System.Web.UI.WebControls.CircleHotSpot = System.Web.UI.WebControls.CircleHotSpot
+
+---@return System.Web.UI.WebControls.CircleHotSpot
+function System.Web.UI.WebControls.CircleHotSpot.New() end
+---@return string
+function System.Web.UI.WebControls.CircleHotSpot:GetCoordinates() end
+
+---@class System.Web.UI.WebControls.CollectionDataSource : System.Object
+System.Web.UI.WebControls.CollectionDataSource = {}
+---@alias CS.System.Web.UI.WebControls.CollectionDataSource System.Web.UI.WebControls.CollectionDataSource
+CS.System.Web.UI.WebControls.CollectionDataSource = System.Web.UI.WebControls.CollectionDataSource
+
+---@param collection System.Collections.IEnumerable
+---@return System.Web.UI.WebControls.CollectionDataSource
+function System.Web.UI.WebControls.CollectionDataSource.New(collection) end
+---@param viewName string
+---@return System.Web.UI.DataSourceView
+function System.Web.UI.WebControls.CollectionDataSource:GetView(viewName) end
+---@return System.Collections.ICollection
+function System.Web.UI.WebControls.CollectionDataSource:GetViewNames() end
+
+---@class System.Web.UI.WebControls.CollectionDataSourceView : System.Web.UI.DataSourceView
+System.Web.UI.WebControls.CollectionDataSourceView = {}
+---@alias CS.System.Web.UI.WebControls.CollectionDataSourceView System.Web.UI.WebControls.CollectionDataSourceView
+CS.System.Web.UI.WebControls.CollectionDataSourceView = System.Web.UI.WebControls.CollectionDataSourceView
+
+---@param owner System.Web.UI.IDataSource
+---@param viewName string
+---@param collection System.Collections.IEnumerable
+---@return System.Web.UI.WebControls.CollectionDataSourceView
+function System.Web.UI.WebControls.CollectionDataSourceView.New(owner, viewName, collection) end
+
 ---@class System.Web.UI.WebControls.CommandField : System.Web.UI.WebControls.ButtonFieldBase
 ---@field CancelImageUrl string
 ---@field CancelText string
@@ -19378,627 +20003,3 @@ function System.Web.UI.WebControls.WebParts.CatalogZone.New() end
 System.Web.UI.WebControls.WebParts.ConnectionConsumerAttribute = {}
 ---@alias CS.System.Web.UI.WebControls.WebParts.ConnectionConsumerAttribute System.Web.UI.WebControls.WebParts.ConnectionConsumerAttribute
 CS.System.Web.UI.WebControls.WebParts.ConnectionConsumerAttribute = System.Web.UI.WebControls.WebParts.ConnectionConsumerAttribute
-
----@overload fun(displayName: string) : System.Web.UI.WebControls.WebParts.ConnectionConsumerAttribute
----@overload fun(displayName: string, id: string) : System.Web.UI.WebControls.WebParts.ConnectionConsumerAttribute
----@overload fun(displayName: string, id: string, connectionPointType: System.Type) : System.Web.UI.WebControls.WebParts.ConnectionConsumerAttribute
----@param displayName string
----@param connectionPointType System.Type
----@return System.Web.UI.WebControls.WebParts.ConnectionConsumerAttribute
-function System.Web.UI.WebControls.WebParts.ConnectionConsumerAttribute.New(displayName, connectionPointType) end
-
----@class System.Web.UI.WebControls.WebParts.ConnectionProviderAttribute : System.Attribute
----@field AllowsMultipleConnections boolean
----@field ConnectionPointType System.Type
----@field DisplayName string
----@field ID string
-System.Web.UI.WebControls.WebParts.ConnectionProviderAttribute = {}
----@alias CS.System.Web.UI.WebControls.WebParts.ConnectionProviderAttribute System.Web.UI.WebControls.WebParts.ConnectionProviderAttribute
-CS.System.Web.UI.WebControls.WebParts.ConnectionProviderAttribute = System.Web.UI.WebControls.WebParts.ConnectionProviderAttribute
-
----@overload fun(displayName: string) : System.Web.UI.WebControls.WebParts.ConnectionProviderAttribute
----@overload fun(displayName: string, id: string) : System.Web.UI.WebControls.WebParts.ConnectionProviderAttribute
----@overload fun(displayName: string, id: string, connectionPointType: System.Type) : System.Web.UI.WebControls.WebParts.ConnectionProviderAttribute
----@param displayName string
----@param connectionPointType System.Type
----@return System.Web.UI.WebControls.WebParts.ConnectionProviderAttribute
-function System.Web.UI.WebControls.WebParts.ConnectionProviderAttribute.New(displayName, connectionPointType) end
-
----@class System.Web.UI.WebControls.WebParts.ConnectionsZone : System.Web.UI.WebControls.WebParts.ToolZone
----@field CancelVerb System.Web.UI.WebControls.WebParts.WebPartVerb
----@field CloseVerb System.Web.UI.WebControls.WebParts.WebPartVerb
----@field ConfigureConnectionTitle string
----@field ConfigureVerb System.Web.UI.WebControls.WebParts.WebPartVerb
----@field ConnectToConsumerInstructionText string
----@field ConnectToConsumerText string
----@field ConnectToConsumerTitle string
----@field ConnectToProviderInstructionText string
----@field ConnectToProviderText string
----@field ConnectToProviderTitle string
----@field ConnectVerb System.Web.UI.WebControls.WebParts.WebPartVerb
----@field ConsumersInstructionText string
----@field ConsumersTitle string
----@field DisconnectVerb System.Web.UI.WebControls.WebParts.WebPartVerb
----@field EmptyZoneText string
----@field ExistingConnectionErrorMessage string
----@field GetFromText string
----@field GetText string
----@field HeaderText string
----@field InstructionText string
----@field InstructionTitle string
----@field NewConnectionErrorMessage string
----@field NoExistingConnectionInstructionText string
----@field NoExistingConnectionTitle string
----@field PartChromeType System.Web.UI.WebControls.WebParts.PartChromeType
----@field ProvidersInstructionText string
----@field ProvidersTitle string
----@field SendText string
----@field SendToText string
-System.Web.UI.WebControls.WebParts.ConnectionsZone = {}
----@alias CS.System.Web.UI.WebControls.WebParts.ConnectionsZone System.Web.UI.WebControls.WebParts.ConnectionsZone
-CS.System.Web.UI.WebControls.WebParts.ConnectionsZone = System.Web.UI.WebControls.WebParts.ConnectionsZone
-
----@return System.Web.UI.WebControls.WebParts.ConnectionsZone
-function System.Web.UI.WebControls.WebParts.ConnectionsZone.New() end
-
----@class System.Web.UI.WebControls.WebParts.DeclarativeCatalogPart : System.Web.UI.WebControls.WebParts.CatalogPart
----@field WebPartsListUserControlPath string
----@field WebPartsTemplate System.Web.UI.ITemplate
-System.Web.UI.WebControls.WebParts.DeclarativeCatalogPart = {}
----@alias CS.System.Web.UI.WebControls.WebParts.DeclarativeCatalogPart System.Web.UI.WebControls.WebParts.DeclarativeCatalogPart
-CS.System.Web.UI.WebControls.WebParts.DeclarativeCatalogPart = System.Web.UI.WebControls.WebParts.DeclarativeCatalogPart
-
----@return System.Web.UI.WebControls.WebParts.DeclarativeCatalogPart
-function System.Web.UI.WebControls.WebParts.DeclarativeCatalogPart.New() end
----@return System.Web.UI.WebControls.WebParts.WebPartDescriptionCollection
-function System.Web.UI.WebControls.WebParts.DeclarativeCatalogPart:GetAvailableWebPartDescriptions() end
----@param description System.Web.UI.WebControls.WebParts.WebPartDescription
----@return System.Web.UI.WebControls.WebParts.WebPart
-function System.Web.UI.WebControls.WebParts.DeclarativeCatalogPart:GetWebPart(description) end
-
----@class System.Web.UI.WebControls.WebParts.EditorZone : System.Web.UI.WebControls.WebParts.EditorZoneBase
----@field ZoneTemplate System.Web.UI.ITemplate
-System.Web.UI.WebControls.WebParts.EditorZone = {}
----@alias CS.System.Web.UI.WebControls.WebParts.EditorZone System.Web.UI.WebControls.WebParts.EditorZone
-CS.System.Web.UI.WebControls.WebParts.EditorZone = System.Web.UI.WebControls.WebParts.EditorZone
-
----@return System.Web.UI.WebControls.WebParts.EditorZone
-function System.Web.UI.WebControls.WebParts.EditorZone.New() end
-
----@class System.Web.UI.WebControls.WebParts.ImportCatalogPart : System.Web.UI.WebControls.WebParts.CatalogPart
----@field BrowseHelpText string
----@field ImportedPartLabelText string
----@field PartImportErrorLabelText string
----@field UploadButtonText string
----@field UploadHelpText string
-System.Web.UI.WebControls.WebParts.ImportCatalogPart = {}
----@alias CS.System.Web.UI.WebControls.WebParts.ImportCatalogPart System.Web.UI.WebControls.WebParts.ImportCatalogPart
-CS.System.Web.UI.WebControls.WebParts.ImportCatalogPart = System.Web.UI.WebControls.WebParts.ImportCatalogPart
-
----@return System.Web.UI.WebControls.WebParts.ImportCatalogPart
-function System.Web.UI.WebControls.WebParts.ImportCatalogPart.New() end
----@return System.Web.UI.WebControls.WebParts.WebPartDescriptionCollection
-function System.Web.UI.WebControls.WebParts.ImportCatalogPart:GetAvailableWebPartDescriptions() end
----@param description System.Web.UI.WebControls.WebParts.WebPartDescription
----@return System.Web.UI.WebControls.WebParts.WebPart
-function System.Web.UI.WebControls.WebParts.ImportCatalogPart:GetWebPart(description) end
-
----@class System.Web.UI.WebControls.WebParts.LayoutEditorPart : System.Web.UI.WebControls.WebParts.EditorPart
-System.Web.UI.WebControls.WebParts.LayoutEditorPart = {}
----@alias CS.System.Web.UI.WebControls.WebParts.LayoutEditorPart System.Web.UI.WebControls.WebParts.LayoutEditorPart
-CS.System.Web.UI.WebControls.WebParts.LayoutEditorPart = System.Web.UI.WebControls.WebParts.LayoutEditorPart
-
----@return System.Web.UI.WebControls.WebParts.LayoutEditorPart
-function System.Web.UI.WebControls.WebParts.LayoutEditorPart.New() end
----@return boolean
-function System.Web.UI.WebControls.WebParts.LayoutEditorPart:ApplyChanges() end
-function System.Web.UI.WebControls.WebParts.LayoutEditorPart:SyncChanges() end
-
----@class System.Web.UI.WebControls.WebParts.PageCatalogPart : System.Web.UI.WebControls.WebParts.CatalogPart
-System.Web.UI.WebControls.WebParts.PageCatalogPart = {}
----@alias CS.System.Web.UI.WebControls.WebParts.PageCatalogPart System.Web.UI.WebControls.WebParts.PageCatalogPart
-CS.System.Web.UI.WebControls.WebParts.PageCatalogPart = System.Web.UI.WebControls.WebParts.PageCatalogPart
-
----@return System.Web.UI.WebControls.WebParts.PageCatalogPart
-function System.Web.UI.WebControls.WebParts.PageCatalogPart.New() end
----@return System.Web.UI.WebControls.WebParts.WebPartDescriptionCollection
-function System.Web.UI.WebControls.WebParts.PageCatalogPart:GetAvailableWebPartDescriptions() end
----@param description System.Web.UI.WebControls.WebParts.WebPartDescription
----@return System.Web.UI.WebControls.WebParts.WebPart
-function System.Web.UI.WebControls.WebParts.PageCatalogPart:GetWebPart(description) end
-
----@class System.Web.UI.WebControls.WebParts.PersonalizationAdministration : System.Object
----@field ApplicationName string
----@field Provider System.Web.UI.WebControls.WebParts.PersonalizationProvider
----@field Providers System.Web.UI.WebControls.WebParts.PersonalizationProviderCollection
-System.Web.UI.WebControls.WebParts.PersonalizationAdministration = {}
----@alias CS.System.Web.UI.WebControls.WebParts.PersonalizationAdministration System.Web.UI.WebControls.WebParts.PersonalizationAdministration
-CS.System.Web.UI.WebControls.WebParts.PersonalizationAdministration = System.Web.UI.WebControls.WebParts.PersonalizationAdministration
-
----@overload fun(pathToMatch: string, usernameToMatch: string, userInactiveSinceDate: System.DateTime) : System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection
----@param pathToMatch string
----@param usernameToMatch string
----@param userInactiveSinceDate System.DateTime
----@param pageIndex number
----@param pageSize number
----@param out_totalRecords number
----@return System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection,number
-function System.Web.UI.WebControls.WebParts.PersonalizationAdministration.FindInactiveUserState(pathToMatch, usernameToMatch, userInactiveSinceDate, pageIndex, pageSize, out_totalRecords) end
----@overload fun(pathToMatch: string) : System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection
----@param pathToMatch string
----@param pageIndex number
----@param pageSize number
----@param out_totalRecords number
----@return System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection,number
-function System.Web.UI.WebControls.WebParts.PersonalizationAdministration.FindSharedState(pathToMatch, pageIndex, pageSize, out_totalRecords) end
----@overload fun(pathToMatch: string, usernameToMatch: string) : System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection
----@param pathToMatch string
----@param usernameToMatch string
----@param pageIndex number
----@param pageSize number
----@param out_totalRecords number
----@return System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection,number
-function System.Web.UI.WebControls.WebParts.PersonalizationAdministration.FindUserState(pathToMatch, usernameToMatch, pageIndex, pageSize, out_totalRecords) end
----@overload fun(userInactiveSinceDate: System.DateTime) : System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection
----@param userInactiveSinceDate System.DateTime
----@param pageIndex number
----@param pageSize number
----@param out_totalRecords number
----@return System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection,number
-function System.Web.UI.WebControls.WebParts.PersonalizationAdministration.GetAllInactiveUserState(userInactiveSinceDate, pageIndex, pageSize, out_totalRecords) end
----@overload fun(scope: System.Web.UI.WebControls.WebParts.PersonalizationScope) : System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection
----@param scope System.Web.UI.WebControls.WebParts.PersonalizationScope
----@param pageIndex number
----@param pageSize number
----@param out_totalRecords number
----@return System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection,number
-function System.Web.UI.WebControls.WebParts.PersonalizationAdministration.GetAllState(scope, pageIndex, pageSize, out_totalRecords) end
----@overload fun(userInactiveSinceDate: System.DateTime) : number
----@param pathToMatch string
----@param userInactiveSinceDate System.DateTime
----@return number
-function System.Web.UI.WebControls.WebParts.PersonalizationAdministration.GetCountOfInactiveUserState(pathToMatch, userInactiveSinceDate) end
----@overload fun(scope: System.Web.UI.WebControls.WebParts.PersonalizationScope) : number
----@param scope System.Web.UI.WebControls.WebParts.PersonalizationScope
----@param pathToMatch string
----@return number
-function System.Web.UI.WebControls.WebParts.PersonalizationAdministration.GetCountOfState(scope, pathToMatch) end
----@param usernameToMatch string
----@return number
-function System.Web.UI.WebControls.WebParts.PersonalizationAdministration.GetCountOfUserState(usernameToMatch) end
----@param scope System.Web.UI.WebControls.WebParts.PersonalizationScope
----@return number
-function System.Web.UI.WebControls.WebParts.PersonalizationAdministration.ResetAllState(scope) end
----@overload fun(userInactiveSinceDate: System.DateTime) : number
----@param path string
----@param userInactiveSinceDate System.DateTime
----@return number
-function System.Web.UI.WebControls.WebParts.PersonalizationAdministration.ResetInactiveUserState(path, userInactiveSinceDate) end
----@overload fun(path: string) : boolean
----@param paths System.String[]
----@return number
-function System.Web.UI.WebControls.WebParts.PersonalizationAdministration.ResetSharedState(paths) end
----@param data System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection
----@return number
-function System.Web.UI.WebControls.WebParts.PersonalizationAdministration.ResetState(data) end
----@overload fun(path: string) : number
----@overload fun(path: string, username: string) : boolean
----@overload fun(path: string, usernames: System.String[]) : number
----@param usernames System.String[]
----@return number
-function System.Web.UI.WebControls.WebParts.PersonalizationAdministration.ResetUserState(usernames) end
-
----@class System.Web.UI.WebControls.WebParts.PersonalizationProvider : System.Configuration.Provider.ProviderBase
----@field ApplicationName string
-System.Web.UI.WebControls.WebParts.PersonalizationProvider = {}
----@alias CS.System.Web.UI.WebControls.WebParts.PersonalizationProvider System.Web.UI.WebControls.WebParts.PersonalizationProvider
-CS.System.Web.UI.WebControls.WebParts.PersonalizationProvider = System.Web.UI.WebControls.WebParts.PersonalizationProvider
-
----@param webPartManager System.Web.UI.WebControls.WebParts.WebPartManager
----@param loadedState System.Web.UI.WebControls.WebParts.PersonalizationState
----@return System.Web.UI.WebControls.WebParts.PersonalizationScope
-function System.Web.UI.WebControls.WebParts.PersonalizationProvider:DetermineInitialScope(webPartManager, loadedState) end
----@param webPartManager System.Web.UI.WebControls.WebParts.WebPartManager
----@return System.Collections.IDictionary
-function System.Web.UI.WebControls.WebParts.PersonalizationProvider:DetermineUserCapabilities(webPartManager) end
----@param scope System.Web.UI.WebControls.WebParts.PersonalizationScope
----@param query System.Web.UI.WebControls.WebParts.PersonalizationStateQuery
----@param pageIndex number
----@param pageSize number
----@param out_totalRecords number
----@return System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection,number
-function System.Web.UI.WebControls.WebParts.PersonalizationProvider:FindState(scope, query, pageIndex, pageSize, out_totalRecords) end
----@param scope System.Web.UI.WebControls.WebParts.PersonalizationScope
----@param query System.Web.UI.WebControls.WebParts.PersonalizationStateQuery
----@return number
-function System.Web.UI.WebControls.WebParts.PersonalizationProvider:GetCountOfState(scope, query) end
----@param webPartManager System.Web.UI.WebControls.WebParts.WebPartManager
----@param ignoreCurrentUser boolean
----@return System.Web.UI.WebControls.WebParts.PersonalizationState
-function System.Web.UI.WebControls.WebParts.PersonalizationProvider:LoadPersonalizationState(webPartManager, ignoreCurrentUser) end
----@param webPartManager System.Web.UI.WebControls.WebParts.WebPartManager
-function System.Web.UI.WebControls.WebParts.PersonalizationProvider:ResetPersonalizationState(webPartManager) end
----@param scope System.Web.UI.WebControls.WebParts.PersonalizationScope
----@param paths System.String[]
----@param usernames System.String[]
----@return number
-function System.Web.UI.WebControls.WebParts.PersonalizationProvider:ResetState(scope, paths, usernames) end
----@param path string
----@param userInactiveSinceDate System.DateTime
----@return number
-function System.Web.UI.WebControls.WebParts.PersonalizationProvider:ResetUserState(path, userInactiveSinceDate) end
----@param state System.Web.UI.WebControls.WebParts.PersonalizationState
-function System.Web.UI.WebControls.WebParts.PersonalizationProvider:SavePersonalizationState(state) end
-
----@class System.Web.UI.WebControls.WebParts.PersonalizationState : System.Object
----@field IsDirty boolean
----@field IsEmpty boolean
----@field WebPartManager System.Web.UI.WebControls.WebParts.WebPartManager
-System.Web.UI.WebControls.WebParts.PersonalizationState = {}
----@alias CS.System.Web.UI.WebControls.WebParts.PersonalizationState System.Web.UI.WebControls.WebParts.PersonalizationState
-CS.System.Web.UI.WebControls.WebParts.PersonalizationState = System.Web.UI.WebControls.WebParts.PersonalizationState
-
-function System.Web.UI.WebControls.WebParts.PersonalizationState:ApplyWebPartManagerPersonalization() end
----@param webPart System.Web.UI.WebControls.WebParts.WebPart
-function System.Web.UI.WebControls.WebParts.PersonalizationState:ApplyWebPartPersonalization(webPart) end
-function System.Web.UI.WebControls.WebParts.PersonalizationState:ExtractWebPartManagerPersonalization() end
----@param webPart System.Web.UI.WebControls.WebParts.WebPart
-function System.Web.UI.WebControls.WebParts.PersonalizationState:ExtractWebPartPersonalization(webPart) end
----@param webPartID string
----@return string
-function System.Web.UI.WebControls.WebParts.PersonalizationState:GetAuthorizationFilter(webPartID) end
----@param webPart System.Web.UI.WebControls.WebParts.WebPart
-function System.Web.UI.WebControls.WebParts.PersonalizationState:SetWebPartDirty(webPart) end
-function System.Web.UI.WebControls.WebParts.PersonalizationState:SetWebPartManagerDirty() end
-
----@class System.Web.UI.WebControls.WebParts.PersonalizationStateQuery : System.Object
----@field Item System.Object
----@field PathToMatch string
----@field UserInactiveSinceDate System.DateTime
----@field UsernameToMatch string
-System.Web.UI.WebControls.WebParts.PersonalizationStateQuery = {}
----@alias CS.System.Web.UI.WebControls.WebParts.PersonalizationStateQuery System.Web.UI.WebControls.WebParts.PersonalizationStateQuery
-CS.System.Web.UI.WebControls.WebParts.PersonalizationStateQuery = System.Web.UI.WebControls.WebParts.PersonalizationStateQuery
-
----@return System.Web.UI.WebControls.WebParts.PersonalizationStateQuery
-function System.Web.UI.WebControls.WebParts.PersonalizationStateQuery.New() end
-
----@class System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection : System.Object
----@field Count number
----@field IsSynchronized boolean
----@field Item System.Web.UI.WebControls.WebParts.PersonalizationStateInfo
----@field SyncRoot System.Object
-System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection = {}
----@alias CS.System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection
-CS.System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection = System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection
-
----@return System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection
-function System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection.New() end
----@param data System.Web.UI.WebControls.WebParts.PersonalizationStateInfo
-function System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection:Add(data) end
-function System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection:Clear() end
----@param array System.Web.UI.WebControls.WebParts.PersonalizationStateInfo[]
----@param index number
-function System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection:CopyTo(array, index) end
----@return System.Collections.IEnumerator
-function System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection:GetEnumerator() end
----@param path string
----@param username string
-function System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection:Remove(path, username) end
-function System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection:SetReadOnly() end
-
----@class System.Web.UI.WebControls.WebParts.PersonalizationStateInfo : System.Object
----@field LastUpdatedDate System.DateTime
----@field Path string
----@field Size number
-System.Web.UI.WebControls.WebParts.PersonalizationStateInfo = {}
----@alias CS.System.Web.UI.WebControls.WebParts.PersonalizationStateInfo System.Web.UI.WebControls.WebParts.PersonalizationStateInfo
-CS.System.Web.UI.WebControls.WebParts.PersonalizationStateInfo = System.Web.UI.WebControls.WebParts.PersonalizationStateInfo
-
-
----@class System.Web.UI.WebControls.WebParts.PersonalizationProviderCollection : System.Configuration.Provider.ProviderCollection
-System.Web.UI.WebControls.WebParts.PersonalizationProviderCollection = {}
----@alias CS.System.Web.UI.WebControls.WebParts.PersonalizationProviderCollection System.Web.UI.WebControls.WebParts.PersonalizationProviderCollection
-CS.System.Web.UI.WebControls.WebParts.PersonalizationProviderCollection = System.Web.UI.WebControls.WebParts.PersonalizationProviderCollection
-
----@return System.Web.UI.WebControls.WebParts.PersonalizationProviderCollection
-function System.Web.UI.WebControls.WebParts.PersonalizationProviderCollection.New() end
----@param array System.Web.UI.WebControls.WebParts.PersonalizationProvider[]
----@param index number
-function System.Web.UI.WebControls.WebParts.PersonalizationProviderCollection:CopyTo(array, index) end
-
----@class System.Web.UI.WebControls.WebParts.PropertyGridEditorPart : System.Web.UI.WebControls.WebParts.EditorPart
-System.Web.UI.WebControls.WebParts.PropertyGridEditorPart = {}
----@alias CS.System.Web.UI.WebControls.WebParts.PropertyGridEditorPart System.Web.UI.WebControls.WebParts.PropertyGridEditorPart
-CS.System.Web.UI.WebControls.WebParts.PropertyGridEditorPart = System.Web.UI.WebControls.WebParts.PropertyGridEditorPart
-
----@return System.Web.UI.WebControls.WebParts.PropertyGridEditorPart
-function System.Web.UI.WebControls.WebParts.PropertyGridEditorPart.New() end
----@return boolean
-function System.Web.UI.WebControls.WebParts.PropertyGridEditorPart:ApplyChanges() end
-function System.Web.UI.WebControls.WebParts.PropertyGridEditorPart:SyncChanges() end
-
----@class System.Web.UI.WebControls.WebParts.ProxyWebPartConnectionCollection : System.Collections.CollectionBase
----@field IsReadOnly boolean
----@field Item System.Web.UI.WebControls.WebParts.WebPartConnection
-System.Web.UI.WebControls.WebParts.ProxyWebPartConnectionCollection = {}
----@alias CS.System.Web.UI.WebControls.WebParts.ProxyWebPartConnectionCollection System.Web.UI.WebControls.WebParts.ProxyWebPartConnectionCollection
-CS.System.Web.UI.WebControls.WebParts.ProxyWebPartConnectionCollection = System.Web.UI.WebControls.WebParts.ProxyWebPartConnectionCollection
-
----@return System.Web.UI.WebControls.WebParts.ProxyWebPartConnectionCollection
-function System.Web.UI.WebControls.WebParts.ProxyWebPartConnectionCollection.New() end
----@param value System.Web.UI.WebControls.WebParts.WebPartConnection
----@return number
-function System.Web.UI.WebControls.WebParts.ProxyWebPartConnectionCollection:Add(value) end
----@param value System.Web.UI.WebControls.WebParts.WebPartConnection
----@return boolean
-function System.Web.UI.WebControls.WebParts.ProxyWebPartConnectionCollection:Contains(value) end
----@param array System.Web.UI.WebControls.WebParts.WebPartConnection[]
----@param index number
-function System.Web.UI.WebControls.WebParts.ProxyWebPartConnectionCollection:CopyTo(array, index) end
----@param value System.Web.UI.WebControls.WebParts.WebPartConnection
----@return number
-function System.Web.UI.WebControls.WebParts.ProxyWebPartConnectionCollection:IndexOf(value) end
----@param index number
----@param value System.Web.UI.WebControls.WebParts.WebPartConnection
-function System.Web.UI.WebControls.WebParts.ProxyWebPartConnectionCollection:Insert(index, value) end
----@param value System.Web.UI.WebControls.WebParts.WebPartConnection
-function System.Web.UI.WebControls.WebParts.ProxyWebPartConnectionCollection:Remove(value) end
-
----@class System.Web.UI.WebControls.WebParts.ProxyWebPartManager : System.Web.UI.Control
----@field StaticConnections System.Web.UI.WebControls.WebParts.ProxyWebPartConnectionCollection
-System.Web.UI.WebControls.WebParts.ProxyWebPartManager = {}
----@alias CS.System.Web.UI.WebControls.WebParts.ProxyWebPartManager System.Web.UI.WebControls.WebParts.ProxyWebPartManager
-CS.System.Web.UI.WebControls.WebParts.ProxyWebPartManager = System.Web.UI.WebControls.WebParts.ProxyWebPartManager
-
----@return System.Web.UI.WebControls.WebParts.ProxyWebPartManager
-function System.Web.UI.WebControls.WebParts.ProxyWebPartManager.New() end
-
----@class System.Web.UI.WebControls.WebParts.RowToFieldTransformer : System.Web.UI.WebControls.WebParts.WebPartTransformer
----@field FieldName string
-System.Web.UI.WebControls.WebParts.RowToFieldTransformer = {}
----@alias CS.System.Web.UI.WebControls.WebParts.RowToFieldTransformer System.Web.UI.WebControls.WebParts.RowToFieldTransformer
-CS.System.Web.UI.WebControls.WebParts.RowToFieldTransformer = System.Web.UI.WebControls.WebParts.RowToFieldTransformer
-
----@return System.Web.UI.WebControls.WebParts.RowToFieldTransformer
-function System.Web.UI.WebControls.WebParts.RowToFieldTransformer.New() end
----@return System.Web.UI.Control
-function System.Web.UI.WebControls.WebParts.RowToFieldTransformer:CreateConfigurationControl() end
----@param providerData System.Object
----@return System.Object
-function System.Web.UI.WebControls.WebParts.RowToFieldTransformer:Transform(providerData) end
-
----@class System.Web.UI.WebControls.WebParts.WebPartTransformerAttribute : System.Attribute
----@field ConsumerType System.Type
----@field ProviderType System.Type
-System.Web.UI.WebControls.WebParts.WebPartTransformerAttribute = {}
----@alias CS.System.Web.UI.WebControls.WebParts.WebPartTransformerAttribute System.Web.UI.WebControls.WebParts.WebPartTransformerAttribute
-CS.System.Web.UI.WebControls.WebParts.WebPartTransformerAttribute = System.Web.UI.WebControls.WebParts.WebPartTransformerAttribute
-
----@param consumerType System.Type
----@param providerType System.Type
----@return System.Web.UI.WebControls.WebParts.WebPartTransformerAttribute
-function System.Web.UI.WebControls.WebParts.WebPartTransformerAttribute.New(consumerType, providerType) end
----@param transformerType System.Type
----@return System.Type
-function System.Web.UI.WebControls.WebParts.WebPartTransformerAttribute.GetConsumerType(transformerType) end
----@param transformerType System.Type
----@return System.Type
-function System.Web.UI.WebControls.WebParts.WebPartTransformerAttribute.GetProviderType(transformerType) end
-
----@class System.Web.UI.WebControls.WebParts.RowToParametersTransformer : System.Web.UI.WebControls.WebParts.WebPartTransformer
----@field ConsumerFieldNames System.String[]
----@field ProviderFieldNames System.String[]
-System.Web.UI.WebControls.WebParts.RowToParametersTransformer = {}
----@alias CS.System.Web.UI.WebControls.WebParts.RowToParametersTransformer System.Web.UI.WebControls.WebParts.RowToParametersTransformer
-CS.System.Web.UI.WebControls.WebParts.RowToParametersTransformer = System.Web.UI.WebControls.WebParts.RowToParametersTransformer
-
----@return System.Web.UI.WebControls.WebParts.RowToParametersTransformer
-function System.Web.UI.WebControls.WebParts.RowToParametersTransformer.New() end
----@return System.Web.UI.Control
-function System.Web.UI.WebControls.WebParts.RowToParametersTransformer:CreateConfigurationControl() end
----@param providerData System.Object
----@return System.Object
-function System.Web.UI.WebControls.WebParts.RowToParametersTransformer:Transform(providerData) end
-
----@class System.Web.UI.WebControls.WebParts.SharedPersonalizationStateInfo : System.Web.UI.WebControls.WebParts.PersonalizationStateInfo
----@field CountOfPersonalizations number
----@field SizeOfPersonalizations number
-System.Web.UI.WebControls.WebParts.SharedPersonalizationStateInfo = {}
----@alias CS.System.Web.UI.WebControls.WebParts.SharedPersonalizationStateInfo System.Web.UI.WebControls.WebParts.SharedPersonalizationStateInfo
-CS.System.Web.UI.WebControls.WebParts.SharedPersonalizationStateInfo = System.Web.UI.WebControls.WebParts.SharedPersonalizationStateInfo
-
----@param path string
----@param lastUpdatedDate System.DateTime
----@param size number
----@param sizeOfPersonalizations number
----@param countOfPersonalizations number
----@return System.Web.UI.WebControls.WebParts.SharedPersonalizationStateInfo
-function System.Web.UI.WebControls.WebParts.SharedPersonalizationStateInfo.New(path, lastUpdatedDate, size, sizeOfPersonalizations, countOfPersonalizations) end
-
----@class System.Web.UI.WebControls.WebParts.SqlPersonalizationProvider : System.Web.UI.WebControls.WebParts.PersonalizationProvider
----@field ApplicationName string
-System.Web.UI.WebControls.WebParts.SqlPersonalizationProvider = {}
----@alias CS.System.Web.UI.WebControls.WebParts.SqlPersonalizationProvider System.Web.UI.WebControls.WebParts.SqlPersonalizationProvider
-CS.System.Web.UI.WebControls.WebParts.SqlPersonalizationProvider = System.Web.UI.WebControls.WebParts.SqlPersonalizationProvider
-
----@return System.Web.UI.WebControls.WebParts.SqlPersonalizationProvider
-function System.Web.UI.WebControls.WebParts.SqlPersonalizationProvider.New() end
----@param scope System.Web.UI.WebControls.WebParts.PersonalizationScope
----@param query System.Web.UI.WebControls.WebParts.PersonalizationStateQuery
----@param pageIndex number
----@param pageSize number
----@param out_totalRecords number
----@return System.Web.UI.WebControls.WebParts.PersonalizationStateInfoCollection,number
-function System.Web.UI.WebControls.WebParts.SqlPersonalizationProvider:FindState(scope, query, pageIndex, pageSize, out_totalRecords) end
----@param scope System.Web.UI.WebControls.WebParts.PersonalizationScope
----@param query System.Web.UI.WebControls.WebParts.PersonalizationStateQuery
----@return number
-function System.Web.UI.WebControls.WebParts.SqlPersonalizationProvider:GetCountOfState(scope, query) end
----@param scope System.Web.UI.WebControls.WebParts.PersonalizationScope
----@param paths System.String[]
----@param usernames System.String[]
----@return number
-function System.Web.UI.WebControls.WebParts.SqlPersonalizationProvider:ResetState(scope, paths, usernames) end
----@param path string
----@param userInactiveSinceDate System.DateTime
----@return number
-function System.Web.UI.WebControls.WebParts.SqlPersonalizationProvider:ResetUserState(path, userInactiveSinceDate) end
-
----@class System.Web.UI.WebControls.WebParts.UnauthorizedWebPart : System.Web.UI.WebControls.WebParts.ProxyWebPart
-System.Web.UI.WebControls.WebParts.UnauthorizedWebPart = {}
----@alias CS.System.Web.UI.WebControls.WebParts.UnauthorizedWebPart System.Web.UI.WebControls.WebParts.UnauthorizedWebPart
-CS.System.Web.UI.WebControls.WebParts.UnauthorizedWebPart = System.Web.UI.WebControls.WebParts.UnauthorizedWebPart
-
----@overload fun(originalID: string, originalTypeName: string, originalPath: string, genericWebPartID: string) : System.Web.UI.WebControls.WebParts.UnauthorizedWebPart
----@param webPart System.Web.UI.WebControls.WebParts.WebPart
----@return System.Web.UI.WebControls.WebParts.UnauthorizedWebPart
-function System.Web.UI.WebControls.WebParts.UnauthorizedWebPart.New(webPart) end
-
----@class System.Web.UI.WebControls.WebParts.UserPersonalizationStateInfo : System.Web.UI.WebControls.WebParts.PersonalizationStateInfo
----@field LastActivityDate System.DateTime
----@field Username string
-System.Web.UI.WebControls.WebParts.UserPersonalizationStateInfo = {}
----@alias CS.System.Web.UI.WebControls.WebParts.UserPersonalizationStateInfo System.Web.UI.WebControls.WebParts.UserPersonalizationStateInfo
-CS.System.Web.UI.WebControls.WebParts.UserPersonalizationStateInfo = System.Web.UI.WebControls.WebParts.UserPersonalizationStateInfo
-
----@param path string
----@param lastUpdatedDate System.DateTime
----@param size number
----@param username string
----@param lastActivityDate System.DateTime
----@return System.Web.UI.WebControls.WebParts.UserPersonalizationStateInfo
-function System.Web.UI.WebControls.WebParts.UserPersonalizationStateInfo.New(path, lastUpdatedDate, size, username, lastActivityDate) end
-
----@class System.Web.UI.WebControls.WebParts.WebPartTracker : System.Object
----@field IsCircularConnection boolean
-System.Web.UI.WebControls.WebParts.WebPartTracker = {}
----@alias CS.System.Web.UI.WebControls.WebParts.WebPartTracker System.Web.UI.WebControls.WebParts.WebPartTracker
-CS.System.Web.UI.WebControls.WebParts.WebPartTracker = System.Web.UI.WebControls.WebParts.WebPartTracker
-
----@param webPart System.Web.UI.WebControls.WebParts.WebPart
----@param providerConnectionPoint System.Web.UI.WebControls.WebParts.ProviderConnectionPoint
----@return System.Web.UI.WebControls.WebParts.WebPartTracker
-function System.Web.UI.WebControls.WebParts.WebPartTracker.New(webPart, providerConnectionPoint) end
-
----@class System.Web.UI.WebControls.WebParts.WebPartZone : System.Web.UI.WebControls.WebParts.WebPartZoneBase
----@field ZoneTemplate System.Web.UI.ITemplate
-System.Web.UI.WebControls.WebParts.WebPartZone = {}
----@alias CS.System.Web.UI.WebControls.WebParts.WebPartZone System.Web.UI.WebControls.WebParts.WebPartZone
-CS.System.Web.UI.WebControls.WebParts.WebPartZone = System.Web.UI.WebControls.WebParts.WebPartZone
-
----@return System.Web.UI.WebControls.WebParts.WebPartZone
-function System.Web.UI.WebControls.WebParts.WebPartZone.New() end
-
----@class Consts : System.Object
----@field MonoCorlibVersion string
----@field MonoVersion string
----@field MonoCompany string
----@field MonoProduct string
----@field MonoCopyright string
----@field FxVersion string
----@field FxFileVersion string
----@field EnvironmentVersion string
----@field VsVersion string
----@field VsFileVersion string
----@field AssemblyI18N string
----@field AssemblyMicrosoft_JScript string
----@field AssemblyMicrosoft_VisualStudio string
----@field AssemblyMicrosoft_VisualStudio_Web string
----@field AssemblyMicrosoft_VSDesigner string
----@field AssemblyMono_Http string
----@field AssemblyMono_Posix string
----@field AssemblyMono_Security string
----@field AssemblyMono_Messaging_RabbitMQ string
----@field AssemblyCorlib string
----@field AssemblySystem string
----@field AssemblySystem_Data string
----@field AssemblySystem_Design string
----@field AssemblySystem_DirectoryServices string
----@field AssemblySystem_Drawing string
----@field AssemblySystem_Drawing_Design string
----@field AssemblySystem_Messaging string
----@field AssemblySystem_Security string
----@field AssemblySystem_ServiceProcess string
----@field AssemblySystem_Web string
----@field AssemblySystem_Windows_Forms string
----@field AssemblySystem_2_0 string
----@field AssemblySystemCore_3_5 string
----@field AssemblySystem_Core string
----@field WindowsBase_3_0 string
----@field AssemblyWindowsBase string
----@field AssemblyPresentationCore_3_5 string
----@field AssemblyPresentationCore_4_0 string
----@field AssemblyPresentationFramework_3_5 string
----@field AssemblySystemServiceModel_3_0 string
-Consts = {}
----@alias CS.Consts Consts
-CS.Consts = Consts
-
-
----@class Locale : System.Object
-Locale = {}
----@alias CS.Locale Locale
-CS.Locale = Locale
-
----@overload fun(msg: string) : string
----@param fmt string
----@param args System.Object[]
----@return string
-function Locale.GetText(fmt, args) end
-
----@class System.MonoTODOAttribute : System.Attribute
----@field Comment string
-System.MonoTODOAttribute = {}
----@alias CS.System.MonoTODOAttribute System.MonoTODOAttribute
-CS.System.MonoTODOAttribute = System.MonoTODOAttribute
-
----@overload fun() : System.MonoTODOAttribute
----@param comment string
----@return System.MonoTODOAttribute
-function System.MonoTODOAttribute.New(comment) end
-
----@class System.MonoDocumentationNoteAttribute : System.MonoTODOAttribute
-System.MonoDocumentationNoteAttribute = {}
----@alias CS.System.MonoDocumentationNoteAttribute System.MonoDocumentationNoteAttribute
-CS.System.MonoDocumentationNoteAttribute = System.MonoDocumentationNoteAttribute
-
----@param comment string
----@return System.MonoDocumentationNoteAttribute
-function System.MonoDocumentationNoteAttribute.New(comment) end
-
----@class System.MonoExtensionAttribute : System.MonoTODOAttribute
-System.MonoExtensionAttribute = {}
----@alias CS.System.MonoExtensionAttribute System.MonoExtensionAttribute
-CS.System.MonoExtensionAttribute = System.MonoExtensionAttribute
-
----@param comment string
----@return System.MonoExtensionAttribute
-function System.MonoExtensionAttribute.New(comment) end
-
----@class System.MonoInternalNoteAttribute : System.MonoTODOAttribute
-System.MonoInternalNoteAttribute = {}
----@alias CS.System.MonoInternalNoteAttribute System.MonoInternalNoteAttribute
-CS.System.MonoInternalNoteAttribute = System.MonoInternalNoteAttribute
-
----@param comment string
----@return System.MonoInternalNoteAttribute
-function System.MonoInternalNoteAttribute.New(comment) end
-
----@class System.MonoLimitationAttribute : System.MonoTODOAttribute
-System.MonoLimitationAttribute = {}
----@alias CS.System.MonoLimitationAttribute System.MonoLimitationAttribute
-CS.System.MonoLimitationAttribute = System.MonoLimitationAttribute
-
----@param comment string
----@return System.MonoLimitationAttribute
-function System.MonoLimitationAttribute.New(comment) end
-
----@class System.MonoNotSupportedAttribute : System.MonoTODOAttribute
-System.MonoNotSupportedAttribute = {}
----@alias CS.System.MonoNotSupportedAttribute System.MonoNotSupportedAttribute
-CS.System.MonoNotSupportedAttribute = System.MonoNotSupportedAttribute
-
----@param comment string
----@return System.MonoNotSupportedAttribute
-function System.MonoNotSupportedAttribute.New(comment) end

@@ -9,7 +9,7 @@ namespace GamePlay.Grid
     {
         public static void FireDamage(MapUnit unit, MapObject mapObject, int damage, string damageTypeStr)
         {
-            if (unit == null || unit.Character?.statSystem?.currentHP <= 0)
+            if (unit == null || !unit.IsAlive)
                 return;
 
             var damageType = DamageType.Fire;

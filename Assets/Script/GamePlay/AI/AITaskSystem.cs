@@ -57,7 +57,7 @@ namespace GamePlay.AI
             Debug.Log($"[AITaskSystem] {unit.name} 开始任务驱动 AI 回合");
 
             // ─── 0. 前置检查 ───
-            if (unit == null || unit.Character == null || unit.Character.statSystem.currentHP <= 0)
+            if (unit == null || !unit.IsAlive)
             {
                 Debug.LogWarning($"[AITaskSystem] {unit?.name ?? "null"} 已阵亡，跳过 AI 回合");
                 TurnManager.Instance.EndCurrentUnitTurn();
@@ -165,6 +165,17 @@ namespace GamePlay.AI
             float tGenPlan = (Time.realtimeSinceStartup - t4) * 1000f;
             Debug.Log($"[AITaskSystem] 生成计划: {plan.Steps.Count} 步");
 
+            // ─── 4.5 更新承诺：选定任务时整体重建本单位的承诺列表 ───
+            // 只有会真正命中的任务（攻击/技能/支援）才承诺目标；移动/防御/待机不承诺
+            if (SharedTaskBoard.Instance != null)
+            {
+                SharedTaskBoard.Instance.UpdateUnitCommitments(unit, ExtractCommitTargets(bestTask));
+            }
+            else
+            {
+                Debug.LogError("task board is null");
+            }
+
             // ─── 性能汇总 ───
             float tTotalPreExec = (Time.realtimeSinceStartup - tStart) * 1000f;
             Debug.Log($"[AITaskSystem·性能] ═══════════════════════════════════");
@@ -187,26 +198,31 @@ namespace GamePlay.AI
                 Debug.LogError($"[AITaskSystem·异常] {unit.name} 计划执行耗时 {tExecute:F0}ms！超过 3s 阈值。计划共 {plan.Steps.Count} 步");
             }
             Debug.Log($"[AITaskSystem·性能]  全部合计:   {tTotal:F1} ms");
-            if (SharedTaskBoard.Instance != null)
-            {
-                if (bestTask.TargetUnit != null)
-                {
-                    float estimatedDamage = 0f;
-                    if (bestTask is AttackTask atk)
-                    {
-                        estimatedDamage = atk.EstimatedDamage;
-                    }
-                    SharedTaskBoard.Instance.RegisterCommitment(
-                        bestTask.TargetUnit, bestTask.TaskType, estimatedDamage);
-                }
-            }
-            else
-            {
-                Debug.LogError("task board is null");
-            }
 
             // ─── 6. 结束回合 ───
             TurnManager.Instance.EndCurrentUnitTurn();
+        }
+
+        /// <summary>
+        /// 从选定的任务提取本单位的承诺目标列表。
+        /// Attack/Skill/Support 承诺其 TargetUnit；Move/Defend/Wait 返回 null（不承诺）。
+        /// </summary>
+        private static List<MapUnit> ExtractCommitTargets(AITask bestTask)
+        {
+            if (bestTask == null || bestTask.TargetUnit == null)
+            {
+                return null;
+            }
+
+            switch (bestTask.TaskType)
+            {
+                case AITaskType.Attack:
+                case AITaskType.Skill:
+                case AITaskType.Support:
+                    return new List<MapUnit> { bestTask.TargetUnit };
+                default:
+                    return null;
+            }
         }
     }
 }

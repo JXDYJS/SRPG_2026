@@ -30,7 +30,7 @@ namespace GamePlay.AI.Tasks
         {
             // 0. 前置检查
             if (Skill == null || TargetUnit == null) return 0f;
-            if (TargetUnit.Character == null || TargetUnit.Character.statSystem.currentHP <= 0) return 0f;
+            if (TargetUnit == null || !TargetUnit.IsAlive) return 0f;
             if (Skill.Cost > 0 && !unit.Character.HasEnoughMP(Skill.Cost)) return 0f;
 
             // 1. Phase 命中效用：每个 Phase 独立统计命中单位 × 单目标价值 × 战略分，跨 Phase 求和
@@ -131,7 +131,7 @@ namespace GamePlay.AI.Tasks
         // ──────────────────────────────────────
         public override bool IsCompleted()
         {
-            return TargetUnit == null || TargetUnit.Character.statSystem.currentHP <= 0;
+            return TargetUnit == null || !TargetUnit.IsAlive;
         }
 
         public override bool IsFailed()

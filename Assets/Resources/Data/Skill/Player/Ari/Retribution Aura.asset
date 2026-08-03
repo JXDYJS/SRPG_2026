@@ -1,0 +1,77 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe202a631b15d92408ac5c92665ab130, type: 3}
+  m_Name: Retribution Aura
+  m_EditorClassIdentifier: 
+  SkillName: Retribution Aura
+  Description: retribution * 3
+  Icon: {fileID: 0}
+  TargetType: 2
+  CastPattern: 0
+  CastMaxRange: 0
+  CastMinRange: 0
+  CastVerticalRange: 1
+  CastRangeMode: 0
+  CastRangeFuncName: 
+  Trajectory: 3
+  StopsAtFirstHit: 0
+  Cost: 12
+  Phases:
+  - PhaseName: AddBuff
+    TargetType: 2
+    AoEPattern: 0
+    AoERadius: 0
+    AoEVerticalRange: 0
+    OriginType: 1
+    Effects:
+    - EffectType: 2
+      FlatBonus: 0
+      Multiplier: 0
+      Constant: 0
+      DamageType: 0
+      BuffID: Retribution
+      BuffStacks: 3
+      RemoveMode: 0
+    VisualData:
+      CastAnimTrigger: 
+      CastEffect:
+        m_AssetGUID: 
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_EditorAssetChanged: 0
+      Transit: 0
+      ProjectilePrefab:
+        m_AssetGUID: 
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_EditorAssetChanged: 0
+      ProjectileSpeed: 0
+      HitTimingMode: 0
+      HitEventName: 
+      HitDelayTime: 0
+      EndTimingMode: 0
+      EndEventName: 
+      EndDelayTime: 0
+      TargetAreaEffect:
+        m_AssetGUID: 
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_EditorAssetChanged: 0
+      TargetAreaOffset: {x: 0, y: 0, z: 0}
+      TargetAreaRotation: {x: 0, y: 0, z: 0}
+      TargetAreaDuration: 0
+    ExecuteMode: 0
+    ExecuteFuncName: 
+  AIBehavior: 0
+  AIPriority: 1
+  isCustomSkill: 0
+  CustomBehavior: {fileID: 0}

@@ -9307,6 +9307,173 @@ CS.UnitySourceGeneratedAssemblyMonoScriptTypes_v1 = UnitySourceGeneratedAssembly
 ---@return UnitySourceGeneratedAssemblyMonoScriptTypes_v1
 function UnitySourceGeneratedAssemblyMonoScriptTypes_v1.New() end
 
+---@class Managers.DamageUIManager : UnityEngine.MonoBehaviour
+---@field Instance Managers.DamageUIManager
+---@field damageTextPrefab UnityEngine.AddressableAssets.AssetReferenceGameObject
+Managers.DamageUIManager = {}
+---@alias CS.Managers.DamageUIManager Managers.DamageUIManager
+CS.Managers.DamageUIManager = Managers.DamageUIManager
+
+---@param worldPosition UnityEngine.Vector3
+---@param damage number
+---@param type Global.DamageType
+function Managers.DamageUIManager:ShowDamage(worldPosition, damage, type) end
+
+---@class Managers.LevelingManager : UnityEngine.MonoBehaviour
+---@field globalLevelConfig Character.data.GlobalLevelConfig
+Managers.LevelingManager = {}
+---@alias CS.Managers.LevelingManager Managers.LevelingManager
+CS.Managers.LevelingManager = Managers.LevelingManager
+
+---@param exp number
+function Managers.LevelingManager:AddExp(exp) end
+---@param unit GamePlay.Units.MapUnit
+---@return boolean
+function Managers.LevelingManager:TryUpgradeUnit(unit) end
+
+---@class Managers.MapManager : UnityEngine.MonoBehaviour
+---@field mapRoot UnityEngine.Transform
+---@field cellSize number
+---@field currentMapName string
+---@field currentLevelData GamePlay.Grid.MapDataSO
+---@field blocks System.Collections.Generic.Dictionary
+---@field voxelGrid Grid.VoxelGrid
+---@field logicalGrid GamePlay.Grid.LogicalGrid
+---@field Instance Managers.MapManager
+Managers.MapManager = {}
+---@alias CS.Managers.MapManager Managers.MapManager
+CS.Managers.MapManager = Managers.MapManager
+
+---@return UnityEngine.GameObject
+function Managers.MapManager:GetFirstPrefab() end
+function Managers.MapManager:ListAllMaps() end
+function Managers.MapManager:SaveMap() end
+function Managers.MapManager:LoadMap() end
+function Managers.MapManager:SaveToSO() end
+function Managers.MapManager:LoadFromSO() end
+---@param gridPos UnityEngine.Vector3Int
+---@return UnityEngine.Vector3
+function Managers.MapManager:GetWorldPosition(gridPos) end
+function Managers.MapManager:ClearMap() end
+---@param out_minBounds UnityEngine.Vector2
+---@param out_maxBounds UnityEngine.Vector2
+---@return ,UnityEngine.Vector2,UnityEngine.Vector2
+function Managers.MapManager:GetMapBounds(out_minBounds, out_maxBounds) end
+function Managers.MapManager:initVoxel() end
+
+---@class Managers.GameFlowType
+---@field MapSelection Managers.GameFlowType
+---@field BattleLoading Managers.GameFlowType
+---@field Battle Managers.GameFlowType
+---@field BattleEnd Managers.GameFlowType
+Managers.GameFlowType = {}
+---@alias CS.Managers.GameFlowType Managers.GameFlowType
+CS.Managers.GameFlowType = Managers.GameFlowType
+
+
+---@class Managers.RunManager : UnityEngine.MonoBehaviour
+---@field Relics System.Collections.Generic.List
+---@field MyTeam System.Collections.Generic.List
+---@field Instance Managers.RunManager
+Managers.RunManager = {}
+---@alias CS.Managers.RunManager Managers.RunManager
+CS.Managers.RunManager = Managers.RunManager
+
+---@param relic GamePlay.Relics.RelicBase
+function Managers.RunManager:AddRelic(relic) end
+---@param savedCharacters System.Collections.Generic.List
+---@return Cysharp.Threading.Tasks.UniTask
+function Managers.RunManager:PopulateFromSaveData(savedCharacters) end
+
+---@class Managers.ShaderManager : UnityEngine.MonoBehaviour
+---@field Instance Managers.ShaderManager
+Managers.ShaderManager = {}
+---@alias CS.Managers.ShaderManager Managers.ShaderManager
+CS.Managers.ShaderManager = Managers.ShaderManager
+
+---@param skyTint UnityEngine.Color
+---@param exposure number
+function Managers.ShaderManager:UpdateSkyboxParameters(skyTint, exposure) end
+
+---@class Managers.BattleUIManager : UnityEngine.MonoBehaviour
+---@field Instance Managers.BattleUIManager
+---@field SelectedSkill GamePlay.Skill.SkillDataSO
+---@field CurrentUnit GamePlay.Units.MapUnit
+Managers.BattleUIManager = {}
+---@alias CS.Managers.BattleUIManager Managers.BattleUIManager
+CS.Managers.BattleUIManager = Managers.BattleUIManager
+
+---@param unit GamePlay.Units.MapUnit
+function Managers.BattleUIManager:ShowActionMenu(unit) end
+function Managers.BattleUIManager:HideActionMenu() end
+---@param unit GamePlay.Units.MapUnit
+function Managers.BattleUIManager:ShowSkillMenu(unit) end
+function Managers.BattleUIManager:PopPanel() end
+---@param unit GamePlay.Units.MapUnit
+function Managers.BattleUIManager:ShowAttributePanel(unit) end
+function Managers.BattleUIManager:HideAttributePanel() end
+---@param skill GamePlay.Skill.SkillDataSO
+function Managers.BattleUIManager:OnSkillSelected(skill) end
+
+---@class Managers.UILayer
+---@field Background Managers.UILayer
+---@field Window Managers.UILayer
+---@field Popup Managers.UILayer
+---@field Topmost Managers.UILayer
+Managers.UILayer = {}
+---@alias CS.Managers.UILayer Managers.UILayer
+CS.Managers.UILayer = Managers.UILayer
+
+
+---@class Managers.UIManager : UnityEngine.MonoBehaviour
+---@field Instance Managers.UIManager
+---@field Background UnityEngine.Transform
+---@field Window UnityEngine.Transform
+---@field Popup UnityEngine.Transform
+---@field Topmost UnityEngine.Transform
+Managers.UIManager = {}
+---@alias CS.Managers.UIManager Managers.UIManager
+CS.Managers.UIManager = Managers.UIManager
+
+---@param panelType System.Type
+---@param data System.Object
+---@param layer Managers.UILayer
+---@return UI.Panel.BaseUIPanel
+function Managers.UIManager:OpenPanel(panelType, data, layer) end
+function Managers.UIManager:CloseAllPanels() end
+function Managers.UIManager:DestroyAllPanels() end
+
+---@class Managers.UnitManager : UnityEngine.MonoBehaviour
+---@field onUnitDead System.Action
+---@field Instance Managers.UnitManager
+Managers.UnitManager = {}
+---@alias CS.Managers.UnitManager Managers.UnitManager
+CS.Managers.UnitManager = Managers.UnitManager
+
+---@param unit GamePlay.Units.MapUnit
+function Managers.UnitManager:RegisterUnit(unit) end
+---@param unit GamePlay.Units.MapUnit
+function Managers.UnitManager:UnregisterUnit(unit) end
+---@param unit GamePlay.Units.MapUnit
+---@param ref_oldPos UnityEngine.Vector3Int
+---@return ,UnityEngine.Vector3Int
+function Managers.UnitManager:UpdateUnitPosition(unit, ref_oldPos) end
+---@param ref_pos UnityEngine.Vector3Int
+---@return GamePlay.Units.MapUnit,UnityEngine.Vector3Int
+function Managers.UnitManager:GetUnitAt(ref_pos) end
+---@param faction Global.FactionType
+---@return System.Collections.Generic.List
+function Managers.UnitManager:GetUnitsByFaction(faction) end
+---@return System.Collections.Generic.List
+function Managers.UnitManager:GetAllUnits() end
+function Managers.UnitManager:AllUnitOnStay() end
+---@param unit GamePlay.Units.MapUnit
+function Managers.UnitManager:unitOnStay(unit) end
+---@return System.Collections.Generic.List
+function Managers.UnitManager:GetAllAlivePlayers() end
+---@return System.Collections.Generic.List
+function Managers.UnitManager:GetAllAliveUnit() end
+
 ---@class Lua.BuffLuaWrapper : GamePlay.Buff.BuffBase
 ---@field LuaInstance XLua.LuaTable
 Lua.BuffLuaWrapper = {}
@@ -9353,6 +9520,31 @@ CS.Lua.LuaStatHelper = Lua.LuaStatHelper
 ---@param type number
 ---@return Status.state.StatModifier
 function Lua.LuaStatHelper.NewStatModifier(value, type) end
+
+---@class Lua.ScriptFunctionResolver : System.Object
+Lua.ScriptFunctionResolver = {}
+---@alias CS.Lua.ScriptFunctionResolver Lua.ScriptFunctionResolver
+CS.Lua.ScriptFunctionResolver = Lua.ScriptFunctionResolver
+
+function Lua.ScriptFunctionResolver.ClearCache() end
+
+---@class Lua.SkillEvalContext : System.Object
+---@field Caster GamePlay.Units.MapUnit
+---@field TargetPosition UnityEngine.Vector3Int
+---@field PhaseIndex number
+---@field EffectIndex number
+---@field SkillData GamePlay.Skill.SkillDataSO
+---@field PreviousResults System.Collections.Generic.List
+---@field OriginalContext GamePlay.Skill.SkillTargetContext
+Lua.SkillEvalContext = {}
+---@alias CS.Lua.SkillEvalContext Lua.SkillEvalContext
+CS.Lua.SkillEvalContext = Lua.SkillEvalContext
+
+---@param caster GamePlay.Units.MapUnit
+---@param targetPosition UnityEngine.Vector3Int
+---@param skillData GamePlay.Skill.SkillDataSO
+---@return Lua.SkillEvalContext
+function Lua.SkillEvalContext.New(caster, targetPosition, skillData) end
 
 ---@class GamePlay.Visual.GridVisualManager : UnityEngine.MonoBehaviour
 ---@field Instance GamePlay.Visual.GridVisualManager
@@ -9652,6 +9844,8 @@ function GamePlay.Skill.PhaseResult.New(caster, targetPosition) end
 ---@field CastMaxRange number
 ---@field CastMinRange number
 ---@field CastVerticalRange number
+---@field CastRangeMode GamePlay.Skill.SkillPhaseCastRangeMode
+---@field CastRangeFuncName string
 ---@field Trajectory Global.TrajectoryType
 ---@field StopsAtFirstHit boolean
 ---@field Cost number
@@ -9751,6 +9945,22 @@ GamePlay.Skill.AoEOriginType = {}
 CS.GamePlay.Skill.AoEOriginType = GamePlay.Skill.AoEOriginType
 
 
+---@class GamePlay.Skill.SkillPhaseCastRangeMode
+---@field Standard GamePlay.Skill.SkillPhaseCastRangeMode
+---@field Script GamePlay.Skill.SkillPhaseCastRangeMode
+GamePlay.Skill.SkillPhaseCastRangeMode = {}
+---@alias CS.GamePlay.Skill.SkillPhaseCastRangeMode GamePlay.Skill.SkillPhaseCastRangeMode
+CS.GamePlay.Skill.SkillPhaseCastRangeMode = GamePlay.Skill.SkillPhaseCastRangeMode
+
+
+---@class GamePlay.Skill.SkillPhaseExecuteMode
+---@field Standard GamePlay.Skill.SkillPhaseExecuteMode
+---@field Script GamePlay.Skill.SkillPhaseExecuteMode
+GamePlay.Skill.SkillPhaseExecuteMode = {}
+---@alias CS.GamePlay.Skill.SkillPhaseExecuteMode GamePlay.Skill.SkillPhaseExecuteMode
+CS.GamePlay.Skill.SkillPhaseExecuteMode = GamePlay.Skill.SkillPhaseExecuteMode
+
+
 ---@class GamePlay.Skill.SkillPhase : System.Object
 ---@field PhaseName string
 ---@field TargetType GamePlay.Skill.TargetType
@@ -9760,6 +9970,8 @@ CS.GamePlay.Skill.AoEOriginType = GamePlay.Skill.AoEOriginType
 ---@field OriginType GamePlay.Skill.AoEOriginType
 ---@field Effects System.Collections.Generic.List
 ---@field VisualData GamePlay.Skill.SkillVisualData
+---@field ExecuteMode GamePlay.Skill.SkillPhaseExecuteMode
+---@field ExecuteFuncName string
 GamePlay.Skill.SkillPhase = {}
 ---@alias CS.GamePlay.Skill.SkillPhase GamePlay.Skill.SkillPhase
 CS.GamePlay.Skill.SkillPhase = GamePlay.Skill.SkillPhase
@@ -11155,6 +11367,245 @@ function Status.state.StatSystem:RecalculateAll() end
 ---@param action System.Action
 function Status.state.StatSystem:onChanged(action) end
 
+---@class Global.AttackRangeType
+---@field Melee Global.AttackRangeType
+---@field Archer Global.AttackRangeType
+---@field Magic Global.AttackRangeType
+---@field Lancer Global.AttackRangeType
+Global.AttackRangeType = {}
+---@alias CS.Global.AttackRangeType Global.AttackRangeType
+CS.Global.AttackRangeType = Global.AttackRangeType
+
+
+---@class Global.AttackPatternType
+---@field Diamond Global.AttackPatternType
+---@field Square Global.AttackPatternType
+---@field Line Global.AttackPatternType
+---@field Cone Global.AttackPatternType
+---@field Ring Global.AttackPatternType
+Global.AttackPatternType = {}
+---@alias CS.Global.AttackPatternType Global.AttackPatternType
+CS.Global.AttackPatternType = Global.AttackPatternType
+
+
+---@class Global.CastPatternType
+---@field Diamond Global.CastPatternType
+---@field Square Global.CastPatternType
+---@field Line Global.CastPatternType
+---@field Global Global.CastPatternType
+Global.CastPatternType = {}
+---@alias CS.Global.CastPatternType Global.CastPatternType
+CS.Global.CastPatternType = Global.CastPatternType
+
+
+---@class Global.AoEPatternType
+---@field SingleTarget Global.AoEPatternType
+---@field Cross Global.AoEPatternType
+---@field Diamond Global.AoEPatternType
+---@field Square Global.AoEPatternType
+---@field Cone Global.AoEPatternType
+---@field LinePiercing Global.AoEPatternType
+---@field Ring Global.AoEPatternType
+Global.AoEPatternType = {}
+---@alias CS.Global.AoEPatternType Global.AoEPatternType
+CS.Global.AoEPatternType = Global.AoEPatternType
+
+
+---@class Global.LevelRewardType
+---@field StatGrowth Global.LevelRewardType
+---@field UnlockSkill Global.LevelRewardType
+---@field UpgradeSkill Global.LevelRewardType
+---@field UnlockPassive Global.LevelRewardType
+---@field Custom Global.LevelRewardType
+Global.LevelRewardType = {}
+---@alias CS.Global.LevelRewardType Global.LevelRewardType
+CS.Global.LevelRewardType = Global.LevelRewardType
+
+
+---@class Global.MoveType
+---@field Ground Global.MoveType
+---@field Flying Global.MoveType
+---@field Amphibious Global.MoveType
+Global.MoveType = {}
+---@alias CS.Global.MoveType Global.MoveType
+CS.Global.MoveType = Global.MoveType
+
+
+---@class Global.UnitState
+---@field Idle Global.UnitState
+---@field Moving Global.UnitState
+---@field Attacking Global.UnitState
+---@field Hit Global.UnitState
+---@field Dead Global.UnitState
+Global.UnitState = {}
+---@alias CS.Global.UnitState Global.UnitState
+CS.Global.UnitState = Global.UnitState
+
+
+---@class Global.RarityType
+---@field Common Global.RarityType
+---@field Uncommon Global.RarityType
+---@field Rare Global.RarityType
+---@field Epic Global.RarityType
+---@field Legendary Global.RarityType
+Global.RarityType = {}
+---@alias CS.Global.RarityType Global.RarityType
+CS.Global.RarityType = Global.RarityType
+
+
+---@class Global.BlockType
+---@field Air Global.BlockType
+---@field Solid Global.BlockType
+---@field Slab Global.BlockType
+---@field Stairs Global.BlockType
+---@field Liquid Global.BlockType
+Global.BlockType = {}
+---@alias CS.Global.BlockType Global.BlockType
+CS.Global.BlockType = Global.BlockType
+
+
+---@class Global.TrajectoryType
+---@field LineOfSight Global.TrajectoryType
+---@field Parabola Global.TrajectoryType
+---@field SkyDrop Global.TrajectoryType
+---@field Direct Global.TrajectoryType
+Global.TrajectoryType = {}
+---@alias CS.Global.TrajectoryType Global.TrajectoryType
+CS.Global.TrajectoryType = Global.TrajectoryType
+
+
+---@class Global.FactionType
+---@field Player Global.FactionType
+---@field Enemy Global.FactionType
+---@field Neutral Global.FactionType
+---@field Guard Global.FactionType
+Global.FactionType = {}
+---@alias CS.Global.FactionType Global.FactionType
+CS.Global.FactionType = Global.FactionType
+
+
+---@class Global.DamageType
+---@field Physical Global.DamageType
+---@field Magic Global.DamageType
+---@field Fire Global.DamageType
+---@field Poison Global.DamageType
+---@field Ice Global.DamageType
+---@field True Global.DamageType
+---@field Heal Global.DamageType
+Global.DamageType = {}
+---@alias CS.Global.DamageType Global.DamageType
+CS.Global.DamageType = Global.DamageType
+
+
+---@class Global.DamageMethod
+---@field Normal Global.DamageMethod
+---@field Skill Global.DamageMethod
+---@field Environment Global.DamageMethod
+Global.DamageMethod = {}
+---@alias CS.Global.DamageMethod Global.DamageMethod
+CS.Global.DamageMethod = Global.DamageMethod
+
+
+---@class Global.TransitType
+---@field None Global.TransitType
+---@field Projectile Global.TransitType
+---@field Teleport Global.TransitType
+Global.TransitType = {}
+---@alias CS.Global.TransitType Global.TransitType
+CS.Global.TransitType = Global.TransitType
+
+
+---@class Global.UnitFacing
+---@field North Global.UnitFacing
+---@field East Global.UnitFacing
+---@field South Global.UnitFacing
+---@field West Global.UnitFacing
+Global.UnitFacing = {}
+---@alias CS.Global.UnitFacing Global.UnitFacing
+CS.Global.UnitFacing = Global.UnitFacing
+
+
+---@class Global.MathTool : System.Object
+Global.MathTool = {}
+---@alias CS.Global.MathTool Global.MathTool
+CS.Global.MathTool = Global.MathTool
+
+---@param vector3 UnityEngine.Vector3
+---@return UnityEngine.Vector3Int
+function Global.MathTool.SP_RoundToInt(vector3) end
+---@param hitPos UnityEngine.Vector3
+---@param normal UnityEngine.Vector3
+---@return UnityEngine.Vector3Int
+function Global.MathTool.HitPosToGridPos(hitPos, normal) end
+
+---@class Global.GridPositionTool : System.Object
+Global.GridPositionTool = {}
+---@alias CS.Global.GridPositionTool Global.GridPositionTool
+CS.Global.GridPositionTool = Global.GridPositionTool
+
+---@param worldPos UnityEngine.Vector3
+---@return UnityEngine.Vector3Int
+function Global.GridPositionTool.WorldToLogicPosition(worldPos) end
+---@param logicPos UnityEngine.Vector3Int
+---@param blockHeight number
+---@return UnityEngine.Vector3
+function Global.GridPositionTool.LogicToWorldPosition(logicPos, blockHeight) end
+---@param unit GamePlay.Units.MapUnit
+---@return UnityEngine.Vector3Int
+function Global.GridPositionTool.GetUnitFloorPosition(unit) end
+---@param pos UnityEngine.Vector3Int
+---@return boolean
+function Global.GridPositionTool.IsValidFloorPosition(pos) end
+---@overload fun(cam: UnityEngine.Camera, out_pos: UnityEngine.Vector3Int) : boolean, UnityEngine.Vector3Int
+---@param cam UnityEngine.Camera
+---@param screenPos UnityEngine.Vector2
+---@param out_pos UnityEngine.Vector3Int
+---@return boolean,UnityEngine.Vector3Int
+function Global.GridPositionTool.TryGetMouseGridPosition(cam, screenPos, out_pos) end
+
+---@class Global.FacingTool : System.Object
+Global.FacingTool = {}
+---@alias CS.Global.FacingTool Global.FacingTool
+CS.Global.FacingTool = Global.FacingTool
+
+---@param facing Global.UnitFacing
+---@return UnityEngine.Vector3Int
+function Global.FacingTool.FacingToDirection(facing) end
+---@param direction UnityEngine.Vector3Int
+---@return Global.UnitFacing
+function Global.FacingTool.DirectionToFacing(direction) end
+---@param facing Global.UnitFacing
+---@return number
+function Global.FacingTool.FacingToRotationY(facing) end
+---@param rotationY number
+---@return Global.UnitFacing
+function Global.FacingTool.RotationYToFacing(rotationY) end
+---@param from UnityEngine.Vector3Int
+---@param to UnityEngine.Vector3Int
+---@return UnityEngine.Vector3Int
+function Global.FacingTool.CalculateDirection(from, to) end
+---@param from UnityEngine.Vector3Int
+---@param to UnityEngine.Vector3Int
+---@return Global.UnitFacing
+function Global.FacingTool.CalculateFacing(from, to) end
+---@param direction UnityEngine.Vector3
+---@return Global.UnitFacing
+function Global.FacingTool.GetNearestCardinalFacing(direction) end
+
+---@class Global.CharacterMeta : System.Object
+---@field Data Character.data.CharacterData
+---@field Level number
+---@field BonusHp number
+---@field BonusAtk number
+---@field BonusDef number
+---@field BonusRes number
+Global.CharacterMeta = {}
+---@alias CS.Global.CharacterMeta Global.CharacterMeta
+CS.Global.CharacterMeta = Global.CharacterMeta
+
+---@return Global.CharacterMeta
+function Global.CharacterMeta.New() end
+
 ---@class Core.System.FactionSystem : System.Object
 Core.System.FactionSystem = {}
 ---@alias CS.Core.System.FactionSystem Core.System.FactionSystem
@@ -11406,6 +11857,119 @@ CS.Core.Data.Persistent.SaveData = Core.Data.Persistent.SaveData
 
 ---@return Core.Data.Persistent.SaveData
 function Core.Data.Persistent.SaveData.New() end
+
+---@class Command.ICommand
+Command.ICommand = {}
+---@alias CS.Command.ICommand Command.ICommand
+CS.Command.ICommand = Command.ICommand
+
+function Command.ICommand:Execute() end
+function Command.ICommand:Undo() end
+
+---@class Command.CommandInvoker : UnityEngine.MonoBehaviour
+Command.CommandInvoker = {}
+---@alias CS.Command.CommandInvoker Command.CommandInvoker
+CS.Command.CommandInvoker = Command.CommandInvoker
+
+---@param command Command.ICommand
+function Command.CommandInvoker:ExecuteCommand(command) end
+function Command.CommandInvoker:Undo() end
+function Command.CommandInvoker:ClearHistory() end
+
+---@class Command.ITrackable
+Command.ITrackable = {}
+---@alias CS.Command.ITrackable Command.ITrackable
+CS.Command.ITrackable = Command.ITrackable
+
+---@return System.Object
+function Command.ITrackable:CaptureState() end
+---@param state System.Object
+function Command.ITrackable:RestoreState(state) end
+
+---@class Command.UndoSystem : UnityEngine.MonoBehaviour
+---@field Instance Command.UndoSystem
+Command.UndoSystem = {}
+---@alias CS.Command.UndoSystem Command.UndoSystem
+CS.Command.UndoSystem = Command.UndoSystem
+
+function Command.UndoSystem:BeginTransaction() end
+---@param target Command.ITrackable
+function Command.UndoSystem:RegisterDirty(target) end
+function Command.UndoSystem:CommitTransaction() end
+function Command.UndoSystem:Undo() end
+
+---@class Command.BuffSnapshotData : System.Object
+---@field buff GamePlay.Buff.BuffBase
+---@field stacks number
+Command.BuffSnapshotData = {}
+---@alias CS.Command.BuffSnapshotData Command.BuffSnapshotData
+CS.Command.BuffSnapshotData = Command.BuffSnapshotData
+
+---@param buff GamePlay.Buff.BuffBase
+---@param stacks number
+---@return Command.BuffSnapshotData
+function Command.BuffSnapshotData.New(buff, stacks) end
+
+---@class Command.UnitSnapshot : System.Object
+---@field GridPosition UnityEngine.Vector3Int
+---@field CurrentHP number
+---@field CurrentMP number
+---@field State Global.UnitState
+---@field ActiveBuffs System.Collections.Generic.List
+---@field BuffSnapshots System.Collections.Generic.List
+---@field ActionPoints number
+---@field HasMoved boolean
+---@field PersonalEnemies System.Collections.Generic.HashSet
+Command.UnitSnapshot = {}
+---@alias CS.Command.UnitSnapshot Command.UnitSnapshot
+CS.Command.UnitSnapshot = Command.UnitSnapshot
+
+---@param unit GamePlay.Units.MapUnit
+---@return Command.UnitSnapshot
+function Command.UnitSnapshot.New(unit) end
+
+---@class Command.Tool : System.Object
+Command.Tool = {}
+---@alias CS.Command.Tool Command.Tool
+CS.Command.Tool = Command.Tool
+
+---@param cmd Command.BaseCommand
+---@return System.Collections.IEnumerator
+function Command.Tool.WaitUntilCommandFinish(cmd) end
+---@param cmd Command.BaseCommand
+---@param onComplete System.Action
+---@return System.Collections.IEnumerator
+function Command.Tool.ExecuteCommandWithCallback(cmd, onComplete) end
+
+---@class Command.BaseCommand : System.Object
+---@field IsFinished boolean
+Command.BaseCommand = {}
+---@alias CS.Command.BaseCommand Command.BaseCommand
+CS.Command.BaseCommand = Command.BaseCommand
+
+function Command.BaseCommand:Execute() end
+function Command.BaseCommand:Undo() end
+
+---@class Command.MoveCommand : Command.BaseCommand
+Command.MoveCommand = {}
+---@alias CS.Command.MoveCommand Command.MoveCommand
+CS.Command.MoveCommand = Command.MoveCommand
+
+---@param unit GamePlay.Units.MapUnit
+---@param path System.Collections.Generic.List
+---@return Command.MoveCommand
+function Command.MoveCommand.New(unit, path) end
+
+---@class Command.SkillCommand : Command.BaseCommand
+Command.SkillCommand = {}
+---@alias CS.Command.SkillCommand Command.SkillCommand
+CS.Command.SkillCommand = Command.SkillCommand
+
+---@param caster GamePlay.Units.MapUnit
+---@param skillData GamePlay.Skill.SkillDataSO
+---@param targetContext GamePlay.Skill.SkillTargetContext
+---@return Command.SkillCommand
+function Command.SkillCommand.New(caster, skillData, targetContext) end
 
 ---@class Character.ClassInternalID
 ---@field Warrior_Common Character.ClassInternalID
@@ -11926,6 +12490,18 @@ Core.Data.TableData.UnitConfig = {}
 CS.Core.Data.TableData.UnitConfig = Core.Data.TableData.UnitConfig
 
 
+---@class Command.UndoSystem.Transaction : System.Object
+---@field Records System.Collections.Generic.Dictionary
+Command.UndoSystem.Transaction = {}
+---@alias CS.Command.UndoSystem.Transaction Command.UndoSystem.Transaction
+CS.Command.UndoSystem.Transaction = Command.UndoSystem.Transaction
+
+---@return Command.UndoSystem.Transaction
+function Command.UndoSystem.Transaction.New() end
+---@param target Command.ITrackable
+function Command.UndoSystem.Transaction:RegisterOriginalState(target) end
+function Command.UndoSystem.Transaction:Undo() end
+
 ---@class Character.ClassIDs.Warrior : System.Object
 ---@field Base Character.ClassInternalID
 Character.ClassIDs.Warrior = {}
@@ -11994,6 +12570,31 @@ CS.MapEditor = MapEditor
 ---@return MapEditor
 function MapEditor.New() end
 function MapEditor:OnInspectorGUI() end
+
+---@class SkillDataSOEditor : UnityEditor.Editor
+SkillDataSOEditor = {}
+---@alias CS.SkillDataSOEditor SkillDataSOEditor
+CS.SkillDataSOEditor = SkillDataSOEditor
+
+---@return SkillDataSOEditor
+function SkillDataSOEditor.New() end
+function SkillDataSOEditor:OnInspectorGUI() end
+
+---@class SkillPhaseDrawer : UnityEditor.PropertyDrawer
+SkillPhaseDrawer = {}
+---@alias CS.SkillPhaseDrawer SkillPhaseDrawer
+CS.SkillPhaseDrawer = SkillPhaseDrawer
+
+---@return SkillPhaseDrawer
+function SkillPhaseDrawer.New() end
+---@param position UnityEngine.Rect
+---@param property UnityEditor.SerializedProperty
+---@param label UnityEngine.GUIContent
+function SkillPhaseDrawer:OnGUI(position, property, label) end
+---@param property UnityEditor.SerializedProperty
+---@param label UnityEngine.GUIContent
+---@return number
+function SkillPhaseDrawer:GetPropertyHeight(property, label) end
 
 ---@class CustomLitShaderGUI : UnityEditor.BaseShaderGUI
 CustomLitShaderGUI = {}
@@ -19400,607 +20001,3 @@ CS.UnityEngine.Rendering.HDROutputUtils.ShaderKeywords = UnityEngine.Rendering.H
 UnityEngine.Rendering.HDROutputUtils.ShaderPropertyId = {}
 ---@alias CS.UnityEngine.Rendering.HDROutputUtils.ShaderPropertyId UnityEngine.Rendering.HDROutputUtils.ShaderPropertyId
 CS.UnityEngine.Rendering.HDROutputUtils.ShaderPropertyId = UnityEngine.Rendering.HDROutputUtils.ShaderPropertyId
-
-
----@class UnityEngine.Rendering.ReloadAttribute.Package
----@field Builtin UnityEngine.Rendering.ReloadAttribute.Package
----@field Root UnityEngine.Rendering.ReloadAttribute.Package
----@field BuiltinExtra UnityEngine.Rendering.ReloadAttribute.Package
-UnityEngine.Rendering.ReloadAttribute.Package = {}
----@alias CS.UnityEngine.Rendering.ReloadAttribute.Package UnityEngine.Rendering.ReloadAttribute.Package
-CS.UnityEngine.Rendering.ReloadAttribute.Package = UnityEngine.Rendering.ReloadAttribute.Package
-
-
----@class UnityEngine.Rendering.SceneRenderPipeline.SceneRenderPipelineAnalytic : System.Object
-UnityEngine.Rendering.SceneRenderPipeline.SceneRenderPipelineAnalytic = {}
----@alias CS.UnityEngine.Rendering.SceneRenderPipeline.SceneRenderPipelineAnalytic UnityEngine.Rendering.SceneRenderPipeline.SceneRenderPipelineAnalytic
-CS.UnityEngine.Rendering.SceneRenderPipeline.SceneRenderPipelineAnalytic = UnityEngine.Rendering.SceneRenderPipeline.SceneRenderPipelineAnalytic
-
-
----@class UnityEngine.Rendering.VolumeComponent.Indent : UnityEngine.PropertyAttribute
----@field relativeAmount number
-UnityEngine.Rendering.VolumeComponent.Indent = {}
----@alias CS.UnityEngine.Rendering.VolumeComponent.Indent UnityEngine.Rendering.VolumeComponent.Indent
-CS.UnityEngine.Rendering.VolumeComponent.Indent = UnityEngine.Rendering.VolumeComponent.Indent
-
----@param relativeAmount number
----@return UnityEngine.Rendering.VolumeComponent.Indent
-function UnityEngine.Rendering.VolumeComponent.Indent.New(relativeAmount) end
-
----@class UnityEngine.Rendering.BoolParameter.DisplayType
----@field Checkbox UnityEngine.Rendering.BoolParameter.DisplayType
----@field EnumPopup UnityEngine.Rendering.BoolParameter.DisplayType
-UnityEngine.Rendering.BoolParameter.DisplayType = {}
----@alias CS.UnityEngine.Rendering.BoolParameter.DisplayType UnityEngine.Rendering.BoolParameter.DisplayType
-CS.UnityEngine.Rendering.BoolParameter.DisplayType = UnityEngine.Rendering.BoolParameter.DisplayType
-
-
----@class UnityEngine.Rendering.DynamicArray.RangeEnumerable.RangeIterator : System.ValueType
----@field Current T&
-UnityEngine.Rendering.DynamicArray.RangeEnumerable.RangeIterator = {}
----@alias CS.UnityEngine.Rendering.DynamicArray.RangeEnumerable.RangeIterator UnityEngine.Rendering.DynamicArray.RangeEnumerable.RangeIterator
-CS.UnityEngine.Rendering.DynamicArray.RangeEnumerable.RangeIterator = UnityEngine.Rendering.DynamicArray.RangeEnumerable.RangeIterator
-
----@param setOwner UnityEngine.Rendering.DynamicArray[T]
----@param first number
----@param numItems number
----@return UnityEngine.Rendering.DynamicArray.RangeEnumerable.RangeIterator
-function UnityEngine.Rendering.DynamicArray.RangeEnumerable.RangeIterator.New(setOwner, first, numItems) end
----@return boolean
-function UnityEngine.Rendering.DynamicArray.RangeEnumerable.RangeIterator:MoveNext() end
-function UnityEngine.Rendering.DynamicArray.RangeEnumerable.RangeIterator:Reset() end
-
----@class UnityEngine.Rendering.DebugUI.Foldout.ContextMenuItem : System.ValueType
----@field displayName string
----@field action System.Action
-UnityEngine.Rendering.DebugUI.Foldout.ContextMenuItem = {}
----@alias CS.UnityEngine.Rendering.DebugUI.Foldout.ContextMenuItem UnityEngine.Rendering.DebugUI.Foldout.ContextMenuItem
-CS.UnityEngine.Rendering.DebugUI.Foldout.ContextMenuItem = UnityEngine.Rendering.DebugUI.Foldout.ContextMenuItem
-
-
----@class UnityEngine.Rendering.DebugUI.Table.Row : UnityEngine.Rendering.DebugUI.Foldout
-UnityEngine.Rendering.DebugUI.Table.Row = {}
----@alias CS.UnityEngine.Rendering.DebugUI.Table.Row UnityEngine.Rendering.DebugUI.Table.Row
-CS.UnityEngine.Rendering.DebugUI.Table.Row = UnityEngine.Rendering.DebugUI.Table.Row
-
----@return UnityEngine.Rendering.DebugUI.Table.Row
-function UnityEngine.Rendering.DebugUI.Table.Row.New() end
-
----@class UnityEngine.Rendering.DebugUI.Widget.NameAndTooltip : System.ValueType
----@field name string
----@field tooltip string
-UnityEngine.Rendering.DebugUI.Widget.NameAndTooltip = {}
----@alias CS.UnityEngine.Rendering.DebugUI.Widget.NameAndTooltip UnityEngine.Rendering.DebugUI.Widget.NameAndTooltip
-CS.UnityEngine.Rendering.DebugUI.Widget.NameAndTooltip = UnityEngine.Rendering.DebugUI.Widget.NameAndTooltip
-
-
----@class UnityEngine.Rendering.DebugUI.MessageBox.Style
----@field Info UnityEngine.Rendering.DebugUI.MessageBox.Style
----@field Warning UnityEngine.Rendering.DebugUI.MessageBox.Style
----@field Error UnityEngine.Rendering.DebugUI.MessageBox.Style
-UnityEngine.Rendering.DebugUI.MessageBox.Style = {}
----@alias CS.UnityEngine.Rendering.DebugUI.MessageBox.Style UnityEngine.Rendering.DebugUI.MessageBox.Style
-CS.UnityEngine.Rendering.DebugUI.MessageBox.Style = UnityEngine.Rendering.DebugUI.MessageBox.Style
-
-
----@class UnityEngine.Rendering.ProbeReferenceVolume.Cell.PerScenarioData : System.ValueType
----@field shL0L1RxData Unity.Collections.NativeArray
----@field shL1GL1RyData Unity.Collections.NativeArray
----@field shL1BL1RzData Unity.Collections.NativeArray
----@field shL2Data_0 Unity.Collections.NativeArray
----@field shL2Data_1 Unity.Collections.NativeArray
----@field shL2Data_2 Unity.Collections.NativeArray
----@field shL2Data_3 Unity.Collections.NativeArray
-UnityEngine.Rendering.ProbeReferenceVolume.Cell.PerScenarioData = {}
----@alias CS.UnityEngine.Rendering.ProbeReferenceVolume.Cell.PerScenarioData UnityEngine.Rendering.ProbeReferenceVolume.Cell.PerScenarioData
-CS.UnityEngine.Rendering.ProbeReferenceVolume.Cell.PerScenarioData = UnityEngine.Rendering.ProbeReferenceVolume.Cell.PerScenarioData
-
-
----@class UnityEngine.Rendering.GIContributors.TerrainContributor.TreePrototype : System.ValueType
----@field component UnityEngine.MeshRenderer
----@field transform UnityEngine.Matrix4x4
----@field prefabBounds UnityEngine.Bounds
----@field instances System.Collections.Generic.List
-UnityEngine.Rendering.GIContributors.TerrainContributor.TreePrototype = {}
----@alias CS.UnityEngine.Rendering.GIContributors.TerrainContributor.TreePrototype UnityEngine.Rendering.GIContributors.TerrainContributor.TreePrototype
-CS.UnityEngine.Rendering.GIContributors.TerrainContributor.TreePrototype = UnityEngine.Rendering.GIContributors.TerrainContributor.TreePrototype
-
-
----@class UnityEngine.Rendering.AtlasAllocatorDynamic.AtlasNode.AtlasNodeFlags
----@field IsOccupied UnityEngine.Rendering.AtlasAllocatorDynamic.AtlasNode.AtlasNodeFlags
-UnityEngine.Rendering.AtlasAllocatorDynamic.AtlasNode.AtlasNodeFlags = {}
----@alias CS.UnityEngine.Rendering.AtlasAllocatorDynamic.AtlasNode.AtlasNodeFlags UnityEngine.Rendering.AtlasAllocatorDynamic.AtlasNode.AtlasNodeFlags
-CS.UnityEngine.Rendering.AtlasAllocatorDynamic.AtlasNode.AtlasNodeFlags = UnityEngine.Rendering.AtlasAllocatorDynamic.AtlasNode.AtlasNodeFlags
-
-
----@class UnityEngine.Rendering.SceneRenderPipeline.SceneRenderPipelineAnalytic.Data : System.ValueType
----@field scene_guid string
-UnityEngine.Rendering.SceneRenderPipeline.SceneRenderPipelineAnalytic.Data = {}
----@alias CS.UnityEngine.Rendering.SceneRenderPipeline.SceneRenderPipelineAnalytic.Data UnityEngine.Rendering.SceneRenderPipeline.SceneRenderPipelineAnalytic.Data
-CS.UnityEngine.Rendering.SceneRenderPipeline.SceneRenderPipelineAnalytic.Data = UnityEngine.Rendering.SceneRenderPipeline.SceneRenderPipelineAnalytic.Data
-
-
----@class UnityEngine.Rendering.SceneRenderPipeline.SceneRenderPipelineAnalytic.SceneExtensions : System.Object
-UnityEngine.Rendering.SceneRenderPipeline.SceneRenderPipelineAnalytic.SceneExtensions = {}
----@alias CS.UnityEngine.Rendering.SceneRenderPipeline.SceneRenderPipelineAnalytic.SceneExtensions UnityEngine.Rendering.SceneRenderPipeline.SceneRenderPipelineAnalytic.SceneExtensions
-CS.UnityEngine.Rendering.SceneRenderPipeline.SceneRenderPipelineAnalytic.SceneExtensions = UnityEngine.Rendering.SceneRenderPipeline.SceneRenderPipelineAnalytic.SceneExtensions
-
----@param scene UnityEngine.SceneManagement.Scene
----@return string
-function UnityEngine.Rendering.SceneRenderPipeline.SceneRenderPipelineAnalytic.SceneExtensions.GetGUID(scene) end
-
----@class UnityEngine.Rendering.SceneRenderPipeline.SceneRenderPipelineAnalytic.EditorAnalyticsExtensions : System.Object
-UnityEngine.Rendering.SceneRenderPipeline.SceneRenderPipelineAnalytic.EditorAnalyticsExtensions = {}
----@alias CS.UnityEngine.Rendering.SceneRenderPipeline.SceneRenderPipelineAnalytic.EditorAnalyticsExtensions UnityEngine.Rendering.SceneRenderPipeline.SceneRenderPipelineAnalytic.EditorAnalyticsExtensions
-CS.UnityEngine.Rendering.SceneRenderPipeline.SceneRenderPipelineAnalytic.EditorAnalyticsExtensions = UnityEngine.Rendering.SceneRenderPipeline.SceneRenderPipelineAnalytic.EditorAnalyticsExtensions
-
----@param eventName string
----@param maxEventPerHour number
----@param maxItems number
----@param vendorKey string
----@return boolean
-function UnityEngine.Rendering.SceneRenderPipeline.SceneRenderPipelineAnalytic.EditorAnalyticsExtensions.RegisterEventWithLimit(eventName, maxEventPerHour, maxItems, vendorKey) end
----@param eventName string
----@param parameters System.Object
----@return boolean
-function UnityEngine.Rendering.SceneRenderPipeline.SceneRenderPipelineAnalytic.EditorAnalyticsExtensions.SendEventWithLimit(eventName, parameters) end
-
----@class CinemachineShotClipEditor : UnityEditor.Timeline.ClipEditor
----@field TimelineGlobalToLocalTime CinemachineShotClipEditor.TimelineGlobalToLocalTimeDelegate
-CinemachineShotClipEditor = {}
----@alias CS.CinemachineShotClipEditor CinemachineShotClipEditor
-CS.CinemachineShotClipEditor = CinemachineShotClipEditor
-
----@return CinemachineShotClipEditor
-function CinemachineShotClipEditor.New() end
----@param clip UnityEngine.Timeline.TimelineClip
----@return UnityEditor.Timeline.ClipDrawOptions
-function CinemachineShotClipEditor:GetClipOptions(clip) end
----@param clip UnityEngine.Timeline.TimelineClip
-function CinemachineShotClipEditor:OnClipChanged(clip) end
----@param clip UnityEngine.Timeline.TimelineClip
----@param track UnityEngine.Timeline.TrackAsset
----@param clonedFrom UnityEngine.Timeline.TimelineClip
-function CinemachineShotClipEditor:OnCreate(clip, track, clonedFrom) end
----@param clip UnityEngine.Timeline.TimelineClip
----@param region UnityEditor.Timeline.ClipBackgroundRegion
-function CinemachineShotClipEditor:DrawBackground(clip, region) end
-
----@class CinemachineShotEditor : Cinemachine.Editor.BaseEditor
----@field AutoCreateShotFromSceneView boolean
----@field UseScrubbingCache boolean
-CinemachineShotEditor = {}
----@alias CS.CinemachineShotEditor CinemachineShotEditor
-CS.CinemachineShotEditor = CinemachineShotEditor
-
----@return CinemachineShotEditor
-function CinemachineShotEditor.New() end
----@return Cinemachine.CinemachineVirtualCameraBase
-function CinemachineShotEditor.CreatePassiveVcamFromSceneView() end
-function CinemachineShotEditor:OnInspectorGUI() end
-
----@class UnitySourceGeneratedAssemblyMonoScriptTypes_v1 : System.Object
-UnitySourceGeneratedAssemblyMonoScriptTypes_v1 = {}
----@alias CS.UnitySourceGeneratedAssemblyMonoScriptTypes_v1 UnitySourceGeneratedAssemblyMonoScriptTypes_v1
-CS.UnitySourceGeneratedAssemblyMonoScriptTypes_v1 = UnitySourceGeneratedAssemblyMonoScriptTypes_v1
-
----@return UnitySourceGeneratedAssemblyMonoScriptTypes_v1
-function UnitySourceGeneratedAssemblyMonoScriptTypes_v1.New() end
-
----@class CinemachineShotClipEditor.EditorInitialize : System.Object
-CinemachineShotClipEditor.EditorInitialize = {}
----@alias CS.CinemachineShotClipEditor.EditorInitialize CinemachineShotClipEditor.EditorInitialize
-CS.CinemachineShotClipEditor.EditorInitialize = CinemachineShotClipEditor.EditorInitialize
-
----@return CinemachineShotClipEditor.EditorInitialize
-function CinemachineShotClipEditor.EditorInitialize.New() end
-
----@class CinemachineShotClipEditor.TimelineGlobalToLocalTimeDelegate : System.MulticastDelegate
-CinemachineShotClipEditor.TimelineGlobalToLocalTimeDelegate = {}
----@alias CS.CinemachineShotClipEditor.TimelineGlobalToLocalTimeDelegate CinemachineShotClipEditor.TimelineGlobalToLocalTimeDelegate
-CS.CinemachineShotClipEditor.TimelineGlobalToLocalTimeDelegate = CinemachineShotClipEditor.TimelineGlobalToLocalTimeDelegate
-
----@param object System.Object
----@param method System.IntPtr
----@return CinemachineShotClipEditor.TimelineGlobalToLocalTimeDelegate
-function CinemachineShotClipEditor.TimelineGlobalToLocalTimeDelegate.New(object, method) end
----@param globalTime number
----@return number
-function CinemachineShotClipEditor.TimelineGlobalToLocalTimeDelegate:Invoke(globalTime) end
----@param globalTime number
----@param callback System.AsyncCallback
----@param object System.Object
----@return System.IAsyncResult
-function CinemachineShotClipEditor.TimelineGlobalToLocalTimeDelegate:BeginInvoke(globalTime, callback, object) end
----@param result System.IAsyncResult
----@return number
-function CinemachineShotClipEditor.TimelineGlobalToLocalTimeDelegate:EndInvoke(result) end
-
----@class CinemachineShotEditor.SyncCacheEnabledSetting : System.Object
-CinemachineShotEditor.SyncCacheEnabledSetting = {}
----@alias CS.CinemachineShotEditor.SyncCacheEnabledSetting CinemachineShotEditor.SyncCacheEnabledSetting
-CS.CinemachineShotEditor.SyncCacheEnabledSetting = CinemachineShotEditor.SyncCacheEnabledSetting
-
----@return CinemachineShotEditor.SyncCacheEnabledSetting
-function CinemachineShotEditor.SyncCacheEnabledSetting.New() end
-
----@class UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData : System.ValueType
----@field FilePathsData System.Byte[]
----@field TypesData System.Byte[]
----@field TotalTypes number
----@field TotalFiles number
----@field IsEditorOnly boolean
-UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData = {}
----@alias CS.UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData
-CS.UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData = UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData
-
-
----@class UnitySourceGeneratedAssemblyMonoScriptTypes_v1 : System.Object
-UnitySourceGeneratedAssemblyMonoScriptTypes_v1 = {}
----@alias CS.UnitySourceGeneratedAssemblyMonoScriptTypes_v1 UnitySourceGeneratedAssemblyMonoScriptTypes_v1
-CS.UnitySourceGeneratedAssemblyMonoScriptTypes_v1 = UnitySourceGeneratedAssemblyMonoScriptTypes_v1
-
----@return UnitySourceGeneratedAssemblyMonoScriptTypes_v1
-function UnitySourceGeneratedAssemblyMonoScriptTypes_v1.New() end
-
----@class UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData : System.ValueType
----@field FilePathsData System.Byte[]
----@field TypesData System.Byte[]
----@field TotalTypes number
----@field TotalFiles number
----@field IsEditorOnly boolean
-UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData = {}
----@alias CS.UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData
-CS.UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData = UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData
-
-
----@class UnitySourceGeneratedAssemblyMonoScriptTypes_v1 : System.Object
-UnitySourceGeneratedAssemblyMonoScriptTypes_v1 = {}
----@alias CS.UnitySourceGeneratedAssemblyMonoScriptTypes_v1 UnitySourceGeneratedAssemblyMonoScriptTypes_v1
-CS.UnitySourceGeneratedAssemblyMonoScriptTypes_v1 = UnitySourceGeneratedAssemblyMonoScriptTypes_v1
-
----@return UnitySourceGeneratedAssemblyMonoScriptTypes_v1
-function UnitySourceGeneratedAssemblyMonoScriptTypes_v1.New() end
-
----@class UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData : System.ValueType
----@field FilePathsData System.Byte[]
----@field TypesData System.Byte[]
----@field TotalTypes number
----@field TotalFiles number
----@field IsEditorOnly boolean
-UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData = {}
----@alias CS.UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData
-CS.UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData = UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData
-
-
----@class UnitySourceGeneratedAssemblyMonoScriptTypes_v1 : System.Object
-UnitySourceGeneratedAssemblyMonoScriptTypes_v1 = {}
----@alias CS.UnitySourceGeneratedAssemblyMonoScriptTypes_v1 UnitySourceGeneratedAssemblyMonoScriptTypes_v1
-CS.UnitySourceGeneratedAssemblyMonoScriptTypes_v1 = UnitySourceGeneratedAssemblyMonoScriptTypes_v1
-
----@return UnitySourceGeneratedAssemblyMonoScriptTypes_v1
-function UnitySourceGeneratedAssemblyMonoScriptTypes_v1.New() end
-
----@class UnityEngine.ProBuilder.Stl.FileType
----@field Ascii UnityEngine.ProBuilder.Stl.FileType
----@field Binary UnityEngine.ProBuilder.Stl.FileType
-UnityEngine.ProBuilder.Stl.FileType = {}
----@alias CS.UnityEngine.ProBuilder.Stl.FileType UnityEngine.ProBuilder.Stl.FileType
-CS.UnityEngine.ProBuilder.Stl.FileType = UnityEngine.ProBuilder.Stl.FileType
-
-
----@class UnityEngine.ProBuilder.Stl.pb_Stl : System.Object
-UnityEngine.ProBuilder.Stl.pb_Stl = {}
----@alias CS.UnityEngine.ProBuilder.Stl.pb_Stl UnityEngine.ProBuilder.Stl.pb_Stl
-CS.UnityEngine.ProBuilder.Stl.pb_Stl = UnityEngine.ProBuilder.Stl.pb_Stl
-
----@overload fun(path: string, mesh: UnityEngine.Mesh, type: UnityEngine.ProBuilder.Stl.FileType, convertToRightHandedCoordinates: boolean) : boolean
----@param path string
----@param meshes System.Collections.Generic.IList
----@param type UnityEngine.ProBuilder.Stl.FileType
----@param convertToRightHandedCoordinates boolean
----@return boolean
-function UnityEngine.ProBuilder.Stl.pb_Stl.WriteFile(path, meshes, type, convertToRightHandedCoordinates) end
----@overload fun(mesh: UnityEngine.Mesh, convertToRightHandedCoordinates: boolean) : string
----@param meshes System.Collections.Generic.IList
----@param convertToRightHandedCoordinates boolean
----@return string
-function UnityEngine.ProBuilder.Stl.pb_Stl.WriteString(meshes, convertToRightHandedCoordinates) end
-
----@class UnityEngine.ProBuilder.Stl.pb_Stl_Exporter : System.Object
-UnityEngine.ProBuilder.Stl.pb_Stl_Exporter = {}
----@alias CS.UnityEngine.ProBuilder.Stl.pb_Stl_Exporter UnityEngine.ProBuilder.Stl.pb_Stl_Exporter
-CS.UnityEngine.ProBuilder.Stl.pb_Stl_Exporter = UnityEngine.ProBuilder.Stl.pb_Stl_Exporter
-
----@param path string
----@param gameObjects UnityEngine.GameObject[]
----@param type UnityEngine.ProBuilder.Stl.FileType
----@return boolean
-function UnityEngine.ProBuilder.Stl.pb_Stl_Exporter.Export(path, gameObjects, type) end
-
----@class UnityEngine.ProBuilder.Stl.pb_Stl_Importer : System.Object
-UnityEngine.ProBuilder.Stl.pb_Stl_Importer = {}
----@alias CS.UnityEngine.ProBuilder.Stl.pb_Stl_Importer UnityEngine.ProBuilder.Stl.pb_Stl_Importer
-CS.UnityEngine.ProBuilder.Stl.pb_Stl_Importer = UnityEngine.ProBuilder.Stl.pb_Stl_Importer
-
----@param path string
----@return UnityEngine.Mesh[]
-function UnityEngine.ProBuilder.Stl.pb_Stl_Importer.Import(path) end
-
----@class UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData : System.ValueType
----@field FilePathsData System.Byte[]
----@field TypesData System.Byte[]
----@field TotalTypes number
----@field TotalFiles number
----@field IsEditorOnly boolean
-UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData = {}
----@alias CS.UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData
-CS.UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData = UnitySourceGeneratedAssemblyMonoScriptTypes_v1.MonoScriptData
-
-
----@class UnityEngine.ProBuilder.Stl.pb_Stl_Importer.Facet : System.Object
----@field normal UnityEngine.Vector3
----@field a UnityEngine.Vector3
----@field b UnityEngine.Vector3
----@field c UnityEngine.Vector3
-UnityEngine.ProBuilder.Stl.pb_Stl_Importer.Facet = {}
----@alias CS.UnityEngine.ProBuilder.Stl.pb_Stl_Importer.Facet UnityEngine.ProBuilder.Stl.pb_Stl_Importer.Facet
-CS.UnityEngine.ProBuilder.Stl.pb_Stl_Importer.Facet = UnityEngine.ProBuilder.Stl.pb_Stl_Importer.Facet
-
----@return UnityEngine.ProBuilder.Stl.pb_Stl_Importer.Facet
-function UnityEngine.ProBuilder.Stl.pb_Stl_Importer.Facet.New() end
----@return string
-function UnityEngine.ProBuilder.Stl.pb_Stl_Importer.Facet:ToString() end
-
----@class System.Runtime.CompilerServices.IsUnmanagedAttribute : System.Attribute
-System.Runtime.CompilerServices.IsUnmanagedAttribute = {}
----@alias CS.System.Runtime.CompilerServices.IsUnmanagedAttribute System.Runtime.CompilerServices.IsUnmanagedAttribute
-CS.System.Runtime.CompilerServices.IsUnmanagedAttribute = System.Runtime.CompilerServices.IsUnmanagedAttribute
-
----@return System.Runtime.CompilerServices.IsUnmanagedAttribute
-function System.Runtime.CompilerServices.IsUnmanagedAttribute.New() end
-
----@class DelegateList : System.Object
----@field Count number
-DelegateList = {}
----@alias CS.DelegateList DelegateList
-CS.DelegateList = DelegateList
-
----@param acquireFunc System.Func[System.Action[T],System.Collections.Generic.LinkedListNode[System.Action[T]]]
----@param releaseFunc System.Action[System.Collections.Generic.LinkedListNode[System.Action[T]]]
----@return DelegateList
-function DelegateList.New(acquireFunc, releaseFunc) end
----@return DelegateList
-function DelegateList.CreateWithGlobalCache() end
----@param action System.Action[T]
-function DelegateList:Add(action) end
----@param action System.Action[T]
-function DelegateList:Remove(action) end
----@param res T
-function DelegateList:Invoke(res) end
-function DelegateList:Clear() end
-
----@class ListWithEvents : System.Object
----@field Item T
----@field Count number
----@field IsReadOnly boolean
-ListWithEvents = {}
----@alias CS.ListWithEvents ListWithEvents
-CS.ListWithEvents = ListWithEvents
-
----@return ListWithEvents
-function ListWithEvents.New() end
----@param item T
-function ListWithEvents:Add(item) end
-function ListWithEvents:Clear() end
----@param item T
----@return boolean
-function ListWithEvents:Contains(item) end
----@param array T[]
----@param arrayIndex number
-function ListWithEvents:CopyTo(array, arrayIndex) end
----@return System.Collections.Generic.IEnumerator[T]
-function ListWithEvents:GetEnumerator() end
----@param item T
----@return number
-function ListWithEvents:IndexOf(item) end
----@param index number
----@param item T
-function ListWithEvents:Insert(index, item) end
----@param item T
----@return boolean
-function ListWithEvents:Remove(item) end
----@param index number
-function ListWithEvents:RemoveAt(index) end
-
----@class MonoBehaviourCallbackHooks : UnityEngine.ResourceManagement.Util.ComponentSingleton
----@field Instance MonoBehaviourCallbackHooks -- infered from UnityEngine.ResourceManagement.Util.ComponentSingleton`1[MonoBehaviourCallbackHooks]
-MonoBehaviourCallbackHooks = {}
----@alias CS.MonoBehaviourCallbackHooks MonoBehaviourCallbackHooks
-CS.MonoBehaviourCallbackHooks = MonoBehaviourCallbackHooks
-
-
----@class UnitySourceGeneratedAssemblyMonoScriptTypes_v1 : System.Object
-UnitySourceGeneratedAssemblyMonoScriptTypes_v1 = {}
----@alias CS.UnitySourceGeneratedAssemblyMonoScriptTypes_v1 UnitySourceGeneratedAssemblyMonoScriptTypes_v1
-CS.UnitySourceGeneratedAssemblyMonoScriptTypes_v1 = UnitySourceGeneratedAssemblyMonoScriptTypes_v1
-
----@return UnitySourceGeneratedAssemblyMonoScriptTypes_v1
-function UnitySourceGeneratedAssemblyMonoScriptTypes_v1.New() end
-
----@class UnityEngine.ResourceManagement.ChainOperation : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationBase[TObject]
-UnityEngine.ResourceManagement.ChainOperation = {}
----@alias CS.UnityEngine.ResourceManagement.ChainOperation UnityEngine.ResourceManagement.ChainOperation
-CS.UnityEngine.ResourceManagement.ChainOperation = UnityEngine.ResourceManagement.ChainOperation
-
----@return UnityEngine.ResourceManagement.ChainOperation
-function UnityEngine.ResourceManagement.ChainOperation.New() end
----@param deps System.Collections.Generic.List
-function UnityEngine.ResourceManagement.ChainOperation:GetDependencies(deps) end
----@param dependentOp UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle[TObjectDependency]
----@param callback System.Func[UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle[TObjectDependency],UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle[TObject]]
----@param releaseDependenciesOnFailure boolean
-function UnityEngine.ResourceManagement.ChainOperation:Init(dependentOp, callback, releaseDependenciesOnFailure) end
-
----@class UnityEngine.ResourceManagement.ChainOperationTypelessDepedency : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationBase[TObject]
-UnityEngine.ResourceManagement.ChainOperationTypelessDepedency = {}
----@alias CS.UnityEngine.ResourceManagement.ChainOperationTypelessDepedency UnityEngine.ResourceManagement.ChainOperationTypelessDepedency
-CS.UnityEngine.ResourceManagement.ChainOperationTypelessDepedency = UnityEngine.ResourceManagement.ChainOperationTypelessDepedency
-
----@return UnityEngine.ResourceManagement.ChainOperationTypelessDepedency
-function UnityEngine.ResourceManagement.ChainOperationTypelessDepedency.New() end
----@param deps System.Collections.Generic.List
-function UnityEngine.ResourceManagement.ChainOperationTypelessDepedency:GetDependencies(deps) end
----@param dependentOp UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
----@param callback System.Func[UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle,UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle[TObject]]
----@param releaseDependenciesOnFailure boolean
-function UnityEngine.ResourceManagement.ChainOperationTypelessDepedency:Init(dependentOp, callback, releaseDependenciesOnFailure) end
-
----@class UnityEngine.ResourceManagement.ResourceManager : System.Object
----@field ExceptionHandler System.Action
----@field InternalIdTransformFunc System.Func
----@field WebRequestOverride System.Action
----@field Allocator UnityEngine.ResourceManagement.Util.IAllocationStrategy
----@field ResourceProviders System.Collections.Generic.IList
----@field CertificateHandlerInstance UnityEngine.Networking.CertificateHandler
-UnityEngine.ResourceManagement.ResourceManager = {}
----@alias CS.UnityEngine.ResourceManagement.ResourceManager UnityEngine.ResourceManagement.ResourceManager
-CS.UnityEngine.ResourceManagement.ResourceManager = UnityEngine.ResourceManagement.ResourceManager
-
----@param alloc UnityEngine.ResourceManagement.Util.IAllocationStrategy
----@return UnityEngine.ResourceManagement.ResourceManager
-function UnityEngine.ResourceManagement.ResourceManager.New(alloc) end
----@param location UnityEngine.ResourceManagement.ResourceLocations.IResourceLocation
----@return string
-function UnityEngine.ResourceManagement.ResourceManager:TransformInternalId(location) end
----@param receiver UnityEngine.ResourceManagement.IUpdateReceiver
-function UnityEngine.ResourceManagement.ResourceManager:AddUpdateReceiver(receiver) end
----@param receiver UnityEngine.ResourceManagement.IUpdateReceiver
-function UnityEngine.ResourceManagement.ResourceManager:RemoveUpdateReciever(receiver) end
-function UnityEngine.ResourceManagement.ResourceManager:ClearDiagnosticCallbacks() end
----@param func System.Action
-function UnityEngine.ResourceManagement.ResourceManager:UnregisterDiagnosticCallback(func) end
----@param func System.Action
-function UnityEngine.ResourceManagement.ResourceManager:RegisterDiagnosticCallback(func) end
----@param t System.Type
----@param location UnityEngine.ResourceManagement.ResourceLocations.IResourceLocation
----@return UnityEngine.ResourceManagement.ResourceProviders.IResourceProvider
-function UnityEngine.ResourceManagement.ResourceManager:GetResourceProvider(t, location) end
----@param handle UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
-function UnityEngine.ResourceManagement.ResourceManager:Release(handle) end
----@param handle UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
-function UnityEngine.ResourceManagement.ResourceManager:Acquire(handle) end
----@param operations System.Collections.Generic.List
----@param releasedCachedOpOnComplete boolean
----@return UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
-function UnityEngine.ResourceManagement.ResourceManager:CreateGenericGroupOperation(operations, releasedCachedOpOnComplete) end
----@overload fun(self: UnityEngine.ResourceManagement.ResourceManager, sceneProvider: UnityEngine.ResourceManagement.ResourceProviders.ISceneProvider, location: UnityEngine.ResourceManagement.ResourceLocations.IResourceLocation, loadSceneMode: UnityEngine.SceneManagement.LoadSceneMode, activateOnLoad: boolean, priority: number) : UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
----@param sceneProvider UnityEngine.ResourceManagement.ResourceProviders.ISceneProvider
----@param location UnityEngine.ResourceManagement.ResourceLocations.IResourceLocation
----@param loadSceneParameters UnityEngine.SceneManagement.LoadSceneParameters
----@param activateOnLoad boolean
----@param priority number
----@return UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
-function UnityEngine.ResourceManagement.ResourceManager:ProvideScene(sceneProvider, location, loadSceneParameters, activateOnLoad, priority) end
----@param sceneProvider UnityEngine.ResourceManagement.ResourceProviders.ISceneProvider
----@param sceneLoadHandle UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
----@return UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
-function UnityEngine.ResourceManagement.ResourceManager:ReleaseScene(sceneProvider, sceneLoadHandle) end
----@param provider UnityEngine.ResourceManagement.ResourceProviders.IInstanceProvider
----@param location UnityEngine.ResourceManagement.ResourceLocations.IResourceLocation
----@param instantiateParameters UnityEngine.ResourceManagement.ResourceProviders.InstantiationParameters
----@return UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle
-function UnityEngine.ResourceManagement.ResourceManager:ProvideInstance(provider, location, instantiateParameters) end
----@param scene UnityEngine.SceneManagement.Scene
-function UnityEngine.ResourceManagement.ResourceManager:CleanupSceneInstances(scene) end
-function UnityEngine.ResourceManagement.ResourceManager:Dispose() end
-
----@class UnityEngine.ResourceManagement.IUpdateReceiver
-UnityEngine.ResourceManagement.IUpdateReceiver = {}
----@alias CS.UnityEngine.ResourceManagement.IUpdateReceiver UnityEngine.ResourceManagement.IUpdateReceiver
-CS.UnityEngine.ResourceManagement.IUpdateReceiver = UnityEngine.ResourceManagement.IUpdateReceiver
-
----@param unscaledDeltaTime number
-function UnityEngine.ResourceManagement.IUpdateReceiver:Update(unscaledDeltaTime) end
-
----@class UnityEngine.ResourceManagement.WebRequestQueueOperation : System.Object
----@field Result UnityEngine.Networking.UnityWebRequestAsyncOperation
----@field OnComplete System.Action
----@field IsDone boolean
----@field WebRequest UnityEngine.Networking.UnityWebRequest
-UnityEngine.ResourceManagement.WebRequestQueueOperation = {}
----@alias CS.UnityEngine.ResourceManagement.WebRequestQueueOperation UnityEngine.ResourceManagement.WebRequestQueueOperation
-CS.UnityEngine.ResourceManagement.WebRequestQueueOperation = UnityEngine.ResourceManagement.WebRequestQueueOperation
-
----@param request UnityEngine.Networking.UnityWebRequest
----@return UnityEngine.ResourceManagement.WebRequestQueueOperation
-function UnityEngine.ResourceManagement.WebRequestQueueOperation.New(request) end
-
----@class UnityEngine.ResourceManagement.WebRequestQueue : System.Object
-UnityEngine.ResourceManagement.WebRequestQueue = {}
----@alias CS.UnityEngine.ResourceManagement.WebRequestQueue UnityEngine.ResourceManagement.WebRequestQueue
-CS.UnityEngine.ResourceManagement.WebRequestQueue = UnityEngine.ResourceManagement.WebRequestQueue
-
----@param maxRequests number
-function UnityEngine.ResourceManagement.WebRequestQueue.SetMaxConcurrentRequests(maxRequests) end
----@param request UnityEngine.Networking.UnityWebRequest
----@return UnityEngine.ResourceManagement.WebRequestQueueOperation
-function UnityEngine.ResourceManagement.WebRequestQueue.QueueRequest(request) end
----@param request UnityEngine.ResourceManagement.WebRequestQueueOperation
----@param millisecondsTimeout number
-function UnityEngine.ResourceManagement.WebRequestQueue.WaitForRequestToBeActive(request, millisecondsTimeout) end
-
----@class UnityEngine.ResourceManagement.Exceptions.ResourceManagerException : System.Exception
-UnityEngine.ResourceManagement.Exceptions.ResourceManagerException = {}
----@alias CS.UnityEngine.ResourceManagement.Exceptions.ResourceManagerException UnityEngine.ResourceManagement.Exceptions.ResourceManagerException
-CS.UnityEngine.ResourceManagement.Exceptions.ResourceManagerException = UnityEngine.ResourceManagement.Exceptions.ResourceManagerException
-
----@overload fun() : UnityEngine.ResourceManagement.Exceptions.ResourceManagerException
----@overload fun(message: string) : UnityEngine.ResourceManagement.Exceptions.ResourceManagerException
----@param message string
----@param innerException System.Exception
----@return UnityEngine.ResourceManagement.Exceptions.ResourceManagerException
-function UnityEngine.ResourceManagement.Exceptions.ResourceManagerException.New(message, innerException) end
----@return string
-function UnityEngine.ResourceManagement.Exceptions.ResourceManagerException:ToString() end
-
----@class UnityEngine.ResourceManagement.Exceptions.UnknownResourceProviderException : UnityEngine.ResourceManagement.Exceptions.ResourceManagerException
----@field Location UnityEngine.ResourceManagement.ResourceLocations.IResourceLocation
----@field Message string
-UnityEngine.ResourceManagement.Exceptions.UnknownResourceProviderException = {}
----@alias CS.UnityEngine.ResourceManagement.Exceptions.UnknownResourceProviderException UnityEngine.ResourceManagement.Exceptions.UnknownResourceProviderException
-CS.UnityEngine.ResourceManagement.Exceptions.UnknownResourceProviderException = UnityEngine.ResourceManagement.Exceptions.UnknownResourceProviderException
-
----@overload fun(location: UnityEngine.ResourceManagement.ResourceLocations.IResourceLocation) : UnityEngine.ResourceManagement.Exceptions.UnknownResourceProviderException
----@overload fun() : UnityEngine.ResourceManagement.Exceptions.UnknownResourceProviderException
----@overload fun(message: string) : UnityEngine.ResourceManagement.Exceptions.UnknownResourceProviderException
----@param message string
----@param innerException System.Exception
----@return UnityEngine.ResourceManagement.Exceptions.UnknownResourceProviderException
-function UnityEngine.ResourceManagement.Exceptions.UnknownResourceProviderException.New(message, innerException) end
----@return string
-function UnityEngine.ResourceManagement.Exceptions.UnknownResourceProviderException:ToString() end
-
----@class UnityEngine.ResourceManagement.Exceptions.OperationException : System.Exception
-UnityEngine.ResourceManagement.Exceptions.OperationException = {}
----@alias CS.UnityEngine.ResourceManagement.Exceptions.OperationException UnityEngine.ResourceManagement.Exceptions.OperationException
-CS.UnityEngine.ResourceManagement.Exceptions.OperationException = UnityEngine.ResourceManagement.Exceptions.OperationException
-
----@param message string
----@param innerException System.Exception
----@return UnityEngine.ResourceManagement.Exceptions.OperationException
-function UnityEngine.ResourceManagement.Exceptions.OperationException.New(message, innerException) end
----@return string
-function UnityEngine.ResourceManagement.Exceptions.OperationException:ToString() end
-
----@class UnityEngine.ResourceManagement.Exceptions.ProviderException : UnityEngine.ResourceManagement.Exceptions.OperationException
----@field Location UnityEngine.ResourceManagement.ResourceLocations.IResourceLocation
-UnityEngine.ResourceManagement.Exceptions.ProviderException = {}
----@alias CS.UnityEngine.ResourceManagement.Exceptions.ProviderException UnityEngine.ResourceManagement.Exceptions.ProviderException
-CS.UnityEngine.ResourceManagement.Exceptions.ProviderException = UnityEngine.ResourceManagement.Exceptions.ProviderException
-
----@param message string
----@param location UnityEngine.ResourceManagement.ResourceLocations.IResourceLocation
----@param innerException System.Exception
----@return UnityEngine.ResourceManagement.Exceptions.ProviderException
-function UnityEngine.ResourceManagement.Exceptions.ProviderException.New(message, location, innerException) end
