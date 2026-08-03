@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<SettingOptions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <GeneratePath>E:/unity/SRPG_2026/Assets/Script/LUA/EmmyLuaSnippetToolData/TypeHint</GeneratePath>
-  <TargetNamespacesStr>UnityEngine DG</TargetNamespacesStr>
-  <GenerateCSAlias>true</GenerateCSAlias>
-  <InferGenericFieldType>true</InferGenericFieldType>
-  <SingleFileMaxLine>10000</SingleFileMaxLine>
-</SettingOptions>

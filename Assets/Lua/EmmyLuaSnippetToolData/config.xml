@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<SettingOptions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <GeneratePath>E:/unity/SRPG_2026/Assets/Lua/TypeHint</GeneratePath>
-  <TargetNamespacesStr>UnityEngine DG GamePlay Lua Character Status System Core Global Managers Command</TargetNamespacesStr>
-  <GenerateCSAlias>true</GenerateCSAlias>
-  <InferGenericFieldType>true</InferGenericFieldType>
-  <SingleFileMaxLine>20000</SingleFileMaxLine>
-</SettingOptions>

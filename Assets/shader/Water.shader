@@ -57,9 +57,8 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
             #pragma multi_compile_fragment _ _REFLECTION_PROBE_BLENDING
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
-            // === 标准 PBR BRDF 库（labPBR 扩展：GGX NDF / Smith G2 / DirectBRDFSpecular_GGX）===
-            // 必须在 URP Lighting.hlsl 之前 include：它复用 UNIVERSAL_BRDF_INCLUDED guard，
-            // 先 include 才能让 URP 自带的 BRDF.hlsl 被跳过（与 CustomLit 管线同款做法）。
+            // 自定义 PBR BRDF（GGX NDF / Smith G2 / DirectBRDFSpecular_GGX）
+            // 须先于 URP Lighting.hlsl include：复用 UNIVERSAL_BRDF_INCLUDED guard 跳过 URP 自带 BRDF
             #include "Assets/shader/pbr/CustomBRDF.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
@@ -158,10 +157,8 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
                 return originLight * (1.0 - transmittance) * scatteringAlbedo * (phase);
             }
 
-            // === HZD 球形面光源近似（Horizon: Zero Dawn），Photon 移植 ===
-            // 已弃用：Newton 迭代在特定几何下存在跳变/NaN，会被锐利 NDF 放大成"擦除线"，
-            // 现改在 frag 内用"点光源 NoH² + 软太阳盘 smoothstep 平顶"替代（处处连续）。
-            // 保留本函数仅供比对/回退。
+            // === HZD 球形面光源近似（已弃用，保留供比对） ===
+            // Newton 迭代在特定几何下有跳变/NaN，会放大成"擦除线"；现改用点光源 NoH² + 软太阳盘。
             float get_NoH_squared(float NoL, float NoV, float LoV, float light_radius) {
                 float radius_cos = cos(light_radius);
                 float radius_tan = tan(light_radius);
@@ -312,28 +309,11 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
                 //sceneInScattering = sceneColor * accumTransmittance * uS * totalRayLength * Luminance(mainLight.color);
 
                 // === PBR 直接高光（标准 GGX Cook-Torrance，复用 CustomBRDF.hlsl）===
-                // 原实现：手写 Minimalist Cook-Torrance（URP 近似 D/(LoH^2*(roughness*4+2))），
-                // 且只乘 mainLight.color，缺 NdotL 与阴影衰减。以下保留供比对/回退。
-                // float3 H = SafeNormalize(L + V);
-                // float NoH = saturate(dot(N, H));
-                // float LoH = saturate(dot(L, H));
+                // 原手写 Cook-Torrance 实现（缺 NdotL/阴影衰减）已弃用，保留于提交历史。
 
                 float perceptualRoughness = 1.0 - _Smoothness;
-                // float roughness = perceptualRoughness * perceptualRoughness;
-                // float roughness2 = max(roughness * roughness, 0.0078125); 
 
-                // float d_denom = NoH * NoH * (roughness2 - 1.0) + 1.00001;
-                // float D = roughness2 / (d_denom * d_denom);
-                // float specularTerm = D / (max(0.1, LoH * LoH) * (roughness * 4.0 + 2.0));
-                // specularTerm = clamp(specularTerm, 0.0, 1000.0);
-                // float3 directSpecular = specularTerm * mainLight.color * F_Schlick(_Fresnel0, saturate(dot(H, V)));
-                // float3 directSpecular = specularTerm * mainLight.color * _Fresnel0;
-
-                // 双瓣高光（参考 Photon 水面）：specular = _Fresnel0（水的电介质 F0 ≈ 0.02）。
-                // 1) 宽光瓣 sheen：_Smoothness 控制，整片水面偏亮的湿润泛光。
-                // 2) 亮斑瓣 glint：_GlintSmoothness（高光滑）控制锐度，_SunAngularRadius 面光源太阳
-                //    给光斑物理尺寸（不是点），GGX NDF 分布决定高光范围。
-                // 函数复用 CustomBRDF.hlsl：InitializeBRDFData / DirectBRDFSpecular_GGX / NDF / v2_smith_ggx / fresnelSchlick。
+                // 双瓣高光：sheen（_Smoothness 宽泛光）+ glint（_GlintSmoothness 亮斑），复用 CustomBRDF.hlsl
                 half alpha = 1.0h;
                 BRDFData sheenBRDF;
                 InitializeBRDFData(half3(0.0, 0.0, 0.0), 0.0h, half3(_Fresnel0, _Fresnel0, _Fresnel0), _Smoothness, alpha, sheenBRDF);
@@ -346,19 +326,14 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
                 float3 H = SafeNormalize(L + V);
                 float LoH = saturate(dot(L, H));
 
-                // 宽光瓣：标准 GGX Cook-Torrance（直接复用上轮移植的 DirectBRDFSpecular_GGX）
+                // 宽光瓣：标准 GGX Cook-Torrance
                 half3 outFresnel;
                 float3 sheen = DirectBRDFSpecular_GGX(sheenBRDF, N, L, V, outFresnel)
                              * mainLight.color * NoL * mainLight.shadowAttenuation;
 
-                // 亮斑瓣：纯点光源 NoH²（平滑、无平顶/硬边，彻底消除盘边跳变）。
-                // HZD 与软盘平顶方案都会引入可感知的硬边，太阳盘一移动就像"擦除线"。
-                // 光斑尺寸完全由 NDF(_GlintSmoothness) 控制。
-                // 注意：不能用 (NoL+NoV)^2/(2*(LoV+1)) 的解析式——该恒等式要求未饱和的
-                // LoV=dot(L,V)。一旦对 LoV 做 saturate（LoV 可能为负），太阳仰角低于 45°
-                // 时（镜面对齐处 LoV=2*mu_s^2-1<0）峰值 NoH_sq 会被压成 2*mu_s^2，
-                // GGX NDF 从峰值 1/(π·α²) 塌到近 0，导致低角度太阳下所有视线方向
-                // 高光全部消失（"高光擦除"）。直接由 H 计算 NoH 与 sheen 瓣/URP 一致。
+                // 亮斑瓣：纯点光源 NoH²，光斑尺寸由 NDF(_GlintSmoothness) 控制。
+                // 不能用 NoH_sq 的解析恒等式：LoV 经 saturate 后，低角度太阳下峰值会被压塌
+                // 导致高光消失（"高光擦除"），故直接由 H 计算 NoH。
                 float NoH = saturate(dot(N, H));
                 float NoH_sq = NoH * NoH;
                 float glintD = NDF(glintBRDF.roughness, sqrt(NoH_sq));
@@ -366,7 +341,7 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
                 float3 glintF = fresnelSchlick(glintBRDF.specular, 1.0h, LoH);
                 float3 glint = NoL * glintD * glintG * glintF
                              * mainLight.color * mainLight.shadowAttenuation * _GlintIntensity;
-                glint = min(glint, 4.0); // 防 bloom 过载（同 Photon specular_max_value）
+                glint = min(glint, 4.0); // 防 bloom 过载
 
                 float3 directSpecular = sheen + glint;
 
@@ -387,9 +362,7 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
                 float F = F_Schlick(_Fresnel0, saturate(dot(N, V)));
                 
                 // === 修复双重 Fresnel ===
-                // 环境反射仍按 Fresnel(NoV) 加权；(1.0 - T_exit) 只作用于环境反射；
-                // 直接高光（sheen + glint）内部已含 Fresnel(LoH)，不再额外乘 (1.0 - T_exit)，
-                // 避免 F0=0.02 时被双重衰减到几乎不可见（与 Photon/URP 一致，只加一次）。
+                // 环境反射按 Fresnel(NoV) 加权；直接高光内部已含 Fresnel(LoH)，不再额外乘 (1.0 - T_exit)。
                 float3 finalColor = (G_entry * T_entry * scatteredLight + thinLayerSSS + backlitTrans + sceneInScattering + sceneColor * accumTransmittance * lastLightTransmittance) * T_exit 
                                   + finalReflection * (1.0 - T_exit)
                                   + directSpecular;

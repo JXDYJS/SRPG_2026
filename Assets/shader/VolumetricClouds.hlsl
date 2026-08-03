@@ -3,75 +3,44 @@
 
 // ================================================================================
 // VolumetricClouds.hlsl
-// 离散体积云（Discrete Voxel Cloud）—— 骨架文件
+// 离散体积云（Discrete Voxel Cloud）：体素 DDA 主步进 + 离散密度采样 + 离散光照。
 //
-// 移植自光影包 iterationRP Alpha 0.8.22：
-//   shaders/Lib/IndividualFunctions/NUBIS.glsl
-//   shaders/Lib/Utilities.glsl
-//
-// 本文件已抄好：
-//   - 通用数学辅助函数（curve / curveTop / fsqrt / remapSaturate /
-//     HenyeyGreenstein / RaySphereIntersection）
-//   - 坐标变换 SetCloudPos（worldPos -> cloudPos，含行星外壳与高度变形）
-//
-// 待你编写（TODO）：
-//   - SampleDensityDiscrete ：离散密度采样（0/1 体素）
-//   - CloudLightingDiscrete  ：离散光照步进（逐体素向太阳计数）
-//   - NubisCumulusDiscrete   ：体素 DDA 主步进（Amanatides & Woo）
-//
-// 参考原版坐标链（worldPos -> cloudPos -> 噪声坐标）：
-//   1) SetCloudPos：世界坐标 -> 行星相对高度 + 高度归一化 w + 高度变形
-//   2) 噪声坐标 = cloudPos.xyz * CLOUD_BASE_NOISE_SCALE（风不参与，见下）
-//
-// 离散体素云的关键区别（重要）：
-//   DDA 步进在世界坐标里按 CLOUD_BLOCK_SIZE 走格，所以体素网格必须世界对齐：
-//     blockMin = floor(worldPos / CLOUD_BLOCK_SIZE) * CLOUD_BLOCK_SIZE
-//   SetCloudPos 的缩放与高度变形会破坏世界方格（XZ 随高度偏移），
-//   所以"取整"必须在世界坐标做，SetCloudPos 只用来把块中心映射成噪声采样点：
-//     cloudPos = SetCloudPos(blockCenter, ...)          // 块中心是固定点 -> 整块恒值
-//     noiseCoord = cloudPos.xyz * CLOUD_BASE_NOISE_SCALE
-//
-// 风（windDirection，世界米）：SetCloudPos 内部先 worldPos += windDirection 再取整，
-//   整张网格随风滑动，云的块图案被冻结成固定拷贝、只整体平移，绝不变形/块跳变。
-//   y 必须为 0（见 SetCloudPos 处注释）。
+// 核心约定（重要）：
+//   - DDA 在世界坐标按 CLOUD_BLOCK_SIZE 走格，体素网格必须世界对齐；
+//     SetCloudPos 的缩放/高度变形会破坏世界方格，故"取整"在世界坐标做，
+//     SetCloudPos 只把块中心映射成噪声采样点（块中心固定 -> 整块恒值）。
+//   - 风：SetCloudPos 内先 worldPos += windDirection 再取整，网格整体滑动，
+//     云块图案只平移不变形；windDirection.y 必须为 0。
 // ================================================================================
 
 #include "CloudSettings.hlsl"
 
-// ---------------- 纹理声明（shader 全局，函数里直接引用，无需传参） ----------------
-// Unity 里 TEXTURE3D + SAMPLER 在 HLSL 顶层声明后即为 shader 全局。
-// 在最终 .shader 的 Properties 里声明同名纹理即可被材质绑定：
-//     Properties { _CloudNoise3D ("Cloud Noise 3D", 3D) = "white" {} }
-// 然后本文件的函数可直接用 SAMPLE_TEXTURE3D_LOD(_CloudNoise3D, sampler_CloudNoise3D, uv, lod)。
-// 备注：纹理本身（128^3 RGBA8 的低频形状噪声）需要你在外部导入为 Texture3D。
-// 若你倾向纯函数式（不依赖全局），可把参数改成 TEXTURE3D_ARGS(_CloudNoise3D, sampler_CloudNoise3D)，
-// 参考本文件下方 SampleDensityDiscrete 的 TODO 注释。
+// ---------------- 纹理声明（shader 全局，函数里直接引用） ----------------
+// TEXTURE3D + SAMPLER 在 HLSL 顶层声明即全局；在 .shader Properties 声明同名纹理即可绑定。
 TEXTURE3D(_CloudNoise3D);
 SAMPLER(sampler_CloudNoise3D);
 
-// ---------------- 常量（HLSL 需要的补全） ---------------- 
+// ---------------- 常量 ---------------- 
 #ifndef PI
 #define PI 3.14159265358979323846
 #endif
 
-// ---------------- 通用数学辅助函数（抄自 Utilities.glsl） ----------------
+// ---------------- 通用数学辅助函数 ----------------
 
-// saturate 在 HLSL 是内建关键字，直接用
-
-// smoothstep 曲线：x 在 [0,1] 之间的平滑过渡
+// smoothstep 曲线：x 在 [0,1] 平滑过渡
 float curve(float x)
 {
     return x * x * (3.0 - 2.0 * x);
 }
 
-// 顶部圆润曲线：x -> 1 - (x-1)^2，用于云层顶部塑形
+// 顶部圆润曲线，用于云层顶部塑形
 float curveTop(float x)
 {
     x = x - 1.0;
     return 1.0 - x * x;
 }
 
-// 快速平方根（原版用整数位运算近似，HLSL 写法：asfloat(0x1fbd1df5 + (asint(x) >> 1))）
+// 快速平方根（整数位运算近似）
 float fsqrt(float x)
 {
     return asfloat(0x1fbd1df5 + (asint(x) >> 1));
@@ -83,7 +52,7 @@ float remapSaturate(float x, float e0, float e1)
     return saturate((x - e0) / (e1 - e0));
 }
 
-// Henyey-Greenstein 相位函数（主散射 g=0.65，次级 g=0.2）
+// Henyey-Greenstein 相位函数
 float HenyeyGreenstein(float cosAngle, float g)
 {
     float num = 1.0 - g * g;
@@ -92,12 +61,7 @@ float HenyeyGreenstein(float cosAngle, float g)
     return num * invSqrt * invSqrt * invSqrt * (0.25 / PI);
 }
 
-// 双波瓣 HG 相位函数（Dual-Lobe HG）：
-//   前向瓣 g_f > 0 提供向阳面强前向峰值，后向瓣 g_b < 0 填补背阳面暗部，
-//   避免 VdotL<0 时相位趋零导致云背面死黑。
-//   结果 = pow(lerp(HG(θ, g_b), HG(θ, g_f), weight), POWER)。
-//   POWER<1 做幂压缩：HG 动态范围高达 200+ 倍（cos=1 峰值 vs cos=0），
-//   直接乘会让向阳面窄束过亮、其余死暗；pow 不成比例抬小压大，过渡平滑。
+// 双波瓣 HG：前向瓣(g_f>0)向阳亮部 + 后向瓣(g_b<0)背阳暗部，pow 压缩动态范围
 float HenyeyGreensteinDual(float cosAngle)
 {
     float fwd = HenyeyGreenstein(cosAngle, CLOUD_HG_FORWARD_G);
@@ -106,8 +70,7 @@ float HenyeyGreensteinDual(float cosAngle)
     return pow(max(dual, 1e-4), CLOUD_HG_POWER);
 }
 
-// 射线-球体交点。返回 (近交点, 远交点)；未命中返回 (1e10, -1e10)
-// 用于求视线与云层外壳（底部 / 顶部球面）的交点，确定步进区间
+// 射线-球体交点，返回 (近交点, 远交点)；未命中 (1e10, -1e10)
 float2 RaySphereIntersection(float3 ori, float3 dir, float radius)
 {
     float b = dot(ori, dir);
@@ -123,28 +86,17 @@ float2 RaySphereIntersection(float3 ori, float3 dir, float radius)
     return intersection;
 }
 
-// ---------------- 坐标变换（改造自 NUBIS.glsl SetCloudPos） ----------------
-// worldPos(米) -> cloudPos：
-//   cloudPos.y   = 到行星表面的高度（相对行星）
-//   cloudPos.w   = 高度在 [cloudAltitude.x, cloudAltitude.y] 内归一化到 [0,1]
-//   cloudPos.xyz = worldPos * cloudScale + 高度变形(float3(30, 0, -12) * w)
-//
-// 离散体素云改造：取整内置于本函数。
-//   DDA 在世界坐标按 CLOUD_BLOCK_SIZE 步进，体素网格必须世界对齐；
-//   且 SetCloudPos 的缩放/高度变形会破坏世界方格（XZ 随高度偏移）。
-//   所以先在世界坐标 floor 到块中心（blockCenter），再走行星外壳变换。
-//   效果：同一方块内任意点 -> 同一 blockCenter -> 同一 cloudPos -> 整块恒值。
-//
-// 风（windDirection，世界米）：先平移 worldPos 再取整，让整张体素网格跟着风滑动。
-//   云的块图案因此被冻结成一份固定拷贝、只整体平移，绝不"一块消失另一块出现"。
-//   注意 windDirection.y 必须为 0：否则 3D 噪声场相对固定云层高度带上下滑，
-//   又会出现块凭空生长/消失。
+// ---------------- 坐标变换 ----------------
+// worldPos -> cloudPos：y=行星表面高度，w=高度归一化[0,1]，xyz=缩放 + 高度变形。
+// 取整内置于本函数：先在世界坐标 floor 到块中心再走行星外壳变换，
+// 使同一方块内任意点映射到同一 cloudPos（整块恒值，网格世界对齐）。
+// 风：先平移 worldPos 再取整，网格整体滑动不变形；windDirection.y 必须为 0。
 float4 SetCloudPos(float3 worldPos, float2 cloudAltitude, float planetRadius, float cloudScale, float3 windDirection)
 {
-    // 风：世界坐标平移（在取整之前），网格随风整体滑动
+    // 风：世界坐标平移后再取整，网格整体滑动
     worldPos += windDirection;
 
-    // 世界坐标取整到块中心（网格随风滑动）
+    // 世界坐标取整到块中心
     float3 blockCenter = floor(worldPos / CLOUD_BLOCK_SIZE) * CLOUD_BLOCK_SIZE + 0.5 * CLOUD_BLOCK_SIZE;
 
     float4 cloudPos = float4(blockCenter, 0.0);
@@ -154,54 +106,23 @@ float4 SetCloudPos(float3 worldPos, float2 cloudAltitude, float planetRadius, fl
     return cloudPos;
 }
 
-// ---------------- TODO: 离散密度采样 ----------------
-// 输入：世界坐标 worldPos（DDA 当前块的任意点，函数内部会对齐到块）、输出该体素密度（0.0 或 1.0）。
-//
-// 关键点（取整已内置于 SetCloudPos，不需要在这里做）：
-//   DDA 按 CLOUD_BLOCK_SIZE 在世界坐标步进，体素网格必须世界对齐；
-//   SetCloudPos 的缩放/高度变形会破坏世界方格（XZ 随高度偏移），
-//   所以 SetCloudPos 内部先在世界坐标 floor 到块中心，再做行星外壳变换。
-//   块中心是固定点 -> 同一方块内 cloudPos 恒定 -> 整块恒值。
-//
-// 参考原版 SampleDensity 的 base 部分（不包含 detail）：
-//   1) 噪声坐标 = cloudPos.xyz * CLOUD_BASE_NOISE_SCALE（风已由 SetCloudPos 平移进 worldPos）
-//      （cloudPos = SetCloudPos(worldPos, ...)，取整已在函数内完成）
-//   2) 用 noiseCoord 采样低频形状噪声（CloudNoise3D，128^3 RGBA8，mipmap 已开）：
-//        baseDensity 混合 = baseNoise.y * 0.4 + baseNoise.z * 0.4 + baseNoise.w * 0.2
-//        baseDensity = remapSaturate(baseNoise.x, baseDensity - 1.0, 1.0)
-//        采样 LOD 0（Fix2 去小云/mip 模糊暂时注释掉，需要时用 CLOUD_BASE_NOISE_LOD）
-//   3) 垂直密度剖面（下重上轻，积云轮廓；"层内约束"由 SetCloudPos 的
-//      w = remapSaturate(...) 完成，不在这里）：
-//        condensation = curve(saturate(w * CLOUD_CONDENSE_SPEED))       // 凝结底盘快速升起
-//        taper        = pow(saturate(1 - w * CLOUD_PROFILE_SLOPE), POWER) // 顶部单调收窄
-//        baseDensity *= condensation * taper * CLOUD_BASE_INTENSITY
-//        baseDensity *= lerp(1, curveTop(saturate(w*3)), wetness)
-//   4) 覆盖率（XZ 粗采样，连续未取整）：
-//        coverageNoise 采样坐标 = cloudPos.xyz * CLOUD_COVERAGE_NOISE_SCALE
-//                               + CLOUD_COVERAGE_NOISE_OFFSET
-//        coverage 按 wetness 插值，remapSaturate(1.0 - coverageNoise, coverage*0.2, coverage)
-//   5) 最后硬切：step(CLOUD_OCCUPANCY_THRESHOLD, baseDensity) -> 0/1
+// ---------------- 离散密度采样 ----------------
+// 输入世界坐标（块内任意点），输出该体素密度（0/1）。
+// 流程：SetCloudPos(取整) -> 采样低频形状噪声并混合 -> 垂直密度剖面(凝结底*顶部收窄)
+//       -> 覆盖率调制 -> 阈值硬切为 0/1。
 float SampleDensityDiscrete(float3 worldPos, float3 windDirection, float wetness,
     float2 cloudAltitude, float planetRadius, float cloudScale)
 {
-    // TODO: 编写离散密度采样
-    // 1) SetCloudPos 内部已在世界坐标取整到块中心 -> 整块恒值
-    //    windDirection 已由 SetCloudPos 平移进 worldPos（在取整之前），
-    //    网格随风整体滑动，这里不再扰动噪声采样坐标。
+    // 取整已内置于 SetCloudPos，风已平移进 worldPos，这里直接用块中心采样
     float4 cloudPos = SetCloudPos(worldPos, cloudAltitude, planetRadius, cloudScale, windDirection);
     float3 noiseCoord = cloudPos.xyz * CLOUD_BASE_NOISE_SCALE;
 
-    // 2) 采样 + 混合
-    //    Fix2(去小云/mip 模糊) 暂时注释掉：需要时把 LOD 0 换成 CLOUD_BASE_NOISE_LOD
+    // 采样 + 混合（Fix2 mip 模糊暂时注释掉，需要时用 CLOUD_BASE_NOISE_LOD）
     float4 baseNoise = SAMPLE_TEXTURE3D_LOD(_CloudNoise3D, sampler_CloudNoise3D, noiseCoord, 0);
     float density = baseNoise.y * 0.4 + baseNoise.z * 0.4 + baseNoise.w * 0.2;
     density = remapSaturate(baseNoise.x, density - 1.0, 1.0);
 
-    // ========== 垂直密度剖面（下重上轻，积云轮廓） ==========
-    //   旧剖面"中间厚两端收"且顶部有 ×2~×3 增强项（curve(w*1.8-0.8)*2+1 等），
-    //   导致云圆滚滚、上宽下窄（宽度被 3D 噪声块形状主导）。
-    //   新剖面：condensation 底部快速升起=平的凝结底盘，taper 让密度从底部单调收窄到顶，
-    //   轮廓由剖面主导 -> 底盘宽、顶部窄。参数见 CloudSettings.hlsl。
+    // 垂直密度剖面：凝结底快速升起 + 密度单调收窄到顶，轮廓为底盘宽、顶部窄
     float wL = cloudPos.w;
     float condensation = curve(saturate(wL * CLOUD_CONDENSE_SPEED));
     float taper = pow(saturate(1.0 - wL * CLOUD_PROFILE_SLOPE), CLOUD_PROFILE_POWER);
@@ -215,21 +136,8 @@ float SampleDensityDiscrete(float3 worldPos, float3 windDirection, float wetness
 }
 
 // ---------------- 离散光照（光步进 DDA） ----------------
-// 输入：命中体素的世界坐标 / 该体素密度 / cloudPos / 视线方向 / 太阳方向，输出光照颜色。
-//
-// 思路：从命中块沿太阳方向逐块 DDA（Amanatides & Woo）推进，累计"光学厚度"
-//       （路上被占据的块数 sumOcc）。空块即停（射线已离开云）。消光 exp2(-sumOcc * k)
-//       得到硬边方块阴影；再叠加 HG 相位 + 环境光。
-//
-// 散射强度（闭式，前向散射）：
-//   太阳光到达该点的能量 = sunColor * exp2(-Στ) * Π(1 + ω*P_f*τ)
-//   - exp2(-Στ)：直接透射（Beer-Lambert）
-//   - Π(1 + ω*P_f*τ)：束内前向散射补偿（密度恒定块的闭式算子，ω=反照率，P_f=前向相位）
-//   块内恒密度 -> 闭式成立，这就是"太阳→点的散射强度"。
-//
-// 到达下一块的距离：
-//   tMax = (下一块边界 - 当前点) / sunDir，取三轴最小值即最近边界。
-//   浮点注意：sunDir 某轴分量为 0 时不能除，需给该轴极大值（不参与比较）。
+// 从命中块沿太阳方向逐块推进，累计被占据块数（光学厚度），空块即停；
+// 消光 exp2(-Στ) 得到方块阴影，再叠加 HG 相位。
 float3 CloudLightingDiscrete(float3 worldPos, float4 cloudPos, float occupied,
     float3 viewDir, float3 sunDir, float3 sunColor, float3 skyColor,
     float3 windDirection, float wetness,
@@ -240,23 +148,22 @@ float3 CloudLightingDiscrete(float3 worldPos, float4 cloudPos, float occupied,
     const float BLOCK = CLOUD_BLOCK_SIZE;
 
     // ===== 光步进 DDA：从当前块向太阳方向逐块推进 =====
-    // 起点：当前块的左下角（世界对齐）
     float3 rayPos = floor(worldPos / BLOCK) * BLOCK;
     float3 cell = floor(rayPos / BLOCK);
     float3 stepSign = sign(sunDir);
     float3 dirAbs = max(abs(sunDir), 1e-6);   // 防除零
 
-    // 到下一块边界（沿射线方向的 t 值）
+    // 到下一块边界的 t 值（分量 0 时给极大值，不参与比较）
     float3 tMax;
     tMax.x = (stepSign.x == 0.0) ? 1e30 : ((cell.x + max(stepSign.x, 0.0)) * BLOCK - rayPos.x) / sunDir.x;
     tMax.y = (stepSign.y == 0.0) ? 1e30 : ((cell.y + max(stepSign.y, 0.0)) * BLOCK - rayPos.y) / sunDir.y;
     tMax.z = (stepSign.z == 0.0) ? 1e30 : ((cell.z + max(stepSign.z, 0.0)) * BLOCK - rayPos.z) / sunDir.z;
-    float3 tDelta = BLOCK / dirAbs;   // 沿射线穿过一块所需距离
+    float3 tDelta = BLOCK / dirAbs;   // 穿过一块所需距离
 
     float sumOcc = 0.0;        // 光学厚度（被占据块数）
     float rayT = 0.0;
     float prevT = 0.0;
-    int emptyRun = 0;          // 连续空块计数（边缘缺口放行，防边缘过亮/漏色）
+    int emptyRun = 0;          // 连续空块计数（边缘缺口放行）
 
     for (int i = 0; i < CLOUD_LIGHT_STEPS; i++)
     {
@@ -279,7 +186,7 @@ float3 CloudLightingDiscrete(float3 worldPos, float4 cloudPos, float occupied,
         float occ = SampleDensityDiscrete(checkPos, windDirection, wetness,
             cloudAltitude, planetRadius, cloudScale);
 
-        // 空块：连续达到容差才认为出云（边缘 1~2 格缺口后常有厚云，放行穿过去）
+        // 空块：连续达容差才判出云（防边缘缺口漏色）
         if (occ < 0.5)
         {
             if (++emptyRun >= CLOUD_GAP_TOLERANCE) break;
@@ -290,37 +197,22 @@ float3 CloudLightingDiscrete(float3 worldPos, float4 cloudPos, float occupied,
     }
 
     // ===== 光照 =====
-    // 真实相位角：视线与太阳夹角
     float VdotL = dot(viewDir, sunDir);
     float hg = HenyeyGreensteinDual(VdotL);
 
-    // 太阳到达该点能量 = 直接透射 exp2(-Στ)（纯 Beer-Lambert，无前向散射补偿）
+    // 太阳到达该点能量 = 直接透射 exp2(-Στ)，再乘反照率 * 双波瓣 HG 相位
     float sunTrans = exp2(-sumOcc * CLOUD_LIGHT_EXTINCTION);
     float3 sunArrive = sunColor * sunTrans;
-
-    // 散射到视线方向：到达能量 * 反照率 * 双波瓣HG相位
-    // 前向瓣给向阳亮部，后向瓣给背阳暗部（VdotL<0 不彻底黑）
     float3 directLight = sunArrive * (CLOUD_SCATTER_ALBEDO * (hg + 0.02) * CLOUD_LIGHT_SUN_MUL);
 
-    // 环境光已移除：暗部填充交给 CompositeClouds 的大气透视 aerial*(1-trans)，
-    // 避免三路能量叠加过亮（原 NUBIS 里 ambientScattering 同理可省）。
+    // 环境光已移除：暗部填充交给 CompositeClouds 的大气透视，避免三路能量叠加过亮
     return directLight;
 }
 
 // ---------------- 体素 DDA 主步进 ----------------
-// 入口：传入视线方向与世界相机位置，输出累加后的云颜色 + 透射率。
-//
-// 方案（已确认）：合并的逐块 DDA 单循环。
-//   1) 单一 DDA 状态（cell/tMaxD/tDeltaD），每块只在块中心采样一次，网格完美对齐，
-//      消除自由 raymarch 在体素边界上的混叠颗粒
-//   2) inCloudFlag 区分"空区跳过"与"云内累积"两阶段，碰到第一块云自动切换
-//   3) 出云：已进云后首次遇到空块即停（忽略云层叠加）
-//   4) 消光按每块实际穿行距离 segLen = newT - prevT 计算
-//   5) 透射率低于 CLOUD_TRANSMIT_EPS 直接退出
-//
-// 返回：cloudColor 累加进 color（inout），cloudTransmittance 单独输出。
-// cloudDistance：相机到第一块云的精确距离（米），供调用方做大气透视/透射计算。
-// 合成在调用方做：sky * trans + cloudColor + sky * ω * (1 - trans)（天空散射闭式）
+// 逐块 DDA 单循环：每块只在块中心采样一次（网格完美对齐，消除混叠颗粒）；
+// inCloudFlag 区分"空区跳过/云内累积"，消光按每块实际穿行距离 segLen 计算。
+// 输出：cloudColor 累加进 color(inout)、cloudTransmittance、cloudDistance(相机到第一块云)。
 void NubisCumulusDiscrete(inout float3 color, float3 worldDir, float3 cameraPos,
     float2 cloudAltitude, float3 sunDir, float3 sunColor, float3 skyColor,
     float3 windDirection, float wetness, out float cloudTransmittance,
@@ -333,31 +225,28 @@ void NubisCumulusDiscrete(inout float3 color, float3 worldDir, float3 cameraPos,
     // 无云时给个大值：调用方按 (1-trans)=0 自然忽略，此处只是兜底
     cloudDistance = 1e6;
 
-    // ===== 1. 求视线与云层外壳的交点，确定步进区间 =====
-    // 云层为行星外壳：底半径 = planetRadius + alt.x，顶半径 = planetRadius + alt.y
+    // ===== 1. 求视线与云层外壳(底/顶球面)交点，确定步进区间 =====
     float3 rayStartPos = float3(0.0, planetRadius + cameraPos.y, 0.0);
     float2 iBottom = RaySphereIntersection(rayStartPos, worldDir, planetRadius + cloudAltitude.x);
     float2 iTop = RaySphereIntersection(rayStartPos, worldDir, planetRadius + cloudAltitude.y);
 
-    // 相机在云上 / 云下决定进入点
+    // 相机在云上/云下决定进入点
     float2 iMarching = cameraPos.y > cloudAltitude.y ? float2(iTop.x, iBottom.x) : float2(iBottom.y, iTop.y);
     float tStart = iMarching.x;
     float tEnd = iMarching.y;
 
-    // 相机是否在云层内
+    // 相机是否在云层内（云内时起点改为相机位置、终点 cap）
     float inCloud = (1.0 - saturate((cameraPos.y - cloudAltitude.y) * CLOUD_INCLOUD_SOFTNESS)) *
                     (1.0 - saturate((cloudAltitude.x - cameraPos.y) * CLOUD_INCLOUD_SOFTNESS));
-    // 相机在云内时：起点改为相机位置，终点 cap
     float iInner = (iBottom.y >= 0.0 && cameraPos.y > cloudAltitude.x) ? iBottom.x : iTop.y;
     iInner = min(iInner, CLOUD_INNER_CAP);
     tStart = tStart * (1.0 - inCloud);
     tEnd = lerp(tEnd, iInner, inCloud);
 
     // ===== 0. 地球求交：视线打到地面则云被遮挡，直接返回 =====
-    // 用球面几何替代原来的 worldDir.y <= 0.01 平面近似判断（相机高度变化时更准）。
-    // 行星 = 半径 planetRadius 的球体，球心即 rayStartPos 坐标系原点。
-    //   1) 云层入口在出口之后（视线根本穿不过云壳，例如相机在云下向下看）→ 无云
-    //   2) 视线近交点在地球表面，且早于云层入口 → 地面遮挡云层 → 无云
+    // 用球面几何替代 worldDir.y 平面近似（相机高度变化时更准）：
+    //   1) 云层入口在出口之后 → 无云
+    //   2) 视线近交点在地球表面且早于云层入口 → 地面遮挡云层 → 无云
     float2 iEarth = RaySphereIntersection(rayStartPos, worldDir, planetRadius);
     if (tEnd < tStart)
     {
@@ -371,16 +260,13 @@ void NubisCumulusDiscrete(inout float3 color, float3 worldDir, float3 cameraPos,
         return;
     }
 
-    // 世界坐标步进区间（与原版一致：iMarching.x * worldDir * (1-inCloud) + cameraPosition）
-    // 相机在云内时起点 = 相机位置；相机在云外时起点 = 相机 + 视线方向 * tStart
+    // 步进区间：云外起点 = 相机 + 视线*tStart，云内起点 = 相机位置
     float3 marchStart = tStart * worldDir + cameraPos;
     float3 marchEnd = tEnd * worldDir + cameraPos;
 
-    // ===== 2+3. 逐块 DDA 主步进（合并原"空区跳过 + 自由 raymarch"两段） =====
-    // 单一循环 + 单一 DDA 状态：每块只在块中心采样一次，彻底网格对齐，
-    // 消除自由 raymarch 在体素边界上的混叠颗粒，且每块恰好采样一次更省性能。
-    //   inCloudFlag：本射线是否已进入云的连续段（false=跳过阶段，true=累积阶段）
-    //   prevT/newT：相邻块边界距离，差值 segLen = 本块内实际穿行长度（消光用）
+    // ===== 2+3. 逐块 DDA 主步进（空区跳过 + 云内累积合一的单循环） =====
+    // inCloudFlag：是否已进入云（false=跳过阶段，true=累积阶段）
+    // segLen = 相邻块边界之差，即本块内实际穿行长度（消光用）
     float3 rayPos = marchStart;
     float3 cell = floor(rayPos / BLOCK);
     float3 stepSign = sign(worldDir);
@@ -396,26 +282,24 @@ void NubisCumulusDiscrete(inout float3 color, float3 worldDir, float3 cameraPos,
     float transmittance = 1.0;
     float3 cloudAccum = float3(0.0, 0.0, 0.0);
     bool inCloudFlag = false;
-    int emptyRun = 0;          // 连续空块计数（边缘缺口放行，防漏天空色）
+    int emptyRun = 0;          // 连续空块计数（边缘缺口放行）
     float prevT = 0.0;
 
     for (int s = 0; s < CLOUD_MAIN_MAX_STEPS; s++)
     {
-        // 当前块中心（网格对齐，距边界 0.5*BLOCK，浮点歧义被绕开）
+        // 当前块中心（距边界 0.5*BLOCK）
         float3 checkPos = (float3)cell * BLOCK + 0.5 * BLOCK;
         float occ = SampleDensityDiscrete(checkPos, windDirection, wetness,
             cloudAltitude, planetRadius, cloudScale);
 
-        // 进入云：记住第一块云的距离（供调用方做大气透视）
+        // 进云：记录第一块云距离（供大气透视）
         if (!inCloudFlag && occ >= 0.5)
         {
             inCloudFlag = true;
             cloudDistance = length(checkPos - cameraPos);
         }
 
-        // 已进云后：允许穿过 CLOUD_GAP_TOLERANCE 个连续空块再判出云。
-        // 云边缘棱角的 1~2 格缺口后往往是厚云，过早早退会把厚云跳过、
-        // transmittance 仍接近 1，导致边缘漏出天空色。
+        // 进云后允许穿过 N 个连续空块再判出云，防边缘缺口漏出天空色
         if (inCloudFlag && occ < 0.5)
         {
             if (++emptyRun >= CLOUD_GAP_TOLERANCE) break;
@@ -425,13 +309,13 @@ void NubisCumulusDiscrete(inout float3 color, float3 worldDir, float3 cameraPos,
             emptyRun = 0;
         }
 
-        // 推进到最近边界；守卫：严格前进，防浮点误差/平局导致死循环
+        // 推进到最近边界（严格前进，防浮点误差导致死循环）
         float newT = min(tMaxD.x, min(tMaxD.y, tMaxD.z));
         newT = max(newT, prevT + 1e-3);
         float segLen = newT - prevT;   // 本块内实际穿行距离
         prevT = newT;
 
-        // 在云内且当前块占据 -> 累积光照，消光按实际 segLen 算（不再写死 BLOCK）
+        // 云内占据块：累积光照，消光按实际 segLen
         if (inCloudFlag && occ >= 0.5)
         {
             float4 cloudPos = SetCloudPos(checkPos, cloudAltitude, planetRadius, cloudScale, windDirection);
@@ -444,7 +328,7 @@ void NubisCumulusDiscrete(inout float3 color, float3 worldDir, float3 cameraPos,
             transmittance *= absorption;
         }
 
-        // 推进 cell（tMax 累加不重算，误差不累积）
+        // 推进 cell
         if (tMaxD.x < tMaxD.y && tMaxD.x < tMaxD.z)
         {
             tMaxD.x += tDeltaD.x; cell.x += stepSign.x;
@@ -461,7 +345,7 @@ void NubisCumulusDiscrete(inout float3 color, float3 worldDir, float3 cameraPos,
         if (prevT >= totalLen || transmittance < CLOUD_TRANSMIT_EPS) break;
     }
 
-    // 无云：inCloudFlag 始终 false -> transmittance 保持 1
+    // 无云时 transmittance 保持 1
     cloudTransmittance = transmittance;
     color += cloudAccum;
 }

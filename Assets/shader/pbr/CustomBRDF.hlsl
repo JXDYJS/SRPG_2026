@@ -255,8 +255,7 @@ half3 fresnelSchlick(half3 f0, half f90, half VdotH) {
 // GGX Normal Distribution Function
 // D = alphaSq / (PI * (NoH^2 * (alphaSq - 1) + 1)^2)
 // roughness: physical roughness (perceptualRoughness^2)，alphaSq = roughness^2 = perceptualRoughness^4
-// 注：此前多乘了一次 alphaSq（alphaSq=alphaSq*alphaSq），导致分布比标准 GGX 锐约 roughness^2 倍，
-//     光滑材质高光几乎不可见；现与 v2_smith_ggx 的 alphaSq(brdfData.roughness2) 保持一致。
+// 注：此前多乘了一次 alphaSq 导致分布过锐，已移除并与 v2_smith_ggx 保持一致
 half NDF(half roughness, half nDotH)
 {
     half alphaSq = roughness * roughness;

@@ -14,7 +14,7 @@ float gerstner_wave(float2 coord, float2 wave_dir, float t, float noise, float w
     float w = sqrt(g * k);
     float x = w * t - k * (dot(wave_dir, coord) + noise);
     
-    // Photon 的修改版：sin 映射到 0~1 然后平方，波峰更尖锐
+    // sin 映射到 0~1 再平方，波峰更尖锐
     float s = sin(x) * 0.5 + 0.5;
     return s * s;
 }

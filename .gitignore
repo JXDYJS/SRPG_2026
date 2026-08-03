@@ -109,3 +109,12 @@ console_dump.txt.meta
 
 # AI agent temp files
 .opencode/temp/
+
+# EmmyLuaXLuaSnippetGenerator 自动生成的 IntelliSense 提示（本地可重新生成）
+/Assets/Lua/TypeHint/
+/Assets/Lua/EmmyLuaSnippetToolData/
+/Assets/Script/LUA/EmmyLuaSnippetToolData/
+
+# 开发工具（保留本地，不入库）
+/gen.bat
+/Tools/cloud_noise/

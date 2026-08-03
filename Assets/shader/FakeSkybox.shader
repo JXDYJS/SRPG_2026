@@ -136,10 +136,7 @@ Shader "Skybox/Fakeskybox"
     // === 体积云接入（离散体素云） ===
     #include "Assets/shader/VolumetricClouds.hlsl"
 
-    // 合成公式（NUBIS 三段式，替代原 skyColor*ω*(1-trans) 的过度简化）：
-    //   final = skyColor * trans               ① 天空透过云（∝T，厚云该路递减）
-    //         + cloudColor * atmoTrans         ② 云自身散射光 × 大气透射率（相机→云）
-    //         + aerial * (1 - trans)           ③ 大气透视（含瑞利/Mie 相位），按云遮挡比例混合
+    // 合成：① 天空透过云(sky*trans) + ② 云散射光(cloudColor*atmoTrans) + ③ 大气透视(aerial*(1-trans))
     float3 CompositeClouds(float3 skyColor, float3 viewDir, float3 sunDir, float3 sunColor, float wetness) {
         float3 cloudColor = float3(0.0, 0.0, 0.0);
         float cloudTransmittance = 1.0;
@@ -149,9 +146,7 @@ Shader "Skybox/Fakeskybox"
         cloudAltitude = lerp(cloudAltitude,
             float2(CLOUD_RAIN_ALTITUDE, CLOUD_RAIN_ALTITUDE + CLOUD_RAIN_THICKNESS), wetness);
 
-        // 风：windDirection 是世界米位移 = wind(原始) * CLOUD_WIND_TO_METERS。
-        // windDirection.y 必须保持 0：否则网格相对固定云层高度带上下滑，
-        // 会出现块凭空生长/消失。调风速改 CloudSettings.hlsl 的 CLOUD_WIND_TO_METERS。
+        // 风（世界米）：调风速改 CloudSettings.hlsl 的 CLOUD_WIND_TO_METERS；y 必须为 0
         float wind = CLOUD_WIND_FACTOR * (_Time.y * CLOUD_SPEED + 10.0 * CLOUD_FTC_OFFSET);
         float3 windDirection = float3(1.0, 0.0, 0.0) * wind * CLOUD_WIND_TO_METERS;
 
@@ -159,9 +154,7 @@ Shader "Skybox/Fakeskybox"
             cloudAltitude, sunDir, sunColor, skyColor, windDirection, wetness,
             cloudTransmittance, cloudDistance);
 
-        // ② 大气透射率（相机→云）：用 DDA 求出的精确距离做指数大气积分，
-        //    而非整段大气近似。τ = totalCoeff * H/μ * (1 - exp(-μ*d/H))，
-        //    近处雾少（τ≈0），远处地平线雾多（τ 大），不会把地平线云叠亮。
+        // ② 大气透射率（相机→云）：用 DDA 求得的精确距离做指数大气积分，近处雾少、远处地平线雾多
         float mu = max(dot(float3(0.0, 1.0, 0.0), viewDir), 0.01);
         float3 totalCoeff = float3(_RayleighRed, _RayleighGreen, _RayleighBlue) * 1e-5
                           + float3(0.5e-6, 0.5e-6, 0.5e-6);
@@ -169,19 +162,15 @@ Shader "Skybox/Fakeskybox"
                            * (1.0 - exp(-mu * cloudDistance / CLOUD_ATMO_SCALE_HEIGHT));
         float3 atmoTrans = absorb(totalCoeff, opticalDepth);
 
-        // ③ 大气透视：相机→云之间那段雾的散射 = 整段天空散射 - 云后(透射)部分的散射
+        // ③ 大气透视：相机→云之间那段雾的散射
         float3 aerial = calcAtmosphericScatter(sunDir, viewDir) * (1.0 - atmoTrans);
 
-        // ④ 距离淡出（移植 iterationRP NUBIS 的 CLOUD_FADE）：
-        //    fade = exp2(-cloudDistance * CLOUD_FADE_RATE)，连续指数衰减，不是硬 step。
-        //    cloudDistance 是相机到第一块云的精确距离（NubisCumulusDiscrete 已传出）。
-        //    远云 fade→0：transFaded→1、cloudColor→0，露出的是另算的 skyColor（平滑天空），
-        //    而不是用白色雾去填 —— 地平线"白花花一团"的根源就在这。
+        // ④ 距离淡出：fade = exp2(-cloudDistance * CLOUD_FADE_RATE)，连续衰减而非硬 step。
+        // 远云 fade→0 时露出平滑天空，避免地平线"白花花一团"。
         float fade = saturate(exp2(-cloudDistance * CLOUD_FADE_RATE));
         float transFaded = lerp(1.0, cloudTransmittance, fade);
         cloudColor *= fade;
 
-        //return cloudTransmittance;
         return skyColor * transFaded
              + cloudColor * atmoTrans
              + aerial * (1.0 - transFaded);
@@ -232,7 +221,6 @@ Shader "Skybox/Fakeskybox"
                 #endif
 
                 // 场景主光（URP）：与 Water.shader 颜色来源一致（_MainLightColor），
-                // 跟随场景 Directional Light 的颜色/强度，避免云与水光照不同步。
                 // 用无参 GetMainLight()：天空盒无表面点，不采样阴影贴图。
                 Light mainLight = GetMainLight();
                 float3 sunDir = mainLight.direction;
