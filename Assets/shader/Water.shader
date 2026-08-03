@@ -345,7 +345,6 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
                 float NoV = abs(dot(N, V)) + HALF_MIN;
                 float3 H = SafeNormalize(L + V);
                 float LoH = saturate(dot(L, H));
-                float LoV = saturate(dot(L, V));
 
                 // 宽光瓣：标准 GGX Cook-Torrance（直接复用上轮移植的 DirectBRDFSpecular_GGX）
                 half3 outFresnel;
@@ -355,7 +354,13 @@ Shader "Custom/PhysicsWater_Final_Strict_Fixed"
                 // 亮斑瓣：纯点光源 NoH²（平滑、无平顶/硬边，彻底消除盘边跳变）。
                 // HZD 与软盘平顶方案都会引入可感知的硬边，太阳盘一移动就像"擦除线"。
                 // 光斑尺寸完全由 NDF(_GlintSmoothness) 控制。
-                float NoH_sq = saturate((NoL + NoV) * (NoL + NoV) / max(2.0 * LoV + 2.0, 1e-4));
+                // 注意：不能用 (NoL+NoV)^2/(2*(LoV+1)) 的解析式——该恒等式要求未饱和的
+                // LoV=dot(L,V)。一旦对 LoV 做 saturate（LoV 可能为负），太阳仰角低于 45°
+                // 时（镜面对齐处 LoV=2*mu_s^2-1<0）峰值 NoH_sq 会被压成 2*mu_s^2，
+                // GGX NDF 从峰值 1/(π·α²) 塌到近 0，导致低角度太阳下所有视线方向
+                // 高光全部消失（"高光擦除"）。直接由 H 计算 NoH 与 sheen 瓣/URP 一致。
+                float NoH = saturate(dot(N, H));
+                float NoH_sq = NoH * NoH;
                 float glintD = NDF(glintBRDF.roughness, sqrt(NoH_sq));
                 float glintG = v2_smith_ggx(max(NoL, 1e-4), max(NoV, 1e-4), glintBRDF.roughness2);
                 float3 glintF = fresnelSchlick(glintBRDF.specular, 1.0h, LoH);
