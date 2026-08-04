@@ -867,6 +867,57 @@ namespace GamePlay.Units
             //TODO
         }
 
+        //=============Battle Lifecycle===============
+        /// <summary>
+        /// 战斗开始：先挂载被动遗物（OnApply），再分发全部 modifier 的 OnBattleStart。
+        /// 由 TurnManager.StartBattle 在部署完成后统一调用。
+        /// </summary>
+        public virtual void OnBattleStart()
+        {
+            ApplyRelicPassives();
+            foreach (var mod in GetModifiers())
+            {
+                mod.OnBattleStart(this);
+            }
+            SetModifiersDirty();
+        }
+
+        /// <summary>
+        /// 战斗结束：分发 OnBattleEnd，并清理被动遗物（OnRemove）。
+        /// 由战斗结算流程在清场前统一调用。
+        /// </summary>
+        public virtual void OnBattleEnd()
+        {
+            foreach (var mod in GetModifiers())
+            {
+                mod.OnBattleEnd(this);
+            }
+            RemoveRelicPassives();
+            SetModifiersDirty();
+        }
+
+        // 被动遗物：OnApply/OnRemove 生命周期（与 Buff 的 AddBuff→OnApply 路径互不冲突）
+        // 仅玩家阵营单位生效（遗物只进 Player 单位的 modifier 缓存）
+        private void ApplyRelicPassives()
+        {
+            if (RunManager.Instance == null) return;
+            if (Faction != FactionType.Player) return;
+            foreach (var relic in RunManager.Instance.Relics)
+            {
+                relic.OnApply(this);
+            }
+        }
+
+        private void RemoveRelicPassives()
+        {
+            if (RunManager.Instance == null) return;
+            if (Faction != FactionType.Player) return;
+            foreach (var relic in RunManager.Instance.Relics)
+            {
+                relic.OnRemove(this);
+            }
+        }
+
 
         public object CaptureState() => new UnitSnapshot(this);
         public void RestoreState(object state)

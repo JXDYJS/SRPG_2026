@@ -3,8 +3,9 @@ using UnityEngine;
 using GamePlay.Units;
 using Modifier;
 using System;
+using Lua;
 namespace GamePlay.Buff{
-    public abstract class BuffBase : CombatModifier
+    public abstract class BuffBase : CombatModifierLuaWrapper
     {
         [Header("Buff 特有属性")]
         public int Stacks;       // 当前层数
@@ -33,13 +34,14 @@ namespace GamePlay.Buff{
 
         public override void OnTurnStart(MapUnit owner)
         {
-            base.OnTurnStart(owner);
-
+            // 先掉层，再派发给 Lua（保持与原 BuffLuaWrapper 的时序一致）
             if (DecayAtTurnStart)
             {
                 RemoveStacks(1); // 自动掉 1 层
                 Debug.Log($"{Name} 持续时间减少，剩余: {Stacks}");
             }
+
+            base.OnTurnStart(owner);
         }
 
         public bool canAddStacks = true;

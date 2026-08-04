@@ -21,6 +21,9 @@ namespace Lua
                 function _isBuffBase(cls)
                     return cls.__isBuffBase == true
                 end
+                function _isRelicBase(cls)
+                    return cls.__isRelicBase == true
+                end
             ");
             RegisterAllModules();
         }

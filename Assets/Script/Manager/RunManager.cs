@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using GamePlay.Relics;
 using Character.instance;
 using Character.data;
+using Core.Data;
 using Core.Data.Persistent;
 using Status.state;
 using Cysharp.Threading.Tasks;
@@ -39,6 +40,21 @@ namespace Managers
 
         public void AddRelic(RelicBase relic)
         {
+            if (relic == null) return;
+
+            if (!Relics.Contains(relic)) Relics.Add(relic);
+
+            // 持久化遗物 ID
+            if (Data.Persistent?.Data != null)
+            {
+                if (!Data.Persistent.Data.relics.Contains(relic.ID))
+                {
+                    Data.Persistent.Data.relics.Add(relic.ID);
+                    Data.Persistent.Save();
+                }
+            }
+
+            Debug.Log($"[RunManager] 获得遗物: {relic.Name} ({relic.ID})");
         }
 
         /// <summary>
@@ -75,6 +91,19 @@ namespace Managers
 
                 MyTeam.Add(ci);
                 Debug.Log($"[RunManager] Restored character: {cd.CharacterName} Lv.{sd.level}");
+            }
+
+            // 恢复遗物
+            Relics.Clear();
+            if (Data.Persistent?.Data?.relics != null)
+            {
+                foreach (var relicId in Data.Persistent.Data.relics)
+                {
+                    RelicBase relic = RelicManager.CreateRelicFromID(relicId);
+                    if (relic != null) Relics.Add(relic);
+                    else Debug.LogWarning($"[RunManager] 无法恢复遗物: {relicId}");
+                }
+                Debug.Log($"[RunManager] 恢复了 {Relics.Count} 个遗物");
             }
         }
 
