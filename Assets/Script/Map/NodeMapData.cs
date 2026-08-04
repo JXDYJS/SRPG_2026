@@ -5,6 +5,8 @@ using System.Linq;
 using Core.Data;
 using Newtonsoft.Json;
 using Random = UnityEngine.Random;
+using RelicConfig = Core.Data.TableData.RelicConfig;
+using Global;
 
 namespace Map
 {
@@ -75,6 +77,11 @@ namespace Map
             type = MapType.Battle;
         }
     }
+    public struct ShopSlotData
+    {
+        public int price;
+        public string itemId;//一般情况下 就是 价格->一个商品 暂时不考虑特殊情况
+    }
 
     [Serializable]
     public class ShopNode : BaseNode
@@ -87,6 +94,73 @@ namespace Map
         public ShopNode(string id) : base(id)
         {
             type = MapType.Shop;
+        }
+        public List<ShopSlotData> itemSlots;
+        public static ShopNode genShopNode()
+        {
+            int shopItemCount = Random.Range(Data.Config.shopConfig.minShopItemCount,Data.Config.shopConfig.maxShopItemCount);
+            Dictionary<Global.RarityType,List<RelicConfig>> relicMap = new();
+            foreach(var relic in Core.Data.Data.Table.RelicConfigs.Values)
+            {
+                relicMap[relic.rarity].Add(relic);
+            }
+            foreach(var relicList in relicMap.Values)
+            {
+                Utils.Utils.Shuffle<RelicConfig>(relicList);
+            }
+            Dictionary<Global.RarityType,int> relicRarityCount = new();
+            float sumRate = 0.0f;
+            foreach(var key in relicMap.Keys)
+            {
+                sumRate += Data.Config.shopConfig.rarityProbability[key];
+            }
+            int sumCount = 0;
+            foreach(var key in relicMap.Keys)
+            {
+                relicRarityCount[key] = UnityEngine.Mathf.FloorToInt(shopItemCount * (Data.Config.shopConfig.rarityProbability[key] / sumRate));
+                sumCount += relicRarityCount[key];
+            }
+            if(sumCount < shopItemCount)
+            {
+                //这里差值不会超过类型数量
+                var types = (Global.RarityType[])Enum.GetValues(typeof(Global.RarityType));
+                for(int i = 0;i < shopItemCount - sumCount; i++)
+                {
+                    int index = (i) % types.Length;
+                    relicRarityCount[types[index]]++;
+                }
+            }
+            int actualGetCount = 0;
+            ShopNode node = new();
+            foreach(var (rarity,count) in relicRarityCount)
+            {
+                var relicList = relicMap[rarity];
+                for(int i = 0; i < relicMap[rarity].Count; i++)
+                {
+                    if(i >= count) break;
+                    var relicConfig = relicList[i];
+                    int price = Random.Range(relicConfig.minPrice,relicConfig.maxPrice);
+                    ShopSlotData slotData = new();
+                    slotData.itemId = relicConfig.id;
+                    slotData.price = price;
+                    node.itemSlots.Add(slotData);
+                    actualGetCount++;
+                }
+            }
+            if(actualGetCount < shopItemCount)
+            {
+                var relicConfig = Data.Table.RelicConfigs[Data.Config.shopConfig.repeatShopItemId];
+                for(int i = 0;i < shopItemCount - actualGetCount; i++)
+                {
+                    int price = Random.Range(relicConfig.minPrice,relicConfig.maxPrice);
+                    ShopSlotData slotData = new();
+                    slotData.price = price;
+                    slotData.itemId = relicConfig.id;
+                    node.itemSlots.Add(slotData);
+                }
+            }
+            Utils.Utils.Shuffle<ShopSlotData>(node.itemSlots);
+            return node;
         }
     }
 

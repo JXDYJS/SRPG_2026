@@ -5,6 +5,8 @@ using TMPro;
 using Core.Data;
 using GamePlay.Units;
 using GamePlay.Skill;
+using GamePlay.Relics;
+using UnityEngine.AddressableAssets;
 namespace UI.Slot
 {
     public class SimpleSlot : MonoBehaviour
@@ -75,6 +77,20 @@ namespace UI.Slot
                     ItemIcon.gameObject.SetActive(true);
                 }
                 text.text = $"{skill.SkillName}\n{skill.Description}";
+            }
+            else if(item is RelicBase relic)
+            {
+                //显示relic的构造跟普通的不太一样 或许这里还可以兜底一下预制件布局？
+                var relicConfig = Data.Table.RelicConfigs[relic.relicId];
+                var path = relicConfig.sprite;
+                if (path != "")
+                {
+                    var icon = Addressables.LoadAssetAsync<UnityEngine.Sprite>(path).WaitForCompletion();
+                    if(icon != null)
+                    {
+                        ItemIcon.sprite = icon;
+                    }
+                }
             }
         }
         public void Clear()

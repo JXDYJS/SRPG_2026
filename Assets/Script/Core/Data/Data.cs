@@ -54,6 +54,7 @@ namespace Core.Data
         public readonly BattleConfigData BattleConfig = new BattleConfigData();
         public readonly BalanceConfigData BalanceConfig = new BalanceConfigData();
         public readonly ViewConfigData ViewConfig = new ViewConfigData();
+        public readonly ShopConfigData shopConfig = new ShopConfigData();
     }
 
     public class RuntimeData

@@ -83,7 +83,7 @@ namespace UI.Slot
             }
         }
 
-        public void Init(ShopSlotData slotData)
+        public void Init(ShopSlotData slotData,GameObject Content)
         {
             this.SlotData = slotData;
             RelicBase relicBase = ScriptableObject.CreateInstance<RelicBase>();
@@ -94,6 +94,15 @@ namespace UI.Slot
             rightSlot.Init<RelicBase>(relicBase);
             leftSlot.text.text = $"{slotData.price}";
             RefreshBG();
+            var toggleGroup = Content.GetComponent<ToggleGroup>();
+            if(toggleGroup != null)
+            {
+                toggle.group = toggleGroup;
+            }
+            else
+            {
+                Debug.LogError("toggle group is null");
+            }
         }
     }
 }
