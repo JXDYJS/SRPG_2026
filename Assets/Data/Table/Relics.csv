@@ -1,0 +1,8 @@
+_className,_tableName,_isDic,*id,name,desc,rarity,minPrice,maxPrice
+RelicConfig,RelicConfigs,true,string,string,string,Global.RarityType,int,int
+,,,r_beacon,信标,光柱冲破云层，为整支队伍注入勇气。战斗开始时，我方所有单位获得 1 层『力量』，攻击力 +1 且不会衰减。,Uncommon,80,120
+,,,r_enchanting,附魔台,台面上残留的青金石粉末仍在微微发亮，仿佛下一道附魔随时会浮现。我方所有单位攻击力 +1。,Common,50,80
+,,,r_shield,铁盾牌,传说这块盾曾正面挡下苦力怕的全力一炸，至今完好无损。受到的伤害 -2。,Common,40,70
+,,,r_cactus,仙人掌,沙漠教会我们别惹带刺的东西。被敌人攻击命中时，反弹 2 点伤害给攻击者。,Common,45,75
+,,,r_honey,蜂蜜瓶,甜到心里，也甜到伤口里。受到的所有治疗效果提高 30%。,Uncommon,90,130
+,,,r_totem,不死图腾,把它攥在手心，连死神都会迟疑一瞬。每场战斗抵挡一次致命伤害，并保留 1 点生命。,Rare,160,220

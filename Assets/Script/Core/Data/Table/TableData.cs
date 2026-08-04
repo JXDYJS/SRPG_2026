@@ -72,6 +72,16 @@ namespace Core.Data
             public float resBonusPercent;
         }
 
+        public struct RelicConfig
+        {
+            public string id;
+            public string name;
+            public string desc;
+            public Global.RarityType rarity;
+            public int minPrice;
+            public int maxPrice;
+        }
+
         public readonly Dictionary<string, BattleNodeConfig> BattleNodeConfigs = new()
         {
             { "n_001", new() { id = "n_001", levelId = "lv_001" } },
@@ -109,6 +119,16 @@ namespace Core.Data
             { "n_001", new() { id = "n_001", type = Map.MapType.Battle } },
             { "n_002", new() { id = "n_002", type = Map.MapType.Shop } },
             { "n_003", new() { id = "n_003", type = Map.MapType.Event } }
+        };
+
+        public readonly Dictionary<string, RelicConfig> RelicConfigs = new()
+        {
+            { "r_beacon", new() { id = "r_beacon", name = "信标", desc = "光柱冲破云层，为整支队伍注入勇气。战斗开始时，我方所有单位获得 1 层『力量』，攻击力 +1 且不会衰减。", rarity = Global.RarityType.Uncommon, minPrice = 80, maxPrice = 120 } },
+            { "r_enchanting", new() { id = "r_enchanting", name = "附魔台", desc = "台面上残留的青金石粉末仍在微微发亮，仿佛下一道附魔随时会浮现。我方所有单位攻击力 +1。", rarity = Global.RarityType.Common, minPrice = 50, maxPrice = 80 } },
+            { "r_shield", new() { id = "r_shield", name = "铁盾牌", desc = "传说这块盾曾正面挡下苦力怕的全力一炸，至今完好无损。受到的伤害 -2。", rarity = Global.RarityType.Common, minPrice = 40, maxPrice = 70 } },
+            { "r_cactus", new() { id = "r_cactus", name = "仙人掌", desc = "沙漠教会我们别惹带刺的东西。被敌人攻击命中时，反弹 2 点伤害给攻击者。", rarity = Global.RarityType.Common, minPrice = 45, maxPrice = 75 } },
+            { "r_honey", new() { id = "r_honey", name = "蜂蜜瓶", desc = "甜到心里，也甜到伤口里。受到的所有治疗效果提高 30%。", rarity = Global.RarityType.Uncommon, minPrice = 90, maxPrice = 130 } },
+            { "r_totem", new() { id = "r_totem", name = "不死图腾", desc = "把它攥在手心，连死神都会迟疑一瞬。每场战斗抵挡一次致命伤害，并保留 1 点生命。", rarity = Global.RarityType.Rare, minPrice = 160, maxPrice = 220 } }
         };
 
         public readonly Dictionary<string, ShopNodeConfig> ShopNodeConfigs = new()
