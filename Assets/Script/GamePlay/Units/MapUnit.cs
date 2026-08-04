@@ -679,7 +679,7 @@ namespace GamePlay.Units
             Debug.Log($"{name} has died.");
             UndoSystem.Instance.RegisterDirty(this);
             UnitManager.Instance.UnregisterUnit(this);
-            UnitManager.Instance.onUnitDead();
+            UnitManager.Instance.onUnitDead?.Invoke();
 
             // 逻辑/视觉分离：逻辑层只登记死亡，死亡动画由视觉层（SkillPerformer 等）统一播放；
             // 无 View 时（如环境伤害）立即隐藏
