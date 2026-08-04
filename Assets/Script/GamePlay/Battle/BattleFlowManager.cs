@@ -74,7 +74,7 @@ namespace GamePlay.Battle
             // {
             //     Debug.LogError($"[FLOW] LoadLevelAsync threw: {e.GetType().Name}: {e.Message}\n{e.StackTrace}");
             // }
-            UnitManager.Instance.onUnitDead += () =>
+            UnitManager.Instance.AllDeathAnimationsFinished += () =>
             {
                 if (isLevelEnd())
                 {

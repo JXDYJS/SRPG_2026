@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Global;
 using System;
+using Cysharp.Threading.Tasks;
+using GamePlay.View;
 namespace Managers
 {
     using GamePlay.Units;
@@ -15,6 +17,69 @@ namespace Managers
         // 坐标 -> 单位 的快速查找字典 (用于碰撞检测：我想去的格子上有没有人？)
         private Dictionary<Vector3Int, MapUnit> unitPositions = new Dictionary<Vector3Int, MapUnit>();
         public Action onUnitDead;
+
+        // 逻辑/视觉分离：逻辑层死亡时只登记，由视觉层统一播放死亡动画
+        private readonly HashSet<MapUnit> _pendingDeathAnims = new HashSet<MapUnit>();
+
+        /// <summary>
+        /// 尚未播放死亡动画的单位数量（供游戏管理器判断是否可结束游戏）。
+        /// </summary>
+        public int PendingDeathAnimCount => _pendingDeathAnims.Count;
+
+        /// <summary>
+        /// 所有待播放的死亡动画已播放完成（游戏管理器可在此重新判断是否结束游戏）。
+        /// </summary>
+        public event Action AllDeathAnimationsFinished;
+
+        /// <summary>
+        /// 登记死亡（逻辑层 Die() 调用，只登记不播放）。
+        /// </summary>
+        public void RegisterDeath(MapUnit unit)
+        {
+            if (unit != null && unit.View != null)
+            {
+                _pendingDeathAnims.Add(unit);
+            }
+        }
+
+        /// <summary>
+        /// 播放所有待播放的死亡动画（视觉层在所有技能动画解释完后调用）。
+        /// 播放完毕触发 AllDeathAnimationsFinished。
+        /// </summary>
+        public async UniTask FlushDeathAnimations()
+        {
+            if (_pendingDeathAnims.Count == 0)
+            {
+                AllDeathAnimationsFinished?.Invoke();
+                return;
+            }
+
+            List<MapUnit> batch = new List<MapUnit>(_pendingDeathAnims);
+            _pendingDeathAnims.Clear();
+
+            List<UniTask> tasks = new List<UniTask>();
+            foreach (MapUnit unit in batch)
+            {
+                if (unit == null) continue;
+
+                UnitView view = unit.View;
+                if (view != null)
+                {
+                    tasks.Add(view.PlayDeathAnimation(() =>
+                    {
+                        if (view != null) view.HideModel();
+                    }));
+                }
+                else
+                {
+                    unit.gameObject.SetActive(false);
+                }
+            }
+
+            await UniTask.WhenAll(tasks);
+
+            AllDeathAnimationsFinished?.Invoke();
+        }
         
         void Awake()
         {
