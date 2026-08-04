@@ -46,6 +46,19 @@ namespace EditorTools
                 ClearGroup(settings, settings.FindGroup(owned));
             }
 
+            // 1.5 清理历史污染分组：组名含 " # "（行内注释未剥离时产生的陈旧组），非 preserve 非当前拥有 → 删除
+            foreach (AddressableAssetGroup stale in settings.groups.ToArray())
+            {
+                if (stale == null) continue;
+                if (mapping.IsPreserved(stale.Name)) continue;
+                if (mapping.OwnedGroups.Contains(stale.Name, StringComparer.OrdinalIgnoreCase)) continue;
+                if (stale.Name.Contains(" # "))
+                {
+                    settings.RemoveGroup(stale);
+                    Debug.Log($"[BuildAddressables] 删除陈旧分组: {stale.Name}");
+                }
+            }
+
             // 2. 遍历资源，按规则写入地址
             int added = 0;
             string[] allPaths = AssetDatabase.GetAllAssetPaths();
@@ -151,6 +164,11 @@ namespace EditorTools
                     string line = raw.Trim();
                     if (line.Length == 0 || line.StartsWith("#")) continue;
 
+                    // 剥离行内注释（# 之后）
+                    int hashIdx = line.IndexOf('#');
+                    if (hashIdx >= 0) line = line.Substring(0, hashIdx).TrimEnd();
+                    if (line.Length == 0) continue;
+
                     bool allow = true;
                     if (line.StartsWith("!"))
                     {
@@ -232,6 +250,11 @@ namespace EditorTools
                 {
                     string line = raw.Trim();
                     if (line.Length == 0 || line.StartsWith("#")) continue;
+
+                    // 剥离行内注释（# 之后），避免注释混入组名
+                    int hashIdx = line.IndexOf('#');
+                    if (hashIdx >= 0) line = line.Substring(0, hashIdx).TrimEnd();
+                    if (line.Length == 0) continue;
 
                     if (line.StartsWith("preserve", StringComparison.OrdinalIgnoreCase))
                     {
