@@ -11,7 +11,7 @@ namespace Core.Data.Persistent
     ///   - version：存档兼容性检查
     ///   - party：玩家队伍角色数据
     ///   - relics：已收集藏品 ID 列表
-    ///   - gold / highestClearedStage：进度数据
+    ///   - progress：玩家进度（金币、已解锁关卡等）
     ///   - currentStageId：当前关卡 ID
     ///   - seed：地图随机种子
     ///   - nodeMapData：节点地图数据
@@ -28,7 +28,8 @@ namespace Core.Data.Persistent
         public List<CharacterSaveData> party = new List<CharacterSaveData>();
         public List<string> relics = new List<string>();
 
-        public int gold;
+        public PlayerProgressData progress = new PlayerProgressData();
+
         public int highestClearedStage;
 
         public int seed;

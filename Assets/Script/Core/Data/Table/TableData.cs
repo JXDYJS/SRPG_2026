@@ -128,7 +128,8 @@ namespace Core.Data
             { "r_shield", new() { id = "r_shield", name = "Iron Shield", desc = "Legend says this shield once blocked a Creeper's full blast and remains intact. Reduce all damage taken by 2.", rarity = Global.RarityType.Common, minPrice = 40, maxPrice = 70 } },
             { "r_cactus", new() { id = "r_cactus", name = "Cactus", desc = "The desert teaches us never to mess with things that sting. When hit by an enemy attack reflect 2 damage back to the attacker.", rarity = Global.RarityType.Common, minPrice = 45, maxPrice = 75 } },
             { "r_honey", new() { id = "r_honey", name = "Honey Bottle", desc = "Sweet to the heart and sweet to the wound. All healing received is increased by 30%.", rarity = Global.RarityType.Uncommon, minPrice = 90, maxPrice = 130 } },
-            { "r_totem", new() { id = "r_totem", name = "Totem of Undying", desc = "Clutch it tight and even Death will hesitate. Each battle block a single lethal hit and survive with 1 HP.", rarity = Global.RarityType.Rare, minPrice = 160, maxPrice = 220 } }
+            { "r_totem", new() { id = "r_totem", name = "Totem of Undying", desc = "Clutch it tight and even Death will hesitate. Each battle block a single lethal hit and survive with 1 HP.", rarity = Global.RarityType.Rare, minPrice = 160, maxPrice = 220 } },
+            { "r_gold_pouch", new() { id = "r_gold_pouch", name = "Pouch of Emeralds", desc = "A leather pouch stuffed with emeralds from a wealthy villager. Purchasing it instantly grants 10 gold. Can be bought repeatedly.", rarity = Global.RarityType.Common, minPrice = 50, maxPrice = 90 } }
         };
 
         public readonly Dictionary<string, ShopNodeConfig> ShopNodeConfigs = new()

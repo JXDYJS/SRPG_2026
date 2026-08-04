@@ -57,6 +57,58 @@ namespace Managers
             Debug.Log($"[RunManager] 获得遗物: {relic.Name} ({relic.ID})");
         }
 
+        // ==================== 金币（持久化于 PlayerProgressData.gold） ====================
+
+        /// <summary>当前金币余额</summary>
+        public int Gold => Data.Persistent?.Data?.progress?.gold ?? 0;
+
+        public void AddGold(int amount)
+        {
+            if (amount <= 0 || Data.Persistent?.Data == null) return;
+            Data.Persistent.Data.progress.gold += amount;
+            Data.Persistent.Save();
+            Debug.Log($"[RunManager] 获得 {amount} 金币，当前: {Gold}");
+        }
+
+        /// <summary>尝试花费金币，余额不足返回 false</summary>
+        public bool TrySpendGold(int amount)
+        {
+            if (amount <= 0) return true;
+            if (Gold < amount) return false;
+
+            Data.Persistent.Data.progress.gold -= amount;
+            Data.Persistent.Save();
+            Debug.Log($"[RunManager] 花费 {amount} 金币，剩余: {Gold}");
+            return true;
+        }
+
+        /// <summary>
+        /// 购买商店物品：先扣款，钱袋类遗物直接加金币，普通遗物进收藏。
+        /// 物品无法创建时自动退款。
+        /// </summary>
+        public bool PurchaseItem(string itemId, int price)
+        {
+            if (string.IsNullOrEmpty(itemId)) return false;
+            if (!TrySpendGold(price)) return false;
+
+            if (itemId == GamePlay.Relics.RelicPouchOfEmeralds.ITEM_ID)
+            {
+                AddGold(GamePlay.Relics.RelicPouchOfEmeralds.GOLD_AMOUNT);
+                return true;
+            }
+
+            RelicBase relic = RelicManager.CreateRelicFromID(itemId);
+            if (relic == null)
+            {
+                AddGold(price);
+                Debug.LogWarning($"[RunManager] 商品 '{itemId}' 无法创建，已退款 {price} 金币");
+                return false;
+            }
+
+            AddRelic(relic);
+            return true;
+        }
+
         /// <summary>
         /// 从存档数据填充 MyTeam（异步，需要加载 Addressables 技能）
         /// </summary>
