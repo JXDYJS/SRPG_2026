@@ -22,6 +22,8 @@ Assets/textures/gui/    = Textures_gui
 # Assets/textures/environment/= Textures_environment
 # Assets/textures/misc/       = Textures_misc
 
-# ===== preserve：既有分组保持原样，脚本不重建、不改地址 =====
-# 注意：Default Local Group 不在此名单 —— 它常被 Unity 当作默认落点，里面的资产应迁移到路径寻址
-preserve = Group_Buff, Group_Characters, Group_Skills, Group_UI, Group_Audio, Group_Block_Effect, Group_Class, Group_Projectile, Face
+# ===== preserve：运行时按地址字符串加载的分组，脚本不重建、不改地址 =====
+# 仅 Group_Buff 需要：BuffManager 用 buffID 作地址加载（Addressables.LoadAssetAsync<BuffBase>(buffID)）
+# 其它分组（Characters/Skills/UI/Class 等）都用 AssetReference(GUID) 或 Resources 加载，地址无关，
+# 路径命中的资产会被迁移到对应分组并改写为 Assets/ 路径地址。
+preserve = Group_Buff
