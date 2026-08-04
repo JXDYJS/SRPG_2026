@@ -14,6 +14,15 @@
 *.asmdef
 *.rsp
 
+# 开发工具/杂项文件
+*.json
+*.py
+*.bat
+*.txt
+*.schem
+*.yml
+*.yaml
+
 # 第三方与示例
 Assets/XLua/**
 Assets/TutorialInfo/**

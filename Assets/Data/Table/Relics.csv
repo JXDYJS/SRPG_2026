@@ -1,9 +1,9 @@
 _className,_tableName,_isDic,*id,name,desc,rarity,minPrice,maxPrice,sprite
 RelicConfig,RelicConfigs,true,string,string,string,Global.RarityType,int,int,string
-,,,r_beacon,Beacon,The light column pierces the clouds and fills the party with courage. At battle start all allied units gain 1 stack of Power (+1 ATK with no decay).,Uncommon,80,120,Relic/beacon
-,,,r_enchanting,Enchanting Table,Lingering lapis powder still glimmers on the table as if the next enchantment is about to emerge. All allied units gain +1 ATK.,Common,50,80,Relic/enchanting_table
-,,,r_shield,Iron Shield,Legend says this shield once blocked a Creeper's full blast and remains intact. Reduce all damage taken by 2.,Common,40,70,Relic/iron_shield
-,,,r_cactus,Cactus,The desert teaches us never to mess with things that sting. When hit by an enemy attack reflect 2 damage back to the attacker.,Common,45,75,Relic/cactus
-,,,r_honey,Honey Bottle,Sweet to the heart and sweet to the wound. All healing received is increased by 30%.,Uncommon,90,130,Relic/honey_bottle
-,,,r_totem,Totem of Undying,Clutch it tight and even Death will hesitate. Each battle block a single lethal hit and survive with 1 HP.,Rare,160,220,Relic/totem_of_undying
-,,,r_gold_pouch,Pouch of Emeralds,A leather pouch stuffed with emeralds from a wealthy villager. Purchasing it instantly grants 10 gold. Can be bought repeatedly.,Common,50,90,Relic/pouch_of_emeralds
+,,,r_beacon,Beacon,The light column pierces the clouds and fills the party with courage. At battle start all allied units gain 1 stack of Power (+1 ATK with no decay).,Uncommon,80,120,Assets/textures/block/beacon.png
+,,,r_enchanting,Enchanting Table,Lingering lapis powder still glimmers on the table as if the next enchantment is about to emerge. All allied units gain +1 ATK.,Common,50,80,Assets/textures/item/enchanted_book.png
+,,,r_shield,Iron Shield,Legend says this shield once blocked a Creeper's full blast and remains intact. Reduce all damage taken by 2.,Common,40,70,Assets/textures/entity/shield/base.png
+,,,r_cactus,Cactus,The desert teaches us never to mess with things that sting. When hit by an enemy attack reflect 2 damage back to the attacker.,Common,45,75,Assets/textures/block/cactus_flower.png
+,,,r_honey,Honey Bottle,Sweet to the heart and sweet to the wound. All healing received is increased by 30%.,Uncommon,90,130,Assets/textures/item/honey_bottle.png
+,,,r_totem,Totem of Undying,Clutch it tight and even Death will hesitate. Each battle block a single lethal hit and survive with 1 HP.,Rare,160,220,Assets/textures/item/totem_of_undying.png
+,,,r_gold_pouch,Pouch of Emeralds,A leather pouch stuffed with emeralds from a wealthy villager. Purchasing it instantly grants 10 gold. Can be bought repeatedly.,Common,50,90,Assets/textures/item/emerald.png

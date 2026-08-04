@@ -111,8 +111,8 @@ namespace Core.Data
 
         public readonly Dictionary<string, LevelConfig> LevelConfigs = new()
         {
-            { "lv_001", new() { id = "lv_001", mapAddress = "Test2", playerDeployZones = new() { "(0,0,0)", "(1,0,0)", "(2,0,0)", "(3,0,0)", "(4,0,0)", "(5,0,0)" }, maxDeployCount = 4, unitIds = new() { "u_enemy_zombie_01", "u_enemy_skeleton_01", "u_enemy_zombie_02" }, fallbackUnitIds = new() { "u_fallback_01" } } },
-            { "lv_002", new() { id = "lv_002", mapAddress = "TallMap", playerDeployZones = new() { "(0,0,0)", "(1,0,0)", "(2,0,0)", "(3,0,0)", "(4,0,0)", "(5,0,0)" }, maxDeployCount = 4, unitIds = new() { "u_enemy_zombie_01", "u_enemy_skeleton_01", "u_enemy_zombie_02" }, fallbackUnitIds = new() { "u_fallback_01" } } }
+            { "lv_001", new() { id = "lv_001", mapAddress = "Assets/Map/test2.asset", playerDeployZones = new() { "(0,0,0)", "(1,0,0)", "(2,0,0)", "(3,0,0)", "(4,0,0)", "(5,0,0)" }, maxDeployCount = 4, unitIds = new() { "u_enemy_zombie_01", "u_enemy_skeleton_01", "u_enemy_zombie_02" }, fallbackUnitIds = new() { "u_fallback_01" } } },
+            { "lv_002", new() { id = "lv_002", mapAddress = "Assets/Map/tallMap.asset", playerDeployZones = new() { "(0,0,0)", "(1,0,0)", "(2,0,0)", "(3,0,0)", "(4,0,0)", "(5,0,0)" }, maxDeployCount = 4, unitIds = new() { "u_enemy_zombie_01", "u_enemy_skeleton_01", "u_enemy_zombie_02" }, fallbackUnitIds = new() { "u_fallback_01" } } }
         };
 
         public readonly Dictionary<string, NodeConfig> NodeConfigs = new()
@@ -124,13 +124,13 @@ namespace Core.Data
 
         public readonly Dictionary<string, RelicConfig> RelicConfigs = new()
         {
-            { "r_beacon", new() { id = "r_beacon", name = "Beacon", desc = "The light column pierces the clouds and fills the party with courage. At battle start all allied units gain 1 stack of Power (+1 ATK with no decay).", rarity = Global.RarityType.Uncommon, minPrice = 80, maxPrice = 120, sprite = "Relic/beacon" } },
-            { "r_enchanting", new() { id = "r_enchanting", name = "Enchanting Table", desc = "Lingering lapis powder still glimmers on the table as if the next enchantment is about to emerge. All allied units gain +1 ATK.", rarity = Global.RarityType.Common, minPrice = 50, maxPrice = 80, sprite = "Relic/enchanting_table" } },
-            { "r_shield", new() { id = "r_shield", name = "Iron Shield", desc = "Legend says this shield once blocked a Creeper's full blast and remains intact. Reduce all damage taken by 2.", rarity = Global.RarityType.Common, minPrice = 40, maxPrice = 70, sprite = "Relic/iron_shield" } },
-            { "r_cactus", new() { id = "r_cactus", name = "Cactus", desc = "The desert teaches us never to mess with things that sting. When hit by an enemy attack reflect 2 damage back to the attacker.", rarity = Global.RarityType.Common, minPrice = 45, maxPrice = 75, sprite = "Relic/cactus" } },
-            { "r_honey", new() { id = "r_honey", name = "Honey Bottle", desc = "Sweet to the heart and sweet to the wound. All healing received is increased by 30%.", rarity = Global.RarityType.Uncommon, minPrice = 90, maxPrice = 130, sprite = "Relic/honey_bottle" } },
-            { "r_totem", new() { id = "r_totem", name = "Totem of Undying", desc = "Clutch it tight and even Death will hesitate. Each battle block a single lethal hit and survive with 1 HP.", rarity = Global.RarityType.Rare, minPrice = 160, maxPrice = 220, sprite = "Relic/totem_of_undying" } },
-            { "r_gold_pouch", new() { id = "r_gold_pouch", name = "Pouch of Emeralds", desc = "A leather pouch stuffed with emeralds from a wealthy villager. Purchasing it instantly grants 10 gold. Can be bought repeatedly.", rarity = Global.RarityType.Common, minPrice = 50, maxPrice = 90, sprite = "Relic/pouch_of_emeralds" } }
+            { "r_beacon", new() { id = "r_beacon", name = "Beacon", desc = "The light column pierces the clouds and fills the party with courage. At battle start all allied units gain 1 stack of Power (+1 ATK with no decay).", rarity = Global.RarityType.Uncommon, minPrice = 80, maxPrice = 120, sprite = "Assets/textures/block/beacon.png" } },
+            { "r_enchanting", new() { id = "r_enchanting", name = "Enchanting Table", desc = "Lingering lapis powder still glimmers on the table as if the next enchantment is about to emerge. All allied units gain +1 ATK.", rarity = Global.RarityType.Common, minPrice = 50, maxPrice = 80, sprite = "Assets/textures/item/enchanted_book.png" } },
+            { "r_shield", new() { id = "r_shield", name = "Iron Shield", desc = "Legend says this shield once blocked a Creeper's full blast and remains intact. Reduce all damage taken by 2.", rarity = Global.RarityType.Common, minPrice = 40, maxPrice = 70, sprite = "Assets/textures/entity/shield/base.png" } },
+            { "r_cactus", new() { id = "r_cactus", name = "Cactus", desc = "The desert teaches us never to mess with things that sting. When hit by an enemy attack reflect 2 damage back to the attacker.", rarity = Global.RarityType.Common, minPrice = 45, maxPrice = 75, sprite = "Assets/textures/block/cactus_flower.png" } },
+            { "r_honey", new() { id = "r_honey", name = "Honey Bottle", desc = "Sweet to the heart and sweet to the wound. All healing received is increased by 30%.", rarity = Global.RarityType.Uncommon, minPrice = 90, maxPrice = 130, sprite = "Assets/textures/item/honey_bottle.png" } },
+            { "r_totem", new() { id = "r_totem", name = "Totem of Undying", desc = "Clutch it tight and even Death will hesitate. Each battle block a single lethal hit and survive with 1 HP.", rarity = Global.RarityType.Rare, minPrice = 160, maxPrice = 220, sprite = "Assets/textures/item/totem_of_undying.png" } },
+            { "r_gold_pouch", new() { id = "r_gold_pouch", name = "Pouch of Emeralds", desc = "A leather pouch stuffed with emeralds from a wealthy villager. Purchasing it instantly grants 10 gold. Can be bought repeatedly.", rarity = Global.RarityType.Common, minPrice = 50, maxPrice = 90, sprite = "Assets/textures/item/emerald.png" } }
         };
 
         public readonly Dictionary<string, ShopNodeConfig> ShopNodeConfigs = new()

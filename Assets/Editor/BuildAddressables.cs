@@ -169,14 +169,15 @@ namespace EditorTools
                     if (hashIdx >= 0) line = line.Substring(0, hashIdx).TrimEnd();
                     if (line.Length == 0) continue;
 
-                    bool allow = true;
+                    // 语义：普通行 = 忽略（匹配则排除）；! 开头 = 反选（匹配则放行）
+                    bool isAllow = false;
                     if (line.StartsWith("!"))
                     {
-                        allow = false;
+                        isAllow = true;
                         line = line.Substring(1).Trim();
                     }
                     if (line.Length == 0) continue;
-                    rules._rules.Add((allow, line));
+                    rules._rules.Add((isAllow, line));
                 }
                 return rules;
             }
@@ -184,9 +185,9 @@ namespace EditorTools
             public bool Allow(string path)
             {
                 bool result = true;
-                foreach ((bool allow, string pattern) in _rules)
+                foreach ((bool isAllow, string pattern) in _rules)
                 {
-                    if (Match(path, pattern)) result = allow;
+                    if (Match(path, pattern)) result = isAllow;
                 }
                 return result;
             }

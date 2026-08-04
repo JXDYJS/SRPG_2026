@@ -10,6 +10,7 @@
 # ===== 运行时按地址加载的资源 =====
 Assets/Perfob/     = Perfob        # 方块/怪物 prefab
 Assets/Scenes/     = Scenes        # 战斗地图场景
+Assets/Map/        = Maps          # 地图数据 MapDataSO
 
 # 遗物/物品图标、方块贴图、实体图、商店 UI 贴图
 Assets/textures/item/   = Textures_item
