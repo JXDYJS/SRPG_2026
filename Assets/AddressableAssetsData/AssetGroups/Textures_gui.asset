@@ -1,0 +1,2855 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Textures_gui
+  m_EditorClassIdentifier: 
+  m_GroupName: Textures_gui
+  m_Data:
+    m_SerializedData: []
+  m_GUID: 3bdd344fb77931f4cb2dc25ab9980238
+  m_SerializeEntries:
+  - m_GUID: 0129e42512cccce4ebb7454667b4bea7
+    m_Address: Assets/textures/gui/sprites/widget/text_field.png.mcmeta
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0171617faa1322a4e8c3113dd1aac37f
+    m_Address: Assets/textures/gui/sprites/hud/crosshair_attack_indicator_background.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 01d26e8899e36454085e52c04cd611ea
+    m_Address: Assets/textures/gui/realms/no_realms.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 024002c130894c246848df9cd86f0e89
+    m_Address: Assets/textures/gui/sprites/advancements/tab_left_bottom_selected.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 026f2f7fda206e649aaa612c3742d459
+    m_Address: Assets/textures/gui/hanging_signs/acacia.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 02b24269e4166954e878b2772bc68279
+    m_Address: Assets/textures/gui/sprites/statistics/item_dropped.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 02b368ccb68cd1b439d5e44637fcb6d2
+    m_Address: Assets/textures/gui/sprites/hud/heart/poisoned_hardcore_full_blinking.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 04bc707e0a0e389448cd8e58309de06a
+    m_Address: Assets/textures/gui/sprites/advancements/tab_above_middle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 05350d55df308e143986a8455cb9b427
+    m_Address: Assets/textures/gui/sprites/notification/4.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0556d804102ce6545b2f1da44ad84cde
+    m_Address: Assets/textures/gui/sprites/container/slot/redstone_dust.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 05985f567cd20164facc68f47f05b6e7
+    m_Address: Assets/textures/gui/sprites/server_list/move_down.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 06b43d153ef0e9a4895e189d41769670
+    m_Address: Assets/textures/gui/sprites/container/creative_inventory/tab_bottom_selected_7.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 06be5ce4f8ec15346ac384cd1cc3bfce
+    m_Address: Assets/textures/gui/sprites/recipe_book/button_highlighted.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 06cae4ab8be450840bd2fcca75665cdb
+    m_Address: Assets/textures/gui/sprites/icon/video_link.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 07228b64b7c32184298c8ee88c3243e2
+    m_Address: Assets/textures/gui/sprites/boss_bar/notched_10_background.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 07366a29a1c4be748b42490935c1ea3c
+    m_Address: Assets/textures/gui/sprites/container/bundle/bundle_progressbar_fill.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 080ca606c0d1fb24e89ea0bce9e64360
+    m_Address: Assets/textures/gui/sprites/widget/page_forward_highlighted.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 086ab86c91a1db146b576d89f566a300
+    m_Address: Assets/textures/gui/inworld_menu_background.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 086ca32261f532b408cc91574e64cfd2
+    m_Address: Assets/textures/gui/sprites/server_list/pinging_4.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 08a6d9353a9752949a2e8584d9adcbdd
+    m_Address: Assets/textures/gui/sprites/hud/heart/poisoned_full_blinking.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 090840a5241b35e45afa18c096d87c9f
+    m_Address: Assets/textures/gui/sprites/notification/more.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 094f3743cffe18249b224caf5d1ff0b7
+    m_Address: Assets/textures/gui/sprites/container/creative_inventory/tab_top_unselected_3.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 098e677d49ad8cb47aa47c139e5778ca
+    m_Address: Assets/textures/gui/sprites/hud/heart/frozen_full.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0a3a4a5d73bc54647bfcc29eff052ac4
+    m_Address: Assets/textures/gui/title/background/panorama_4.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0a5c521c10f797345a33ba0d843d5388
+    m_Address: Assets/textures/gui/sprites/widget/unlocked_button_highlighted.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0ba18371d953f334dacd45c18402e9fa
+    m_Address: Assets/textures/gui/sprites/statistics/sort_down.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0bc1dee6fc32d3346a419f7659c34dca
+    m_Address: Assets/textures/gui/sprites/recipe_book/slot_craftable.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0bdcd6adf69fcf54187c7552947e14ff
+    m_Address: Assets/textures/gui/container/anvil.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0c4ffe01420dfdc4a95bcbadd0e54cd7
+    m_Address: Assets/textures/gui/container/horse.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0d84744e0177f1340a6f3e49fa0b7e96
+    m_Address: Assets/textures/gui/inworld_menu_list_background.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0e22486920203384a991796f01664c4b
+    m_Address: Assets/textures/gui/sprites/container/bundle/bundle_progressbar_fill.png.mcmeta
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0e5c4423ae3f76546856100dcdfa9c7d
+    m_Address: Assets/textures/gui/sprites/advancements/tab_right_middle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0ef0fda8a40592f46acbf1129b929ce3
+    m_Address: Assets/textures/gui/sprites/recipe_book/page_forward_highlighted.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0f7f816b0e953f84fa5aeb21de250c44
+    m_Address: Assets/textures/gui/sprites/container/villager/scroller.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 102f0ceb632afd6489da4b8de2ae6c14
+    m_Address: Assets/textures/gui/sprites/boss_bar/green_background.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 10d5932382469f14fa8a2230c2efe6d4
+    m_Address: Assets/textures/gui/sprites/pending_invite/reject_highlighted.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 112e608c156e41c40958fea52e5d6150
+    m_Address: Assets/textures/gui/sprites/container/villager/trade_arrow.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 115ae60815df7b649b157489fccc802d
+    m_Address: Assets/textures/gui/sprites/advancements/tab_below_middle_selected.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1191da582abbac949b2f5e49221f1fb0
+    m_Address: Assets/textures/gui/inworld_header_separator.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 126a90564f3463c4caf56f2b7fbbda69
+    m_Address: Assets/textures/gui/sprites/toast/mouse.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 134b9e4c4ff906d4882a73a9a7c06f25
+    m_Address: Assets/textures/gui/sprites/hud/locator_bar_dot/default_1.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1390dece76b2df245b665b0d68fdc59d
+    m_Address: Assets/textures/gui/sprites/advancements/title_box.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 15be3011e062c4148b0fb9e7bdfba679
+    m_Address: Assets/textures/gui/sprites/container/slot_highlight_back.png.mcmeta
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1794a424bcace0f4e9324c080048c22d
+    m_Address: Assets/textures/gui/sprites/container/creative_inventory/tab_top_selected_5.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1835e2770f26180458920787bf6ba774
+    m_Address: Assets/textures/gui/sprites/recipe_book/slot_many_uncraftable.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 189b64f87d845724792c0b6cc15ec482
+    m_Address: Assets/textures/gui/container/crafter.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 19798b174d4615847af8ff83a3417ef5
+    m_Address: Assets/textures/gui/sprites/transferable_list/unselect.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 19bd9ad6cb33fcd48a2a1eba8adf5443
+    m_Address: Assets/textures/gui/sprites/container/loom/pattern_highlighted.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1a075b253803cde4a8f818be599ee32a
+    m_Address: Assets/textures/gui/sprites/widget/button_disabled.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1a1e7ac7db0be2d4fbc671f506a83e5f
+    m_Address: Assets/textures/gui/sprites/toast/movement_keys.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1a36e5a7027224044b8d2730b6b38beb
+    m_Address: Assets/textures/gui/sprites/container/cartography_table/locked.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1a7b1fcf4d6bbdf4aa45ba01be6f271e
+    m_Address: Assets/textures/gui/sprites/hud/locator_bar_arrow_down.png.mcmeta
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1b34a8eccbf8cb84ca9214778b64c4c7
+    m_Address: Assets/textures/gui/sprites/advancements/task_frame_obtained.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1b4564502c394c745bd2ce9c853b2998
+    m_Address: Assets/textures/gui/sprites/widget/page_backward_highlighted.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1bb230c04be34f440ba8f395c265dfe7
+    m_Address: Assets/textures/gui/sprites/container/slot/nautilus_armor_inventory.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1bf61e766e04fb84aac3a9ca01c91e07
+    m_Address: Assets/textures/gui/sprites/container/creative_inventory/tab_top_unselected_7.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1c6829f22d19d9f4e99ce3da876bffd4
+    m_Address: Assets/textures/gui/sprites/recipe_book/button.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1c709f2bb1e42644e89da3ef9368553e
+    m_Address: Assets/textures/gui/sprites/boss_bar/purple_progress.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1c724b71d0141aa43933713e0ca2fb0f
+    m_Address: Assets/textures/gui/sprites/hud/locator_bar_background.png.mcmeta
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1c83c289c3a5243408a2bf6cce588df2
+    m_Address: Assets/textures/gui/sprites/container/bundle/bundle_progressbar_border.png.mcmeta
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1c9a3e5c86e2c304f821891049e82bf2
+    m_Address: Assets/textures/gui/sprites/toast/social_interactions.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1cb820feccc30be4b92994684fd9c534
+    m_Address: Assets/textures/gui/sprites/hud/heart/vehicle_container.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1d32004d4e949e6419998b99cb42a85f
+    m_Address: Assets/textures/gui/container/hopper.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1d57313f37168a445a1e6cc36d55aaf8
+    m_Address: Assets/textures/gui/sprites/notification/1.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1dc1dc67be48da44cb25b198a49bc5c8
+    m_Address: Assets/textures/gui/container/grindstone.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1e402070ba2883f429da63ac762da58e
+    m_Address: Assets/textures/gui/sprites/recipe_book/tab_selected.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1e4890ed8c16aa74e9b3ec2621602dba
+    m_Address: Assets/textures/gui/sprites/container/creative_inventory/tab_top_unselected_4.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1eb7e5df3caedab42a830b60cf79e5c2
+    m_Address: Assets/textures/gui/sprites/container/beacon/confirm.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1f6505e739dfba94a9d83888942989b9
+    m_Address: Assets/textures/gui/sprites/widget/slider_handle_highlighted.png.mcmeta
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 206417c773df2324ab14cb9c2deaa8eb
+    m_Address: Assets/textures/gui/sprites/hud/heart/withered_half.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 20ae05b864b11f54c995eeb08bd8054e
+    m_Address: Assets/textures/gui/sprites/container/creative_inventory/tab_bottom_selected_5.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 20fef095557a570459a630a93336d092
+    m_Address: Assets/textures/gui/sprites/container/villager/discount_strikethrough.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 21199a10e8236834387ee6e4280e971f
+    m_Address: Assets/textures/gui/container/creative_inventory/tab_items.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 21d6b460b2369774ab4f041e32ead08d
+    m_Address: Assets/textures/gui/sprites/toast/now_playing.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 226352cb8bfa78f46b9918c5219b0984
+    m_Address: Assets/textures/gui/sprites/widget/text_field_highlighted.png.mcmeta
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 22684e85ffa0f4d44b078340e1b17110
+    m_Address: Assets/textures/gui/sprites/server_list/pinging_1.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 23b1533fa8ae4df4792687cb190a0e4b
+    m_Address: Assets/textures/gui/sprites/recipe_book/furnace_overlay_highlighted.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 23c0a7ed3898a764e9af5b1024580fdd
+    m_Address: Assets/textures/gui/sprites/recipe_book/overlay_recipe.png.mcmeta
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 23dccc080908c0349b600fb4d560b80b
+    m_Address: Assets/textures/gui/sprites/widget/slider_handle_highlighted.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 23e981b4094bf0743bb3cd183e373eba
+    m_Address: Assets/textures/gui/sprites/hud/heart/absorbing_hardcore_full_blinking.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 24290cda411432545ab3345b1b0cd9b9
+    m_Address: Assets/textures/gui/sprites/popup/background.png.mcmeta
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 252d84300296ca14ea6f3ffdc9716283
+    m_Address: Assets/textures/gui/title/minceraft.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2532544eb85537a449c3b6737bd9ad41
+    m_Address: Assets/textures/gui/sprites/HighlightFrame.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 253b277a20e0d3f4186b8e859574ebc5
+    m_Address: Assets/textures/gui/demo_background.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 25db30d1ae076124cad7faaa5487c9a7
+    m_Address: Assets/textures/gui/sprites/recipe_book/page_backward_highlighted.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 262d37c66ac0e7042ab1b92d52185d4e
+    m_Address: Assets/textures/gui/sprites/player_list/remove_operator.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 265285cd73926264a98a515cfadb3c82
+    m_Address: Assets/textures/gui/sprites/container/stonecutter/recipe.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 272d5e3a117af8346970566d68314468
+    m_Address: Assets/textures/gui/sprites/container/slot/lapis_lazuli.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 27a103400c71e10438d32b3e05955a41
+    m_Address: Assets/textures/gui/sprites/icon/ping_3.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 27bf047cb41b2424ab73ac04fbe07d78
+    m_Address: Assets/textures/gui/sprites/world_list/error.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 27c28f72fe78ca448b8f8af62ff46b7c
+    m_Address: Assets/textures/gui/sprites/widget/checkbox_highlighted.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2871cda0a21d7a344aa4ebbc499d7fb2
+    m_Address: Assets/textures/gui/sprites/container/enchanting_table/level_1.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 29d06a09ff3e17f48a77ec6404041419
+    m_Address: Assets/textures/gui/sprites/container/bundle/slot_highlight_back.png.mcmeta
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 29df514b29e141945a9f60cfdeb97667
+    m_Address: Assets/textures/gui/sprites/recipe_book/furnace_overlay_disabled_highlighted.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 29e350a61bfc3b84b880817f99242a53
+    m_Address: Assets/textures/gui/sprites/toast/tree.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2a28be3fbe473424b847110c2f60ef06
+    m_Address: Assets/textures/gui/sprites/statistics/header.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2a80e3e3dcbd2f14893e86aea3381602
+    m_Address: Assets/textures/gui/sprites/server_list/ping_2.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2a81ae2939eb50045bf8b7b95ebc2205
+    m_Address: Assets/textures/gui/sprites/recipe_book/filter_disabled.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2ae956c7d8dade4409aa651af108de87
+    m_Address: Assets/textures/gui/sprites/container/smoker/burn_progress.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2be4586e3a4f6f940bda668f5bc96253
+    m_Address: Assets/textures/gui/sprites/advancements/box_unobtained.png.mcmeta
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2d3ea1408a42ebf489e57b1522458b50
+    m_Address: Assets/textures/gui/sprites/statistics/item_crafted.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2d5e3fbee85072346ae8a86a604d5973
+    m_Address: Assets/textures/gui/sprites/hud/experience_bar_progress.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2d8d6c2ac39b58049a357ad687ac5dbf
+    m_Address: Assets/textures/gui/sprites/container/creative_inventory/tab_top_unselected_6.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2efb5cb209458ec4b9a14464e4d84f3d
+    m_Address: Assets/textures/gui/sprites/recipe_book/tab.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2f34045c0fe558e488a0a9cd5417ed08
+    m_Address: Assets/textures/gui/sprites/container/slot/saddle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2f8449d74150cb549a934222fc9b7aa8
+    m_Address: Assets/textures/gui/sprites/advancements/box_obtained.png.mcmeta
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 301784a5f8d6e7746893141639e0989d
+    m_Address: Assets/textures/gui/sprites/icon/language.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 303bcb9d7b4746a48a31409838211c24
+    m_Address: Assets/textures/gui/sprites/widget/scroller.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 30686848a3760064bbdc32c2c2379434
+    m_Address: Assets/textures/gui/sprites/icon/trial_available.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 30864d6e16e4a6847b297b54929c40e8
+    m_Address: Assets/textures/gui/sprites/container/creative_inventory/tab_top_selected_7.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 30a78f8040d8b5d4399ff7aa78f32059
+    m_Address: Assets/textures/gui/sprites/widget/text_field_highlighted.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 30d0720fae1e4e842a1583fed5423076
+    m_Address: Assets/textures/gui/container/villager.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 310f93c4e0fb1664d89c41a21ed5391a
+    m_Address: Assets/textures/gui/sprites/spectator/close.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3162d8a69bc806c4292e0f9fade498c4
+    m_Address: Assets/textures/gui/sprites/toast/tutorial.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 31ad5d9f63de3d148aaf93a0414a813f
+    m_Address: Assets/textures/gui/sprites/popup/background.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3227bb42280484a4d80acbb5b98d9c72
+    m_Address: Assets/textures/gui/sprites/hud/heart/withered_full.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 32a11f0e54370cf4597cc24b8cdfdaa5
+    m_Address: Assets/textures/gui/sprites/widget/checkbox_selected_highlighted.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 335cec7e08896024cadfc524dd255703
+    m_Address: Assets/textures/gui/sprites/container/loom/scroller.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 342093ecab314d046b02c5570f7c5fdf
+    m_Address: Assets/textures/gui/sprites/container/enchanting_table/enchantment_slot_highlighted.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 34217227813d7574d940e8653ecdcad4
+    m_Address: Assets/textures/gui/sprites/widget/scroller_background.png.mcmeta
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3437269716707ee4db2585eaf72fb465
+    m_Address: Assets/textures/gui/sprites/icon/draft_report.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 34a65cc5c77e112408402e29499b658d
+    m_Address: Assets/textures/gui/realms/snapshot_realms.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3550d0fdd61701d4ab54c00e4345ed55
+    m_Address: Assets/textures/gui/sprites/container/crafter/disabled_slot.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3743bd006ac3a0f4ebebc03f209f610d
+    m_Address: Assets/textures/gui/sprites/tooltip/frame.png.mcmeta
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3747be1fa4605c840bc731b968138887
+    m_Address: Assets/textures/gui/sprites/container/anvil/text_field.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 376ddb2f109391841b51902a9b76bb1a
+    m_Address: Assets/textures/gui/sprites/widget/slider_highlighted.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 37c5aabe3030cfc4f9c983a988319135
+    m_Address: Assets/textures/gui/book.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 37fbbbcecf5ea0041be8d61aa4cbb018
+    m_Address: Assets/textures/gui/sprites/widget/tab_selected.png.mcmeta
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 388b8a87935b91f4a8b9edde884fc8d8
+    m_Address: Assets/textures/gui/sprites/container/cartography_table/map.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 38c14cd0fe562914ea5bb43f457d7344
+    m_Address: Assets/textures/gui/container/crafting_table.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 390a5fc46d2a5074daa5bbb3148b605f
+    m_Address: Assets/textures/gui/sprites/player_list/remove_player.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 398a1c3728e095a429fb55455b77f90e
+    m_Address: Assets/textures/gui/sprites/container/enchanting_table/enchantment_slot.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 39a48d69e87efeb42b9d38adc206ee6a
+    m_Address: Assets/textures/gui/sprites/boss_bar/white_progress.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3a69bb7f466cfc34698638a3f6cedd45
+    m_Address: Assets/textures/gui/sprites/social_interactions/mute_button_highlighted.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3b6c57db14cd5f84b9eb68306334b924
+    m_Address: Assets/textures/gui/sprites/recipe_book/overlay_recipe.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3bb42d7c79e61eb4f96caf570dc5faba
+    m_Address: Assets/textures/gui/sprites/advancements/task_frame_unobtained.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3c1aa597d5ed7774caff1e991d0bfd55
+    m_Address: Assets/textures/gui/sprites/container/slot/potion.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3c3bf86fe9b41814ab3f284fa72403c2
+    m_Address: Assets/textures/gui/sprites/hud/heart/hardcore_half.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3c45a6079296fe54d838ee19efa0f9ea
+    m_Address: Assets/textures/gui/sprites/transferable_list/move_up_highlighted.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3cf3b61b8350a4a40b77a571aa40cf84
+    m_Address: Assets/textures/gui/sprites/container/slot/diamond.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3d9b6ecf42d5122459b526d95c7e7342
+    m_Address: Assets/textures/gui/realms/new_world.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3dcf17cc0b3875643a8b1522673686af
+    m_Address: Assets/textures/gui/sprites/container/beacon/cancel.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3e0be5c74a03fbd408c44655f596473b
+    m_Address: Assets/textures/gui/sprites/hud/heart/full_blinking.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3e409ad41ce6bdf41bd81c1639dc789e
+    m_Address: Assets/textures/gui/sprites/container/creative_inventory/tab_bottom_unselected_2.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3e742b295e31219419d65d6433018c6b
+    m_Address: Assets/textures/gui/sprites/container/blast_furnace/lit_progress.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3e7824e0f6a189b48957369a82451b08
+    m_Address: Assets/textures/gui/sprites/advancements/tab_right_bottom.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3e8ed0219611d5643b05fdac133b2e24
+    m_Address: Assets/textures/gui/sprites/container/loom/pattern_selected.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3ec8fc0747f9dff47b40aa4139c0fca3
+    m_Address: Assets/textures/gui/sprites/container/inventory/effect_background_ambient.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3fa5afe8a89d933438734c79738271b5
+    m_Address: Assets/textures/gui/sprites/hud/heart/hardcore_full_blinking.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3fb24d83c8adc0f40b093e6ad9a8fa92
+    m_Address: Assets/textures/gui/sprites/container/villager/out_of_stock.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 40525e9b47ee4b94badc9f15f262bb10
+    m_Address: Assets/textures/gui/sprites/gamemode_switcher/selection.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 407c36319fcf30d4bb2fac22afc84dc9
+    m_Address: Assets/textures/gui/sprites/widget/tab_highlighted.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4105d905fe755794b800dc37ec40fab9
+    m_Address: Assets/textures/gui/sprites/statistics/sort_up.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 41076488905d5734c8a32926d2a3cf3e
+    m_Address: Assets/textures/gui/menu_background.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 412088e103bc221449eb590e5f94b762
+    m_Address: Assets/textures/gui/sprites/recipe_book/furnace_filter_enabled_highlighted.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 430ba422520781a4e8c91b07d30e9a94
+    m_Address: Assets/textures/gui/title/background/panorama_2.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 446d58dae35582847b675e6356222458
+    m_Address: Assets/textures/gui/sprites/server_list/move_up.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 449767b5e06a85a40901cd7ef05df87d
+    m_Address: Assets/textures/gui/sprites/hud/heart/absorbing_hardcore_full.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 45206c963d569e2488d752efa5e0647b
+    m_Address: Assets/textures/gui/sprites/hud/hotbar_attack_indicator_progress.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 45af51a1dd079614b9a13f5b72eda70d
+    m_Address: Assets/textures/gui/sprites/hud/heart/vehicle_half.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 45f0f0a0120043841a0c476e7a81111b
+    m_Address: Assets/textures/gui/sprites/container/enchanting_table/level_3.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4757ba0857a25bf45a599d3f5b8e5d17
+    m_Address: Assets/textures/gui/sprites/container/creative_inventory/tab_top_selected_3.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4876fc9574315f74d8f2f13f9b058e22
+    m_Address: Assets/textures/gui/container/generic_54.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4967a1a3560c6b74ca05cb4989d6f3bd
+    m_Address: Assets/textures/gui/sprites/spectator/scroll_right.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 499ef4c51c66a4e489fb72418e2602e7
+    m_Address: Assets/textures/gui/sprites/boss_bar/notched_12_background.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 49ce37b9ba885a143b32f815813015fc
+    m_Address: Assets/textures/gui/sprites/advancements/tab_below_left_selected.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 49cf370a049ec974aab3299040f25e74
+    m_Address: Assets/textures/gui/container/beacon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 49e17226b49e8464b9c50116893330eb
+    m_Address: Assets/textures/gui/sprites/container/slot/smithing_template_netherite_upgrade.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4aa0abb8cdd7ce944a4b227c2028a7af
+    m_Address: Assets/textures/gui/sprites/hud/heart/absorbing_full.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4aeed31b7dbbf5d48a404927b64584fd
+    m_Address: Assets/textures/gui/sprites/dialog/warning_button_disabled.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4bde819a19602f144aad6ef5f47cf286
+    m_Address: Assets/textures/gui/sprites/hud/food_half_hunger.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4cccdf496652a7d479b6170e5d7b6e5d
+    m_Address: Assets/textures/gui/sprites/toast/recipe_book.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4cf418be88e66b34e9165b7caa6c0c01
+    m_Address: Assets/textures/gui/sprites/container/crafter/powered_redstone.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4cf7e76572b360447b6ceff130e20d35
+    m_Address: Assets/textures/gui/sprites/notification/2.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4d08233156a817b4abc2047166546cd4
+    m_Address: Assets/textures/gui/sprites/hud/heart/frozen_hardcore_full_blinking.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4d20e744ebcc30f499d6b44600356c93
+    m_Address: Assets/textures/gui/sprites/spectator/teleport_to_player.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4d77bcbd8a61abc4ebbf54a15b3ff898
+    m_Address: Assets/textures/gui/sprites/container/slot/helmet.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4db725296dfa1b64a91581b071d89a5a
+    m_Address: Assets/textures/gui/container/furnace.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4e229e3f3aeeac047a552d5be6fc5a35
+    m_Address: Assets/textures/gui/sprites/recipe_book/crafting_overlay.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4e5e49f99dc66394c8c6013ad7b3e18e
+    m_Address: Assets/textures/gui/container/dispenser.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4f0b7fe101f62934c9e51d7f1c3076de
+    m_Address: Assets/textures/gui/sprites/recipe_book/page_forward.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4f3bbcdd4a4f7a448a71c857625fe870
+    m_Address: Assets/textures/gui/sprites/spectator/teleport_to_team.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4f4d421c60a44dd4a835f10801f620b5
+    m_Address: Assets/textures/gui/inworld_footer_separator.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4ffa3c9e91f97df49bc6efdf09253855
+    m_Address: Assets/textures/gui/sprites/container/loom/pattern.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 505770e7d81441846a2f7e38b7cd48c5
+    m_Address: Assets/textures/gui/sprites/world_list/warning_highlighted.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 508efab3c26ee424fa42da742bfcf024
+    m_Address: Assets/textures/gui/sprites/container/slot/banner.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 50d1506151a330642bd1845d8c829fb7
+    m_Address: Assets/textures/gui/sprites/container/inventory/effect_background_ambient.png.mcmeta
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 51ad6c2bbf5856241b91c3bbd21a5738
+    m_Address: Assets/textures/gui/sprites/hud/heart/frozen_hardcore_full.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 52b12620807a6964b8c54056c3ac899a
+    m_Address: Assets/textures/gui/sprites/hud/heart/frozen_full_blinking.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 54d23ebf53c64b04d8d1a9ec8f536268
+    m_Address: Assets/textures/gui/sprites/widget/scroller.png.mcmeta
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 554c801be2d522640959ca12cd6479a7
+    m_Address: Assets/textures/gui/sprites/recipe_book/furnace_filter_disabled.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 565ba5099df61074eb1633340998c3dc
+    m_Address: Assets/textures/gui/sprites/icon/invite.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 56c694f11eb95f64c8e00b1047480462
+    m_Address: Assets/textures/gui/sprites/boss_bar/notched_6_background.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 56d69e76f69e0e44b9ad796d297ddd74
+    m_Address: Assets/textures/gui/sprites/widget/checkbox.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 57196d2321a9401499cf17980374aea0
+    m_Address: Assets/textures/gui/sprites/boss_bar/red_background.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 572eea1221fb8cd4386c24af58f540a9
+    m_Address: Assets/textures/gui/sprites/hud/food_full.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5798332a89f474649926881476952dba
+    m_Address: Assets/textures/gui/container/cartography_table.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 57a05f2952e69eb4d81b3f1a2bc39870
+    m_Address: Assets/textures/gui/sprites/realm_status/expires_soon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 588d9f29a7d997748a76e6ecd54ce130
+    m_Address: Assets/textures/gui/hanging_signs/spruce.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 58e0da0be9fccb34c911961ac8cc1c36
+    m_Address: Assets/textures/gui/sprites/toast/system.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 58eefac099514b54a9e4c7e757bdce4b
+    m_Address: Assets/textures/gui/sprites/recipe_book/crafting_overlay_disabled_highlighted.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 592bfaae169f15a41bb5eac5b219265c
+    m_Address: Assets/textures/gui/advancements/backgrounds/adventure.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5b0f1e8c759af6148a4e24129b84fd3c
+    m_Address: Assets/textures/gui/sprites/world_list/marked_join.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5b48d2ddc2fa83446b3feedf26a28106
+    m_Address: Assets/textures/gui/sprites/hud/air_empty.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5ba9496e823fb3d4fa5cd92c77d52c89
+    m_Address: Assets/textures/gui/sprites/container/creative_inventory/tab_bottom_selected_4.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5bb7a63e5e8615848b94ab1b5d135b93
+    m_Address: Assets/textures/gui/sprites/icon/info.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5bc3b8003faafd449abc9421a6101dfd
+    m_Address: Assets/textures/gui/sprites/hud/locator_bar_arrow_up.png.mcmeta
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5bdfa0d0ba9435348b5847614305c9ca
+    m_Address: Assets/textures/gui/sprites/recipe_book/page_backward.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5be82cae63343604a9500a2548ea842a
+    m_Address: Assets/textures/gui/sprites/recipe_book/furnace_overlay_disabled.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5c0291a945d28174d8848c4987492b1c
+    m_Address: Assets/textures/gui/sprites/tooltip/background.png.mcmeta
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5c3e310e6e1b66a44a80a5d99f3353c8
+    m_Address: Assets/textures/gui/sprites/social_interactions/mute_button.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5d17e47af6a1a74478b9ff0d92552041
+    m_Address: Assets/textures/gui/sprites/hud/heart/poisoned_hardcore_full.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5dc2c3ad4fd0efb4fb525fdfa07cfb54
+    m_Address: Assets/textures/gui/sprites/transferable_list/move_down_highlighted.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5dd5906770e464f4b8a5e38106406093
+    m_Address: Assets/textures/gui/sprites/hud/jump_bar_background.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5e0c7199592a5ee4bbeeae00b9a57cd2
+    m_Address: Assets/textures/gui/container/shulker_box.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5e950dcdf3387104e9c0671eff74473e
+    m_Address: Assets/textures/gui/container/stonecutter.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5f85842171f4de1419810dd66367e6e5
+    m_Address: Assets/textures/gui/sprites/container/creative_inventory/tab_bottom_unselected_7.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5fd2d2926c23bdc4cb30bef9b1f5c36e
+    m_Address: Assets/textures/gui/sprites/icon/video_link_highlighted.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 618daa75988e1ad4dafbf15756b22ebd
+    m_Address: Assets/textures/gui/container/brewing_stand.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 62b56a05aadca0c41a9d78818deef1f3
+    m_Address: Assets/textures/gui/realms/adventure.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 630f32749cdc9e14698d3b6c46a0c731
+    m_Address: Assets/textures/gui/sprites/widget/unlocked_button_disabled.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 631ab4b73d3c3b7499341dfe1624807a
+    m_Address: Assets/textures/gui/sprites/icon/link.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 641b5cf198364794c84c2b307c48dd8b
+    m_Address: Assets/textures/gui/title/background/panorama_overlay.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6429d038d05939b429ec91e884aeb3a6
+    m_Address: Assets/textures/gui/sprites/widget/page_forward.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 646fec516b1f5fe498d6fa2508297664
+    m_Address: Assets/textures/gui/sprites/boss_bar/white_background.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6564bd1946cbb7142b38ab9879249f2e
+    m_Address: Assets/textures/gui/sprites/icon/ping_4.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6597d8444865f9243aba68953c16aa1f
+    m_Address: Assets/textures/gui/title/realms.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 659beb5520a80e54c9bc0459dfe8693f
+    m_Address: Assets/textures/gui/sprites/pending_invite/accept_highlighted.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 65c0bf2a7bb3ed3488883f181e6ec63e
+    m_Address: Assets/textures/gui/sprites/advancements/box_obtained.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 66adb5b9676ceff469454e5500ec2ace
+    m_Address: Assets/textures/gui/hanging_signs/bamboo.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 66d856d2e6237b1489bc760e2b1aa345
+    m_Address: Assets/textures/gui/sprites/hud/armor_empty.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 673a093340e097342a6e816ff81715f9
+    m_Address: Assets/textures/gui/sprites/advancements/tab_above_right.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6783693732e591543af3e68a576285ae
+    m_Address: Assets/textures/gui/sprites/hud/heart/withered_hardcore_half_blinking.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 67c6b9963ec039442ab29ee5cadef399
+    m_Address: Assets/textures/gui/sprites/container/villager/scroller_disabled.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 67d98bdfea73c044a8b7105a0a4b478b
+    m_Address: Assets/textures/gui/sprites/icon/ping_5.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 680cc7cd2ab16e0468810325776a59ba
+    m_Address: Assets/textures/gui/sprites/hud/heart/half.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 696ac95ff81c98740b49540e071e7fa4
+    m_Address: Assets/textures/gui/sprites/boss_bar/blue_progress.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 697d08fd55d8ae142a220b63274ae57a
+    m_Address: Assets/textures/gui/sprites/container/slot/amethyst_shard.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 69ad8c20a002df94a982d18f51cd4270
+    m_Address: Assets/textures/gui/sprites/world_list/join.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 69af23711a3ffe64eb6f1f080453ac60
+    m_Address: Assets/textures/gui/sprites/container/slot_highlight_front.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 69b1a112dff4a9c4fa4fd623cff4477b
+    m_Address: Assets/textures/gui/hanging_signs/crimson.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 69b4e24f6b6b65c42838ea269d98aa00
+    m_Address: Assets/textures/gui/sprites/realm_status/expired.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6a0738d2a96ee4e409523869b02648bc
+    m_Address: Assets/textures/gui/advancements/window.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6a13b283a9ac6f14ca78d4e9f216469f
+    m_Address: Assets/textures/gui/sprites/container/slot/brewing_fuel.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6a209196a29540d41baef18350879edb
+    m_Address: Assets/textures/gui/sprites/container/creative_inventory/scroller.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6abe01b9dc80c4749b62c36f9b2fa174
+    m_Address: Assets/textures/gui/sprites/toast/system.png.mcmeta
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6ae0add4a168aca4681590e2f725f1c7
+    m_Address: Assets/textures/gui/sprites/advancements/tab_left_middle_selected.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6bbba45724087be4787f6634d9b4f6c1
+    m_Address: Assets/textures/gui/sprites/container/slot/shield.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6bc7aa75e6dbc0342a9f762b6718c268
+    m_Address: Assets/textures/gui/sprites/container/beacon/button_selected.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6bf27548f875ab64bae8afc905b6b7fe
+    m_Address: Assets/textures/gui/sprites/server_list/join.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6c137bbc18f042849a9fe247aa5d5f53
+    m_Address: Assets/textures/gui/sprites/hud/hotbar_offhand_right.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6cf95247ce2a4944989ed9183d653975
+    m_Address: Assets/textures/gui/sprites/hud/heart/absorbing_full_blinking.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6d34a48c90fb0be4d9647d9b87341b4e
+    m_Address: Assets/textures/gui/sprites/icon/checkmark.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6d7f6d5402c60ae4d83c68177a9c7a0f
+    m_Address: Assets/textures/gui/sprites/tooltip/background.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6dc5124646b5cb645bede385ff75efa0
+    m_Address: Assets/textures/gui/sprites/widget/checkbox_selected.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6dca7235a62817e4ea316618d33f2b7e
+    m_Address: Assets/textures/gui/sprites/container/bundle/slot_highlight_back.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6eb274215e59b7444982e7b87cc1a054
+    m_Address: Assets/textures/gui/sprites/widget/tab_highlighted.png.mcmeta
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6ed4cb9fe773ff94ebb744a74db78dfe
+    m_Address: Assets/textures/gui/advancements/backgrounds/nether.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6ef582c9c91df2a47a13f070f0cf7e6a
+    m_Address: Assets/textures/gui/sprites/container/loom/scroller_disabled.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7049072d9bcb20241985e5092c077234
+    m_Address: Assets/textures/gui/sprites/hud/heart/withered_hardcore_half.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 708fb791290af1b449e2de52c5468f3f
+    m_Address: Assets/textures/gui/sprites/container/creative_inventory/tab_top_unselected_2.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 70bb8d2eb2da31743b10ea2239ec6fa6
+    m_Address: Assets/textures/gui/container/blast_furnace.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 711218acbda46cc41bc4869ca830d936
+    m_Address: Assets/textures/gui/sprites/container/cartography_table/scaled_map.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7164ed22769f9224eaf55d424d1ef793
+    m_Address: Assets/textures/gui/sprites/hud/heart/container_hardcore.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 71beaf5d0feed1b4f8b0080ebebd3233
+    m_Address: Assets/textures/gui/sprites/recipe_book/filter_disabled_highlighted.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 72ddaa30334bec9418611b201d5dcea0
+    m_Address: Assets/textures/gui/sprites/social_interactions/report_button_highlighted.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 734007459d7c15641a26e4705cc9f2bc
+    m_Address: Assets/textures/gui/sprites/hud/heart/full.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7382246f98a64684d90a527063487ab7
+    m_Address: Assets/textures/gui/sprites/recipe_book/furnace_filter_disabled_highlighted.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7392aa6476e7eeb438d430bdf8fb8531
+    m_Address: Assets/textures/gui/sprites/hud/food_full_hunger.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 73eb3fa5dcce2804abf445fa9b9b878a
+    m_Address: Assets/textures/gui/title/background/panorama_1.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 74ce5bd995fdac042828f7c7069d00f8
+    m_Address: Assets/textures/gui/sprites/hud/hotbar_selection.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 74d14d06febd36d4ebf89f861081c9f6
+    m_Address: Assets/textures/gui/sprites/icon/accessibility.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 74f9717214842064aa5b8faadb91b46f
+    m_Address: Assets/textures/gui/sprites/container/creative_inventory/tab_top_selected_1.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7570796a6af3d8a4c9db6ba433b5735e
+    m_Address: Assets/textures/gui/sprites/hud/food_empty_hunger.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 75d8c6e33efac6f41828a1a090e36783
+    m_Address: Assets/textures/gui/sprites/toast/tutorial.png.mcmeta
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 763b1196ee338e540b9b57e73a35ec87
+    m_Address: Assets/textures/gui/sprites/container/slot/banner_pattern.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 76d5091a69aabc74b81334c5203c268b
+    m_Address: Assets/textures/gui/sprites/container/stonecutter/scroller.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7746f0a0d1a0ba24ca6a651e882f4727
+    m_Address: Assets/textures/gui/sprites/hud/heart/poisoned_half_blinking.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 783d7bbaa55f59d4e9623d1d22d1c33d
+    m_Address: Assets/textures/gui/sprites/advancements/tab_right_top_selected.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 78ca8eb7fadff8e40980902cb000b32e
+    m_Address: Assets/textures/gui/sprites/boss_bar/red_progress.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 791d0a7a76867004b99191745c9f0244
+    m_Address: Assets/textures/gui/sprites/hud/hotbar_attack_indicator_background.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 799f3083f43f99d43b634e5c37e51040
+    m_Address: Assets/textures/gui/sprites/hud/heart/poisoned_hardcore_half_blinking.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 79b0303ee8c94a1448188155d4c3b9f4
+    m_Address: Assets/textures/gui/sprites/server_list/ping_3.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 79dc15a1b50c50945a5137de33253292
+    m_Address: Assets/textures/gui/sprites/widget/tab_selected_highlighted.png.mcmeta
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7a5d0e9556d65cb46b86420cbe170334
+    m_Address: Assets/textures/gui/sprites/container/slot/sword.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7b1263d566d914d4799908cdf8d41cf1
+    m_Address: Assets/textures/gui/sprites/hud/crosshair_attack_indicator_progress.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7b1ba0636d9dc81499666f1d67de3359
+    m_Address: Assets/textures/gui/sprites/container/enchanting_table/level_1_disabled.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7bba657dc2d9b1346ae33b6d6992f561
+    m_Address: Assets/textures/gui/sprites/container/creative_inventory/tab_bottom_unselected_5.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7bcad3a93640ea849aed3c9207e35350
+    m_Address: Assets/textures/gui/sprites/hud/locator_bar_dot/default_0.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7c1036448bb15c14e8c7ab0b6fb78eaa
+    m_Address: Assets/textures/gui/sprites/widget/slot_frame.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7c6ef0095b3917447a5813bc18e75b62
+    m_Address: Assets/textures/gui/sprites/icon/ping_1.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7c78ee66ba5b6e74a9c08ee9625a9ccc
+    m_Address: Assets/textures/gui/container/loom.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7ca0b864c3242d546be2c99e41250be5
+    m_Address: Assets/textures/gui/sprites/widget/tab_selected_highlighted.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7ccf4262f66019c41847b71f3ea55096
+    m_Address: Assets/textures/gui/sprites/widget/locked_button.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7cd35bc9f4357c941af58c64e7bb7639
+    m_Address: Assets/textures/gui/sprites/server_list/unreachable.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7d3b3daac159b874881449a9939d62bb
+    m_Address: Assets/textures/gui/sprites/container/beacon/button_highlighted.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7e86d2175ac10304c877762cd7d7fcf7
+    m_Address: Assets/textures/gui/title/minecraft.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7eb90145821abcf49857e92abdfc9acc
+    m_Address: Assets/textures/gui/sprites/hud/jump_bar_cooldown.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7ec72844ad208984f9396728ccdd8c79
+    m_Address: Assets/textures/gui/sprites/hud/heart/hardcore_half_blinking.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7f0e5f6a045828741a7af971f6c2562a
+    m_Address: Assets/textures/gui/sprites/icon/news.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8029271063d4b0b4eb9cebf4e4ee5b11
+    m_Address: Assets/textures/gui/sprites/container/inventory/effect_background.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 80be3bc7a24593a45aa51f034be78352
+    m_Address: Assets/textures/gui/hanging_signs/warped.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 80d095a0236bdea44ac9317e41db9186
+    m_Address: Assets/textures/gui/sprites/transferable_list/move_up.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 812e2a0d2c62d2d4bb097d9cd971c3a8
+    m_Address: Assets/textures/gui/sprites/container/slot/spear.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 83f7202c2c32f2246848f7621d513a13
+    m_Address: Assets/textures/gui/sprites/pending_invite/accept.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8454a9af448c5d34ca2a094fea583a0a
+    m_Address: Assets/textures/gui/sprites/widget/locked_button_disabled.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8488d2d99bd333040b63a4204c1f7ab8
+    m_Address: Assets/textures/gui/sprites/pending_invite/reject.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 850c778b58d484749b4c3e6f6e2dfdb0
+    m_Address: Assets/textures/gui/sprites/container/creative_inventory/tab_top_selected_4.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 858fad5cde1f8054b929ab4ab5cab3bb
+    m_Address: Assets/textures/gui/sprites/world_list/warning.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 86d6cd026dee11e40b94a0ecceedd7a4
+    m_Address: Assets/textures/gui/sprites/advancements/tab_right_top.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 88bf8f2ff993e5647acc72298ef6831c
+    m_Address: Assets/textures/gui/sprites/boss_bar/purple_background.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8906a4d493062984782bb5ea72dfe8d9
+    m_Address: Assets/textures/gui/sprites/server_list/incompatible.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8964591718f43474b9f9a191252b6d68
+    m_Address: Assets/textures/gui/advancements/backgrounds/stone.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 89d6a21435e602143be670daa714ea1f
+    m_Address: Assets/textures/gui/sprites/container/enchanting_table/level_2.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 89f1ded4060457f49b69a2b0e8ba1f74
+    m_Address: Assets/textures/gui/sprites/social_interactions/unmute_button_highlighted.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8a484701908c2f7489b7f7ff6f9f2943
+    m_Address: Assets/textures/gui/sprites/container/inventory/effect_background.png.mcmeta
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8aa5ba06a838c6945bbc4e722d40a560
+    m_Address: Assets/textures/gui/realms/empty_frame.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8b0c52c2ada7e764299525c50414ed26
+    m_Address: Assets/textures/gui/sprites/container/furnace/burn_progress.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8c3c7335169de334cb4c06d55d5d8528
+    m_Address: Assets/textures/gui/sprites/container/slot/ingot.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8c4b2df9b30d464418895279d62901a3
+    m_Address: Assets/textures/gui/sprites/container/creative_inventory/tab_bottom_selected_6.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8cbdabebf40b29a43a69e760dbc06c1a
+    m_Address: Assets/textures/gui/hanging_signs/pale_oak.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8d3c9db9205c5f943890840e4a8a2ca5
+    m_Address: Assets/textures/gui/sprites/advancements/tab_left_middle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8dfee0ccacc6ed342b56bfc5c1ad97ea
+    m_Address: Assets/textures/gui/sprites/widget/button_highlighted.png.mcmeta
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8e03bf5030e30d0458bf128f0dbd5275
+    m_Address: Assets/textures/gui/sprites/container/bundle/bundle_progressbar_full.png.mcmeta
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8e7ac7cbacb4932449284a9f5fc10186
+    m_Address: Assets/textures/gui/hanging_signs/cherry.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8fc601854f2552440a8f879be5bf0ee4
+    m_Address: Assets/textures/gui/sprites/container/slot/nautilus_armor.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9046f569bce19d041aa36bfeb87a8763
+    m_Address: Assets/textures/gui/sprites/spectator/scroll_left.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9080fdab44ea330479614e027fdbfef5
+    m_Address: Assets/textures/gui/sprites/icon/trial_available.png.mcmeta
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 913af5562da2cee4c9c9cf9fcf0b2c26
+    m_Address: Assets/textures/gui/sprites/hud/effect_background.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 91ed4b9d03ab5c14ea89658fec8c9458
+    m_Address: Assets/textures/gui/sprites/container/anvil/text_field_disabled.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 921c2c54d135fd34bbc9eeeb9fab820a
+    m_Address: Assets/textures/gui/sprites/hud/food_half.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 923b4eca19840cf469eb0d313797f221
+    m_Address: Assets/textures/gui/sprites/dialog/warning_button.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 92b2d90ae276bcc4490353e85d801097
+    m_Address: Assets/textures/gui/sprites/toast/wooden_planks.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 933f946af9f530141a0e927805f87570
+    m_Address: Assets/textures/gui/title/edition.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 938a5d895705e40469a95490567d4936
+    m_Address: Assets/textures/gui/sprites/hud/heart/withered_half_blinking.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 93f5036b3fd22e845a0112d7948067ac
+    m_Address: Assets/textures/gui/sprites/container/enchanting_table/level_3_disabled.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9409f890c6cebcc40bbc568d7e797d98
+    m_Address: Assets/textures/gui/sprites/advancements/challenge_frame_unobtained.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 941243a3d2f78224c92b206ade12f484
+    m_Address: Assets/textures/gui/sprites/server_list/ping_5.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9582b5789ea63bc4f9089c5cd8eb8714
+    m_Address: Assets/textures/gui/sprites/widget/button.png.mcmeta
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 959b64e34bedff74087e83d1a5f0eec9
+    m_Address: Assets/textures/gui/sprites/toast/now_playing.png.mcmeta
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9645737057318b844bdff4f4b45079a9
+    m_Address: Assets/textures/gui/sprites/advancements/challenge_frame_obtained.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 966c8a0b2e0022b49aaf31739a6158a9
+    m_Address: Assets/textures/gui/container/smithing.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 966f51d4cc486cf48a1f76fe0958fc93
+    m_Address: Assets/textures/gui/sprites/statistics/item_picked_up.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9726ba953f93168478c9eeb1cd4de5e6
+    m_Address: Assets/textures/gui/sprites/realm_status/closed.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9756ec19626991246baf88a84ced3002
+    m_Address: Assets/textures/gui/sprites/widget/locked_button_highlighted.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 98772a78d8c62854f8f397ba146144eb
+    m_Address: Assets/textures/gui/sprites/container/slot/leggings.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 98897423532f39f4087c1c6fbe70c4eb
+    m_Address: Assets/textures/gui/sprites/widget/slider_handle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9a4b3c156d71fe845bac12b9798b0685
+    m_Address: Assets/textures/gui/sprites/hud/locator_bar_background.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9be0032fe73f4d948ac9b9ce914806f2
+    m_Address: Assets/textures/gui/sprites/notification/3.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9c3a3a20084ed264eb4ae7f60cb05008
+    m_Address: Assets/textures/gui/sprites/tooltip/frame.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9c82176192625ed4097fe03618d7bc91
+    m_Address: Assets/textures/gui/sprites/container/slot/hoe.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9ca20845ba456a140870e3a4826ef486
+    m_Address: Assets/textures/gui/header_separator.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9cfa505d399398848b6640f0f694fc35
+    m_Address: Assets/textures/gui/sprites/server_list/ping_1.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9d9c8c4b5cdae6f4bae9b39f3fc13e59
+    m_Address: Assets/textures/gui/sprites/social_interactions/background.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9db8c6e2e39d1e840888db88ae38c404
+    m_Address: Assets/textures/gui/sprites/boss_bar/notched_12_progress.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9eae28cc0e3f8334fa60793f7f365e6c
+    m_Address: Assets/textures/gui/sprites/hud/heart/withered_full_blinking.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9f0be8001b456914c84579f02ac3253b
+    m_Address: Assets/textures/gui/sprites/advancements/goal_frame_obtained.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9f92057e75ded6f40907edd3995e50c0
+    m_Address: Assets/textures/gui/sprites/advancements/goal_frame_unobtained.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9fab31de0cfb71c47ac0be91dba2ccdf
+    m_Address: Assets/textures/gui/presets/isles.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9fcaace959ad81e43a0e4ab050e64284
+    m_Address: Assets/textures/gui/sprites/hud/heart/poisoned_full.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9fec2c72ed1a8824eafc8dae5e89713c
+    m_Address: Assets/textures/gui/sprites/hud/locator_bar_dot/default_2.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9ffb2d9361651bf429bf686ff267d429
+    m_Address: Assets/textures/gui/sprites/container/grindstone/error.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a0612518c9d22b34c8af1501d3216fd3
+    m_Address: Assets/textures/gui/sprites/container/enchanting_table/enchantment_slot_disabled.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a161ddb798ca6c348a4929360bdbc243
+    m_Address: Assets/textures/gui/sprites/container/slot/llama_armor.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a1ab4dbbf8f18c94488c52d6ec044996
+    m_Address: Assets/textures/gui/sprites/container/slot/boots.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a1ac15a4e51172a46921b246a9ea99dc
+    m_Address: Assets/textures/gui/sprites/hud/locator_bar_dot/bowtie.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a278b4b5249c8d248bf0681830349d5a
+    m_Address: Assets/textures/gui/sprites/container/brewing_stand/fuel_length.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a27f0f1b6e97a1e49858d7cff29ea968
+    m_Address: Assets/textures/gui/hanging_signs/dark_oak.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a2842db7d57552949a611b60b6c4261f
+    m_Address: Assets/textures/gui/sprites/hud/jump_bar_progress.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a42c1d1a69407294a8c36c1d1a67d61b
+    m_Address: Assets/textures/gui/sprites/hud/heart/poisoned_half.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a467f5c3d2461234abdb4669f13cd7a1
+    m_Address: Assets/textures/gui/sprites/advancements/tab_above_left.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a46ae8c2fb1b2984cab40ef8d35649d3
+    m_Address: Assets/textures/gui/sprites/widget/tab.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a4b87dafe4076b34092cb47be83c8bc8
+    m_Address: Assets/textures/gui/sprites/container/bundle/bundle_progressbar_full.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a58bdace2fc03b94daa7e883d10531c3
+    m_Address: Assets/textures/gui/sprites/hud/locator_bar_arrow_up.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a5aa2352fbe7075469aec4c2f303a5b8
+    m_Address: Assets/textures/gui/realms/inspiration.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a6c5627e0e4570c4386ca89702e841b9
+    m_Address: Assets/textures/gui/sprites/container/horse/chest_slots.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a706b44bc9145dd44ba55ae822568fff
+    m_Address: Assets/textures/gui/sprites/server_list/pinging_3.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a76bb4e20e7f4434188b114b81ece87f
+    m_Address: Assets/textures/gui/sprites/advancements/tab_above_right_selected.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a79f4688cfb4e304a8451b23266cf2b0
+    m_Address: Assets/textures/gui/sprites/widget/slider.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a7fcd423d0a84f049b27a54eb79e8698
+    m_Address: Assets/textures/gui/sprites/widget/cross_button.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a831a45ba4a653449a110317b8b818a8
+    m_Address: Assets/textures/gui/sprites/container/slot/dye.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a85f686a714535343814a3c6850e6e79
+    m_Address: Assets/textures/gui/sprites/container/creative_inventory/tab_top_selected_2.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a99c7b6d2aaf58f43abc6c28b9971273
+    m_Address: Assets/textures/gui/sprites/container/villager/trade_arrow_out_of_stock.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a9e0a3d76b221884da8b599d749e6444
+    m_Address: Assets/textures/gui/sprites/advancements/tab_right_middle_selected.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: aa608edde447a874b9b70ec24ad35393
+    m_Address: Assets/textures/gui/sprites/container/creative_inventory/tab_bottom_unselected_1.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: aad8c49fe6b92f941bd6a3deffc1acd0
+    m_Address: Assets/textures/gui/container/inventory.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ab4bc936435b65944b8708ef97b5d15f
+    m_Address: Assets/textures/gui/title/background/panorama_3.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: abb3362d61ba9374a965e100334e48c4
+    m_Address: Assets/textures/gui/sprites/hud/heart/half_blinking.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: abf9f64d5a517b9409d302e5789701d7
+    m_Address: Assets/textures/gui/recipe_book.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ac1e92247bbdea84f9147c0567190588
+    m_Address: Assets/textures/gui/sprites/container/slot_highlight_back.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ac45fec0a4b0ba749aeec2ce4a944eeb
+    m_Address: Assets/textures/gui/sprites/container/stonecutter/recipe_selected.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ac90f508f76f87647a0d8b8e253ffc5f
+    m_Address: Assets/textures/gui/sprites/recipe_book/furnace_overlay.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: acc533f9115796c4b9b4cf5d9586b05c
+    m_Address: Assets/textures/gui/sprites/container/creative_inventory/tab_top_selected_6.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: acdad3339e22dfb48b307e9c0a0d462e
+    m_Address: Assets/textures/gui/sprites/advancements/tab_below_middle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ad4dd3fa21d9c904ab9f3da68b1efc2f
+    m_Address: Assets/textures/gui/sprites/hud/effect_background_ambient.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ad6ae3d9d2f6f014e9977ea87215ae5a
+    m_Address: Assets/textures/gui/sprites/container/cartography_table/duplicated_map.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ad8fa6132291ac647833c6acf985aa1a
+    m_Address: Assets/textures/gui/sprites/widget/button_disabled.png.mcmeta
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: adcf745563d7b8e4ea41e96717bb77df
+    m_Address: Assets/textures/gui/sprites/recipe_book/crafting_overlay_disabled.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ae852f471ade681409e7e9e0e896f441
+    m_Address: Assets/textures/gui/advancements/backgrounds/husbandry.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: af266f26c98353f439c7ead82eb6e077
+    m_Address: Assets/textures/gui/menu_list_background.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: af27a846f59c8564fbdf846a4c0674f7
+    m_Address: Assets/textures/gui/sprites/toast/advancement.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: af3f5026db18b2a4bb346a421ca047a5
+    m_Address: Assets/textures/gui/sprites/hud/heart/frozen_hardcore_half_blinking.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: af5296a9845a5004aa1b0eb85b8f7d84
+    m_Address: Assets/textures/gui/sprites/server_list/pinging_2.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: af87cb3fee7e7974da4b574299361433
+    m_Address: Assets/textures/gui/sprites/container/slot/axe.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: afa198557734a9b42b2af5dff771cea4
+    m_Address: Assets/textures/gui/sprites/container/anvil/error.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: afa5e92f306603a45b1f72d9543a01f8
+    m_Address: Assets/textures/gui/sprites/container/creative_inventory/tab_bottom_selected_2.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: afe061bb8ed4d6b459b9598fc93f8d33
+    m_Address: Assets/textures/gui/sprites/world_list/error_highlighted.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b0146d386d645db4f94b554309d4569e
+    m_Address: Assets/textures/gui/sprites/container/bundle/slot_highlight_front.png.mcmeta
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b04acb158e686904e8540ba5a888d9ed
+    m_Address: Assets/textures/gui/sprites/recipe_book/slot_uncraftable.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b08cd069bd8d7bc4890247ccb9c6d468
+    m_Address: Assets/textures/gui/sprites/boss_bar/notched_20_background.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b0eae2570746d4549ab8698d4c0e1ff5
+    m_Address: Assets/textures/gui/sprites/transferable_list/select.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b134171c1f6940044aceccf7449b676f
+    m_Address: Assets/textures/gui/sprites/recipe_book/crafting_overlay_highlighted.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b1694f2a7a2b0a844b8a4fbcd3c1aba9
+    m_Address: Assets/textures/gui/container/gamemode_switcher.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b1791234d9e65e54ba9a0b3bd220b0b7
+    m_Address: Assets/textures/gui/sprites/boss_bar/notched_6_progress.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b20d867d89f984e45bffda10a71119fa
+    m_Address: Assets/textures/gui/sprites/icon/link_highlighted.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b25223ffa5fd32146b69e4080ccc48ca
+    m_Address: Assets/textures/gui/realms/upload.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b2aac337524bd764bbde5b094dfac061
+    m_Address: Assets/textures/gui/sprites/advancements/tab_left_top_selected.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b2d62e1f3eb6ac84498c93d5b75087a6
+    m_Address: Assets/textures/gui/sprites/toast/right_click.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b32c28641ab7b164a845b0f0c6a9236d
+    m_Address: Assets/textures/gui/sprites/advancements/tab_above_left_selected.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b41ff0c4a8991ed4d93014ed9f79dad9
+    m_Address: Assets/textures/gui/sprites/hud/heart/withered_hardcore_full_blinking.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b46c53aa3a2c3a64ca903bc9a4dd1db6
+    m_Address: Assets/textures/gui/sprites/container/slot/quartz.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b51885521f58e0445b6919089c0d5585
+    m_Address: Assets/textures/gui/sprites/container/stonecutter/scroller_disabled.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b52d3a5762ce0ea4c86d7be0539ce070
+    m_Address: Assets/textures/gui/sprites/hud/heart/absorbing_hardcore_half_blinking.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b536a3d1d98b2464abdef93383a25b3f
+    m_Address: Assets/textures/gui/sprites/notification/5.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b5ccf733f083c914ba6e41d197143026
+    m_Address: Assets/textures/gui/sprites/widget/slider.png.mcmeta
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b5fa40a9a4a51d64da527fac48c092ee
+    m_Address: Assets/textures/gui/sprites/social_interactions/report_button.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b6796c8d786f4b048a5c7b9dc0bd1800
+    m_Address: Assets/textures/gui/sprites/advancements/tab_below_left.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b6af753b79c2e4e48b337063bf41a469
+    m_Address: Assets/textures/gui/sprites/hud/heart/vehicle_full.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b8294180b3223d54b8fc85c2a2747be0
+    m_Address: Assets/textures/gui/sprites/container/villager/experience_bar_result.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b8df311617737324980b3b44b3db7abc
+    m_Address: Assets/textures/gui/sprites/advancements/tab_below_right.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b9a41a3f49ed1c94eb73f27e8098a536
+    m_Address: Assets/textures/gui/sprites/widget/cross_button_highlighted.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b9ab694fde5cdb943b4b9da73053a8bd
+    m_Address: Assets/textures/gui/sprites/server_list/join_highlighted.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: baf3385ae698dff44b50498990976f01
+    m_Address: Assets/textures/gui/realms/survival_spawn.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bb237e2bd8b90ce418da586a433101ec
+    m_Address: Assets/textures/gui/sprites/container/creative_inventory/tab_bottom_selected_1.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bb62d811b24d0cf44a35f6b9f46ebf00
+    m_Address: Assets/textures/gui/sprites/boss_bar/notched_10_progress.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bc4402cf7c57c7c42a7a1fdfb0cbd63b
+    m_Address: Assets/textures/gui/container/nautilus.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bd3ffb93c26029749a06c7b8193abc4f
+    m_Address: Assets/textures/gui/sprites/container/blast_furnace/burn_progress.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bdb1b3bca92c28c4d81d1bbfbc294d0f
+    m_Address: Assets/textures/gui/sprites/hud/heart/withered_hardcore_full.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: be4e42f87b89f314eaf93dcb364f2e3e
+    m_Address: Assets/textures/gui/footer_separator.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c0573eb4615ffc04ab9c0f3d5e37f4a2
+    m_Address: Assets/textures/gui/sprites/boss_bar/yellow_progress.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c0585e17744599045b9b217a9f419030
+    m_Address: Assets/textures/gui/sprites/widget/slider_highlighted.png.mcmeta
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c0faa964710bdf8488e94509da8c8241
+    m_Address: Assets/textures/gui/sprites/container/smithing/error.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c14b8ecee710c4f4fa2f1b438a02b826
+    m_Address: Assets/textures/gui/hanging_signs/jungle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c188eceeb8ce56147b7decdac325ceb9
+    m_Address: Assets/textures/gui/sprites/server_list/move_down_highlighted.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c1bc0ed5695a5624d9e04b3e594de227
+    m_Address: Assets/textures/gui/realms/experience.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c1c27e16b3838eb459f089ab193cf208
+    m_Address: Assets/textures/gui/sprites/boss_bar/pink_background.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c26a3ff21e317594bb1c0cba79ebe8d4
+    m_Address: Assets/textures/gui/sprites/advancements/tab_above_middle_selected.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c2b3acd312b27394294a53cf49668ca9
+    m_Address: Assets/textures/gui/sprites/container/slot/smithing_template_armor_trim.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c40c79a7bc9e0a7479e090cfc32517f6
+    m_Address: Assets/textures/gui/container/creative_inventory/tab_item_search.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c40cd4612ae1ab647850f876f0f054bf
+    m_Address: Assets/textures/gui/sprites/advancements/tab_left_top.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c41b3da46611d0346b35ed15159ee689
+    m_Address: Assets/textures/gui/sprites/recipe_book/filter_enabled_highlighted.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c43f7845b73c1fc4dac74837a74c0e65
+    m_Address: Assets/textures/gui/sprites/container/beacon/button_disabled.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c4c731366d6841841a85ad1d421374cd
+    m_Address: Assets/textures/gui/sprites/dialog/warning_button_highlighted.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c5c9a6ada711c4249b63d1d67ad1fcee
+    m_Address: Assets/textures/gui/hanging_signs/birch.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c5e6218469a5700438f408fc1d10c5ab
+    m_Address: Assets/textures/gui/sprites/container/beacon/button.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c6e3d063fddffce40a62d6f6230c3bc6
+    m_Address: Assets/textures/gui/sprites/advancements/tab_below_right_selected.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c6f4a7bb15a347141a0a2f17028245a4
+    m_Address: Assets/textures/gui/title/background/panorama_0.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c73189970fe0fc14199dd4c699cf3117
+    m_Address: Assets/textures/gui/sprites/player_list/make_operator.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c736baa27ca74dc4fbdc4d0916ade7ed
+    m_Address: Assets/textures/gui/sprites/statistics/item_used.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c8096dee8dee52841ab94f9920facd25
+    m_Address: Assets/textures/gui/container/smoker.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c8f2f8cd678ec91489e103facd61bc39
+    m_Address: Assets/textures/gui/sprites/icon/ping_unknown.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c99990df0797b2e448fa0485283d34a1
+    m_Address: Assets/textures/gui/sprites/hud/crosshair.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cac7ef338e4afad4797a077a1f82d6a2
+    m_Address: Assets/textures/gui/sprites/advancements/tab_left_bottom.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cc0d6b5e9878ef043aa5501194a0fbf5
+    m_Address: Assets/textures/gui/sprites/hud/heart/frozen_half_blinking.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ce4c31df7ffaf86418660df523a75c00
+    m_Address: Assets/textures/gui/sprites/realm_status/open.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cf12c1491920b394f8a3aa56444ca894
+    m_Address: Assets/textures/gui/sprites/advancements/tab_right_bottom_selected.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cf407dcfa0e8b534b959d4d473e55b10
+    m_Address: Assets/textures/gui/sprites/hud/experience_bar_background.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cf7a35b42991b7b4c8dd5dfa1542f50b
+    m_Address: Assets/textures/gui/sprites/container/creative_inventory/scroller_disabled.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d0df245561f3c5a46a0933d8c6f868a5
+    m_Address: Assets/textures/gui/sprites/container/crafter/unpowered_redstone.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d139a7cf1ebe98e4595b511d60756b48
+    m_Address: Assets/textures/gui/sprites/icon/chat_modified.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d270fa99c636be7458d78ed33e850793
+    m_Address: Assets/textures/gui/sprites/hud/heart/absorbing_half_blinking.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d32c69e41c2ee3c4887c37293fd396f4
+    m_Address: Assets/textures/gui/sprites/recipe_book/filter_enabled.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d3b82ae5206d948488b5947b6a8220ae
+    m_Address: Assets/textures/gui/sprites/social_interactions/report_button_disabled.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d46b48f836b99f044862e919b735a158
+    m_Address: Assets/textures/gui/sprites/server_list/ping_4.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d4e6ca4b55adccc4b8118c8235fdc6cc
+    m_Address: Assets/textures/gui/sprites/container/villager/experience_bar_current.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d56c00e033025ed478df49f0ca02d2df
+    m_Address: Assets/textures/gui/sprites/container/creative_inventory/tab_bottom_unselected_4.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d57b19a97f14f8f40b7bf0ec79294b35
+    m_Address: Assets/textures/gui/sprites/hud/heart/container.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d5e65e7b6badf5442a50b3b76b12fddc
+    m_Address: Assets/textures/gui/sprites/boss_bar/yellow_background.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d66b55a327963d0478a3861e13f2e83d
+    m_Address: Assets/textures/gui/sprites/container/slot/horse_armor.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d672425df21106a409298bf5d0a2872b
+    m_Address: Assets/textures/gui/sprites/icon/search.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d6c434b3145a6fe468e9bf81924e839d
+    m_Address: Assets/textures/gui/sprites/advancements/title_box.png.mcmeta
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d6dc0054aa04fce4b89973f0de428681
+    m_Address: Assets/textures/gui/container/creative_inventory/tab_inventory.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d71186bd53afc644296d855869ebd0c4
+    m_Address: Assets/textures/gui/sprites/container/slot/shovel.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d731d5cb7f9d3504ba29dc1154e58cb0
+    m_Address: Assets/textures/gui/sprites/container/creative_inventory/tab_bottom_unselected_6.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d74cb8565b2233c42994b342414ac329
+    m_Address: Assets/textures/gui/sprites/hud/heart/frozen_half.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d74cf2e5206394f498fa930096218bc1
+    m_Address: Assets/textures/gui/container/enchanting_table.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d8149714a8592ea4a8478c9b18496ec4
+    m_Address: Assets/textures/gui/hanging_signs/oak.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d8ed222d1e8ab8c40841af4321523257
+    m_Address: Assets/textures/gui/sprites/container/cartography_table/error.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d901649dd4dc7a444bbd0f4ed4d5d7a5
+    m_Address: Assets/textures/gui/sprites/hud/heart/absorbing_half.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d90dea5c121e4bd42a31096d461ae857
+    m_Address: Assets/textures/gui/sprites/social_interactions/unmute_button.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d92604017506e604da1086a6421540b5
+    m_Address: Assets/textures/gui/sprites/statistics/block_mined.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d99ee1f4cd926b146aad767e4f5be368
+    m_Address: Assets/textures/gui/sprites/icon/ping_2.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d9cd827cec74a4f4f8df2e931ad81206
+    m_Address: Assets/textures/gui/sprites/hud/hotbar.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: da1ff49f387206d4783d4ddb1c861c19
+    m_Address: Assets/textures/gui/sprites/transferable_list/move_down.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: db3ad06cc6277aa4fb6d2a4d648660fa
+    m_Address: Assets/textures/gui/sprites/container/bundle/slot_highlight_front.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dc28ee8c3950ebf4ebff245a41364302
+    m_Address: Assets/textures/gui/sprites/container/creative_inventory/tab_bottom_selected_3.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dc4f860c54df0cc41b411f4d81c0bf96
+    m_Address: Assets/textures/gui/sprites/container/creative_inventory/tab_bottom_unselected_3.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dc6d31f00fca67b43b724719ab3eb61a
+    m_Address: Assets/textures/gui/sprites/container/loom/error.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dd2c263489fe2334ca1b53a5b6d9daeb
+    m_Address: Assets/textures/gui/sprites/container/smoker/lit_progress.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dd56ca2ae7066094bb0dfcc49ee02a63
+    m_Address: Assets/textures/gui/sprites/hud/armor_full.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dda316ab56aceef44b353c32fe97a1f9
+    m_Address: Assets/textures/gui/sprites/gamemode_switcher/slot.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dea095eab3aefbd44bd7f59e56571630
+    m_Address: Assets/textures/gui/hanging_signs/mangrove.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: df27aee12f2eee443838c4629fa79a97
+    m_Address: Assets/textures/gui/title/background/panorama_5.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e004af51bf5e8544db1ea080b3113f70
+    m_Address: Assets/textures/gui/sprites/server_list/move_up_highlighted.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e09927ce27f40524a88c0ba5d582bd15
+    m_Address: Assets/textures/gui/sprites/widget/text_field.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e1d738e0ad6d3de4eaebe4c96ee36e05
+    m_Address: Assets/textures/gui/sprites/world_list/join_highlighted.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e20843bddb8a0ec46809a586d18cc858
+    m_Address: Assets/textures/gui/sprites/hud/armor_half.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e208b545bc454d4428e00d7c3a2ba239
+    m_Address: Assets/textures/gui/sprites/hud/locator_bar_arrow_down.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e2117f28b9402ef41a08170683dbb67e
+    m_Address: Assets/textures/gui/sprites/world_list/marked_join_highlighted.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e25b16323f9aab9449c9fa096ab5bf53
+    m_Address: Assets/textures/gui/sprites/container/brewing_stand/bubbles.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e2a79b78a10ad25458c1e6594a0185e0
+    m_Address: Assets/textures/gui/sprites/container/bundle/slot_background.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e3bc75a4160afed49a0254bbdeab1fc1
+    m_Address: Assets/textures/gui/sprites/container/brewing_stand/brew_progress.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e453ce7b84d81624a80554c10277d01b
+    m_Address: Assets/textures/gui/advancements/backgrounds/end.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e5680d795a97f8f4797f2e8869eff757
+    m_Address: Assets/textures/gui/sprites/container/furnace/lit_progress.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e6e7214581e8e7f409a67b6f2d1f92f3
+    m_Address: Assets/textures/gui/sprites/hud/heart/frozen_hardcore_half.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e741be53ff10819429ed7d383ca3e86d
+    m_Address: Assets/textures/gui/sprites/hud/air.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e86571a221cee2443825d6893c47558b
+    m_Address: Assets/textures/gui/sprites/container/slot_highlight_front.png.mcmeta
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e87c722d6198ac348b0fc2aa853da2c1
+    m_Address: Assets/textures/gui/sprites/widget/tab_selected.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e8af9ca28d3185c47b6e9761f716abe5
+    m_Address: Assets/textures/gui/sprites/hud/locator_bar_dot/default_3.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e988b3d442374184799088bb627973a8
+    m_Address: Assets/textures/gui/sprites/boss_bar/pink_progress.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e9a3d11f563d6ef4c9707c96958dab6f
+    m_Address: Assets/textures/gui/sprites/container/bundle/bundle_progressbar_border.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ea180793a4a28584f801cbc3fd984a12
+    m_Address: Assets/textures/gui/sprites/hud/heart/absorbing_hardcore_half.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ea2d021f54f9aaf4bb50e2a76d52c071
+    m_Address: Assets/textures/gui/sprites/widget/slider_handle.png.mcmeta
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ea5adb1a0cdf12e488cf766f41456d05
+    m_Address: Assets/textures/gui/sprites/advancements/box_unobtained.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: eaa3c258cc007314e8a97baadc4571a3
+    m_Address: Assets/textures/gui/sprites/server_list/pinging_5.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: eb18c417f0df14146abd56aa9e66fe54
+    m_Address: Assets/textures/gui/tab_header_background.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ec58813b2616cb24fb1ff82ceeb11906
+    m_Address: Assets/textures/gui/sprites/boss_bar/blue_background.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ecde49b1357125f4198bb4390739794f
+    m_Address: Assets/textures/gui/sprites/boss_bar/notched_20_progress.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ed010a30b7fa09b41a0c574edc9dd185
+    m_Address: Assets/textures/gui/sprites/icon/unseen_notification.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ee500a355b2ca1b48bf311b6439d3a9a
+    m_Address: Assets/textures/gui/sprites/widget/tab.png.mcmeta
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: eed33871ba09119449351231132bf914
+    m_Address: Assets/textures/gui/sprites/icon/music_notes.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ef64b26da9cf0134e937d0dbf497e299
+    m_Address: Assets/textures/gui/sprites/hud/heart/container_hardcore_blinking.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ef64cc56009023347a05c7cd6f3ad6e9
+    m_Address: Assets/textures/gui/sprites/container/slot/chestplate.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: efade14e9093f9844afb9c4662e9cf29
+    m_Address: Assets/textures/gui/sprites/transferable_list/select_highlighted.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f01fa8c3cd460354897ef2d66e591b36
+    m_Address: Assets/textures/gui/sprites/container/slot.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f03234755a42ca945922d9eb18bcb868
+    m_Address: Assets/textures/gui/sprites/container/slot/emerald.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f05bdcaa36742ed4c9415400e59df43a
+    m_Address: Assets/textures/gui/sprites/container/creative_inventory/tab_top_unselected_1.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f0b24754129999b43857f580b438ded7
+    m_Address: Assets/textures/gui/sprites/hud/heart/hardcore_full.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f115d413e3de2584297bce4a7101807f
+    m_Address: Assets/textures/gui/sprites/container/enchanting_table/level_2_disabled.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f158df77535d94b42b0094ee01539113
+    m_Address: Assets/textures/gui/sprites/hud/crosshair_attack_indicator_full.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f1bcceed93e3c104e8c214a2202e9d2d
+    m_Address: Assets/textures/gui/sprites/statistics/item_broken.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f27b7868ce5667643859de5b14f4313e
+    m_Address: Assets/textures/gui/sprites/widget/page_backward.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f3efa51815616fe459d1dc810e92fd65
+    m_Address: Assets/textures/gui/sprites/widget/scroller_background.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f4c1e86abf9d24040ae05bace4c54034
+    m_Address: Assets/textures/gui/sprites/boss_bar/green_progress.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f60038313e99c364699d1c991ba8322c
+    m_Address: Assets/textures/gui/title/mojangstudios.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f6003a2e1f39ce94fad50483aa6bf05a
+    m_Address: Assets/textures/gui/sprites/hud/heart/container_blinking.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f65e51d515c730841a3499141ebf58d9
+    m_Address: Assets/textures/gui/sprites/container/villager/experience_bar_background.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f65ec8b1f93a79643ac6fe8eba267024
+    m_Address: Assets/textures/gui/sprites/container/slot/pickaxe.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f7466bde8db281c46b0caad2f65f2851
+    m_Address: Assets/textures/gui/sprites/container/bundle/slot_background.png.mcmeta
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f8a04cb079fe1c84b81e9b5e6e16e9a5
+    m_Address: Assets/textures/gui/sprites/container/stonecutter/recipe_highlighted.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f8afed64ac4695145bafc6513d360100
+    m_Address: Assets/textures/gui/sprites/icon/new_realm.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f9a273a1acefe874d973aad6f95d584e
+    m_Address: Assets/textures/gui/sprites/container/creative_inventory/tab_top_unselected_5.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fa8614cde00c8a746a70d99fd501c718
+    m_Address: Assets/textures/gui/sprites/recipe_book/slot_many_craftable.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fa99274815a5c06478fae9b3b503f197
+    m_Address: Assets/textures/gui/sprites/toast/recipe.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fac6197cad19e2f48b15627530f02bc9
+    m_Address: Assets/textures/gui/sprites/hud/heart/poisoned_hardcore_half.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fb26655703b68c941b9ef11329e94946
+    m_Address: Assets/textures/gui/sprites/icon/music_notes.png.mcmeta
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fb8c7e662bb610549850abd0cccc573d
+    m_Address: Assets/textures/gui/sprites/realm_status/expires_soon.png.mcmeta
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fc13622b3af271747af50cdd0c870197
+    m_Address: Assets/textures/gui/sprites/widget/unlocked_button.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fdb88030d79198f45a47ae0e29c92937
+    m_Address: Assets/textures/gui/sprites/widget/button.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fdec048023dac874eb0bb6e6c90b7b25
+    m_Address: Assets/textures/gui/sprites/transferable_list/unselect_highlighted.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fded268a93fc11e4087c629b25b6d5e0
+    m_Address: Assets/textures/gui/sprites/widget/button_highlighted.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fe89c258b9076bf41a4dba3e38cb985f
+    m_Address: Assets/textures/gui/sprites/hud/food_empty.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fe89f2f4f0612ac4c8a741f8df3f6966
+    m_Address: Assets/textures/gui/sprites/hud/air_bursting.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: febd6283809de4f4caf4ffc2e4712c43
+    m_Address: Assets/textures/gui/sprites/social_interactions/background.png.mcmeta
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ff9fd3688d6a15b43a73ccedc3b30407
+    m_Address: Assets/textures/gui/sprites/recipe_book/furnace_filter_enabled.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ffb2bb381b32c634598257ee76b62d43
+    m_Address: Assets/textures/gui/sprites/hud/hotbar_offhand_left.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 1f6ca7d155b268c408ed984de8fdd20b, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: e7f84fa0e15152e479b0800ff0815029, type: 2}
+    - {fileID: 11400000, guid: bac4e5892e372d14c9ef4f388c231bb9, type: 2}

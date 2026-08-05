@@ -17,6 +17,7 @@ Assets/textures/item/   = Textures_item
 Assets/textures/block/  = Textures_block
 Assets/textures/entity/ = Textures_entity
 Assets/textures/gui/    = Textures_gui
+Assets/textures/mob_effect/    = Textures_mob_effect
 
 # 如需打包更多贴图子目录，照抄一行即可，如：
 # Assets/textures/effect/     = Textures_effect

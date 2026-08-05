@@ -1,0 +1,3985 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Textures_item
+  m_EditorClassIdentifier: 
+  m_GroupName: Textures_item
+  m_Data:
+    m_SerializedData: []
+  m_GUID: d17b90fd86531d542a527d7dbf47df69
+  m_SerializeEntries:
+  - m_GUID: 001b659c36217ec4081ece928d1ecffc
+    m_Address: Assets/textures/item/cooked_salmon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0045673c0b281dd4ebc1b0c741ed5572
+    m_Address: Assets/textures/item/soul_lantern.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0066db62060efd04c984639ae02ac2ff
+    m_Address: Assets/textures/item/recovery_compass_26.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0159d968cc300534587261787c242b0c
+    m_Address: Assets/textures/item/zombie_villager_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 016f4276da9f87344bd522acf5cda205
+    m_Address: Assets/textures/item/blaze_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 01bf09db70135f349bd15980db0a460f
+    m_Address: Assets/textures/item/wooden_sword.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 032e9500458272a4d8177ab36bf3416b
+    m_Address: Assets/textures/item/light_blue_candle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 033cd6aa92b0bce40b888a1714563b67
+    m_Address: Assets/textures/item/clock_13.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 03b76ea9875f3c146b829ef8c7f61dc9
+    m_Address: Assets/textures/item/amethyst_shard.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 03b86c4b2e39db54894bb05eddec9e7a
+    m_Address: Assets/textures/item/black_dye.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 03b87aed7b521a9488b9c8a411e1b449
+    m_Address: Assets/textures/item/copper_nautilus_armor.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 03c2e54f78f7731449273fba9cb270b2
+    m_Address: Assets/textures/item/resin_brick.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 04d74d21396905040ab522ff11d5414c
+    m_Address: Assets/textures/item/ink_sac.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 04e03f847a9b0ae40ba8b87646259164
+    m_Address: Assets/textures/item/white_harness.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 052ca91c3208488458c2edefe851dcef
+    m_Address: Assets/textures/item/ominous_trial_key.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 054c6a2ebcdaee64cb7f095b9fe4c4ae
+    m_Address: Assets/textures/item/experience_bottle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0578ff2ae1fd64b4b9e5cfe883d59308
+    m_Address: Assets/textures/item/yellow_bundle_open_front.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 05a527c70d0d0b8409c93dcd16d9600c
+    m_Address: Assets/textures/item/pufferfish_bucket.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0637f39d00c795e4eaabadff3ee5bdf6
+    m_Address: Assets/textures/item/dragon_breath.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 06c354c1dc496d74b86e2fbde0f5e781
+    m_Address: Assets/textures/item/green_harness.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 072ebb7402ec5484bac1e99932ff9efb
+    m_Address: Assets/textures/item/scrape_pottery_sherd.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 07467878495b75542bb1c713c981a72d
+    m_Address: Assets/textures/item/music_disc_stal.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 074932bc298d9ee429f165d8adef687f
+    m_Address: Assets/textures/item/apple.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 08574cc42ac3f344db211cb500940a3c
+    m_Address: Assets/textures/item/light_08.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 08977632b25a56e4bb131c346d29b95f
+    m_Address: Assets/textures/item/recovery_compass_05.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 08d9486b52f29d447bdd68d95f0175f5
+    m_Address: Assets/textures/item/warped_door.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 08fa9ee70cebe3441a7e0f3884f6fcf7
+    m_Address: Assets/textures/item/recovery_compass_24.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 095e828ce4461104f8373eb1cece8610
+    m_Address: Assets/textures/item/brick.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 097d5fbe843664744970e9882f8c46b0
+    m_Address: Assets/textures/item/clock_32.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 09803aa5a52db5845940ff55948cbcb2
+    m_Address: Assets/textures/item/iron_hoe.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0981fea57606d10429ff1ddebfef80ce
+    m_Address: Assets/textures/item/music_disc_relic.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 09bbdcbdd3a1aae43a160cff94fb4cf6
+    m_Address: Assets/textures/item/light_blue_bundle_open_back.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 09f79538209dc4e46a6e7eb577025074
+    m_Address: Assets/textures/item/clock_50.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0b0664610ca7b7d4c9895ab5a890a211
+    m_Address: Assets/textures/item/danger_pottery_sherd.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0b2b42a66ff7cf3468c24219b1b9965b
+    m_Address: Assets/textures/item/white_dye.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0b546dec797c7c04c8bee80a4e8b8a44
+    m_Address: Assets/textures/item/cave_spider_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0b771bc30b8302347a7b875335626852
+    m_Address: Assets/textures/item/prismarine_shard.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0b908a1a9b91aa14ba941cfca204ed27
+    m_Address: Assets/textures/item/compass_03.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0b9ce964f5ef9314a97ec03785e40eed
+    m_Address: Assets/textures/item/golden_spear_in_hand.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0bdf74332a9b8ce4faa3ef1a58f50c86
+    m_Address: Assets/textures/item/stray_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0caea148f35ce484c8d7f01f5d41b5ff
+    m_Address: Assets/textures/item/crimson_sign.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0cba68ed15ecd7e4eb83d5e411ab93a3
+    m_Address: Assets/textures/item/clock_22.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0cbe788eb40a4db4ab5b7eb28fcd0baa
+    m_Address: Assets/textures/item/birch_sign.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0d2c6ad7295b21d4cbcd93778e659bb5
+    m_Address: Assets/textures/item/piglin_banner_pattern.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0d80cf22d02faa244896558ba4c77b59
+    m_Address: Assets/textures/item/golden_nautilus_armor.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0daab3ba6bed9dd4cb0f868537a21cc1
+    m_Address: Assets/textures/item/compass_08.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0dfd6237f1d33eb4786a52f455d8fa1d
+    m_Address: Assets/textures/item/witch_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0e69a9a74ea9e4e43add07d00b8c1192
+    m_Address: Assets/textures/item/music_disc_strad.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0e803ef2daf37b64b8b4b92919a0cafe
+    m_Address: Assets/textures/item/arrow.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0eca9a264d3a76740b0a1c0be5af49b3
+    m_Address: Assets/textures/item/melon_slice.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0ed27c18c1cc8534b937d993f4790c37
+    m_Address: Assets/textures/item/green_bundle_open_front.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0f178af35ceb2cf45a910e234f7c6f29
+    m_Address: Assets/textures/item/golden_boots.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0f23dd5f5e19ed84298d18d85be5457d
+    m_Address: Assets/textures/item/mule_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0f833cc2bf5e7774ab536da42eab7c53
+    m_Address: Assets/textures/item/diamond_pickaxe.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0f86c0daa62bb984c97fa5d899c3992c
+    m_Address: Assets/textures/item/copper_hoe.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0fbba6d4d8084ac42a5ee0e0b0955bba
+    m_Address: Assets/textures/item/compass_24.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0fc5a4bd12f6ee647ba52d2be7b80257
+    m_Address: Assets/textures/item/powder_snow_bucket.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1027ed55a72d83a41a3d60a414c1d891
+    m_Address: Assets/textures/item/dark_oak_chest_boat.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1129c347548eb3b4fb4150b2996aa75b
+    m_Address: Assets/textures/item/structure_void.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 115353666cd84564cac7e9a63ce6d2b8
+    m_Address: Assets/textures/item/lime_harness.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 11c25abedcae236468cf42d1d3d4eb0b
+    m_Address: Assets/textures/item/compass_31.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 11ce88e4b5ee24247aca90c4f639445b
+    m_Address: Assets/textures/item/axolotl_bucket.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 11ff2fb81c927a945a37accbd553d29f
+    m_Address: Assets/textures/item/stone_sword.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 12267d5775109cd4b9b55be4c3ea3a1f
+    m_Address: Assets/textures/item/leather_horse_armor_overlay.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 127fabd02632b1d4d835a5bbe2351a0a
+    m_Address: Assets/textures/item/clock_36.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 12d9680a6b44c174ca8a976401be58fc
+    m_Address: Assets/textures/item/light_gray_harness.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1300cf3586b3ef64288f761bc943b185
+    m_Address: Assets/textures/item/compass_30.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 130d07bd42740f14fa0d5fac6e720290
+    m_Address: Assets/textures/item/golden_axe.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1324bd32ee37ba845b20b45e6c40ee4a
+    m_Address: Assets/textures/item/recovery_compass_12.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 144ecfd69571049468372265c32a5f36
+    m_Address: Assets/textures/item/endermite_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 14d20378792beba418da89d73b366af4
+    m_Address: Assets/textures/item/name_tag.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1544b0da6cc683f49bd31a015d9b530b
+    m_Address: Assets/textures/item/clock_42.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1594fb6f2b47a284f90deb1c773db872
+    m_Address: Assets/textures/item/netherite_horse_armor.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1598e783e560f4943bf4e9eb49673ea8
+    m_Address: Assets/textures/item/honeycomb.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 15c46256200d3ef459ccbd6f5b430e48
+    m_Address: Assets/textures/item/netherite_pickaxe.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 16459175c18b673499ded1b8bd546781
+    m_Address: Assets/textures/item/cyan_candle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1721fe280f81fb248b3902d43d103559
+    m_Address: Assets/textures/item/flow_banner_pattern.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1764789f08d3f304894a8e343a80f048
+    m_Address: Assets/textures/item/birch_hanging_sign.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 17b94363a27ab0b428d2f1b7fd5a579e
+    m_Address: Assets/textures/item/magenta_bundle_open_front.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 17eaf43619db35b4694ddc6ed491edc4
+    m_Address: Assets/textures/item/netherite_leggings.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 186df6daa5f27004ba85d8c7e62abf20
+    m_Address: Assets/textures/item/strider_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 18a1185a1246ac74bb67ca345ca1e2f5
+    m_Address: Assets/textures/item/netherite_hoe.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1916bdbe93bbb9e41b7eb8e1b03556e7
+    m_Address: Assets/textures/item/compass_26.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 19338d2dcebd9a64d9328984641bce7f
+    m_Address: Assets/textures/item/compass_05.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 193d6442c54a5c04ab80ac94b1bbb4e5
+    m_Address: Assets/textures/item/pig_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 19475c5f649c68d46a79947576c83adb
+    m_Address: Assets/textures/item/chorus_fruit.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 19505fdd15109a4408ace5d3ab038fd7
+    m_Address: Assets/textures/item/bundle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 19585d12331e49241a16fac2d634553b
+    m_Address: Assets/textures/item/golden_carrot.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 19fc33f042a33c148995b77e4ac9fe67
+    m_Address: Assets/textures/item/netherite_nautilus_armor.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1aa3b4d11aa22c2408ec1166fa35a957
+    m_Address: Assets/textures/item/clock_52.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1adb4ddab4aa74a4fb841ff4f2cefacc
+    m_Address: Assets/textures/item/black_bundle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1af82ecdbac6a154983e7b2402bb07c7
+    m_Address: Assets/textures/item/gray_bundle_open_front.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1c5d3cb7f19980d40a4367c20ea9a1d3
+    m_Address: Assets/textures/item/snort_pottery_sherd.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1c9efaf9610ca4a4eae12a55b72e2fb8
+    m_Address: Assets/textures/item/tadpole_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1dac931868023ff4aac5f72da631874a
+    m_Address: Assets/textures/item/warped_hanging_sign.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1de66f55bad83db4fb598fc0f5bfed05
+    m_Address: Assets/textures/item/paper.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1deb2c1fd136de841943445e9bdd45fb
+    m_Address: Assets/textures/item/diamond_chestplate.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1e1662e3fff41bd4e85048b31c937281
+    m_Address: Assets/textures/item/prize_pottery_sherd.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1e25829fbdc024f47b8ca957003b1c47
+    m_Address: Assets/textures/item/black_harness.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1e3f4ab0a6a72e144926641ef35f7447
+    m_Address: Assets/textures/item/turtle_helmet.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1eae520324da0554a803cc507a51cbcb
+    m_Address: Assets/textures/item/white_bundle_open_back.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1efeed3d451b2834ca7d05fe9e165972
+    m_Address: Assets/textures/item/goat_horn.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1fcd21e02ecc32e4987f0dcb61afaf63
+    m_Address: Assets/textures/item/flower_pot.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 20339f313a8908f4d946e1a830e83d56
+    m_Address: Assets/textures/item/iron_boots.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 21738a7834bf70f408ac6eea1a3cfdeb
+    m_Address: Assets/textures/item/salmon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 22b61fe57ce54d840b6b11379c595065
+    m_Address: Assets/textures/item/netherite_upgrade_smithing_template.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 22bc9ae1de54fa1418dec5ebc1be7127
+    m_Address: Assets/textures/item/gunpowder.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 235647dbd0ef6cb4a8d56c4a95863304
+    m_Address: Assets/textures/item/diamond.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 23861cdaeb18b13489b392a4f7276230
+    m_Address: Assets/textures/item/glow_item_frame.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 238a7002801d92f46a7711287452826a
+    m_Address: Assets/textures/item/vex_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 244c996f00ca26947b8666228d3701ae
+    m_Address: Assets/textures/item/iron_pickaxe.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2505dc293b8034f46b94ea725d0320fc
+    m_Address: Assets/textures/item/elytra_broken.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 254aa2b76358020448d9acaf79f1e5ec
+    m_Address: Assets/textures/item/axolotl_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 259e9830c68c1bb44b4edc790ef50e08
+    m_Address: Assets/textures/item/brewing_stand.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 25c0f261b9a3e4c43880f4d09341d483
+    m_Address: Assets/textures/item/recovery_compass_01.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 25cd0c5869fadd54b983766a9ad2275a
+    m_Address: Assets/textures/item/compass_07.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2747c19751ad12340b678a18a6ed2360
+    m_Address: Assets/textures/item/stone_axe.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 276594df46cf8aa4689e1bc038bd9b86
+    m_Address: Assets/textures/item/phantom_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 27845eb3e7afcf04db1b154efd386bf8
+    m_Address: Assets/textures/item/nether_star.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 28c75c64fc784fa48b24275424ff2def
+    m_Address: Assets/textures/item/plenty_pottery_sherd.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 28cc7bc1c64db6d45982508ea6eb3f3e
+    m_Address: Assets/textures/item/shelter_pottery_sherd.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 28ea40850a1351345aa904a21408f867
+    m_Address: Assets/textures/item/wolf_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 28f130d2d85a1a248a21bd168baedbbc
+    m_Address: Assets/textures/item/birch_boat.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 29931b2528ce07b4382f4860bae564d4
+    m_Address: Assets/textures/item/yellow_bundle_open_back.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 29d34330bb33ccc4fb8f5e5715f8563a
+    m_Address: Assets/textures/item/sheep_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2a720039ee9161d46946dab047979823
+    m_Address: Assets/textures/item/blaze_rod.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2aa49a5ab3c022d4899c0648ace43ae1
+    m_Address: Assets/textures/item/glass_bottle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2aab1aed520570b42b8dc229cc272a7c
+    m_Address: Assets/textures/item/recovery_compass_11.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2ac91dda2baa5a840a475e98e3e1879c
+    m_Address: Assets/textures/item/allay_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2acfa1f64afb47d469b31f1de17940c6
+    m_Address: Assets/textures/item/golden_shovel.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2b42693f4e25d104ea4b8e11ac99e316
+    m_Address: Assets/textures/item/stone_spear.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2b49f562ca3777b4a891fa02cd73e0c3
+    m_Address: Assets/textures/item/crossbow_pulling_1.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2b64cf8fb740fa947b7b544cfddcc540
+    m_Address: Assets/textures/item/breeze_rod.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2b949728740f4f549b7efe5808a83112
+    m_Address: Assets/textures/item/compass_28.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2c01c48d2dedf2e4cbb1f921a64d861f
+    m_Address: Assets/textures/item/book.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2c0b71977e3e92d4ab361bcd815c9f63
+    m_Address: Assets/textures/item/orange_harness.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2c9854dc0ea9de346a39d371dacbb50e
+    m_Address: Assets/textures/item/nether_sprouts.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2cbeb8e7b1d6c524c9241d1677b0c8ec
+    m_Address: Assets/textures/item/stone_pickaxe.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2cd01c1b912959b4b856e068e6f96260
+    m_Address: Assets/textures/item/compass_09.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2cd94ee3c36338349b0be28e0be4baf6
+    m_Address: Assets/textures/item/light_14.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2cf8b9693cd0b8548817ca33e0fff614
+    m_Address: Assets/textures/item/acacia_hanging_sign.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2d70fa3ed97124e4f87b649169ea219d
+    m_Address: Assets/textures/item/spruce_boat.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2e1bb7a02f3db5843955827251fccf2b
+    m_Address: Assets/textures/item/white_candle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2e2a167533c867b4daf3dd4788bf38f7
+    m_Address: Assets/textures/item/heart_of_the_sea.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2e2bcca29e2f41b468001550e7332ece
+    m_Address: Assets/textures/item/cod_bucket.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2e3f86d074c170649bc24a37e16b4e10
+    m_Address: Assets/textures/item/spruce_door.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2ea2570e03add804797bccbca30e8f50
+    m_Address: Assets/textures/item/recovery_compass_13.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2ee5b69cdded4704c90c7d57a54a8b0a
+    m_Address: Assets/textures/item/blue_dye.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2f897287b32f2d641bf14d2fbe38c23e
+    m_Address: Assets/textures/item/glow_ink_sac.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3038084ce7ea9c54baef450ff467d469
+    m_Address: Assets/textures/item/lime_bundle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 303c539a7e0cb4a4487228a0d73f98e7
+    m_Address: Assets/textures/item/cyan_dye.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 30b161c7a18f5fc468bce30bd87919f9
+    m_Address: Assets/textures/item/light_blue_bundle_open_front.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 31117262d056f524fbc457475e61b05d
+    m_Address: Assets/textures/item/comparator.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3139ca8093ad3f9408e2dc0a7249da39
+    m_Address: Assets/textures/item/glistering_melon_slice.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3161bbb22660069469ad144aed05ce9e
+    m_Address: Assets/textures/item/orange_dye.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 31f85d236457e6a4882388e9c268f590
+    m_Address: Assets/textures/item/beetroot.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3217024804f6e924489545980813e91e
+    m_Address: Assets/textures/item/exposed_copper_lantern.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 33238e0415fcc994c945a59138c5c336
+    m_Address: Assets/textures/item/beef.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 332b567f511e67a4ca90116d8fec4687
+    m_Address: Assets/textures/item/oak_sign.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 33e5ac0da3d7e8d4cae1f4002431c96f
+    m_Address: Assets/textures/item/glow_squid_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 34291ba52dfc8e84f999cc6f9ac919f6
+    m_Address: Assets/textures/item/lingering_potion.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 349e0620549af9f4389eaa7352880a52
+    m_Address: Assets/textures/item/zombie_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3619d11ac27a5614bbd267ced6a1e681
+    m_Address: Assets/textures/item/blue_bundle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 361eab9a629194d41a71b72ca9b59055
+    m_Address: Assets/textures/item/magma_cube_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 36ef22629497df24395b85abb83156a2
+    m_Address: Assets/textures/item/potato.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 373db806c936019409ee3af2c3f5613a
+    m_Address: Assets/textures/item/iron_shovel.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 375ce0072556fdc49a1cc7a899042fc5
+    m_Address: Assets/textures/item/bogged_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 386f5afbc4febfa4594acf708ece8946
+    m_Address: Assets/textures/item/kelp.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 38ad5bd18c8493a47a92191cc90af373
+    m_Address: Assets/textures/item/copper_spear_in_hand.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3980f671e516c064e8db8f2296263bba
+    m_Address: Assets/textures/item/copper_chestplate.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3985de72c2141964587ed54a960a48e5
+    m_Address: Assets/textures/item/dune_armor_trim_smithing_template.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3993ab6b7a29c8149be59ccd8b2b2689
+    m_Address: Assets/textures/item/sugar_cane.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 39fd0eed37976944482dc321950f97ff
+    m_Address: Assets/textures/item/spectral_arrow.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3a023dc366470734e892cc0f86e36441
+    m_Address: Assets/textures/item/skeleton_horse_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3b03cfdfe44ff89428a3d27f4417cadd
+    m_Address: Assets/textures/item/diamond_helmet.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3b38d9a3ca62817428f75ce2ef33d12d
+    m_Address: Assets/textures/item/golden_spear.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3b3c7de10892fe54fbc7889194bd426f
+    m_Address: Assets/textures/item/weathered_copper_lantern.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3c39d991dc63beb4cabd7f59e4b34b7c
+    m_Address: Assets/textures/item/zombie_nautilus_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3c63d0d2bf72c8e49bd0383abc282abe
+    m_Address: Assets/textures/item/purple_candle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3c66a8a9e00cf8049b4e233cf0e72793
+    m_Address: Assets/textures/item/coal.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3c817f49c1b8d9946a2f041020303962
+    m_Address: Assets/textures/item/mooshroom_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3cc7d95a0e676444884b35cd96649ab7
+    m_Address: Assets/textures/item/creeper_banner_pattern.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3cf04e1cd4a45394295e3bf2cad82489
+    m_Address: Assets/textures/item/piglin_brute_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3d3738db0de63924991fdd59b7834921
+    m_Address: Assets/textures/item/mace.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3d87fe79145d5d0468ce4d7363e96d5e
+    m_Address: Assets/textures/item/clock_26.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3db2f9a94facf9348963e8e3135aca42
+    m_Address: Assets/textures/item/ravager_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3ddfb1aed8aac544e8594aba86839d45
+    m_Address: Assets/textures/item/iron_golem_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3e064167240735c47ab06f47b819f892
+    m_Address: Assets/textures/item/nautilus_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3e2e98153bacf6742b1dae1ff9663b06
+    m_Address: Assets/textures/item/fishing_rod.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3e539acd8a62deb49bbe11e88a6f6b9b
+    m_Address: Assets/textures/item/polar_bear_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3e558a4489a0d334b97bc71d49f64c95
+    m_Address: Assets/textures/item/horse_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3e78fd69059f30340ab8abee272f9d57
+    m_Address: Assets/textures/item/snout_armor_trim_smithing_template.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3ea60e842578e774ba036c46d5fbe689
+    m_Address: Assets/textures/item/chainmail_boots.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3eaf366da3c4fde4e9ab4b05da1636e8
+    m_Address: Assets/textures/item/recovery_compass_04.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3f5ffa2cffabefc40a9865257a138a5d
+    m_Address: Assets/textures/item/bone.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3f91853580c54ac47b0d244d09433f1c
+    m_Address: Assets/textures/item/firefly_bush.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3fbc100063ebe00488b854cf9913f597
+    m_Address: Assets/textures/item/honey_bottle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 406dc017ed7bcf442ad77046e50e74a6
+    m_Address: Assets/textures/item/compass_04.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4071c79d24b31f14b96b0f3b413a33a3
+    m_Address: Assets/textures/item/silverfish_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 408ce1ed9131f6544a54de4963159ddd
+    m_Address: Assets/textures/item/diamond_hoe.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 409d57580dd2f6446bc811fac83b28f7
+    m_Address: Assets/textures/item/tropical_fish_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 40f6e5c74fb05ba4fa8ff5f41684e732
+    m_Address: Assets/textures/item/oxidized_copper_chain.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4139aefeb0232414292e1a31fe4fae0c
+    m_Address: Assets/textures/item/purple_dye.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 418caa2e022963d43b8fb987a8551abc
+    m_Address: Assets/textures/item/compass_10.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 426243793faa27e48805db92fae60a80
+    m_Address: Assets/textures/item/music_disc_tears.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 426a2a6625bfb6e41afa601a0c477739
+    m_Address: Assets/textures/item/clock_16.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 42ae1ae866df0b34face0a3fb842189b
+    m_Address: Assets/textures/item/clock_25.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 42df13bd36d9b77479b424891ed3e7e2
+    m_Address: Assets/textures/item/copper_chain.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 436e165153b0cda48bb7ed3d000623d1
+    m_Address: Assets/textures/item/cyan_bundle_open_front.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 43743f2231ccd4348ad601589253685f
+    m_Address: Assets/textures/item/clock_34.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4393335bd4f798f47ac7a9255c638968
+    m_Address: Assets/textures/item/light_gray_bundle_open_front.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 43fc3a6eecb3ab8468ce69d42c10dafd
+    m_Address: Assets/textures/item/netherite_ingot.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 440971e63f3d25e49970cf749796662b
+    m_Address: Assets/textures/item/mojang_banner_pattern.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 445d13dadf1fa8e43a72dd2a0f48252f
+    m_Address: Assets/textures/item/recovery_compass_10.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 44c3f8a1404df364c849ef0cccd57f1f
+    m_Address: Assets/textures/item/red_candle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 44c476bf5f25f194c83498aced252a23
+    m_Address: Assets/textures/item/compass_25.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 450e0e6076846734eb9b53f8735e71a5
+    m_Address: Assets/textures/item/clock_31.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 451b98a3a7b25d348aec0058169eebf0
+    m_Address: Assets/textures/item/crossbow_pulling_2.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 463ad5834584b184ca3eb43cc2d56f93
+    m_Address: Assets/textures/item/light.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 469fa71e5d5e46f4f9d8c802f801e4a6
+    m_Address: Assets/textures/item/bow_pulling_1.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 46e4c4c16e61cb54a909fc1ab5269787
+    m_Address: Assets/textures/item/shulker_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 47600bf8d4bd1ec4691a91914ced4d39
+    m_Address: Assets/textures/item/cherry_hanging_sign.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 47e64beec54a11d46b15dec4b7721460
+    m_Address: Assets/textures/item/pale_oak_chest_boat.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 48adc5df157764b40b0c6503ca037651
+    m_Address: Assets/textures/item/knowledge_book.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 48b7b65ff01ede045b13884962edad26
+    m_Address: Assets/textures/item/clock_20.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 49d5a753552a7db44b0eb50d75508af1
+    m_Address: Assets/textures/item/light_03.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4a03b2d59d95d7946bda7a40580acf7d
+    m_Address: Assets/textures/item/tipped_arrow_base.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4aaf44243c88a9042858a14ef3a68c16
+    m_Address: Assets/textures/item/golden_pickaxe.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4b1ab96899fafee43b8adcbe6cfe133e
+    m_Address: Assets/textures/item/music_disc_precipice.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4b6f8e7c53af9644682b0db7da5b4ee9
+    m_Address: Assets/textures/item/wooden_hoe.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4bccd485037b89c40b8e400a54ad0a0a
+    m_Address: Assets/textures/item/oxidized_copper_door.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4ce778abeb8ceda4c8ad78534d1f5b21
+    m_Address: Assets/textures/item/flint.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4ceb5fd814b79ac45a819d47d2bbe6a0
+    m_Address: Assets/textures/item/iron_sword.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4cf9e744c9845ac4b8085de2f6ba6d9b
+    m_Address: Assets/textures/item/brown_bundle_open_front.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4dc96614743dd69468386be5b5b1e9bb
+    m_Address: Assets/textures/item/wooden_spear_in_hand.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4dca5305ff547cf45bc6bc41a3db21a2
+    m_Address: Assets/textures/item/diamond_leggings.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4dd20cca73c456345b49e37e80a9252a
+    m_Address: Assets/textures/item/cooked_beef.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4ddc90e5ee7333f46bfb35ab106cd41b
+    m_Address: Assets/textures/item/brown_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4de30f7acd3d8c649ae0bb054dcddc4c
+    m_Address: Assets/textures/item/end_crystal.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4e1ba8dda672e9647b8ae58ed03c27c1
+    m_Address: Assets/textures/item/turtle_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4e27874ad10205b43b7522fc79877bd7
+    m_Address: Assets/textures/item/netherite_helmet.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4e2bb7129dead9e4b9f41b55a74fca31
+    m_Address: Assets/textures/item/clock_05.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4e4025fb962efed42a0bd4e5269abf20
+    m_Address: Assets/textures/item/diamond_boots.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4eb50098e12fb2c46b01aa96fedf8b29
+    m_Address: Assets/textures/item/music_disc_pigstep.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4f023b2979369c04f96849524a9c8914
+    m_Address: Assets/textures/item/chicken.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4f21e8906aa86c6448e32cdf48f36609
+    m_Address: Assets/textures/item/pumpkin_seeds.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4f93581c6ac3bf74199677c3ade29a05
+    m_Address: Assets/textures/item/brown_dye.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4fe47b34ee8c22d4eb2986db957caac1
+    m_Address: Assets/textures/item/sniffer_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 50849c7b926ca6945bf521e8293c463c
+    m_Address: Assets/textures/item/cyan_bundle_open_back.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 50dd3c705bfa62c4eb541d225a2ba2e5
+    m_Address: Assets/textures/item/copper_spear.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5145411d6df00d1479268be33822d5fb
+    m_Address: Assets/textures/item/recovery_compass_23.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 514b7a8018861d74298f251adaa52827
+    m_Address: Assets/textures/item/pink_harness.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 516758ce535a2ee489c27e901749ae27
+    m_Address: Assets/textures/item/phantom_membrane.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5205a96e65d89434d93a4c10133ade21
+    m_Address: Assets/textures/item/cherry_chest_boat.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 525bc31adaa826c45b55ffac8327edaf
+    m_Address: Assets/textures/item/cat_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 530132fb9e4dca2419673a6e71c0d637
+    m_Address: Assets/textures/item/nautilus_shell.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5329a941a0319bf49bba633a8eb873f7
+    m_Address: Assets/textures/item/lime_dye.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 538c7bc902a5bc74093bfe901f512f1e
+    m_Address: Assets/textures/item/camel_husk_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 53cff4d78418a1a439ffbd99e5e16545
+    m_Address: Assets/textures/item/snow_golem_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 53f1ed429a9922f479867bbe300ccdfc
+    m_Address: Assets/textures/item/blue_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 53f9b77a76f5f9546ba980f2c7af3c4d
+    m_Address: Assets/textures/item/clock_35.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 541b58c03c6fc54458d3266d47b548dd
+    m_Address: Assets/textures/item/stone_hoe.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 547c32e89020b3b44b2a15371e5769a4
+    m_Address: Assets/textures/item/seagrass.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 54a39316bcff5424d8f458ed71c62c50
+    m_Address: Assets/textures/item/music_disc_far.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 54dd8d36f8e94864889cb060c73d2e36
+    m_Address: Assets/textures/item/miner_pottery_sherd.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5511df770871065499a25c3dea33ff95
+    m_Address: Assets/textures/item/clock_61.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 552d65785accaf5468643da7d838c760
+    m_Address: Assets/textures/item/recovery_compass_02.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 553d18b9f5d2a2c408c7ac20f5c7634a
+    m_Address: Assets/textures/item/bread.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 55a94e134995afb4fbcb0655bb98b3a0
+    m_Address: Assets/textures/item/light_15.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 55b82867730588748a7c246259d1a391
+    m_Address: Assets/textures/item/netherite_chestplate.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 55e9f04ea56757e4db611b21a61531fa
+    m_Address: Assets/textures/item/rabbit_foot.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 55f995225df8f4a489b91e434db95341
+    m_Address: Assets/textures/item/dried_kelp.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 560475ac47d3c7844af9947c35087303
+    m_Address: Assets/textures/item/clock_19.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 564999d9ffe5ff545b5b54ef1173c193
+    m_Address: Assets/textures/item/light_04.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5671c1049c665e54b8175266a722651f
+    m_Address: Assets/textures/item/mangrove_propagule.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 56aafd70715796a47a58b2ed981d465b
+    m_Address: Assets/textures/item/music_disc_otherside.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 56ea1d67a830fdc4e89e36a6f1a72c13
+    m_Address: Assets/textures/item/wooden_axe.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 571e812d76818eb4d839244d7fafc850
+    m_Address: Assets/textures/item/slime_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 57a3aca144f100d4db3872fbaf8d2bcd
+    m_Address: Assets/textures/item/skull_banner_pattern.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 57a4dc373735629459b0ea34035585d2
+    m_Address: Assets/textures/item/recovery_compass_25.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 590039c0c70398f46a1405a12040fb5e
+    m_Address: Assets/textures/item/husk_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 599bf6915801da44ab330aa9f11ccbab
+    m_Address: Assets/textures/item/pale_oak_sign.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 59c870b72aaca18418a5932d6db52a36
+    m_Address: Assets/textures/item/bolt_armor_trim_smithing_template.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5a136ba6debd38b479309b95aa362051
+    m_Address: Assets/textures/item/clock_23.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5a37086b17eaa594d94569199805e22d
+    m_Address: Assets/textures/item/sugar.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5ad9bb34ae0f62245b2fbeb6bdc097f3
+    m_Address: Assets/textures/item/pale_oak_door.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5af9748deb2bb574fb53c1b4e8a66bb7
+    m_Address: Assets/textures/item/spire_armor_trim_smithing_template.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5b2ac9b16c5da3f44aa3cd84d3bc029e
+    m_Address: Assets/textures/item/candle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5b6b756c07b814d4ea6b39d45bd7bec5
+    m_Address: Assets/textures/item/armadillo_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5be2e4fded13a014db016c1551935a93
+    m_Address: Assets/textures/item/painting.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5c6e94613344cdf4d9c4879b4b80559e
+    m_Address: Assets/textures/item/clock_45.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5c8808b0ad8fec84eaeaa80cea1aafba
+    m_Address: Assets/textures/item/tropical_fish.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5cbc26b39b20f5748820c43ce54f2d71
+    m_Address: Assets/textures/item/music_disc_mall.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5cd2a402b3e38854d8ee872248e8630b
+    m_Address: Assets/textures/item/wooden_spear.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5d08119acf6977f45a0c3c16d2c7488f
+    m_Address: Assets/textures/item/cooked_porkchop.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5d27d81c06c49b1479e8542b384304b4
+    m_Address: Assets/textures/item/clock_29.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5d6e62ac2e0877a48bcbc64e3d82f656
+    m_Address: Assets/textures/item/bamboo_door.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5f1bc0e356d9d4640b784c123a55cdb7
+    m_Address: Assets/textures/item/melon_seeds.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5f4fee2684dc21c43b52cb5516215896
+    m_Address: Assets/textures/item/host_armor_trim_smithing_template.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5fb9669d8f3820b4f80551f8c45a0914
+    m_Address: Assets/textures/item/recovery_compass_21.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5fcfcb859ee3f6a4da24a08070298180
+    m_Address: Assets/textures/item/campfire.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 60c609dcdf4472b4d86c4d0c8b684633
+    m_Address: Assets/textures/item/leaf_litter.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 60d0daf8c546f6646b7fa707dc184109
+    m_Address: Assets/textures/item/diamond_spear_in_hand.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 60ec55ddf293af54eb66e37f7fa5c2ab
+    m_Address: Assets/textures/item/copper_pickaxe.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 612adec667f71ca478be98c2e8fecf0c
+    m_Address: Assets/textures/item/orange_bundle_open_back.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 617f3d9db5c8702479fdb18d8f41d1b7
+    m_Address: Assets/textures/item/skull_pottery_sherd.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6193f7c1b8fe5f3478349dfcd3fb5767
+    m_Address: Assets/textures/item/blue_bundle_open_back.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 62191006aaa29f840b78cf923ea303fd
+    m_Address: Assets/textures/item/lead.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 628eb7412d5397f43b6fddb43495eddc
+    m_Address: Assets/textures/item/diamond_shovel.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 631a97742f5e66847a2c467feb3b78a1
+    m_Address: Assets/textures/item/item_frame.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6380b0e6d974a8f46b6fff194bb396a4
+    m_Address: Assets/textures/item/skeleton_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 63fc5f8b565611848ae76149bb2fba90
+    m_Address: Assets/textures/item/lime_candle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 642a46a48e18cf947be54c5f98a9790a
+    m_Address: Assets/textures/item/iron_ingot.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6441586e720d3e543aa41b7b2b922337
+    m_Address: Assets/textures/item/blade_pottery_sherd.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6538666226f59c147afc01aaaeec0b83
+    m_Address: Assets/textures/item/emerald.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 65a0cb22486674646863dfb84c8b0c16
+    m_Address: Assets/textures/item/clock_10.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6644e9250b2055e4188ba0c5661d940e
+    m_Address: Assets/textures/item/pink_bundle_open_front.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 66e52c18501675c438d0506f622b6552
+    m_Address: Assets/textures/item/mangrove_sign.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 66f6982579da71146b79eac44c388012
+    m_Address: Assets/textures/item/birch_chest_boat.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 672ee0416a3c8ca4abadeb5946002ff6
+    m_Address: Assets/textures/item/iron_horse_armor.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6782ea2ffc08be54893f6b5402d4a7e5
+    m_Address: Assets/textures/item/iron_spear.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 67ef0f17a979d384d8a7bd4f5bd72222
+    m_Address: Assets/textures/item/lava_bucket.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6869923b01e174947bbadbff177799c7
+    m_Address: Assets/textures/item/acacia_sign.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6877e3e601f198f4aa5b948a266e1a72
+    m_Address: Assets/textures/item/wheat.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 68b7c9a5b3a86784ebd1a06ca027ef9a
+    m_Address: Assets/textures/item/recovery_compass_00.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 68ec6777427d3bc40bd4896e1b793add
+    m_Address: Assets/textures/item/guster_pottery_sherd.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 68ee3a251c09fcb4daf2ba4eca649cae
+    m_Address: Assets/textures/item/magenta_bundle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6994ab9a7aa30d84280aac877640716a
+    m_Address: Assets/textures/item/gray_bundle_open_back.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 69cbe14ef7753f942a233688f2353c83
+    m_Address: Assets/textures/item/breeze_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6a3e332ec081a12458e9b5ede4b23166
+    m_Address: Assets/textures/item/slime_ball.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6a6adec8433c00c4c9352bad895a7470
+    m_Address: Assets/textures/item/lapis_lazuli.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6abad57d29fde3448a2c8008d6ca8e32
+    m_Address: Assets/textures/item/cow_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6aceec0126112be409ee9b4fe7433d55
+    m_Address: Assets/textures/item/bone_meal.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6acf6082f73169d4483eb00b8cc94a6c
+    m_Address: Assets/textures/item/green_bundle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6b13a860b61abb045b71d2cfe4656e7f
+    m_Address: Assets/textures/item/leather_chestplate.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6b15185046e6eb54c91116e30854a05d
+    m_Address: Assets/textures/item/diamond_horse_armor.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6b512ae759fd71348acd0bddfd8c9fd4
+    m_Address: Assets/textures/item/fire_charge.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6b55ba9d3c8fa3f43b4050de716a42d0
+    m_Address: Assets/textures/item/iron_leggings.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6b9bad048e9ddfa429002645413e682d
+    m_Address: Assets/textures/item/compass_01.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6c2748d9b332854469db4fbd033eaca6
+    m_Address: Assets/textures/item/music_disc_cat.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6c5cfc71ce9f6be4aaa60c22cdff87c7
+    m_Address: Assets/textures/item/music_disc_11.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6d6ac2c0a6d22524684c1e20bde31692
+    m_Address: Assets/textures/item/cyan_harness.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6d6b7f8dce591d247b19c7676716e22e
+    m_Address: Assets/textures/item/clock_48.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6d9f40df91a65d44bbbf2f0cabc3ebf2
+    m_Address: Assets/textures/item/magenta_candle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6e0323f6da1678444a34f4c3b753ffdb
+    m_Address: Assets/textures/item/recovery_compass_07.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6eb692dfeac5d304bb6858b6935745d0
+    m_Address: Assets/textures/item/pink_candle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6ebd8ced0d0aaca469517d1fe072047e
+    m_Address: Assets/textures/item/diamond_sword.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6f70c4a57078fd14992b3897f0350e87
+    m_Address: Assets/textures/item/netherite_scrap.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6f7787736b097dd468435b8a754828ed
+    m_Address: Assets/textures/item/iron_chain.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 706d771b2a9ec224f99e881abedee37a
+    m_Address: Assets/textures/item/green_candle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 70ce89ff80310284dae0ac1e495352d1
+    m_Address: Assets/textures/item/leather_helmet_overlay.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 714420b7863aa0d479bea035de890bb8
+    m_Address: Assets/textures/item/spider_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 72680938bdfdec745b244e7c218c8619
+    m_Address: Assets/textures/item/cod_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7291b1cb5eeca3b40a190d33fe6ea2b7
+    m_Address: Assets/textures/item/clock_60.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 72a6c720e7a9d074e821bfa4dacdb25c
+    m_Address: Assets/textures/item/lime_bundle_open_front.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 72bdeca9020a5d449bc6caba36bf007e
+    m_Address: Assets/textures/item/sheaf_pottery_sherd.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7321c76fb2e674a43b635f95a60421ca
+    m_Address: Assets/textures/item/clock_30.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7412ab765412f404aa53d32260b1ebb3
+    m_Address: Assets/textures/item/baked_potato.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 74a84322d029c3045804a0bdac654340
+    m_Address: Assets/textures/item/jungle_chest_boat.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 74b362b28ba41204f8fa94e68e750440
+    m_Address: Assets/textures/item/zoglin_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 750bc78efa0255748bae0df48774e613
+    m_Address: Assets/textures/item/exposed_copper_door.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7522828c10662c64d975a63c460712f7
+    m_Address: Assets/textures/item/magma_cream.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7643185fccea4af4c9b0571bcaa6dc45
+    m_Address: Assets/textures/item/music_disc_13.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 76469769a3c385e42a762cc1fda18d2a
+    m_Address: Assets/textures/item/angler_pottery_sherd.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7678043097747a440baf0e61bca0cddc
+    m_Address: Assets/textures/item/compass_22.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 76a7fbaa0aa9d8641af71c842bd65a34
+    m_Address: Assets/textures/item/clock_62.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 76ca5310731b75844ab320f2e5b62b4b
+    m_Address: Assets/textures/item/furnace_minecart.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7736fef4f4ac66f4faba5db764214e70
+    m_Address: Assets/textures/item/crossbow_firework.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 781fbbf9bd033b84d9fec0016cbf80e7
+    m_Address: Assets/textures/item/copper_leggings.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 78a886a3402db7846be50fa9bea6f149
+    m_Address: Assets/textures/item/quartz.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 78c5354897ddb5d40a2ef47a8be3d208
+    m_Address: Assets/textures/item/wolf_armor_overlay.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 78dba7511daed7b44a76930b793263c3
+    m_Address: Assets/textures/item/gold_ingot.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 79118ebcc64a8744abfc7fa10b682c05
+    m_Address: Assets/textures/item/copper_shovel.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7912857622c815e4aa9ae6b61fa4bcd0
+    m_Address: Assets/textures/item/wheat_seeds.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 792657324ef436e499bf780e8ef61ed8
+    m_Address: Assets/textures/item/coast_armor_trim_smithing_template.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 796be2758d90a4941956ff00ede9d061
+    m_Address: Assets/textures/item/leather_leggings.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 79ce67fdc7d28c44ba8c78539f1042ec
+    m_Address: Assets/textures/item/recovery_compass_20.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 79d764d2f104b2243bcdd2cbef8be462
+    m_Address: Assets/textures/item/recovery_compass_28.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 79ddf5ac2fce7e74fb574e2d59153d2a
+    m_Address: Assets/textures/item/recovery_compass_30.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7a01014c065bb69469b0cc5283867079
+    m_Address: Assets/textures/item/clock_56.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7aa7344f8f0ab5e48a6ff75798a95db9
+    m_Address: Assets/textures/item/clock_17.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7af90db8ba9b310459eac7e25b1e8f44
+    m_Address: Assets/textures/item/fox_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7b123bec6e3b5d846a8bd6f6649a1a09
+    m_Address: Assets/textures/item/music_disc_ward.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7c51823261c31b147a825dd587904e12
+    m_Address: Assets/textures/item/leather.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7c5c74f2a240b4e48990f801f1785fa1
+    m_Address: Assets/textures/item/hopper.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7c87db2deb5480b4fafa1ec3a868846d
+    m_Address: Assets/textures/item/clock_28.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7c908e4c263144741b196639d55c0115
+    m_Address: Assets/textures/item/ominous_bottle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7ced3d716176a1e428c2d020eda0b54a
+    m_Address: Assets/textures/item/hopper_minecart.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7cf02a822efe9d64faf6d69285a08c7e
+    m_Address: Assets/textures/item/turtle_scute.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7d0e9bc277f1a604ba6c2744ed26fae5
+    m_Address: Assets/textures/item/splash_potion.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7d1b04fd62c9f16408160b8c2d0976b4
+    m_Address: Assets/textures/item/salmon_bucket.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7d25a54d12c0cba4d8a95b205645d31b
+    m_Address: Assets/textures/item/turtle_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7d2c36470d5d27c4786e39c00bfc46b2
+    m_Address: Assets/textures/item/oak_hanging_sign.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7d3911779f09ccb42a951f765cf8bcdc
+    m_Address: Assets/textures/item/compass_20.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7ea7d6a783eeb0e4dae911faa87895f9
+    m_Address: Assets/textures/item/tipped_arrow_head.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7edcdf50532af6e4fb9af8df183de27c
+    m_Address: Assets/textures/item/disc_fragment_5.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7f15ae735bf3db84ab0749d5443e29a7
+    m_Address: Assets/textures/item/crossbow_arrow.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 80038af695d58c345a8c6ea723044cf2
+    m_Address: Assets/textures/item/brush.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 80580c76038ac5c419d400dd4c2bf9eb
+    m_Address: Assets/textures/item/drowned_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 80a92b939abea054386af6955c09d569
+    m_Address: Assets/textures/item/compass_23.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 80c86bf62a9a10e45a92445f66bbcee5
+    m_Address: Assets/textures/item/wild_armor_trim_smithing_template.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 80d32a28ef6f04f4d911be9a14682b5b
+    m_Address: Assets/textures/item/firework_star.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 81257d04c4b33414a83d83b8e805a7b8
+    m_Address: Assets/textures/item/clock_03.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8167209a5310a334395903f82303ec5b
+    m_Address: Assets/textures/item/porkchop.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 81abb2f037b75c64eb8430680a228f93
+    m_Address: Assets/textures/item/leather_boots_overlay.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 81d7db59018381a44a65ece0c7b3ff04
+    m_Address: Assets/textures/item/stone_spear_in_hand.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8216ada61cfea5b448297efcf9131831
+    m_Address: Assets/textures/item/copper_sword.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8231914078c4f604095d3b7815930def
+    m_Address: Assets/textures/item/goat_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 826cec23a22cbea4ebc59a1e2c30ec97
+    m_Address: Assets/textures/item/light_10.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 83c8ea2bf5b50144c8b4c19d8939bc3d
+    m_Address: Assets/textures/item/pink_bundle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 83f68245335cc974586e2546b56fd9b7
+    m_Address: Assets/textures/item/wooden_pickaxe.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 84950927a185c13469e1be2d485df7ba
+    m_Address: Assets/textures/item/tadpole_bucket.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 84a4e819290618243b1a70812a5da16a
+    m_Address: Assets/textures/item/trader_llama_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 84bdadd257c599d4b9b4c462a1a10ed6
+    m_Address: Assets/textures/item/command_block_minecart.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 859f2c774c668e341bafdf58081594e0
+    m_Address: Assets/textures/item/cooked_chicken.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 85d0e9979585f4941a842a8d05658f33
+    m_Address: Assets/textures/item/compass_11.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 85d79bfaf936f494e8f5d3511fa4fcf1
+    m_Address: Assets/textures/item/leather_horse_armor.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 86732b730ff7e564892406d7e146609e
+    m_Address: Assets/textures/item/mangrove_chest_boat.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 86a0e62b68f0dc947bb2300caea3a7a1
+    m_Address: Assets/textures/item/music_disc_creator_music_box.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 870b4a9acfcd9bd44ac803a8a8fb29ce
+    m_Address: Assets/textures/item/egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 877c7c71095d6bf45ad1959965c89789
+    m_Address: Assets/textures/item/bucket.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 87dba0cccc5734c4f989f15fc6487523
+    m_Address: Assets/textures/item/totem_of_undying.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 881407b17fa348840af852710030871e
+    m_Address: Assets/textures/item/clock_55.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 88f1cc4a2da15324980c2247d9e78fd0
+    m_Address: Assets/textures/item/golden_helmet.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 89c51ed8a1542364aba3c7737d2e210d
+    m_Address: Assets/textures/item/archer_pottery_sherd.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 89e7011f0fe74df4ea670407ed1caf4a
+    m_Address: Assets/textures/item/clock_15.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8a4657cfcd0f3b14283d49413e7cc73f
+    m_Address: Assets/textures/item/compass_13.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8b3027d0eaa18ca4891a013d104a011b
+    m_Address: Assets/textures/item/flint_and_steel.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8b823f33e24d1e2428b3c438afcc0a6c
+    m_Address: Assets/textures/item/clock_09.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8b84591d18ce88f41bcb463c300ab472
+    m_Address: Assets/textures/item/clock_06.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8c735d79281c202429b77552afd6acf5
+    m_Address: Assets/textures/item/recovery_compass_09.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8c9c5f725ff00314195f55ced26d7005
+    m_Address: Assets/textures/item/golden_sword.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8ca99f21473f9864f9b4227e58750675
+    m_Address: Assets/textures/item/light_blue_dye.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8cca21e6b57e35a49a372575347277b3
+    m_Address: Assets/textures/item/iron_nautilus_armor.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8d0419749b1b9614ab5fca9f1178f021
+    m_Address: Assets/textures/item/copper_horse_armor.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8d84e74df3944dd49aa9548a88892b0d
+    m_Address: Assets/textures/item/raw_iron.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8d86a5e297696734bafaec39adf32c89
+    m_Address: Assets/textures/item/ender_pearl.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8dee46c6cea77424bbf14fba374f1696
+    m_Address: Assets/textures/item/beetroot_soup.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8e977e68a12e36b449b2fee2ae5e48ab
+    m_Address: Assets/textures/item/clock_39.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8f285e29ae2d70840a94b1b9cee63ae5
+    m_Address: Assets/textures/item/light_02.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8f99ed589f8cd3d438aa33fba4d33540
+    m_Address: Assets/textures/item/light_blue_bundle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8ff4b0a0c52ed5e43b3f7c38d01b1d5b
+    m_Address: Assets/textures/item/diamond_axe.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 900eb582acf55cc40bdf72d0eb90e18b
+    m_Address: Assets/textures/item/diamond_spear.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9012269960a84634c8a40cffeec43720
+    m_Address: Assets/textures/item/shears.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 90345f01a9f574746ad801ca1c09886c
+    m_Address: Assets/textures/item/light_blue_harness.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 906fe442ac056a14c81eeee9102218d0
+    m_Address: Assets/textures/item/iron_nugget.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 90a04877145eb3d41ba6873c8726c3f1
+    m_Address: Assets/textures/item/filled_map.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 90b5177563ba47f4999f4c5870bad5ef
+    m_Address: Assets/textures/item/filled_map_markings.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 90bd2c92007487c4e92c036a5131613e
+    m_Address: Assets/textures/item/jungle_hanging_sign.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 90e9a58315b682644951e959526f2c2b
+    m_Address: Assets/textures/item/brewer_pottery_sherd.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 90fb48e43b010004ba7407dc6d55524e
+    m_Address: Assets/textures/item/guster_banner_pattern.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9187fbd36643ecf42a6cb87b4bd4ba6b
+    m_Address: Assets/textures/item/ender_dragon_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 91948001bbb8cca4fb47680b02545071
+    m_Address: Assets/textures/item/golden_apple.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 91c709193c136bf4ba398e9d373570cd
+    m_Address: Assets/textures/item/raw_gold.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 91f91fb20c68ee043871ad196e1ff8d4
+    m_Address: Assets/textures/item/golden_horse_armor.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9236fc617fd3d094ba4a04b52b7900f1
+    m_Address: Assets/textures/item/light_11.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 924eb2864d3ae2e4282556fa3c02075a
+    m_Address: Assets/textures/item/bell.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9269fd4f7fce30744b8472405dc6c64d
+    m_Address: Assets/textures/item/mangrove_hanging_sign.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 927abe0ff527ee147904cf372d3b6bef
+    m_Address: Assets/textures/item/creeper_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 92f3176344204ec40ac540a062e7e228
+    m_Address: Assets/textures/item/mourner_pottery_sherd.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 93243e3629e5ac44f9a8a4a53036246a
+    m_Address: Assets/textures/item/acacia_door.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 935e7103d84a2bc4995662172bf24373
+    m_Address: Assets/textures/item/rotten_flesh.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 937e95a05db60214789ca6de4e0aa818
+    m_Address: Assets/textures/item/oak_chest_boat.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 93a6b48df38263e4ea34b5a630b72dc5
+    m_Address: Assets/textures/item/leather_boots.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 940e6ae31e232ac4f8e86ba518b2ac95
+    m_Address: Assets/textures/item/glow_berries.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 944a146b4e549f34abf8bfcc5f570780
+    m_Address: Assets/textures/item/glowstone_dust.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 949af3bb80fd8b545bf233fac301a902
+    m_Address: Assets/textures/item/sniffer_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9572bb7e16122d240b6c3ecae7a89c4a
+    m_Address: Assets/textures/item/compass_17.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 957c34ee928f5da48bd51e01065f003c
+    m_Address: Assets/textures/item/bee_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 959cb49b7e6b3d740b3abef5f6f204a7
+    m_Address: Assets/textures/item/ghast_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 972209843690ae64f8d2180ff6ec4f40
+    m_Address: Assets/textures/item/cookie.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 978ca70b8f129f04c9520e1fd802688b
+    m_Address: Assets/textures/item/pitcher_pod.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 97a1db438f7350b478993a596f75a64c
+    m_Address: Assets/textures/item/yellow_bundle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 97a9ef7a5793a304daedc0a0dcfdebef
+    m_Address: Assets/textures/item/vindicator_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 97ae2303ed1e9534b92e98ae25837ff5
+    m_Address: Assets/textures/item/netherite_boots.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 982ffd98bf279b847a9aa68673a9dcc1
+    m_Address: Assets/textures/item/compass_27.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 98c2acb7107b16e468a739181793b061
+    m_Address: Assets/textures/item/written_book.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 98eb85ddde1a1db4c8c5f63c0cab68cf
+    m_Address: Assets/textures/item/clock_47.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 98f16fa9c25797e40a13af508678d3f7
+    m_Address: Assets/textures/item/chainmail_leggings.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9a01be45a5d73194fa58f8ba994958fb
+    m_Address: Assets/textures/item/crimson_hanging_sign.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9a6c58bc0539f6b43b518e52e4b617f8
+    m_Address: Assets/textures/item/clock_54.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9b179508f8d3a3b4a9fc4c6728ddf73c
+    m_Address: Assets/textures/item/netherite_sword.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9bc3970d502ab2241b46053226288420
+    m_Address: Assets/textures/item/yellow_dye.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9bcf6ec3d9e0d9646b3e9ae32ddc1c07
+    m_Address: Assets/textures/item/red_bundle_open_front.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9bf0eaab93a4c044b89d4dab44b284da
+    m_Address: Assets/textures/item/silence_armor_trim_smithing_template.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9c0566d0856f4da4ea714be8afc2d5a9
+    m_Address: Assets/textures/item/recovery_compass_29.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9d1671c7d51339e4eb0d4b389be2a581
+    m_Address: Assets/textures/item/clock_44.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9d926634eeaed724897a6e973623e0d7
+    m_Address: Assets/textures/item/echo_shard.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9db81f41771f4d94caf177445da2c83c
+    m_Address: Assets/textures/item/shaper_armor_trim_smithing_template.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9dffb8d10b68a5a4588cf22b87102c97
+    m_Address: Assets/textures/item/spyglass_model.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9e3b9c563a949a64e85acf87842a8249
+    m_Address: Assets/textures/item/elder_guardian_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9e7a1b6a550f7e94d835df2ec8a6eae2
+    m_Address: Assets/textures/item/raw_copper.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9eb7ce8dca6acfe42b48e0a01ff371bc
+    m_Address: Assets/textures/item/brown_bundle_open_back.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9ee06327941c5f8429f31d66feb9e861
+    m_Address: Assets/textures/item/music_disc_blocks.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a04689e4496caad49aa182833ec3cad3
+    m_Address: Assets/textures/item/jungle_boat.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a0aaac437a347e24aa654511c0b25aac
+    m_Address: Assets/textures/item/bow.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a0b00db4b6088094cbcee1d97d4f586c
+    m_Address: Assets/textures/item/bundle_open_back.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a0b39eea1f4504d45a834c20ed3f3031
+    m_Address: Assets/textures/item/clock_00.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a107a7f74caa8304698a8bd6ea9f8060
+    m_Address: Assets/textures/item/light_09.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a12ad8c8321764b4abdaca696fe39dc5
+    m_Address: Assets/textures/item/carrot.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a17cc38634ee13b46ab860eed582cfce
+    m_Address: Assets/textures/item/guardian_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a1e003a3be2eba24382cd55f1882c069
+    m_Address: Assets/textures/item/repeater.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a22ede9b330361440bed4a43b6fb5076
+    m_Address: Assets/textures/item/wildflowers.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a2708f1ef800b384a8fbf55e377b44d8
+    m_Address: Assets/textures/item/clock_21.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a2a611f663300eb4a9815f50c604fc67
+    m_Address: Assets/textures/item/howl_pottery_sherd.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a4368393c2eacd444a03ed8ac227e1ba
+    m_Address: Assets/textures/item/black_candle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a49ceb33b2070c34c8e8e9d4f929e7bb
+    m_Address: Assets/textures/item/copper_helmet.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a4ad4943db78a8c43974ded92764bc7a
+    m_Address: Assets/textures/item/pink_dye.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a5213b7eb7272f244b2982dedf8b8dbe
+    m_Address: Assets/textures/item/pale_oak_hanging_sign.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a5edc8b76df893e479d0bef11a1b4c40
+    m_Address: Assets/textures/item/recovery_compass_14.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a60f51bfecb489c4a8e3bd177c99af98
+    m_Address: Assets/textures/item/blue_candle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a69a69e85f2af8a4ba525e4c1cda4ee7
+    m_Address: Assets/textures/item/elytra.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a6f77fdf15154e945a869c08b10d94ab
+    m_Address: Assets/textures/item/nether_brick.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a71abe58fc7129247a1a800bbf037eb5
+    m_Address: Assets/textures/item/warden_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a7427acd8be802743aa31a48ba024888
+    m_Address: Assets/textures/item/red_bundle_open_back.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a7926cf31291aac4e9727af279ec8a6e
+    m_Address: Assets/textures/item/sweet_berries.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a79a33291a31edb498b247d4ba59c89b
+    m_Address: Assets/textures/item/oak_boat.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a7e50fb5521428b449c833f27b17f4d8
+    m_Address: Assets/textures/item/torchflower_seeds.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a838302999a8d2a4bb50f0e732ee19fb
+    m_Address: Assets/textures/item/beetroot_seeds.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a869ba2a9350e8c4f93e5e1f9d0d215e
+    m_Address: Assets/textures/item/light_00.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a8bf511df8189f54f920b1578128d1e3
+    m_Address: Assets/textures/item/copper_ingot.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a91c4bc0a3d837546893e8b9c2dda21c
+    m_Address: Assets/textures/item/flower_banner_pattern.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a9d323f1b110a0c4c9d3bd1933311238
+    m_Address: Assets/textures/item/cooked_rabbit.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a9f151f74060b104ab6fee2a0356c586
+    m_Address: Assets/textures/item/jungle_sign.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ab18b3eaaa7c8db48aabb3fc36909836
+    m_Address: Assets/textures/item/compass_06.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ab8c69d1fc14b3846a3b14d23c5dc19a
+    m_Address: Assets/textures/item/prismarine_crystals.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ac2819712f383f24b90791ff55c566d1
+    m_Address: Assets/textures/item/weathered_copper_chain.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ac34a9a789bbc9d459284a973bfa6a84
+    m_Address: Assets/textures/item/brown_harness.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ac6c3ed148ef6a54495f3e4407dc5050
+    m_Address: Assets/textures/item/panda_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: acc8b88679881264385d25fe895064d3
+    m_Address: Assets/textures/item/wolf_armor.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: acf3050312657f5438cbd2bd8e1637f5
+    m_Address: Assets/textures/item/light_12.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ad187ddfda5383c458d9b6b0f0c1ac48
+    m_Address: Assets/textures/item/clock_63.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: adadae77f67c2b84680280c8f020ca7f
+    m_Address: Assets/textures/item/white_bundle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: adcb0d56b87636a46a43f2609f2548ac
+    m_Address: Assets/textures/item/tnt_minecart.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ae504c1233958cd499c5100982821119
+    m_Address: Assets/textures/item/music_disc_creator.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ae8be71aedc2f1347860ed47d4babfdc
+    m_Address: Assets/textures/item/clock_02.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: aebb41b54a4002f47bcd7d3cda2255da
+    m_Address: Assets/textures/item/dark_oak_door.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: aeced7746962bd84aabcbe6b4b295c22
+    m_Address: Assets/textures/item/redstone.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: af1e1441c41bf3c498bd0deb97c8f016
+    m_Address: Assets/textures/item/nether_wart.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b018a2842a6b9854ab9a997c0695a364
+    m_Address: Assets/textures/item/compass_18.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b042ae0b67de28147a1847ce33ce3da9
+    m_Address: Assets/textures/item/light_13.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b04c39d110a47e541a6b4515b94d7760
+    m_Address: Assets/textures/item/bundle_open_front.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b145be16810d8354e8b4bd0699f62d71
+    m_Address: Assets/textures/item/bamboo_raft.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b17b31ef02b88644f99321d7428ac6ab
+    m_Address: Assets/textures/item/chest_minecart.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b18dd9aaed0b3934388420630a8ec7f2
+    m_Address: Assets/textures/item/wooden_shovel.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b1c655992563aaa44b8325740ef4007f
+    m_Address: Assets/textures/item/piglin_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b1c6f042394201e42aa8a04b300f7879
+    m_Address: Assets/textures/item/orange_bundle_open_front.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b23f5e1332ee3254f9076aace2a7616e
+    m_Address: Assets/textures/item/iron_chestplate.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b2c94c92f38c5d844a048ae1044a8530
+    m_Address: Assets/textures/item/clock_01.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b38caf2d4b1939948a836262e3c67853
+    m_Address: Assets/textures/item/explorer_pottery_sherd.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b40804334737f6740861c94decdf0b2d
+    m_Address: Assets/textures/item/black_bundle_open_front.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b43a982dd60f33047a735f122068d164
+    m_Address: Assets/textures/item/purple_bundle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b44424c9e9c2fcb489d4ab10cc0f8273
+    m_Address: Assets/textures/item/yellow_candle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b468c925face4e84b98d9a4fa5bb614c
+    m_Address: Assets/textures/item/enderman_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b587800df9b249049904f7569f8f2f31
+    m_Address: Assets/textures/item/tropical_fish_bucket.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b59621d0552b2964aa908d5b2ee21799
+    m_Address: Assets/textures/item/recovery_compass_19.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b64a1865deadd964dbea4d6cd7b1e35b
+    m_Address: Assets/textures/item/ward_armor_trim_smithing_template.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b796f119fe3d66f4586129e734fe8b63
+    m_Address: Assets/textures/item/clock_57.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b7cc46af2be398642a03b68da8ed2f2a
+    m_Address: Assets/textures/item/sentry_armor_trim_smithing_template.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b7eee36c5002acf4084416645e180dac
+    m_Address: Assets/textures/item/clock_43.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b7f3be152e6e52c4bbd69744c1fb671d
+    m_Address: Assets/textures/item/magenta_bundle_open_back.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b807b52620048dd4c80cc591b63117f6
+    m_Address: Assets/textures/item/lantern.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b8e56e942cd5bda419653b7f7900c0ce
+    m_Address: Assets/textures/item/bamboo_hanging_sign.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b92f8097b329c0b49a026880f429ec22
+    m_Address: Assets/textures/item/globe_banner_pattern.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b9931ebf6c52fef49849d2896368a018
+    m_Address: Assets/textures/item/clock_58.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b9fc7bca69dc7974680e4a34841addd4
+    m_Address: Assets/textures/item/spruce_hanging_sign.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ba40b3d3017de2e4daa88c4e56b9a38c
+    m_Address: Assets/textures/item/salmon_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ba4bba5f0c7a3054fb379e382e6ad477
+    m_Address: Assets/textures/item/netherite_spear.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ba6b2c05b099d3941a7fcbc3862de86c
+    m_Address: Assets/textures/item/cherry_boat.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ba9fc530a6830274d953512cc02c459f
+    m_Address: Assets/textures/item/cyan_bundle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bb648c216b8e5bf4c8489897e555767e
+    m_Address: Assets/textures/item/bowl.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bb8f351525a164946938bedfb96b6868
+    m_Address: Assets/textures/item/ender_eye.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bb8f35eccfd5c294eaeb902d7bc85497
+    m_Address: Assets/textures/item/llama_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bc01e992e37f18c4faa4a80d09389e32
+    m_Address: Assets/textures/item/acacia_boat.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bcbfb30caabd8fd4f8b2077654aac290
+    m_Address: Assets/textures/item/chainmail_helmet.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bd497c1ca1fec1246aad2d454966088b
+    m_Address: Assets/textures/item/minecart.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bdaef6e0cbf393c4cb04fd4446e05bc2
+    m_Address: Assets/textures/item/copper_axe.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bdf9073147642ba408e4699441595fce
+    m_Address: Assets/textures/item/wither_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bdfd529b80737d24b98c6beea20f71ad
+    m_Address: Assets/textures/item/chainmail_chestplate.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: be7327d4c3b93a8498b32c8f27f35d7c
+    m_Address: Assets/textures/item/flow_armor_trim_smithing_template.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bede90d14e506244b949749323b3f05d
+    m_Address: Assets/textures/item/iron_axe.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bf0982233eed86c40a3e4549735f13dc
+    m_Address: Assets/textures/item/pale_oak_boat.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bf2c1e05946a23d45bfba6c3e74982ac
+    m_Address: Assets/textures/item/crossbow_pulling_0.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bf43a8ec033c34a47b85381f3cfa95d9
+    m_Address: Assets/textures/item/white_bundle_open_front.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bf51429b7bb056b4cb66da43809335a6
+    m_Address: Assets/textures/item/brown_candle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bf5f18dc897f9464f8ffaadc9d09f7f7
+    m_Address: Assets/textures/item/firework_rocket.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bfe8cd89030428f42a998ee2fe03bd0f
+    m_Address: Assets/textures/item/clock_08.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c0ea8427f0daf67449573f24b25b3285
+    m_Address: Assets/textures/item/music_disc_wait.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c10fd8cddcc2b144b8fffaadad603412
+    m_Address: Assets/textures/item/light_07.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c12daf3f24e36054b9a41c7919a458fb
+    m_Address: Assets/textures/item/clock_41.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c1393994122917d409ba18b81aafcb63
+    m_Address: Assets/textures/item/light_gray_bundle_open_back.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c14e499ffab2a8b4f9564f7c5d75ed1c
+    m_Address: Assets/textures/item/copper_golem_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c1a360d1d7481a9498c574d68642a727
+    m_Address: Assets/textures/item/dark_oak_sign.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c1fa2675f753d7a47bd417c407870fe6
+    m_Address: Assets/textures/item/oxidized_copper_lantern.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c30918ce864cde54b81992a60ce2884f
+    m_Address: Assets/textures/item/music_disc_chirp.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c31bed07d51d949408a2d411fd850a55
+    m_Address: Assets/textures/item/bow_pulling_2.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c3206d6d90410394090516c74ed4a940
+    m_Address: Assets/textures/item/clock_07.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c384a6549ce05004284d922f9f31da1b
+    m_Address: Assets/textures/item/sea_pickle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c3c6e24484bcc184ea4a5d5688bdb251
+    m_Address: Assets/textures/item/mangrove_door.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c4145c445c3f47d40aed61baf76daa3c
+    m_Address: Assets/textures/item/weathered_copper_door.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c42be30ecc14fde4d9cb7a020d1e3a93
+    m_Address: Assets/textures/item/gray_dye.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c4c86c886c23d4b4ba587d2969021d0d
+    m_Address: Assets/textures/item/field_masoned_banner_pattern.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c4fa16a2a1d00944ea819053b0f11cb0
+    m_Address: Assets/textures/item/evoker_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c4fedd34a798ee244898ef2a4b42d481
+    m_Address: Assets/textures/item/magenta_harness.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c5044c1daa895a64bba0e8c3c8cf0518
+    m_Address: Assets/textures/item/golden_chestplate.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c5eb3e84167ac4d45a730d4e491369fc
+    m_Address: Assets/textures/item/rabbit_stew.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c6092357b02e7a54ab25ead993b57e46
+    m_Address: Assets/textures/item/compass_00.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c61d859e7e7b02543a0e5a40afbf5591
+    m_Address: Assets/textures/item/gray_candle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c63af588e96f86542b684afa866ef43b
+    m_Address: Assets/textures/item/cocoa_beans.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c6805ea450a4212429607b6d566e5790
+    m_Address: Assets/textures/item/clock_11.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c6efbe1b806f41a4fa7003e05d57ef5d
+    m_Address: Assets/textures/item/string.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c7b549809077af945965f3fe1bc69a92
+    m_Address: Assets/textures/item/recovery_compass_15.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c849ca9e3fda6ac4b89788f75a5dc2b1
+    m_Address: Assets/textures/item/armadillo_scute.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c8579ba7903666b4587d034ebba710ed
+    m_Address: Assets/textures/item/trident.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c8b172a6b127c65448044b2a72b4f9c4
+    m_Address: Assets/textures/item/recovery_compass_31.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c9401b954550c2f4ca78a2c89b3b9d44
+    m_Address: Assets/textures/item/enchanted_book.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ca2631c63d9b42040bdf9dd98f928c89
+    m_Address: Assets/textures/item/clock_59.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cba2e97fcf292d94c93b6e4ebc32cac1
+    m_Address: Assets/textures/item/leather_chestplate_overlay.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cbd1ddbbe42de4145961ab4ed0b2be56
+    m_Address: Assets/textures/item/exposed_copper_chain.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cbeb8ce8e50c9534cb1b78f16c9edd59
+    m_Address: Assets/textures/item/music_disc_5.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cc4f38bb895a8dc488ac117f707f804b
+    m_Address: Assets/textures/item/pillager_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cc8f5933b374296429023e14153fea31
+    m_Address: Assets/textures/item/mutton.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ccd51fd64da975e4d944426a5253fe2e
+    m_Address: Assets/textures/item/feather.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ccfa9a4472d5c6549b21538b99700d74
+    m_Address: Assets/textures/item/rib_armor_trim_smithing_template.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cd2eb853e67b49346a8ef269d3cb09a8
+    m_Address: Assets/textures/item/shulker_shell.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cd775f9a2531ab74f8eae7c2e796a0ff
+    m_Address: Assets/textures/item/recovery_compass_03.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cda83d245aa42984ea1e4e560249a8a0
+    m_Address: Assets/textures/item/compass_15.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ce54e3fdaf877414890aefedea39e2a4
+    m_Address: Assets/textures/item/popped_chorus_fruit.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ced3598d45ef92042abf02e1175ad5fc
+    m_Address: Assets/textures/item/rabbit.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cf5ed6ad8ba401c46916cc95a9b49471
+    m_Address: Assets/textures/item/friend_pottery_sherd.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cf70d63a489494741a2ce81ea64a4f9f
+    m_Address: Assets/textures/item/soul_campfire.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d0a8b5d66c2161c4a8ae69804b421527
+    m_Address: Assets/textures/item/clock_14.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d0ac69bc3517ee4439e82c031caf3fbd
+    m_Address: Assets/textures/item/frog_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d0cac42362f52d746955611fdfce77c5
+    m_Address: Assets/textures/item/poisonous_potato.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d0e497cd410f05e449cb39a04479b2ce
+    m_Address: Assets/textures/item/clock_40.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d15e15b19a58f4940bb79b6f9cd0fa54
+    m_Address: Assets/textures/item/blaze_powder.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d1740434b663bc94caa7045b5ac8f876
+    m_Address: Assets/textures/item/lime_bundle_open_back.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d1983963ece0f704e9d0e9f9e885dfca
+    m_Address: Assets/textures/item/map.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d1c49182e87705b40b43f31b4ed0318d
+    m_Address: Assets/textures/item/compass_16.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d2b6f4774bcb4fc4292449463ca400e3
+    m_Address: Assets/textures/item/villager_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d37e68da086d45d4abf87e166d8089dd
+    m_Address: Assets/textures/item/ocelot_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d3bae507f55548148a9ef139594d8181
+    m_Address: Assets/textures/item/dark_oak_boat.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d3db65edd49f0fd489d9f6a7acb87f7c
+    m_Address: Assets/textures/item/cod.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d3f037aeafe0de84193320d199498292
+    m_Address: Assets/textures/item/parrot_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d42905e4abef9f946b601b3372e67f58
+    m_Address: Assets/textures/item/purple_bundle_open_back.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d458141d65a488048ba6d2d03fe1a7c7
+    m_Address: Assets/textures/item/saddle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d4ae7aa703e3adc4fb57f6b67db1293e
+    m_Address: Assets/textures/item/clock_18.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d52579aaff7896d4cb859ca3fede9549
+    m_Address: Assets/textures/item/fermented_spider_eye.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d55a97747e8307d4494cd0791d076b13
+    m_Address: Assets/textures/item/red_dye.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d5a3a48cd74de6442ad1de1e8a043328
+    m_Address: Assets/textures/item/stone_shovel.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d5c3b941a54a9ee439fdf2cfd14b3cdf
+    m_Address: Assets/textures/item/potion_overlay.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d617967181607e9439343509263a803e
+    m_Address: Assets/textures/item/orange_bundle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d63342f5a5a2872489351d48012c20c7
+    m_Address: Assets/textures/item/spyglass.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d6732c00d7036d3488f5276a59c29362
+    m_Address: Assets/textures/item/leather_leggings_overlay.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d7885e866d839a348ac50326c9ecb62e
+    m_Address: Assets/textures/item/copper_door.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d79519b63e4c4ec40bd968b7a9f4c92d
+    m_Address: Assets/textures/item/light_05.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d7aa439ca55ca604d892272dd012b6a5
+    m_Address: Assets/textures/item/clock_27.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d7b218215a36a6847bf97b91670a3499
+    m_Address: Assets/textures/item/camel_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d7b3ea3bd722f27438066f99203c37f6
+    m_Address: Assets/textures/item/compass_14.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d7e9a1f8fb4a28541a97b71e6969bf77
+    m_Address: Assets/textures/item/suspicious_stew.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d8183c0c3e6d29f4d9149fcc79a5b7e6
+    m_Address: Assets/textures/item/clock_33.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d8195c80a34903247971ef151fa7377c
+    m_Address: Assets/textures/item/compass_29.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d831d9f53fb6d8a42bb6ad02f008c102
+    m_Address: Assets/textures/item/light_06.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d862844d22b01464fab04f43ae48d492
+    m_Address: Assets/textures/item/clock_24.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d8da044578b85704db63a76b94f7fe56
+    m_Address: Assets/textures/item/compass_02.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d9328a2008cc2fd4a8e06b3ef9fc3b77
+    m_Address: Assets/textures/item/crimson_door.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d964b596aabbc00499926d7c37febfcc
+    m_Address: Assets/textures/item/hoglin_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d9fc92ac6c971d54983c8b250578e7b6
+    m_Address: Assets/textures/item/clock_12.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: da0e51dc70a091741bca3d0161d937b4
+    m_Address: Assets/textures/item/bordure_indented_banner_pattern.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: da56a0545c305544297f44e19f13f210
+    m_Address: Assets/textures/item/recovery_compass_27.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: da943e60b2c096646aab7fa346ee6df9
+    m_Address: Assets/textures/item/heart_pottery_sherd.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: da9467b04db615d4a88d0b457d774790
+    m_Address: Assets/textures/item/rabbit_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: da9b5a1fcc502e143acfe90350a77607
+    m_Address: Assets/textures/item/oak_door.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: db9a71cc77768904eb4cbedc1145ff42
+    m_Address: Assets/textures/item/bow_pulling_0.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dba11fb5b373ab94ebdff779d932c704
+    m_Address: Assets/textures/item/heartbreak_pottery_sherd.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dbbf0ac2e850c29458e05d4640366ead
+    m_Address: Assets/textures/item/golden_leggings.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dbe819da5c6f81e4a8ca18f63504a460
+    m_Address: Assets/textures/item/clock_49.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dc4fb48f11e468d488fd1cb0017a38ee
+    m_Address: Assets/textures/item/raiser_armor_trim_smithing_template.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dc5174607be394c42b2c54b912c66467
+    m_Address: Assets/textures/item/purple_bundle_open_front.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dc534bc72df4b1c4ca399b568db5ee13
+    m_Address: Assets/textures/item/gray_bundle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dc888f3214b1a5747982175604d7af28
+    m_Address: Assets/textures/item/pointed_dripstone.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dc88b8abcf8a8eb41aa2d745f316f28a
+    m_Address: Assets/textures/item/pufferfish_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dc9f1d2250c5bf0488bbd5c5bbeffa0f
+    m_Address: Assets/textures/item/brown_bundle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dcc7c82e3d9e3254abe024249d97e0d9
+    m_Address: Assets/textures/item/red_bundle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dd07386a4c02ba7499fdf7c81406f31d
+    m_Address: Assets/textures/item/gold_nugget.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dd314cfc35c1fe24fa5b269b6a9bf1c2
+    m_Address: Assets/textures/item/golden_hoe.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dd82380625bad7f46a0ab7e37fddd7fa
+    m_Address: Assets/textures/item/cake.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ddd83ee9df25551459c9f1fba7a3e7ca
+    m_Address: Assets/textures/item/clock_46.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ddde60172c9cdc240bf7f17bdead1b77
+    m_Address: Assets/textures/item/copper_boots.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: de583f0d7da3d344d93d14485574d988
+    m_Address: Assets/textures/item/donkey_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: deaffdb66bad1874b8d065d8af9c91e7
+    m_Address: Assets/textures/item/leather_helmet.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: df0b08e887cdb5f4193630f0195bc4e0
+    m_Address: Assets/textures/item/magenta_dye.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: df9f0bb725285ee40846a1cbcfd0ece5
+    m_Address: Assets/textures/item/netherite_axe.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dfefb586f978f9444b3431db641fba44
+    m_Address: Assets/textures/item/trial_key.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e0266b900c7811f4a84215dff0196cb6
+    m_Address: Assets/textures/item/warped_fungus_on_a_stick.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e127b32505935bb4681ee52c8f4a0984
+    m_Address: Assets/textures/item/snowball.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e14c02e4002221943bb430ca496c4360
+    m_Address: Assets/textures/item/mangrove_boat.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e20288a5492605a4e9d572a1eafd3bda
+    m_Address: Assets/textures/item/clock_04.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e236847f5dce9f0408681533326e28b8
+    m_Address: Assets/textures/item/wandering_trader_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e36851f44193a6d4db46c5f2e072478b
+    m_Address: Assets/textures/item/chicken_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e4334763bf5b6b841a7730c98184490a
+    m_Address: Assets/textures/item/green_dye.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e45d839377651eb408ebe2725f03d3f1
+    m_Address: Assets/textures/item/mushroom_stew.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e46f4e605932dc642acc0e5d708c2a53
+    m_Address: Assets/textures/item/bamboo_sign.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e47efb5d6299cf9419d71aca2ef079e8
+    m_Address: Assets/textures/item/ghast_tear.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e4a87b8ca96744a4eb40ace5f48fa7f0
+    m_Address: Assets/textures/item/birch_door.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e54d1bd7cdc61c349924868b63a81147
+    m_Address: Assets/textures/item/iron_helmet.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e5ed59c8cea81874d846c9a6846e518d
+    m_Address: Assets/textures/item/cooked_mutton.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e624c86bccf8757428873dcf293ab9fc
+    m_Address: Assets/textures/item/warped_sign.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e67d82c768cd2fa4c8e6f51a8c5551ba
+    m_Address: Assets/textures/item/clock_37.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e6b9a6e5629071740994fe75e24d0eed
+    m_Address: Assets/textures/item/fishing_rod_cast.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e6dbf895aa03cca4ba1254d291e998b4
+    m_Address: Assets/textures/item/recovery_compass_17.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e79ba408eff32dc47ab7e82ab60b3bbf
+    m_Address: Assets/textures/item/jungle_door.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e7e469bc5e48dd04c8c706e736d467c0
+    m_Address: Assets/textures/item/resin_clump.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e80a9f7ab1dbe1c4480ff03c6a5bd8b2
+    m_Address: Assets/textures/item/dolphin_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e82774264ba35bb46ae1502f5dc071eb
+    m_Address: Assets/textures/item/firework_star_overlay.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e897a7cdd3409764d8b214a9b70f1c61
+    m_Address: Assets/textures/item/compass_19.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e89aebaaf001c134994b071e28551ff4
+    m_Address: Assets/textures/item/music_disc_mellohi.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e8b16a67704ce104585c68d3c6a40286
+    m_Address: Assets/textures/item/red_harness.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e8f1e60b0619b2746ae4d91af2dd3195
+    m_Address: Assets/textures/item/happy_ghast_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e8fb4a8cee89b814da30bafc4fbc3eb3
+    m_Address: Assets/textures/item/yellow_harness.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e974c60c9afdc5a4e863abf007884167
+    m_Address: Assets/textures/item/cherry_sign.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e9e2566813a049d4f9d7bbea7f7e4ac1
+    m_Address: Assets/textures/item/orange_candle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e9f3285567fc05b4eb8ffcdcbb9fb01c
+    m_Address: Assets/textures/item/purple_harness.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ea0f57ffde4af8b4888c915a93b86b18
+    m_Address: Assets/textures/item/iron_door.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ea87a3d55d36439439cb9a94b8216edc
+    m_Address: Assets/textures/item/burn_pottery_sherd.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ea8b200e75b2d0049bc7867302137cd6
+    m_Address: Assets/textures/item/barrier.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: eb4cb7b1afa9f7948a94ab20ebafeb02
+    m_Address: Assets/textures/item/bamboo_chest_raft.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: eb8decb0a7db55742af61d0f5a937b22
+    m_Address: Assets/textures/item/clock_38.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: eb9755d8bafeca542b677ff75f334a59
+    m_Address: Assets/textures/item/clock_53.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ec41a24589f835944b4000bc5fc5ad8c
+    m_Address: Assets/textures/item/light_gray_candle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ec89cebfe6f632a45a594436dab8429c
+    m_Address: Assets/textures/item/parched_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ed84ac1b6e1a8694892a84e2dfbbe876
+    m_Address: Assets/textures/item/compass_12.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: edfb39317334c4345af55a30cf5fb51a
+    m_Address: Assets/textures/item/bat_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ee74cf0c96699ea4789b2489de83160c
+    m_Address: Assets/textures/item/pink_bundle_open_back.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ee7b9453784713e4c98cf43fa5fcfc1a
+    m_Address: Assets/textures/item/blue_harness.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ee7fa74afc5fd2440b4c80c459ff1f85
+    m_Address: Assets/textures/item/copper_lantern.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ee801bdc97f4c2945a73de6f73430b52
+    m_Address: Assets/textures/item/diamond_nautilus_armor.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ef34f9fdcf25f9948b007ab369d33a7f
+    m_Address: Assets/textures/item/green_bundle_open_back.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: efb31bc86ca2a8d468757e2b40708acb
+    m_Address: Assets/textures/item/arms_up_pottery_sherd.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: efd3991896c98c04596c8ec5c2a8a9a7
+    m_Address: Assets/textures/item/spider_eye.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: efec1a0e8a3909e439b8c17dd9621eaa
+    m_Address: Assets/textures/item/iron_spear_in_hand.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: efff7750ca90a344c94a207fafb42bfd
+    m_Address: Assets/textures/item/netherite_shovel.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f052717a335c10042b2315df7e6444a7
+    m_Address: Assets/textures/item/milk_bucket.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f0761e1f7cd91c04f97a74c7a33a19c6
+    m_Address: Assets/textures/item/pink_petals.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f12229e602b89674ca41f63c584a4647
+    m_Address: Assets/textures/item/charcoal.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f134b8c196447d84fb92a8868fec9bb8
+    m_Address: Assets/textures/item/wither_skeleton_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f1951fbafde0bae409089884fd1b63ec
+    m_Address: Assets/textures/item/creaking_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f2ae779aef2789a47b07f20b441a9f9d
+    m_Address: Assets/textures/item/compass_21.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f38568bcb08d8a94aae1489aca6f7611
+    m_Address: Assets/textures/item/clock_51.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f388bd25bf88adc469a5c80dda7f610a
+    m_Address: Assets/textures/item/cauldron.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f3ceb36bf0c720f45acfb28876f9f8f8
+    m_Address: Assets/textures/item/flow_pottery_sherd.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f3d030777fa758344b2a63a53c0ba9a2
+    m_Address: Assets/textures/item/pitcher_plant.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f409f783f9f4abb4cbe9a1ed08e63537
+    m_Address: Assets/textures/item/netherite_spear_in_hand.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f427152388602fb4d866aa26ccb61cf0
+    m_Address: Assets/textures/item/light_01.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f436a6ca6adca1842a41f24ffffc396a
+    m_Address: Assets/textures/item/stick.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f456ffc6814901e44ac4ee0dd5d03a5f
+    m_Address: Assets/textures/item/zombie_horse_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f4b853692b1770f4980dbb841264f11d
+    m_Address: Assets/textures/item/copper_nugget.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f521f1cc937319946b634853bbb10bf1
+    m_Address: Assets/textures/item/recovery_compass_18.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f5790bbd95b9e8448bfd01f2492f6008
+    m_Address: Assets/textures/item/vex_armor_trim_smithing_template.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f582de882eee9f14eaedff07dd317531
+    m_Address: Assets/textures/item/rabbit_hide.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f5f60ac3e22e48b42897acaf4878be0a
+    m_Address: Assets/textures/item/armor_stand.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f65b89c5a60230d4c9b67fea5548fd2c
+    m_Address: Assets/textures/item/writable_book.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f7a75d346530eaf4ea975d769a9960cd
+    m_Address: Assets/textures/item/pumpkin_pie.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f7ac6495b115f3849abfda2bf553c079
+    m_Address: Assets/textures/item/recovery_compass_08.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f7d68400e8ed16944b486bb33fde2fd6
+    m_Address: Assets/textures/item/carrot_on_a_stick.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f7d8581589c11cd468fd5cfe29e1e5cf
+    m_Address: Assets/textures/item/tide_armor_trim_smithing_template.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f872047f3357cf840ab46274e128cb7c
+    m_Address: Assets/textures/item/light_gray_bundle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f87a938ca7c37254bb024450347ea8c3
+    m_Address: Assets/textures/item/recovery_compass_16.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f891bd5c880c96044838f83185fa20d8
+    m_Address: Assets/textures/item/crossbow_standby.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f8f80bdf6aa40244a97fb9a4afb362aa
+    m_Address: Assets/textures/item/spruce_sign.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f906133d7c7e85c4c8bff6717b1c59f5
+    m_Address: Assets/textures/item/squid_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f96a4fbf5c694fd4e987dbcb7de8c08c
+    m_Address: Assets/textures/item/eye_armor_trim_smithing_template.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f99c1d1451fac694dbd337aff31612b3
+    m_Address: Assets/textures/item/zombified_piglin_spawn_egg.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f9e0f02aba52c1844a80c201f02ed53b
+    m_Address: Assets/textures/item/potion.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fbca6d06e51be3a45b4c4a5e77ba3f84
+    m_Address: Assets/textures/item/cooked_cod.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fbcc3f40ff84d9841814797687bf157e
+    m_Address: Assets/textures/item/recovery_compass_06.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fbd45c62b18d3d443a1d74199fb40477
+    m_Address: Assets/textures/item/spruce_chest_boat.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fbdf35b155aa0e04699b379a89b8f4ce
+    m_Address: Assets/textures/item/acacia_chest_boat.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fc408c7051cd430488f3a5ccb2ce0c84
+    m_Address: Assets/textures/item/clay_ball.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fc6da8b0331759d4ca48e9cb33b8f2bf
+    m_Address: Assets/textures/item/dark_oak_hanging_sign.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fd347f6935e06724d845e0a942ccf5d6
+    m_Address: Assets/textures/item/blue_bundle_open_front.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fd59a5fa0be6af04283b50b3f787312b
+    m_Address: Assets/textures/item/music_disc_lava_chicken.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fdb4d2c58ce51734eba6573134361b6f
+    m_Address: Assets/textures/item/bamboo.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fddf967d5b864cd42a36c06e0f446d9b
+    m_Address: Assets/textures/item/pufferfish.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fe29e44889aa9434e9931b945295af03
+    m_Address: Assets/textures/item/black_bundle_open_back.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fe2ccb59a19da2f4d9c962ac2a276a3e
+    m_Address: Assets/textures/item/recovery_compass_22.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fe41e8ada263d124d898b66a85236b1e
+    m_Address: Assets/textures/item/light_gray_dye.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fe63a390cc706d74bbe551f61d496910
+    m_Address: Assets/textures/item/cherry_door.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ff329a6937851c145bbe8e46cd1913d9
+    m_Address: Assets/textures/item/water_bucket.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ff45e0e8ddf9b3c49b655b5a74888d31
+    m_Address: Assets/textures/item/wayfinder_armor_trim_smithing_template.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ff72e62edb7be3841b7ae1f263012d70
+    m_Address: Assets/textures/item/gray_harness.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ffa799a2dd7b0fc419fb4ad8be1209d1
+    m_Address: Assets/textures/item/wind_charge.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 1f6ca7d155b268c408ed984de8fdd20b, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 45ed1a8198b1b9444a4e295664853aea, type: 2}
+    - {fileID: 11400000, guid: 2efe0ab9a67d8fa48ac146c4e57d1e0b, type: 2}
