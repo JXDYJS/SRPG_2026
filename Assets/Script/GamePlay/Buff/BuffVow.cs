@@ -9,6 +9,7 @@ namespace GamePlay.Buff
         private void OnEnable()
         {
             if (string.IsNullOrEmpty(Name)) Name = "Vow";
+            if (string.IsNullOrEmpty(Description)) Description = "A solemn vow bound to the wearer. Hidden.";
             MaxStacks = 1;
             DecayAtTurnStart = false;
             canAddStacks = false;

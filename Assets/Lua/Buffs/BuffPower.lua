@@ -9,6 +9,7 @@ function BuffPower:ctor(stacks)
     self.super.ctor(self, stacks or 1)
     self.Name = "Power"
     self.DecayAtTurnStart = false
+    self.Description = "Gain +{Stacks} ATK. This buff never decays."
 end
 
 return BuffPower

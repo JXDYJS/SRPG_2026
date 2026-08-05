@@ -14,6 +14,7 @@ namespace GamePlay.Buff
         private void OnEnable()
         {
             if (string.IsNullOrEmpty(Name)) Name = "Berserk";
+            if (string.IsNullOrEmpty(Description)) Description = "When below 50% HP, deal +{Stacks} bonus damage.";
         }
 
         public override void OnApply(MapUnit owner)

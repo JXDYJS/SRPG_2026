@@ -9,6 +9,7 @@ function BuffStrength:ctor(stacks)
     self.Name = "Strength"
     self.MaxStacks = 999
     self.DecayAtTurnStart = true
+    self.Description = "Gain +{Stacks} ATK. Decays by 1 stack at the start of your turn."
 end
 
 function BuffStrength:OnApply(owner)

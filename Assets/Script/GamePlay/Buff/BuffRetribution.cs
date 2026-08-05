@@ -16,6 +16,7 @@ namespace GamePlay.Buff
         private void OnEnable()
         {
             if (string.IsNullOrEmpty(Name)) Name = "Retribution";
+            if (string.IsNullOrEmpty(Description)) Description = "Reflect {Stacks} damage back to attackers.";
             MaxStacks = 999;
         }
 

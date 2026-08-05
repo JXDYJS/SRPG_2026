@@ -31,6 +31,9 @@ namespace Lua
 
             // 优先使用 Lua 侧配置的展示名，缺省回退到 BuffID
             if (string.IsNullOrEmpty(Name)) Name = ID;
+
+            // 绑定描述（Lua 未配置时为空字符串，由 UI 层兜底）
+            Description = LuaInstance.Get<string>("Description");
         }
 
         /// <summary>

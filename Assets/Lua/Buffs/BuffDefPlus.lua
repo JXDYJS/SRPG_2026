@@ -10,6 +10,7 @@ function BuffDefPlus:ctor(stacks)
     self.Name = "DefenseUp"
     self.MaxStacks = 999
     self.DecayAtTurnStart = false
+    self.Description = "Gain +{Stacks} DEF. This buff never decays."
 end
 
 function BuffDefPlus:OnApply(owner)

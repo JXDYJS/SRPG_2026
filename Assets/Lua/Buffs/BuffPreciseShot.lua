@@ -11,6 +11,7 @@ function BuffPreciseShot:ctor(stacks)
     self.DecayAtTurnStart = false
     self.MinDistance = 2
     self.BonusDamage = 2
+    self.Description = "Deal +{Stacks} bonus damage when attacking from more than 2 tiles away."
 end
 
 function BuffPreciseShot:OnApply(owner) end
