@@ -52,14 +52,25 @@ namespace UI.Item
         }
 
         /// <summary>
-        /// 按配表 id 解析内容物品描述（商店等场景直接由 itemId 出描述，无需运行时实例）。
+        /// 按 itemId 解析内容物品描述（商店等场景直接由 itemId 出描述，无需运行时实例）。
+        /// 与授予层共用 ItemCatalog 的类别解析；新类别只需在下方加分支。
         /// </summary>
         public static IItemDescriptor ResolveConfig(string itemId)
         {
-            if (string.IsNullOrEmpty(itemId)) return null;
-            if (Data.Table.RelicConfigs.TryGetValue(itemId, out var cfg))
+            if (!ItemCatalog.TryResolve(itemId, out ItemKind kind)) return null;
+
+            switch (kind)
             {
-                return RelicAdapter.FromConfig(cfg);
+                case ItemKind.Currency:
+                    // 金币作为纯正 item 展示；图标未配置时由 UI 兜底默认图
+                    return new ItemDescriptor
+                    {
+                        NameGetter = () => "Gold",
+                        SubtextGetter = () => string.Empty,
+                        IconPath = Data.Config.shopConfig.goldSpritePath,
+                    };
+                case ItemKind.Relic:
+                    return Data.Table.RelicConfigs.TryGetValue(itemId, out var cfg) ? RelicAdapter.FromConfig(cfg) : null;
             }
             return null;
         }

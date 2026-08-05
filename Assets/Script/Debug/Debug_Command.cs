@@ -153,5 +153,23 @@ namespace DebugSystem
             var after = BuffManager.FindBuffByID(unit, buffID);
             Debug.Log($"[Debug] addBuff: {unit.GetUnitName()}@{pos} {(stacks >= 0 ? "添加" : "移除")} {buffID} stacks={stacks} → 当前层数={after?.Stacks ?? 0}");
         }
+
+        [ConsoleMethod("giveitem", "Give item by id (gold / r_* relic); amount for currency")]
+        public static void GiveItem(string itemId)
+        {
+            GiveItem(itemId, 1);
+        }
+
+        [ConsoleMethod("giveitem", "Give item by id with amount (currency)")]
+        public static void GiveItem(string itemId, int amount)
+        {
+            if (RunManager.Instance == null)
+            {
+                Debug.LogError("[Debug] giveitem: RunManager 不存在");
+                return;
+            }
+            bool ok = RunManager.Instance.GiveItem(itemId, amount);
+            Debug.Log(ok ? $"[Debug] giveitem: 获得 {itemId} x{amount}" : $"[Debug] giveitem: 失败，未知物品 '{itemId}'");
+        }
     }
 }

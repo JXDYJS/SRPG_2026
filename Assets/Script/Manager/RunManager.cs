@@ -110,6 +110,33 @@ namespace Managers
         }
 
         /// <summary>
+        /// 统一物品授予入口：按类别路由（与显示层 ItemView 共用 ItemCatalog 解析）。
+        /// Currency=加金币（amount 生效），Relic=创建并收藏（amount 忽略）。
+        /// 不复制购买流程的规则（如钱袋转金币），购买语义保留在 PurchaseItem。
+        /// </summary>
+        public bool GiveItem(string itemId, int amount = 1)
+        {
+            if (!ItemCatalog.TryResolve(itemId, out ItemKind kind)) return false;
+
+            switch (kind)
+            {
+                case ItemKind.Currency:
+                    AddGold(amount);
+                    return true;
+                case ItemKind.Relic:
+                    RelicBase relic = RelicManager.CreateRelicFromID(itemId);
+                    if (relic == null) return false;
+                    AddRelic(relic);
+                    return true;
+                case ItemKind.Character:
+                    // TODO: 角色表落成后异步创建 CharacterInstance 入 MyTeam（InitializeSkillsAsync 需 Addressables）
+                    Debug.LogWarning($"[RunManager] giveitem 暂不支持角色: {itemId}");
+                    return false;
+            }
+            return false;
+        }
+
+        /// <summary>
         /// 从存档数据填充 MyTeam（异步，需要加载 Addressables 技能）
         /// </summary>
         public async UniTask PopulateFromSaveData(List<CharacterSaveData> savedCharacters)
