@@ -1,8 +1,7 @@
 using UnityEngine;
 using Map;
-using GamePlay.Relics;
-using Core.Data;
 using UnityEngine.UI;
+using UI.Item;
 
 namespace UI.Slot
 {
@@ -83,19 +82,14 @@ namespace UI.Slot
             }
         }
 
-        public void Init(ShopSlotData slotData,GameObject Content)
+        public void Init(ShopSlotData slotData, GameObject Content)
         {
             this.SlotData = slotData;
-            RelicBase relicBase = ScriptableObject.CreateInstance<RelicBase>();
-            var relicConfig = Data.Table.RelicConfigs[slotData.itemId];
-            relicBase.Price = slotData.price;
-            relicBase.Rarity = relicConfig.rarity;
-            relicBase.relicId = slotData.itemId;
-            rightSlot.Init<RelicBase>(relicBase);
+            rightSlot.Init(ItemView.ResolveConfig(slotData.itemId));
             leftSlot.text.text = $"{slotData.price}";
             RefreshBG();
             var toggleGroup = Content.GetComponent<ToggleGroup>();
-            if(toggleGroup != null)
+            if (toggleGroup != null)
             {
                 toggle.group = toggleGroup;
             }
