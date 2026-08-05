@@ -1,12 +1,14 @@
 using System.Collections.Generic;
+using Core.Data;
 using Managers;
 using Map;
+using TMPro;
 using UI.Slot;
 using UnityEngine;
 using UnityEngine.UI;
 namespace UI.Panel
 {
-    [UIPanelResource("UI/Main/Shop/ShopPopPanel.prefab")]
+    [UIPanelResource("UI/Main/Shop/ShopPopPanel")]
     public class ShopPopPanel : BaseUIPanel
     {
         public Transform Content;
@@ -14,12 +16,19 @@ namespace UI.Panel
         public Button BuyButton;
         public Button ExitBtn;
         public GameObject ShopItemSlotPrefab;
+        public TextMeshProUGUI goldText;
 
         protected override void Awake()
         {
             base.Awake();
+        }
+
+        public void OnEnable()
+        {
             ExitBtn.onClick.AddListener(OnExitClick);
             BuyButton.onClick.AddListener(OnBuyClick);
+            Data.Persistent?.Watch(RefreshGoldText, Data.Persistent.Data.progress.gold);
+            RefreshGoldText(Data.Persistent?.Data?.progress?.gold?.Value ?? 0);
         }
 
         private void OnBuyClick()
@@ -73,6 +82,16 @@ namespace UI.Panel
                 }
             }
             itemSlots.Clear();
+        }
+        public void OnDisable()
+        {
+            ExitBtn.onClick.RemoveListener(OnExitClick);
+            BuyButton.onClick.RemoveListener(OnBuyClick);
+            Data.Persistent?.UnWatch(RefreshGoldText, Data.Persistent.Data.progress.gold);
+        }
+        public void RefreshGoldText(int val)
+        {
+            goldText.text = $"{val}";
         }
     }
 }

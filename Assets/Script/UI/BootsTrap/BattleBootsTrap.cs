@@ -3,6 +3,7 @@ using UI;
 using Managers;
 using UI.Panel;
 using Map;
+using Core.Data;
 
 namespace UI.BootsTrap
 {
@@ -13,6 +14,8 @@ namespace UI.BootsTrap
 
         public void Start()
         {
+            Data.CreatePersistent(Data.PendingStartMode);
+            Data.PendingStartMode = StartMode.Continue;
             startMapPopWindow();
         }
 
