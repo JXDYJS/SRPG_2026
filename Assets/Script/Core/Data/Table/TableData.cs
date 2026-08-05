@@ -124,7 +124,7 @@ namespace Core.Data
 
         public readonly Dictionary<string, RelicConfig> RelicConfigs = new()
         {
-            { "r_beacon", new() { id = "r_beacon", name = "Beacon", desc = "The light column pierces the clouds and fills the party with courage. At battle start all allied units gain 1 stack of Power (+1 ATK with no decay).", rarity = Global.RarityType.Uncommon, minPrice = 80, maxPrice = 120, sprite = "Assets/textures/block/beacon.png" } },
+            { "r_beacon", new() { id = "r_beacon", name = "Beacon", desc = "The light column pierces the clouds and fills the party with courage. At battle start all allied units gain 1 stack of {power}.", rarity = Global.RarityType.Uncommon, minPrice = 80, maxPrice = 120, sprite = "Assets/textures/block/beacon.png" } },
             { "r_enchanting", new() { id = "r_enchanting", name = "Enchanting Table", desc = "Lingering lapis powder still glimmers on the table as if the next enchantment is about to emerge. All allied units gain +1 ATK.", rarity = Global.RarityType.Common, minPrice = 50, maxPrice = 80, sprite = "Assets/textures/item/enchanted_book.png" } },
             { "r_turtle", new() { id = "r_turtle", name = "Turtle Helmet", desc = "Forged from a turtle shell, this sturdy helmet absorbs the brunt of incoming blows. Reduce all damage taken by 2.", rarity = Global.RarityType.Common, minPrice = 40, maxPrice = 70, sprite = "Assets/textures/item/turtle_helmet.png" } },
             { "r_cactus", new() { id = "r_cactus", name = "Cactus", desc = "The desert teaches us never to mess with things that sting. When hit by an enemy attack reflect 2 damage back to the attacker.", rarity = Global.RarityType.Common, minPrice = 45, maxPrice = 75, sprite = "Assets/textures/block/cactus_flower.png" } },

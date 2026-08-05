@@ -1,14 +1,17 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using TMPro;
 using Core.Data;
 using UnityEngine.AddressableAssets;
 using UI.Item;
+using UI.Tooltip;
 namespace UI.Slot
 {
-    public class SimpleSlot : MonoBehaviour
+    public class SimpleSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerMoveHandler
     {
+        private IItemDescriptor _desc;
         public UnityEngine.UI.Image ItemIcon;
         public TextMeshProUGUI text;
         private static Sprite _defaultSprite;
@@ -49,6 +52,7 @@ namespace UI.Slot
         public void Init(IItemDescriptor desc)
         {
             Clear();
+            _desc = desc;
             if (desc == null) return;
 
             RenderIcon(desc);
@@ -103,6 +107,7 @@ namespace UI.Slot
                 unsubscribe?.Invoke();
             }
             _unsubscribeActions.Clear();
+            _desc = null;
         }
         public void OnDestroy()
         {
@@ -111,6 +116,26 @@ namespace UI.Slot
         public void OnDisable()
         {
             Clear();
+            TooltipHost.Hide();
+        }
+
+        // ==================== 悬停提示 ====================
+
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            if (_desc == null) return;
+            TooltipHost.Show(_desc, Input.mousePosition);
+        }
+
+        public void OnPointerMove(PointerEventData eventData)
+        {
+            if (_desc == null) return;
+            TooltipHost.Move(Input.mousePosition);
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            TooltipHost.Hide();
         }
     }
 }
