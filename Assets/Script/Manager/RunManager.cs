@@ -60,12 +60,12 @@ namespace Managers
         // ==================== 金币（持久化于 PlayerProgressData.gold） ====================
 
         /// <summary>当前金币余额</summary>
-        public int Gold => Data.Persistent?.Data?.progress?.gold ?? 0;
+        public int Gold => Data.Persistent?.Data?.progress?.gold?.Value ?? 0;
 
         public void AddGold(int amount)
         {
             if (amount <= 0 || Data.Persistent?.Data == null) return;
-            Data.Persistent.Data.progress.gold += amount;
+            Data.Persistent.Data.progress.gold.Value += amount;
             Data.Persistent.Save();
             Debug.Log($"[RunManager] 获得 {amount} 金币，当前: {Gold}");
         }
@@ -76,7 +76,7 @@ namespace Managers
             if (amount <= 0) return true;
             if (Gold < amount) return false;
 
-            Data.Persistent.Data.progress.gold -= amount;
+            Data.Persistent.Data.progress.gold.Value -= amount;
             Data.Persistent.Save();
             Debug.Log($"[RunManager] 花费 {amount} 金币，剩余: {Gold}");
             return true;
