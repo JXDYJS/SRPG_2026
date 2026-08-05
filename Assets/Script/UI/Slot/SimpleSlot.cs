@@ -19,9 +19,17 @@ namespace UI.Slot
             get
             {
                 if (_defaultSprite == null)
-                    _defaultSprite = Resources.Load<Sprite>(Data.Config.ViewConfig.defaultImage);
+                    _defaultSprite = LoadAddressableSprite(Data.Config.ViewConfig.defaultAddressableImage)
+                                     ?? Resources.Load<Sprite>(Data.Config.ViewConfig.defaultImage);
                 return _defaultSprite;
             }
+        }
+
+        /// <summary>通过 Addressables 地址加载 Sprite，未配置或加载失败返回 null（由调用方决定兜底）</summary>
+        private static Sprite LoadAddressableSprite(string address)
+        {
+            if (string.IsNullOrEmpty(address)) return null;
+            return Addressables.LoadAssetAsync<Sprite>(address).WaitForCompletion();
         }
         private List<Action> _unsubscribeActions = new List<Action>();
         public void Init<T>(T item, MapUnit unit = null, string label = null)
@@ -83,14 +91,9 @@ namespace UI.Slot
                 //显示relic的构造跟普通的不太一样 或许这里还可以兜底一下预制件布局？
                 var relicConfig = Data.Table.RelicConfigs[relic.relicId];
                 var path = relicConfig.sprite;
-                if (path != "")
-                {
-                    var icon = Addressables.LoadAssetAsync<UnityEngine.Sprite>(path).WaitForCompletion();
-                    if(icon != null)
-                    {
-                        ItemIcon.sprite = icon;
-                    }
-                }
+                var icon = LoadAddressableSprite(path);
+                ItemIcon.sprite = icon != null ? icon : DefaultSprite;
+                if (ItemIcon != null) ItemIcon.gameObject.SetActive(true);
             }
         }
         public void Clear()
