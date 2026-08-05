@@ -77,6 +77,15 @@ namespace UI.Slot
                         Debug.Log("levelConfig not found");
                     }
                 }
+                else if (node is ShopNode shopNode)
+                {
+                    // 参照战斗模式：打开商店面板并传入商品数据
+                    var shop = UIManager.Instance.OpenPanel<ShopPopPanel>(null, UILayer.Popup);
+                    if (shop != null)
+                    {
+                        shop.Init(shopNode);
+                    }
+                }
                 node._onEnterNode.Invoke();
             });
 

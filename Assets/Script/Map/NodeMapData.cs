@@ -224,7 +224,7 @@ namespace Map
             BattleNode node3 = new("n_003") { level = "lv_001", row = 0, col = 2 };
 
             // 第一层并入商店节点（自动生成商品槽位）
-            ShopNode shop = genShopNode();
+            ShopNode shop = ShopNode.genShopNode();
             shop.row = 1;
             shop.col = 0;
 
