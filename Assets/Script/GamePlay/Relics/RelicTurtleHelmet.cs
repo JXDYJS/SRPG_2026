@@ -4,9 +4,9 @@ using Status.damage;
 namespace GamePlay.Relics
 {
     /// <summary>
-    /// Iron Shield 铁盾牌 — 被动：受到的伤害 -2。
+    /// Turtle Helmet 海龟壳帽 — 被动：受到的伤害 -2。
     /// </summary>
-    public class RelicIronShield : RelicBase
+    public class RelicTurtleHelmet : RelicBase
     {
         public override void OnIncomingDamage(ref float damage, DamageInfo info)
         {
