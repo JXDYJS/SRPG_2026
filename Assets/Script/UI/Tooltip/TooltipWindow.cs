@@ -108,7 +108,7 @@ namespace UI.Tooltip
 
         // ==================== 内容构建 ====================
 
-        private async UniTask BuildContent(IItemDescriptor main)
+        private void BuildContent(IItemDescriptor main)
         {
             ClearContent();
             if (main == null) return;
@@ -122,9 +122,7 @@ namespace UI.Tooltip
             {
                 CreateColumn(column);
             }
-            await UniTask.NextFrame();
-            //RefreshLayout();
-            UnityEngine.UI.LayoutRebuilder.ForceRebuildLayoutImmediate(transform as RectTransform);
+            RefreshLayout();
         }
 
         /// <summary>
