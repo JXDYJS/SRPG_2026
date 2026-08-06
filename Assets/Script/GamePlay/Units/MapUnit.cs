@@ -352,7 +352,7 @@ namespace GamePlay.Units
             _cachedModifiers.AddRange(ActiveBuffs);
 
             // 2. Add Relics from Global Manager (Only if this is a Player Unit)
-            if (CompareTag("Player") && RunManager.Instance != null)
+            if (Faction == FactionType.Player && RunManager.Instance != null)
             {
                 // 假设 RunManager.Relics 里的对象也继承自 CombatModifier
                 // 因为我们之前设计 RelicBase 继承自 CombatModifier，所以这里是可以直接转型的
@@ -874,6 +874,7 @@ namespace GamePlay.Units
         /// </summary>
         public virtual void OnBattleStart()
         {
+            //Debug.LogError("Enter OnBattleStart");
             ApplyRelicPassives();
             foreach (var mod in GetModifiers())
             {
@@ -900,8 +901,10 @@ namespace GamePlay.Units
         // 仅玩家阵营单位生效（遗物只进 Player 单位的 modifier 缓存）
         private void ApplyRelicPassives()
         {
+            //Debug.LogError("Enter ApplyRelicPassives");
             if (RunManager.Instance == null) return;
             if (Faction != FactionType.Player) return;
+            //Debug.LogError("Enter for");
             foreach (var relic in RunManager.Instance.Relics)
             {
                 relic.OnApply(this);
