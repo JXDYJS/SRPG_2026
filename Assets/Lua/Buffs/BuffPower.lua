@@ -6,7 +6,8 @@ local BuffStrength = require("Buffs.BuffStrength")
 local BuffPower = BuffBase.extends(BuffStrength)
 ---跟strength的区别是不会掉层
 function BuffPower:ctor(stacks)
-    self.super.ctor(self, stacks or 1)
+    -- 显式调用直接父类，避免 self.super 在实例上解析到叶子类自身
+    BuffStrength.ctor(self, stacks or 1)
     self.Name = "Power"
     self.DecayAtTurnStart = false
     self.Description = "Gain +{Stacks} ATK. This buff never decays."

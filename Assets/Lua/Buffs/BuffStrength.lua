@@ -5,7 +5,9 @@ local BuffBase = require("Buffs.BuffBase")
 local BuffStrength = BuffBase.extends(BuffBase)
 
 function BuffStrength:ctor(stacks)
-    self.super.ctor(self, stacks or 1)
+    -- 直接引用父类而非 self.super：实例的 metatable 指向叶子类，
+    -- self.super 在二级继承（如 BuffPower）下会再次解析回自身导致无限递归
+    BuffBase.ctor(self, stacks or 1)
     self.Name = "Strength"
     self.MaxStacks = 999
     self.DecayAtTurnStart = true
