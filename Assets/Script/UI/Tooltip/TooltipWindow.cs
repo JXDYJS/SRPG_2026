@@ -37,6 +37,10 @@ namespace UI.Tooltip
         private readonly List<Action> _unsubscribers = new List<Action>();
         private Dictionary<string, string> _refNames;
 
+        // 窗口尺寸缓存：内容只在 BuildContent/实时刷新时变化（彼时已 ForceUpdateCanvases），
+        // 鼠标高频移动无需每帧重建 Canvas，直接复用该尺寸即可。
+        private Vector2 _cachedSize;
+
         /// <summary>打开面板时传入的数据：id 与 desc 二选一，位置必填。</summary>
         public class TooltipData
         {
@@ -233,6 +237,9 @@ namespace UI.Tooltip
             }
             UnityEngine.UI.LayoutRebuilder.ForceRebuildLayoutImmediate(transform as RectTransform);
             Canvas.ForceUpdateCanvases();
+
+            // 布局收敛后缓存最终尺寸，供 PositionAt 高频移动定位复用
+            _cachedSize = _rectTransform.rect.size;
         }
 
         // ==================== 清理 ====================
@@ -278,9 +285,15 @@ namespace UI.Tooltip
                 return;
             }
 
-            // 强制刷新一次布局，确保 ContentSizeFitter 已算出实际尺寸（首次打开必需；高频移动可后续优化）
-            Canvas.ForceUpdateCanvases();
-            Vector2 size = _rectTransform.rect.size;
+            // 尺寸复用 RefreshLayout 收敛后的缓存值（内容不变则无需每帧重建 Canvas）
+            Vector2 size = _cachedSize;
+            if (size.x <= 0f || size.y <= 0f)
+            {
+                // 防御：首次调用且布局尚未收敛时，实时读一次尺寸并缓存
+                Canvas.ForceUpdateCanvases();
+                size = _rectTransform.rect.size;
+                _cachedSize = size;
+            }
             Rect parentRect = parent.rect;
 
             // 父左上角在本地坐标（父 pivot 居中）为 (-w/2, +h/2)。
