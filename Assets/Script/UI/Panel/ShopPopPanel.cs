@@ -74,6 +74,10 @@ namespace UI.Panel
         /// <summary>清空上次打开的商品槽位，避免缓存面板重复累加</summary>
         private void ClearItems()
         {
+            for(int i = Content.childCount-1;i >= 0; i--)
+            {
+                Destroy(Content.GetChild(i).gameObject);
+            }
             foreach (var slot in itemSlots)
             {
                 if (slot != null && slot.gameObject != null)
