@@ -27,7 +27,6 @@ namespace UI.Tooltip
     {
         [Header("Tooltip 基架配置")]
         [SerializeField] private float _fadeDuration = 0.15f;
-        [SerializeField] private Vector2 _cursorOffset = new Vector2(24f, -24f);
         [SerializeField] private int _maxDepth = 4;
 
         [Header("Prefab 引用")]
@@ -258,7 +257,7 @@ namespace UI.Tooltip
         /// （prefab 锚点取父左上角 (0,1)）。
         /// 窗口 pivot 在左上角 (0,1)，即整窗从鼠标位置向右(+x)向下(-y)生长，clamp 保证不出父边界。
         /// </summary>
-        public void PositionAt(Vector2 screenPosition, Vector2? offset = null)
+        public void PositionAt(Vector2 screenPosition)
         {
             RectTransform parent = _rectTransform.parent as RectTransform;
             if (parent == null) return;
@@ -280,8 +279,6 @@ namespace UI.Tooltip
             Vector2 anchored = new Vector2(
                 local.x + parentRect.width * 0.5f,
                 local.y - parentRect.height * 0.5f);
-
-            anchored += offset ?? _cursorOffset;
 
             // 窗口 pivot 在左上角 (0,1)：向右(+x)向下(-y)生长，
             // 保证整窗落在父边界内（pivot.x ∈ [0, w-size.x]，pivot.y ∈ [-(h-size.y), 0]）

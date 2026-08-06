@@ -109,7 +109,6 @@ MonoBehaviour:
   _enterDirection: 0
   _exitDirection: 1
   _fadeDuration: 0.15
-  _cursorOffset: {x: 24, y: -24}
   _maxDepth: 4
   TooltipColPrefab: {fileID: 6993168515062797648, guid: a1daac440ea664a47b9c2193dfec0274,
     type: 3}
