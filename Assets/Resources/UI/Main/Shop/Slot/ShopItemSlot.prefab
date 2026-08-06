@@ -416,7 +416,7 @@ PrefabInstance:
     - target: {fileID: 3112807499384972266, guid: ec82055f2fed95f48a580960cd88eebb,
         type: 3}
       propertyPath: m_RaycastTarget
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3875351521006009408, guid: ec82055f2fed95f48a580960cd88eebb,
         type: 3}
@@ -597,7 +597,7 @@ PrefabInstance:
     - target: {fileID: 3112807499384972266, guid: ec82055f2fed95f48a580960cd88eebb,
         type: 3}
       propertyPath: m_RaycastTarget
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5705894163202938856, guid: ec82055f2fed95f48a580960cd88eebb,
         type: 3}
