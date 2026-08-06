@@ -1,0 +1,31 @@
+# BuildAddressables 分组规则：路径前缀 = 组名
+# 说明：
+#   #     注释；空行跳过
+#   路径前缀 = 组名        匹配该前缀的资源归入对应组（地址 = Assets/完整路径）
+#   preserve = 组A, 组B    这些分组脚本不碰（buffID / AssetReference 寻址的既有分组）
+#
+# 分组粒度决定 bundle 数量：默认 PackTogether → 一个组 = 一个 bundle。
+# 需要拆细时把前缀写得更具体（如 Assets/textures/item/ 单独成组）。
+
+# ===== 运行时按地址加载的资源 =====
+Assets/Perfob/     = Perfob        # 方块/怪物 prefab
+Assets/Scenes/     = Scenes        # 战斗地图场景
+Assets/Map/        = Maps          # 地图数据 MapDataSO
+
+# 遗物/物品图标、方块贴图、实体图、商店 UI 贴图
+Assets/textures/item/   = Textures_item
+Assets/textures/block/  = Textures_block
+Assets/textures/entity/ = Textures_entity
+Assets/textures/gui/    = Textures_gui
+Assets/textures/mob_effect/    = Textures_mob_effect
+
+# 如需打包更多贴图子目录，照抄一行即可，如：
+# Assets/textures/effect/     = Textures_effect
+# Assets/textures/environment/= Textures_environment
+# Assets/textures/misc/       = Textures_misc
+
+# ===== preserve：运行时按地址字符串加载的分组，脚本不重建、不改地址 =====
+# 仅 Group_Buff 需要：BuffManager 用 buffID 作地址加载（Addressables.LoadAssetAsync<BuffBase>(buffID)）
+# 其它分组（Characters/Skills/UI/Class 等）都用 AssetReference(GUID) 或 Resources 加载，地址无关，
+# 路径命中的资产会被迁移到对应分组并改写为 Assets/ 路径地址。
+preserve = Group_Buff

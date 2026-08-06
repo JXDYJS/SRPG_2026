@@ -1,0 +1,40 @@
+# BuildAddressables 忽略规则（gitignore 风格）
+# 说明：
+#   #     注释；空行跳过
+#   *.ext       忽略该后缀（!*.ext 重新包含）
+#   路径/**     忽略该路径前缀
+#   规则按顺序匹配，最后一条生效
+
+# 代码/元数据等不可打包资产
+*.cs
+*.meta
+*.md
+*.dll
+*.js
+*.asmdef
+*.rsp
+
+# 开发工具/杂项文件
+*.json
+*.py
+*.bat
+*.txt
+*.schem
+*.yml
+*.yaml
+
+# 第三方与示例
+Assets/XLua/**
+Assets/TutorialInfo/**
+Assets/TextMesh Pro/**
+Assets/AddressableAssetsData/**
+
+# 资源代码/脚本/配置，不入 Addressables
+Assets/Script/**
+Assets/Lua/**
+Assets/Editor/**
+Assets/shader/**
+Assets/Data/**
+
+# Resources 体系独立于 Addressables，不打包
+Assets/Resources/**

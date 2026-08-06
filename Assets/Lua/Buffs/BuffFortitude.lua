@@ -12,6 +12,7 @@ function BuffFortitude:ctor(stacks)
     self.DecayAtTurnStart = false
     self.DefBonus = 2
     self.HpThreshold = 0.5
+    self.Description = "When your HP drops below 50%, grant DefenseUp and remove this buff."
 end
 
 ---@param damageInfo Status.damage.DamageInfo

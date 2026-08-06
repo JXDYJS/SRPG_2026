@@ -16,17 +16,7 @@ MonoBehaviour:
   m_Data:
     m_SerializedData: []
   m_GUID: 97125df7ff479844dab059c91cfc17a1
-  m_SerializeEntries:
-  - m_GUID: 2cc86365782c2c5419aab6c31d2593b7
-    m_Address: steve
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 468f9f140986f9c4b949001647145db2
-    m_Address: Assets/Perfob/mob/skeleton.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
+  m_SerializeEntries: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 1f6ca7d155b268c408ed984de8fdd20b, type: 2}
   m_SchemaSet:

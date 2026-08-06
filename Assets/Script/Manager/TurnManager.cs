@@ -48,6 +48,7 @@ public class TurnManager : MonoBehaviour
         foreach(var unit in _allBattleUnits)
         {
             unit.ResetActionValue();
+            unit.OnBattleStart();
         }
 
         Debug.Log("[TURN] calling CalculateNextAction");

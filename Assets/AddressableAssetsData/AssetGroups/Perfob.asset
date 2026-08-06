@@ -1,0 +1,130 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Perfob
+  m_EditorClassIdentifier: 
+  m_GroupName: Perfob
+  m_Data:
+    m_SerializedData: []
+  m_GUID: 35772c9aac4a6d045b5d096f7b3e4635
+  m_SerializeEntries:
+  - m_GUID: 04dcade7860b4c94db990962ba12bdf9
+    m_Address: Assets/Perfob/mob/Ari.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0b857e9b823281c439e33f2c36d4cb72
+    m_Address: Assets/Perfob/Sea.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 17d22bf803abaa9438eddc82061291d7
+    m_Address: Assets/Perfob/Global Volume.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2cc86365782c2c5419aab6c31d2593b7
+    m_Address: Assets/Perfob/mob/steve.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2e1ffed7ba73dc14ba85100cd83b0f60
+    m_Address: Assets/Perfob/block/Block_Iron.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 348122e827ab26a4589e778262c39785
+    m_Address: Assets/Perfob/block/Block_Cobblestone.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 468f9f140986f9c4b949001647145db2
+    m_Address: Assets/Perfob/mob/skeleton.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5b9bc299b0214744fade9135e3bcacc6
+    m_Address: Assets/Perfob/mob_portrait/Ari.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 76d193c8c06210f48ab89fcfede3d461
+    m_Address: Assets/Perfob/block/Magma.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 76fcf4ba804f0094fbc62fec53cf782f
+    m_Address: Assets/Perfob/Sun.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 837001858a6555c41ba50d3f93a11a7c
+    m_Address: Assets/Perfob/block/Block_Dirt.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 934f3e067153f894f83c22a48263c2f1
+    m_Address: Assets/Perfob/mob/zombie.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a04e018e534d1c34082c996f7781fdaf
+    m_Address: Assets/Perfob/block/Block_Grass_.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a18ef909c9618f747afe6f00d27123a2
+    m_Address: Assets/Perfob/block/Block_Cobbles_Slab.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b0f5187749f5bab4bb37e83651d7e69a
+    m_Address: Assets/Perfob/mob/Alex.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b482da457f71c6c409af8466001b9f81
+    m_Address: Assets/Perfob/mob_portrait/Skeleton.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d30a83508b0869d499c74987c334babb
+    m_Address: Assets/Perfob/mob_portrait/Zombie.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e36881c5db9cf8447bdfb62e68e3c989
+    m_Address: Assets/Perfob/Projectile/Fireball.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e507b5994683ecd48b0b6c8732ae80ac
+    m_Address: Assets/Perfob/block/Block_Grass.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f5cd9114a1d9bd840917beb2152a0dc6
+    m_Address: Assets/Perfob/mob_portrait/Alex.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f69af99987937bf428ea45c0e9d8932d
+    m_Address: Assets/Perfob/mob_portrait/Steve.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 1f6ca7d155b268c408ed984de8fdd20b, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 6b8ac37c2c0bad442bfffd4982223859, type: 2}
+    - {fileID: 11400000, guid: 46a3551bf47b63941aa8928f3fce5ddc, type: 2}

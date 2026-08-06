@@ -17,6 +17,7 @@ namespace GamePlay.Buff
         private void OnEnable()
         {
             if (string.IsNullOrEmpty(Name)) Name = "UndyingWill";
+            if (string.IsNullOrEmpty(Description)) Description = "Negate all incoming damage. Decays by 1 stack at the start of your turn.";
             MaxStacks = 3;
             DecayAtTurnStart = true;
             IsHidden = true;

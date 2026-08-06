@@ -9,6 +9,7 @@ function BuffBattleCry:ctor(stacks)
     self.Name = "BattleCry"
     self.MaxStacks = 5
     self.DecayAtTurnStart = true
+    self.Description = "Gain +{Stacks} ATK. Decays by 1 stack at the start of your turn."
 end
 
 ---comment

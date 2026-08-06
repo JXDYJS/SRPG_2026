@@ -74,7 +74,7 @@ namespace GamePlay.Battle
             // {
             //     Debug.LogError($"[FLOW] LoadLevelAsync threw: {e.GetType().Name}: {e.Message}\n{e.StackTrace}");
             // }
-            UnitManager.Instance.onUnitDead += () =>
+            UnitManager.Instance.AllDeathAnimationsFinished += () =>
             {
                 if (isLevelEnd())
                 {
@@ -456,6 +456,12 @@ namespace GamePlay.Battle
         }
         public void EndLevel()
         {
+            // 结算战斗结束钩子（清场前），让遗物/Buff 有机会做收尾（如重置每场战斗状态）
+            foreach (var unit in UnitManager.Instance.GetAllAliveUnit())
+            {
+                unit.OnBattleEnd();
+            }
+
             CleanupLevel();
             UIManager.Instance.ClosePanel<TimelinePanel>();
             var mapPopWindow = UIManager.Instance.OpenPanel<MapPopWindow>();

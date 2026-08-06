@@ -10,6 +10,7 @@ function BuffTaunt:ctor(stacks)
     self.MaxStacks = 5
     self.DecayAtTurnStart = true
     self.IsTaunt = true
+    self.Description = "Forces enemies to target you. Decays by 1 stack at the start of your turn."
 end
 
 ---@param owner GamePlay.Units.MapUnit

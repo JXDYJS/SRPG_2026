@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Maps
+  m_EditorClassIdentifier: 
+  m_GroupName: Maps
+  m_Data:
+    m_SerializedData: []
+  m_GUID: ee33febf42252fe4b8a476cfef7b76e4
+  m_SerializeEntries:
+  - m_GUID: 077a316a2b1da224eb5b3286d6415711
+    m_Address: Assets/Map/test2.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 192450ebe64a4f64199bc3a25035ce79
+    m_Address: Assets/Map/test3.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 481d038eef148db4aad68472f10dd798
+    m_Address: Assets/Map/test_output.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7920cee820e07e647ac549a4c50aad74
+    m_Address: Assets/Map/test4.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e37ea322b3ab18246be30723cb7ae678
+    m_Address: Assets/Map/Test1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e81757d17b70fdf45945b3f891d1b682
+    m_Address: Assets/Map/tallMap.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 1f6ca7d155b268c408ed984de8fdd20b, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: b686645dfc9008746bcf4d5b1beb6e22, type: 2}
+    - {fileID: 11400000, guid: 67fe51990920d704e9861ff521fa4759, type: 2}

@@ -124,6 +124,10 @@ namespace Command
             _unit.SetGridPosition(finalPos);
             
             _unit.SwitchState(UnitState.Idle);
+
+            // 移动可能触发地形杀（火格子等），在此统一结算死亡动画
+            UnitManager.Instance.FlushDeathAnimations().Forget();
+
             IsFinished = true;
         }
     }

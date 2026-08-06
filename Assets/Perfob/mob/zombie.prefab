@@ -418,7 +418,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 5
-  CurrentActionValue: 0
+  _currentActionValue: 0
   gridPosition: {x: 0, y: 0, z: 0}
   currentFacing: 0
   currentState: 0
@@ -426,6 +426,7 @@ MonoBehaviour:
   Faction: 0
   actionPoints: 1
   hasMoved: 0
+  IsPreview: 0
 --- !u!114 &5312357142010032139
 MonoBehaviour:
   m_ObjectHideFlags: 0

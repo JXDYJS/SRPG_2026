@@ -8,6 +8,7 @@ using Core.Data;
 using System.IO;
 using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
+using UI.Item;
 namespace UI.Panel
 {
     [UIPanelResource("UI/Battle/StatusPopWindow")]
@@ -61,7 +62,7 @@ namespace UI.Panel
                 if(name == "MaxHP")_name = "HP";
                 if(name == "MaxMP")_name = "MP";//有几个特殊属性不能直接显示
                 var slot = Instantiate(StatSlotPerfab, StatsContent.gameObject.transform).GetComponent<UI.Slot.SimpleSlot>();
-                slot.Init(stat, unit, _name);
+                slot.Init(stat, new SlotContext { unit = unit, label = _name });
             }
         }
         public void initSkill(MapUnit unit)
@@ -78,7 +79,7 @@ namespace UI.Panel
                 string typeLabel = Utils.Utils.GetSkillSlotTypeString(runtimeSlot.SlotType);
                 if (skillSlot.Title != null)
                     skillSlot.Title.text = typeLabel;
-                skillSlot.Init(runtimeSlot.CurrentSkill, unit);
+                skillSlot.Init(runtimeSlot.CurrentSkill);
             }
         }
 

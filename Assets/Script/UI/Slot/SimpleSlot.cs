@@ -1,14 +1,17 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using TMPro;
 using Core.Data;
-using GamePlay.Units;
-using GamePlay.Skill;
+using UnityEngine.AddressableAssets;
+using UI.Item;
+using UI.Tooltip;
 namespace UI.Slot
 {
-    public class SimpleSlot : MonoBehaviour
+    public class SimpleSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerMoveHandler
     {
+        private IItemDescriptor _desc;
         public UnityEngine.UI.Image ItemIcon;
         public TextMeshProUGUI text;
         private static Sprite _defaultSprite;
@@ -17,66 +20,86 @@ namespace UI.Slot
             get
             {
                 if (_defaultSprite == null)
-                    _defaultSprite = Resources.Load<Sprite>(Data.Config.ViewConfig.defaultImage);
+                    _defaultSprite = LoadAddressableSprite(Data.Config.ViewConfig.defaultAddressableImage)
+                                     ?? Resources.Load<Sprite>(Data.Config.ViewConfig.defaultImage);
                 return _defaultSprite;
             }
         }
+
+        /// <summary>通过 Addressables 地址加载 Sprite，未配置或加载失败返回 null（由调用方决定兜底）</summary>
+        private static Sprite LoadAddressableSprite(string address)
+        {
+            if (string.IsNullOrEmpty(address)) return null;
+            return Addressables.LoadAssetAsync<Sprite>(address).WaitForCompletion();
+        }
+
         private List<Action> _unsubscribeActions = new List<Action>();
-        public void Init<T>(T item, MapUnit unit = null, string label = null)
+
+        /// <summary>以运行时对象初始化，内部经 ItemView 解析为统一描述</summary>
+        public void Init(object item, SlotContext ctx = default)
         {
             Clear();
-            if (item is GamePlay.Buff.BuffBase buff)
+            IItemDescriptor desc = ItemView.Resolve(item, ctx);
+            if (desc == null)
             {
-                Action Refresh = () =>
-                {
-                    if (buff.Icon == null)
-                    {
-                        ItemIcon.sprite = DefaultSprite;
-                    }
-                    else ItemIcon.sprite = buff.Icon;
-                    text.text = $"{buff.Name}\n{buff.Stacks}";
-                };
-                Refresh();
-                buff._onChange += Refresh;
-                _unsubscribeActions.Add(() => buff._onChange -= Refresh);
+                Debug.LogError($"SimpleSlot: 无法解析槽位内容 {item}");
+                return;
             }
-            else if (item is Status.state.Stat stat)
+            Init(desc);
+        }
+
+        /// <summary>以统一描述初始化（商店等场景可先由 ItemView.ResolveConfig 出描述）</summary>
+        public void Init(IItemDescriptor desc)
+        {
+            Clear();
+            _desc = desc;
+            if (desc == null) return;
+
+            RenderIcon(desc);
+            RenderText(desc);
+
+            Action Refresh = () => RenderText(desc);
+            desc.Changed += Refresh;
+            _unsubscribeActions.Add(() => desc.Changed -= Refresh);
+            _unsubscribeActions.Add(desc.Unlink);
+        }
+
+        private void RenderIcon(IItemDescriptor desc)
+        {
+            if (ItemIcon == null) return;
+            if (!desc.ShowIcon)
             {
-                if (unit == null || string.IsNullOrEmpty(label))
-                {
-                    Debug.LogError("SimpleSlot: unit and label required for Stat display");
-                    return;
-                }
-                if (ItemIcon != null) ItemIcon.gameObject.SetActive(false);
-                Action Refresh = () =>
-                {
-                    string number = $"{stat.getValue()}";
-                    if (label == "HP" || label == "MP")
-                    {
-                        if (label == "HP")
-                            number = $"{unit.Character.statSystem.currentHP} / {stat.getValue()}";
-                        if (label == "MP")
-                            number = $"{unit.Character.statSystem.currentMP} / {stat.getValue()}";
-                    }
-                    text.text = $"{label}: {number}";
-                };
-                Refresh();
-                stat.OnValueChanged += Refresh;
-                _unsubscribeActions.Add(() => stat.OnValueChanged -= Refresh);
+                ItemIcon.gameObject.SetActive(false);
+                return;
             }
-            else if (item is SkillDataSO skill)
+            Sprite icon = desc.Icon;
+            if (icon == null)
             {
-                if (ItemIcon != null)
-                {
-                    if (skill.Icon != null)
-                        ItemIcon.sprite = skill.Icon;
-                    else
-                        ItemIcon.sprite = DefaultSprite;
-                    ItemIcon.gameObject.SetActive(true);
-                }
-                text.text = $"{skill.SkillName}\n{skill.Description}";
+                icon = LoadAddressableSprite(desc.IconPath);
+            }
+            ItemIcon.sprite = icon != null ? icon : DefaultSprite;
+            ItemIcon.gameObject.SetActive(true);
+        }
+
+        private void RenderText(IItemDescriptor desc)
+        {
+            if (text == null) return;
+            string name = desc.Name;
+            string subtext = desc.Subtext;
+            if (string.IsNullOrEmpty(name))
+            {
+                text.text = subtext ?? string.Empty;
+            }
+            else if (string.IsNullOrEmpty(subtext))
+            {
+                text.text = name;
+            }
+            else
+            {
+                text.text = $"{name}\n{subtext}";
             }
         }
+
         public void Clear()
         {
             foreach (var unsubscribe in _unsubscribeActions)
@@ -84,6 +107,7 @@ namespace UI.Slot
                 unsubscribe?.Invoke();
             }
             _unsubscribeActions.Clear();
+            _desc = null;
         }
         public void OnDestroy()
         {
@@ -92,6 +116,26 @@ namespace UI.Slot
         public void OnDisable()
         {
             Clear();
+            TooltipHost.Hide();
+        }
+
+        // ==================== 悬停提示 ====================
+
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            if (_desc == null) return;
+            TooltipHost.Show(_desc, Input.mousePosition);
+        }
+
+        public void OnPointerMove(PointerEventData eventData)
+        {
+            if (_desc == null) return;
+            TooltipHost.Move(Input.mousePosition);
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            TooltipHost.Hide();
         }
     }
 }

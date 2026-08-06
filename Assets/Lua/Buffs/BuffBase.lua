@@ -11,6 +11,9 @@ BuffBase.ID = ""
 ---@type string
 BuffBase.Name = ""
 
+---@type string
+BuffBase.Description = ""
+
 ---@type number
 BuffBase.Stacks = 1
 
@@ -29,6 +32,7 @@ function BuffBase:ctor(stacks)
     self.MaxStacks = 5
     self.IsDebuff = false
     self.DecayAtTurnStart = true
+    self.Description = ""
 end
 
 ---@param owner any

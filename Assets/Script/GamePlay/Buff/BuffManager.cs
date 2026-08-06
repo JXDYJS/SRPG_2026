@@ -161,8 +161,9 @@ namespace GamePlay.Buff
                 env.Global.Set<object, object>("__tmp_stacks", null);
                 if (ret2 == null || ret2.Length == 0) return null;
             }
-            catch
+            catch (Exception e)
             {
+                Debug.LogWarning($"[BuffManager] Lua 实例化 '{module}' 失败: {e.Message}");
                 return null;
             }
 

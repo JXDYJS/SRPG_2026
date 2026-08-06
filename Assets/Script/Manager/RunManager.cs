@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using GamePlay.Relics;
 using Character.instance;
 using Character.data;
+using Core.Data;
 using Core.Data.Persistent;
 using Status.state;
 using Cysharp.Threading.Tasks;
@@ -39,6 +40,100 @@ namespace Managers
 
         public void AddRelic(RelicBase relic)
         {
+            if (relic == null) return;
+
+            if (!Relics.Contains(relic)) Relics.Add(relic);
+
+            // 持久化遗物 ID
+            if (Data.Persistent?.Data != null)
+            {
+                if (!Data.Persistent.Data.relics.Contains(relic.ID))
+                {
+                    Data.Persistent.Data.relics.Add(relic.ID);
+                    Data.Persistent.Save();
+                }
+            }
+
+            Debug.Log($"[RunManager] 获得遗物: {relic.Name} ({relic.ID})");
+        }
+
+        // ==================== 金币（持久化于 PlayerProgressData.gold） ====================
+
+        /// <summary>当前金币余额</summary>
+        public int Gold => Data.Persistent?.Data?.progress?.gold?.Value ?? 0;
+
+        public void AddGold(int amount)
+        {
+            if (amount <= 0 || Data.Persistent?.Data == null) return;
+            Data.Persistent.Data.progress.gold.Value += amount;
+            Data.Persistent.Save();
+            Debug.Log($"[RunManager] 获得 {amount} 金币，当前: {Gold}");
+        }
+
+        /// <summary>尝试花费金币，余额不足返回 false</summary>
+        public bool TrySpendGold(int amount)
+        {
+            if (amount <= 0) return true;
+            if (Gold < amount) return false;
+
+            Data.Persistent.Data.progress.gold.Value -= amount;
+            Data.Persistent.Save();
+            Debug.Log($"[RunManager] 花费 {amount} 金币，剩余: {Gold}");
+            return true;
+        }
+
+        /// <summary>
+        /// 购买商店物品：先扣款，钱袋类遗物直接加金币，普通遗物进收藏。
+        /// 物品无法创建时自动退款。
+        /// </summary>
+        public bool PurchaseItem(string itemId, int price)
+        {
+            if (string.IsNullOrEmpty(itemId)) return false;
+            if (!TrySpendGold(price)) return false;
+
+            if (itemId == GamePlay.Relics.RelicPouchOfEmeralds.ITEM_ID)
+            {
+                AddGold(GamePlay.Relics.RelicPouchOfEmeralds.GOLD_AMOUNT);
+                return true;
+            }
+
+            RelicBase relic = RelicManager.CreateRelicFromID(itemId);
+            if (relic == null)
+            {
+                AddGold(price);
+                Debug.LogWarning($"[RunManager] 商品 '{itemId}' 无法创建，已退款 {price} 金币");
+                return false;
+            }
+
+            AddRelic(relic);
+            return true;
+        }
+
+        /// <summary>
+        /// 统一物品授予入口：按类别路由（与显示层 ItemView 共用 ItemCatalog 解析）。
+        /// Currency=加金币（amount 生效），Relic=创建并收藏（amount 忽略）。
+        /// 不复制购买流程的规则（如钱袋转金币），购买语义保留在 PurchaseItem。
+        /// </summary>
+        public bool GiveItem(string itemId, int amount = 1)
+        {
+            if (!ItemCatalog.TryResolve(itemId, out ItemKind kind)) return false;
+
+            switch (kind)
+            {
+                case ItemKind.Currency:
+                    AddGold(amount);
+                    return true;
+                case ItemKind.Relic:
+                    RelicBase relic = RelicManager.CreateRelicFromID(itemId);
+                    if (relic == null) return false;
+                    AddRelic(relic);
+                    return true;
+                case ItemKind.Character:
+                    // TODO: 角色表落成后异步创建 CharacterInstance 入 MyTeam（InitializeSkillsAsync 需 Addressables）
+                    Debug.LogWarning($"[RunManager] giveitem 暂不支持角色: {itemId}");
+                    return false;
+            }
+            return false;
         }
 
         /// <summary>
@@ -75,6 +170,19 @@ namespace Managers
 
                 MyTeam.Add(ci);
                 Debug.Log($"[RunManager] Restored character: {cd.CharacterName} Lv.{sd.level}");
+            }
+
+            // 恢复遗物
+            Relics.Clear();
+            if (Data.Persistent?.Data?.relics != null)
+            {
+                foreach (var relicId in Data.Persistent.Data.relics)
+                {
+                    RelicBase relic = RelicManager.CreateRelicFromID(relicId);
+                    if (relic != null) Relics.Add(relic);
+                    else Debug.LogWarning($"[RunManager] 无法恢复遗物: {relicId}");
+                }
+                Debug.Log($"[RunManager] 恢复了 {Relics.Count} 个遗物");
             }
         }
 

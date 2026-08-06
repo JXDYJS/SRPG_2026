@@ -175,15 +175,114 @@ namespace GamePlay.View
         public void ShowModel()
         {
             gameObject.SetActive(true);
+            // 死亡倒下后若被重新显示（如复活），还原倒下前的姿态
+            if (_preDeathRotationRestorePending)
+            {
+                _preDeathRotationRestorePending = false;
+                transform.localRotation = _preDeathLocalRotation;
+            }
         }
 
-        private bool _isDying;
+        // ================= 死亡动画（我的世界式）与对外钩子 =================
 
+        private bool _preDeathRotationRestorePending;
+        private Quaternion _preDeathLocalRotation;
+
+        /// <summary>
+        /// 死亡动画播放完成事件（供游戏管理器判断是否可结束游戏）。
+        /// </summary>
+        public event Action<UnitView> OnDeathAnimationFinished;
+
+        /// <summary>
+        /// 当前是否正在播放死亡动画。
+        /// </summary>
+        public bool IsDeathAnimationPlaying { get; private set; }
+
+        /// <summary>
+        /// 死亡动画是否已播放完成。
+        /// </summary>
+        public bool IsDeathAnimationDone { get; private set; }
+
+        /// <summary>
+        /// 等待死亡动画播放完成（若已完成则立即返回）。游戏管理器可 await 此方法后再结算/结束游戏。
+        /// </summary>
+        public async UniTask WaitForDeathAnimationFinished()
+        {
+            if (IsDeathAnimationDone) return;
+
+            var tcs = new UniTaskCompletionSource();
+            Action<UnitView> handler = null;
+            handler = (view) =>
+            {
+                OnDeathAnimationFinished -= handler;
+                tcs.TrySetResult();
+            };
+            OnDeathAnimationFinished += handler;
+
+            await tcs.Task;
+
+            OnDeathAnimationFinished -= handler;
+        }
+
+        /// <summary>
+        /// 播放死亡动画，播放完毕回调 onComplete 并触发对外钩子。
+        /// 默认走"我的世界式"程序化死亡（后倒+下沉，锚点在脚底）；可在 ViewConfig 关闭。
+        /// </summary>
         public async UniTask PlayDeathAnimation(Action onComplete = null)
         {
-            if (_isDying) return;
-            _isDying = true;
+            if (IsDeathAnimationPlaying) return;
+            IsDeathAnimationPlaying = true;
+            IsDeathAnimationDone = false;
 
+            try
+            {
+                if (Data.Config.ViewConfig.useMinecraftStyleDeath)
+                {
+                    await PlayMinecraftStyleDeathAsync();
+                }
+                else
+                {
+                    await PlayLegacyDeathAnimClipAsync();
+                }
+            }
+            finally
+            {
+                IsDeathAnimationPlaying = false;
+                IsDeathAnimationDone = true;
+                OnDeathAnimationFinished?.Invoke(this);
+                onComplete?.Invoke();
+            }
+        }
+
+        /// <summary>
+        /// 我的世界式死亡：模型锚点在脚底。
+        /// 1. 绕脚底（transform 原点）沿本地 X 轴向后倒下，头部落到地面躺平；
+        /// 2. 整个模型下沉没入地面（下沉距离取模型站立高度）。
+        /// </summary>
+        private async UniTask PlayMinecraftStyleDeathAsync()
+        {
+            ViewConfigData cfg = Data.Config.ViewConfig;
+
+            // 记录倒下前的姿态，便于 ShowModel 复活/重置时还原
+            _preDeathLocalRotation = transform.localRotation;
+            _preDeathRotationRestorePending = true;
+
+            // 1. 向后倒下
+            Vector3 startEuler = transform.localEulerAngles;
+            Vector3 targetEuler = new Vector3(startEuler.x - cfg.minecraftDeathFallDegrees, startEuler.y, startEuler.z);
+            await TweenLocalRotateAsync(startEuler, targetEuler, cfg.minecraftDeathFallDuration, EaseOutCubic);
+
+            // 2. 下沉没入地面（整个躺倒的身躯被埋入地下）
+            float height = GetModelHeight();
+            float sinkDistance = Mathf.Max(height * cfg.minecraftDeathSinkFactor, 0.05f);
+            await TweenWorldMoveAsync(transform.position, transform.position + Vector3.down * sinkDistance, cfg.minecraftDeathSinkDuration, EaseInSine);
+        }
+
+        /// <summary>
+        /// 旧版死亡逻辑：播放动画 clip 并等待其时长（保留用于没有程序化死亡需求的模型）。
+        /// </summary>
+        private async UniTask PlayLegacyDeathAnimClipAsync()
+        {
             string animName = Data.Config.ViewConfig.deathAnimationName;
             PlayAnim(animName);
             await UniTask.Yield();
@@ -201,7 +300,70 @@ namespace GamePlay.View
                 : Data.Config.ViewConfig.deathAnimationDefaultClipLength;
 
             await UniTask.Delay(TimeSpan.FromSeconds(clipLength));
-            onComplete?.Invoke();
+        }
+
+        // ============ 死亡动画辅助：补间与缓动 ============
+
+        private static float EaseOutCubic(float t) => 1f - Mathf.Pow(1f - t, 3f);
+        private static float EaseInSine(float t) => 1f - Mathf.Cos(t * Mathf.PI * 0.5f);
+
+        /// <summary>
+        /// 本地欧拉角补间（绕脚底锚点旋转用）。
+        /// </summary>
+        private async UniTask TweenLocalRotateAsync(Vector3 fromEuler, Vector3 toEuler, float duration, Func<float, float> ease)
+        {
+            if (duration <= 0f)
+            {
+                transform.localEulerAngles = toEuler;
+                return;
+            }
+
+            float elapsed = 0f;
+            while (elapsed < duration)
+            {
+                elapsed += Time.deltaTime;
+                float t = Mathf.Clamp01(elapsed / duration);
+                transform.localEulerAngles = Vector3.Lerp(fromEuler, toEuler, ease(t));
+                await UniTask.Yield();
+            }
+            transform.localEulerAngles = toEuler;
+        }
+
+        /// <summary>
+        /// 世界坐标补间（下沉入地用）。
+        /// </summary>
+        private async UniTask TweenWorldMoveAsync(Vector3 from, Vector3 to, float duration, Func<float, float> ease)
+        {
+            if (duration <= 0f)
+            {
+                transform.position = to;
+                return;
+            }
+
+            float elapsed = 0f;
+            while (elapsed < duration)
+            {
+                elapsed += Time.deltaTime;
+                float t = Mathf.Clamp01(elapsed / duration);
+                transform.position = Vector3.Lerp(from, to, ease(t));
+                await UniTask.Yield();
+            }
+            transform.position = to;
+        }
+
+        /// <summary>
+        /// 通过渲染器包围盒估算模型站立高度（锚点在脚底时即脚底到头部的距离）。
+        /// </summary>
+        private float GetModelHeight()
+        {
+            if (_renderers == null || _renderers.Length == 0) return 0f;
+
+            Bounds bounds = _renderers[0].bounds;
+            for (int i = 1; i < _renderers.Length; i++)
+            {
+                if (_renderers[i] != null) bounds.Encapsulate(_renderers[i].bounds);
+            }
+            return bounds.size.y;
         }
     }
 }

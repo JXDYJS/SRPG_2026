@@ -10,6 +10,7 @@ function BuffZombieSkin:ctor(stacks)
     self.MaxStacks = 1
     self.DecayAtTurnStart = false
     self.DamageReduction = 2
+    self.Description = "Reduce incoming damage by {Stacks} while you haven't moved this turn."
 end
 
 function BuffZombieSkin:OnApply(owner) end

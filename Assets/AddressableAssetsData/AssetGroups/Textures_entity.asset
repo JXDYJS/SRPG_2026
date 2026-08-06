@@ -1,0 +1,3180 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Textures_entity
+  m_EditorClassIdentifier: 
+  m_GroupName: Textures_entity
+  m_Data:
+    m_SerializedData: []
+  m_GUID: 946dd082990389844ad0a993030155df
+  m_SerializeEntries:
+  - m_GUID: 009c499957381534497ee107d17cbb1c
+    m_Address: Assets/textures/entity/zombie_villager/profession/librarian.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 00b95ee282ba6ca47a63f61c0b6fbec2
+    m_Address: Assets/textures/entity/horse/horse_black.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 00d4e189e2d08014c91a082ae139f21c
+    m_Address: Assets/textures/entity/villager/type/taiga.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 02029e862d695804f886cea9d9b22718
+    m_Address: Assets/textures/entity/enderdragon/dragon_exploding.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0264b7b455bc83f489178be07f5d45e3
+    m_Address: Assets/textures/entity/shield/mojang.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 03dc623944e0dc54ba51d976084df9ac
+    m_Address: Assets/textures/entity/copper_golem/oxidized_copper_golem_eyes.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 03f2996cf729f2b4181cf9e5c3a2b912
+    m_Address: Assets/textures/entity/bee/bee.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0532876924bfc4842bfb7a3a35f8c09e
+    m_Address: Assets/textures/entity/banner/straight_cross.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 05975d857cd7dd44a83706ae45e5a626
+    m_Address: Assets/textures/entity/banner/small_stripes.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 061527d2ce1bee441b61ec41b1686b2a
+    m_Address: Assets/textures/entity/decorated_pot/danger_pottery_pattern.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 063dbf6269d18be4384508ea80c68244
+    m_Address: Assets/textures/entity/bed/lime.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 067d6256ac13ba74f8846d574f1a8e99
+    m_Address: Assets/textures/entity/zombie_villager/profession/mason.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0711bc2d966d23844bfc1199a243c4af
+    m_Address: Assets/textures/entity/equipment/llama_body/gray.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 07134b187384eb94785fdfb52abc3535
+    m_Address: Assets/textures/entity/fish/tropical_a_pattern_3.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 07aa6c336eb28a34abb0de84b96b735e
+    m_Address: Assets/textures/entity/guardian_elder.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 07ec08fa12138d841925c3e2c8dab456
+    m_Address: Assets/textures/entity/conduit/base.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 08027416fdda4e84a94957aefa33240a
+    m_Address: Assets/textures/entity/signs/spruce.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 08c4e3dd5c922c34eb235f0c0f8cf2bd
+    m_Address: Assets/textures/entity/equipment/skeleton_horse_saddle/saddle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 094a121a161e52c42b120363662001ad
+    m_Address: Assets/textures/entity/equipment/llama_body/light_blue.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 096ba300f512f454dbe9886f6426b9d6
+    m_Address: Assets/textures/entity/projectiles/spectral_arrow.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0980ec0c27f27b248b4ac119def636cf
+    m_Address: Assets/textures/entity/villager/profession/librarian.png.mcmeta
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0a7126c59f213734f9b985d8264b3cd4
+    m_Address: Assets/textures/entity/horse/horse_markings_whitedots.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0ac8a13468c166a4dbceeb21b7950229
+    m_Address: Assets/textures/entity/horse/horse_markings_white.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0b20e9ab0f1dba34cbe170117be7d124
+    m_Address: Assets/textures/entity/bed/green.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0b6c87f5c53d8c7468aff9f5fcff632b
+    m_Address: Assets/textures/entity/villager/type/plains.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0c832be5273940049b85687b58e49a35
+    m_Address: Assets/textures/entity/warden/warden_heart.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0d15a379fda23d94fb32cd892ebc49ed
+    m_Address: Assets/textures/entity/fish/tropical_b_pattern_2.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0d1c47df388288b4581b69ea8df9a500
+    m_Address: Assets/textures/entity/chest_boat/jungle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0d48a712be59eff498d3a537e71c555c
+    m_Address: Assets/textures/entity/equipment/happy_ghast_body/black_harness.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0dd703eefb94fd24291214eed11bc75d
+    m_Address: Assets/textures/entity/shield/stripe_downright.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0e66faa867db27f48867c2760157f2c1
+    m_Address: Assets/textures/entity/wolf/wolf_chestnut.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0e73a2612f97acc45841ac32392ad70b
+    m_Address: Assets/textures/entity/wolf/wolf_collar.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0e9a7fa9081e20940aef643e7cf84404
+    m_Address: Assets/textures/entity/fish/tropical_b.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0ee10e449f10ec24481441e7f51b13a7
+    m_Address: Assets/textures/entity/banner/base.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0f1765b0ccbd3ce49bfeeff4c8d8ae01
+    m_Address: Assets/textures/entity/horse/horse_markings_whitefield.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0f695619eec401e4fb2fa07d8ed64810
+    m_Address: Assets/textures/entity/villager/profession_level/diamond.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1085b11abcc098c458f22cd7f79a48d4
+    m_Address: Assets/textures/entity/illager/pillager.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 10e46aafa853c6a418817bbc99dfd776
+    m_Address: Assets/textures/entity/bell/bell_body.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 10e728bd703b36348b162c3e3f95f777
+    m_Address: Assets/textures/entity/zombie_villager/profession/nitwit.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 110fe166871f6664698ab58177ae0431
+    m_Address: Assets/textures/entity/equipment/humanoid_leggings/gold.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 115e9cfab555ba743b7a4a3ea46b9fe8
+    m_Address: Assets/textures/entity/chest/normal_right.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 119992c7d8673ad48a7c0a04827e8155
+    m_Address: Assets/textures/entity/nautilus/nautilus_baby.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 11abebaafcf33f845a717dbb6a139a4c
+    m_Address: Assets/textures/entity/shield/triangles_bottom.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1238aede5bf9eb94ebb334d393e94bb5
+    m_Address: Assets/textures/entity/signs/mangrove.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1294359f6689fcc419bc8f4cb51c6414
+    m_Address: Assets/textures/entity/zombie_villager/profession/fletcher.png.mcmeta
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 131ec1b8c816bc641b9a39fe772023f1
+    m_Address: Assets/textures/entity/wolf/wolf_spotted_tame.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 13952274a41e9a740aac35ea517ab5df
+    m_Address: Assets/textures/entity/frog/warm_frog.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 13c309f0b9ecdc64a86dd2ed6a1a1ad6
+    m_Address: Assets/textures/entity/skeleton/wither_skeleton.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 13d82f357558da244a295027ec267810
+    m_Address: Assets/textures/entity/ghast/ghast.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 144bb34a43482d14b97811587467279b
+    m_Address: Assets/textures/entity/sheep/sheep_wool_undercoat.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 145f2a4bcfd715646be705d88002f97c
+    m_Address: Assets/textures/entity/equipment/humanoid_leggings/chainmail.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 15adb55c260b2904ba0b794fd5d72a3a
+    m_Address: Assets/textures/entity/chicken/temperate_chicken.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 15e6d38efd6075745be018e6014f0aae
+    m_Address: Assets/textures/entity/cow/temperate_cow.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 162f7475f29317e42b403f140b078ce7
+    m_Address: Assets/textures/entity/equipment/wolf_body/armadillo_scute.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1642627ee3db21a4384d9e1040c4fb22
+    m_Address: Assets/textures/entity/guardian_beam.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 164c671fa5879cb418466f7a3e844e50
+    m_Address: Assets/textures/entity/zombie_villager/profession/cleric.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 168a7c9ba10bbea4bb4cfc6262f5c7bb
+    m_Address: Assets/textures/entity/zombie_villager/profession/fletcher.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 17209d97c99401a4e8fd41135cc4d0c3
+    m_Address: Assets/textures/entity/bed/red.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1764836d933dac74bbed3fdc47c8412e
+    m_Address: Assets/textures/entity/blaze.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 17b9c08ef53e00648a1f47dd15763ac4
+    m_Address: Assets/textures/entity/shulker/shulker_brown.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 183a525a9e48cf64aa885177d4e7d8fa
+    m_Address: Assets/textures/entity/equipment/happy_ghast_body/light_blue_harness.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 183e6f0ebb2226f47a64a70cd61716dc
+    m_Address: Assets/textures/entity/shulker/shulker_orange.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 189052f4d9a953b4fa901d99bd94549b
+    m_Address: Assets/textures/entity/wolf/wolf_spotted.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 18e4142ae6e7e934cad23a1766c563fb
+    m_Address: Assets/textures/entity/illager/vex.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 195242914669d74499bf2557d2a128de
+    m_Address: Assets/textures/entity/chest/christmas.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1b0a9c98e4a5eba4e88f9bc96bf82c17
+    m_Address: Assets/textures/entity/cow/warm_cow.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1b25b6022b6c9b34f843c79068d234f2
+    m_Address: Assets/textures/entity/zombie_villager/type/savanna.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1bdfe6e48b7dfef4f924794971ee0386
+    m_Address: Assets/textures/entity/copper_golem/exposed_copper_golem.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1beb17140ae42a645acf83ff3a7f4c7c
+    m_Address: Assets/textures/entity/player/slim/makena.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1c1671de88b8b834387d6fbdca77625d
+    m_Address: Assets/textures/entity/wolf/wolf_angry.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1cfdb4c5532519e459a642933ef1554c
+    m_Address: Assets/textures/entity/banner/diagonal_left.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1e55a86d7fa94684a81c095242272528
+    m_Address: Assets/textures/entity/conduit/wind_vertical.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1e65469ea1643b04799e84e108a9e14c
+    m_Address: Assets/textures/entity/villager/type/snow.png.mcmeta
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1e8bc9abe36b4514bb83ebe95d136a5c
+    m_Address: Assets/textures/entity/chest/copper_oxidized_right.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1e9445482059a3943ac63734dafb01d6
+    m_Address: Assets/textures/entity/conduit/wind.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1ec03cdb2d0ae4a439bf8793d2f76db7
+    m_Address: Assets/textures/entity/zombie_villager/profession/farmer.png.mcmeta
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1eea6cfb289e25544a453c6d991b2084
+    m_Address: Assets/textures/entity/camel/camel_husk.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1eeec48e2c6044a4fa73e34a764c90de
+    m_Address: Assets/textures/entity/horse/mule.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1f6e2b925bca39049bcfe1b158d8f1e7
+    m_Address: Assets/textures/entity/enderman/enderman_eyes.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1f8513d979692bf458ffa35cfe15d97b
+    m_Address: Assets/textures/entity/llama/gray.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1fee1f753fcf2ca40bd95daecce55de9
+    m_Address: Assets/textures/entity/breeze/breeze_eyes.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 20ee340778354b749981c0d14c59f854
+    m_Address: Assets/textures/entity/strider/strider.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 211d1f33f9f44d0499c7f8ff2170308c
+    m_Address: Assets/textures/entity/shield/border.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 21f0890f6ab680a4c98aab4238d9875c
+    m_Address: Assets/textures/entity/dolphin.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 220979640ac55b243967af0eab6b502e
+    m_Address: Assets/textures/entity/fish/cod.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 223108cb533ceb140bb787e0f4a7073e
+    m_Address: Assets/textures/entity/horse/horse_brown.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 23179087c8790d44dadda47a68663813
+    m_Address: Assets/textures/entity/wolf/wolf_chestnut_angry.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2328ee26cc0be3746beb6fa9ef78a197
+    m_Address: Assets/textures/entity/equipment/horse_body/leather.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 232b6e802b1bcea4087220771dd543b7
+    m_Address: Assets/textures/entity/breeze/breeze_wind.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 23793b0d7a900c54ea6444b87b5cd2bc
+    m_Address: Assets/textures/entity/banner/cross.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 23854c42935cfc2429a58445d16a1902
+    m_Address: Assets/textures/entity/banner/mojang.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 238c60155e051024d8f6bb1aa761d913
+    m_Address: Assets/textures/entity/equipment/camel_husk_saddle/saddle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 23cfdf7672a9a8f428db137d7cb8c769
+    m_Address: Assets/textures/entity/signs/hanging/warped.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 23f6bc7cf87e33c458a6b67bd2a6cf97
+    m_Address: Assets/textures/entity/nautilus/nautilus.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 24182ccaaf4160e43b266c35249c7c2d
+    m_Address: Assets/textures/entity/shield/stripe_middle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 248eafd9c4f40b940a65c73413d85713
+    m_Address: Assets/textures/entity/shield/diagonal_up_right.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 24ead46ebfa8b7f49bcf2a53d662b3ba
+    m_Address: Assets/textures/entity/banner/stripe_bottom.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 251c498b3ab79b940a5ab529daced398
+    m_Address: Assets/textures/entity/villager/profession/butcher.png.mcmeta
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 25fb47724c33ba6409c8e5d60e152ff1
+    m_Address: Assets/textures/entity/equipment/llama_body/magenta.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2639f4242e31d1c4291673154800bc55
+    m_Address: Assets/textures/entity/decorated_pot/skull_pottery_pattern.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2643efdfb83836f4d9952d5b252cbdd8
+    m_Address: Assets/textures/entity/silverfish.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 26a17c370aab10f4495a8ba46486f7f4
+    m_Address: Assets/textures/entity/shield/square_top_left.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 26f78052bbbd33842b2694680ec0abee
+    m_Address: Assets/textures/entity/trident.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2700ebf64a5c951459d6a2a38cae286e
+    m_Address: Assets/textures/entity/bed/cyan.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 271ea30990c6e114a8a09e72da1053cb
+    m_Address: Assets/textures/entity/decorated_pot/flow_pottery_pattern.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 28064568f50c2d04e84a7d9015a3400a
+    m_Address: Assets/textures/entity/chest/copper_weathered.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 289707cbcba6f7740be3b503fc58d74d
+    m_Address: Assets/textures/entity/armadillo.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 28b373d82a3508f4ca491942883e2ec8
+    m_Address: Assets/textures/entity/illager/illusioner.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 28eb37f3686a2e549ae60ed95f3d857d
+    m_Address: Assets/textures/entity/shield/rhombus.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 291723bf6665c934083383a909699e9f
+    m_Address: Assets/textures/entity/player/wide/sunny.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 297d100b350d01a459b1506332cb03e5
+    m_Address: Assets/textures/entity/villager/profession_level/emerald.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 298ac8c8376b8494d98a0195907c83a3
+    m_Address: Assets/textures/entity/parrot/parrot_green.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 29a0a6b164cdc7b418205635bc7b9fbb
+    m_Address: Assets/textures/entity/shield/half_vertical_right.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 29ecd021cc7db554abb9217dd6f8fee8
+    m_Address: Assets/textures/entity/banner/triangle_bottom.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 29ee7b8a3bc1c3145a427e254704364e
+    m_Address: Assets/textures/entity/zombie_villager/profession/librarian.png.mcmeta
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2a0131c4f36e9b346b8e3c8c14d6f25a
+    m_Address: Assets/textures/entity/chest/copper_oxidized_left.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2aa8f89ff91002d49ab0a912cfeb2fb8
+    m_Address: Assets/textures/entity/boat/oak.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2abed32627c8b2343b89582bb916e145
+    m_Address: Assets/textures/entity/illager/vindicator.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2b34c52327a210c48a573710ded1f632
+    m_Address: Assets/textures/entity/wolf/wolf_woods.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2b52a6463d223f84bab0add0c2d71437
+    m_Address: Assets/textures/entity/banner/square_top_right.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2b611c38af2dc9e4285581a1722a3083
+    m_Address: Assets/textures/entity/shield/skull.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2c4c76cb367cc314e80074f098bd78e6
+    m_Address: Assets/textures/entity/chest/copper_weathered_right.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2c93ea956ea62f94fbb8148d4ba811f1
+    m_Address: Assets/textures/entity/experience_orb.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2cc7b058d5c5029448fc04feab31480d
+    m_Address: Assets/textures/entity/villager/profession/cleric.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2cd8ed323de2e2a49ba4b17edd16bb7e
+    m_Address: Assets/textures/entity/villager/type/savanna.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2d8e943567c7f634abe367951df7d351
+    m_Address: Assets/textures/entity/zombie_villager/profession/shepherd.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2e51313dba1028e4ebe253725c7acfe7
+    m_Address: Assets/textures/entity/equipment/happy_ghast_body/orange_harness.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2fb21e4e7643e404d93b07df7d2c6f89
+    m_Address: Assets/textures/entity/chest/christmas_left.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3053433905a902f4d949885c86c29e9e
+    m_Address: Assets/textures/entity/villager/type/desert.png.mcmeta
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 30d09ef81cb5bf942a8c6b0eb2cc4887
+    m_Address: Assets/textures/entity/sheep/sheep_wool.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3136bbb1f2b4ea3468300d0cabee1aae
+    m_Address: Assets/textures/entity/banner/stripe_top.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 31a926778df7bf140a95c473d23d8534
+    m_Address: Assets/textures/entity/copper_golem/oxidized_copper_golem.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 31dacc31c97ce3248bd9367ffe909106
+    m_Address: Assets/textures/entity/chest/copper_exposed_left.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 31e22119e3be2e748bbc13685b49abcb
+    m_Address: Assets/textures/entity/panda/weak_panda.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 31eabaf643d91084198f68570860e8ea
+    m_Address: Assets/textures/entity/panda/playful_panda.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 329fdbafbac12aa4988e4d8bc006fbe5
+    m_Address: Assets/textures/entity/banner/half_horizontal.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 32a319051f508964098d54066392ab8b
+    m_Address: Assets/textures/entity/banner/border.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 32b7ea455e1641541aaa1d08b66d55ca
+    m_Address: Assets/textures/entity/shield/flow.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 336285de33c003f4a8cb38839df2d35e
+    m_Address: Assets/textures/entity/equipment/happy_ghast_body/cyan_harness.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 338cb697bfd4ced46a6bf460458064d5
+    m_Address: Assets/textures/entity/illager/vex_charging.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 33ab5db10930b3c4aac29ae078f6ef60
+    m_Address: Assets/textures/entity/equipment/happy_ghast_body/magenta_harness.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 33ed605769a43b047aab6a8ea8778065
+    m_Address: Assets/textures/entity/rabbit/gold.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 33edd1771e6bd144bb4fe502aee52696
+    m_Address: Assets/textures/entity/wolf/wolf_black_tame.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 340cb808b3f410346b176c0502cc9023
+    m_Address: Assets/textures/entity/equipment/happy_ghast_body/red_harness.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 355b77baaa9d11a4ca3819f1ea1641a2
+    m_Address: Assets/textures/entity/villager/profession_level/gold.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 35e4e3bcbec5ddf4fbcd9a633fdafff8
+    m_Address: Assets/textures/entity/cat/red.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 361460eebe32b5948bab21b4f46a9c22
+    m_Address: Assets/textures/entity/equipment/zombie_horse_saddle/saddle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3652560c7d2590a489e5eafbfd7688ff
+    m_Address: Assets/textures/entity/conduit/break_particle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3680aa8ba427084478ad8e56cbf6ab1d
+    m_Address: Assets/textures/entity/panda/brown_panda.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 36a8b6cba1995ac43bbdf4cfbac59ff2
+    m_Address: Assets/textures/entity/breeze/breeze.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 37c2e61e0613bbe458faf776daaec8a0
+    m_Address: Assets/textures/entity/villager/type/swamp.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 39730c10f32e94940b224163e0d8b5b3
+    m_Address: Assets/textures/entity/copper_golem/exposed_copper_golem_eyes.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3a4a6e21c3fb37f43af379918042f7fa
+    m_Address: Assets/textures/entity/signs/hanging/mangrove.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3a630eea706d5ec4481378c274986863
+    m_Address: Assets/textures/entity/equipment/pig_saddle/saddle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3a821ec6709dff243a5ae44c2971de91
+    m_Address: Assets/textures/entity/decorated_pot/miner_pottery_pattern.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3b311a1785602364d88cd50a0e8eb600
+    m_Address: Assets/textures/entity/cat/jellie.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3c3a1f78637cf1144a36a86879fb6b2e
+    m_Address: Assets/textures/entity/equipment/happy_ghast_body/purple_harness.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3caa6322f5480e541b559f079dad2855
+    m_Address: Assets/textures/entity/horse/horse_chestnut.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3cf1610bc2b796548bf52b259e1a7d03
+    m_Address: Assets/textures/entity/signs/hanging/crimson.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3d262a5a04d2ae6429851a4688e3a829
+    m_Address: Assets/textures/entity/decorated_pot/brewer_pottery_pattern.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3eabe267d05b5ac47b4a4669435ac54e
+    m_Address: Assets/textures/entity/panda/panda.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3f09b7753924ccc4d92645b38bc60454
+    m_Address: Assets/textures/entity/ghast/ghast_shooting.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3f5ae142bd0dff548a3bf16519be3c71
+    m_Address: Assets/textures/entity/warden/warden_pulsating_spots_1.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 40a2702f053bce64289872c0ed6423b1
+    m_Address: Assets/textures/entity/bed/brown.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 41a3ce9f9ba6e9c44bbcb4d6a304b383
+    m_Address: Assets/textures/entity/guardian.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 41eb6e14d5c404548b46d74a7dd55a68
+    m_Address: Assets/textures/entity/cow/cold_cow.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 42316d1095c77f04ca6b3083fe47cfea
+    m_Address: Assets/textures/entity/wolf/wolf_spotted_angry.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4316e42cdf53ac7419567542cfc40228
+    m_Address: Assets/textures/entity/equipment/llama_body/orange.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 436043685d265514bb9937cff0ebf176
+    m_Address: Assets/textures/entity/banner/stripe_left.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 43974d04013db6344951d2f2a2fadae8
+    m_Address: Assets/textures/entity/shield/bricks.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 44a88a5dca40a3846bcbea859b92d740
+    m_Address: Assets/textures/entity/equipment/happy_ghast_body/green_harness.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 453ea18e1e2faae4d9f92fdef8bf160c
+    m_Address: Assets/textures/entity/zombie_villager/profession/farmer.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 458207ec435dc7a4e9ff0634547b9716
+    m_Address: Assets/textures/entity/shield/curly_border.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 45c3a97725501984a968ac801d25e75b
+    m_Address: Assets/textures/entity/horse/horse_gray.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 467a18a047af4c74aa12e9bdf3bb839c
+    m_Address: Assets/textures/entity/shulker/shulker_light_blue.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 46acacaf674ec444ebbba1dda62df746
+    m_Address: Assets/textures/entity/strider/strider_cold.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 46e9df2cd369f6241a2851db8c012186
+    m_Address: Assets/textures/entity/slime/magmacube.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4714221cec7aa0e4990d738b27598fbf
+    m_Address: Assets/textures/entity/banner/gradient_up.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 485969145061cfc4981cbd71976b0631
+    m_Address: Assets/textures/entity/phantom.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4a239f507bb82c64fa63f85ff0e82677
+    m_Address: Assets/textures/entity/equipment/horse_body/diamond.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4a40f2222539ac14082bd5a229a934f2
+    m_Address: Assets/textures/entity/zombie/drowned_outer_layer.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4accd548cf1d4994ebbd45aabe9b6931
+    m_Address: Assets/textures/entity/villager/type/jungle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4b0fa30ea5df6174184154749638bc85
+    m_Address: Assets/textures/entity/sniffer/sniffer.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4b2b751ef9d31054292f8028c63c25c3
+    m_Address: Assets/textures/entity/player/slim/steve.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4b8cb23d6a1071f4ba408a0c301d19d4
+    m_Address: Assets/textures/entity/villager/profession/farmer.png.mcmeta
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4c56166417d11694e9d061c264ee4713
+    m_Address: Assets/textures/entity/decorated_pot/sheaf_pottery_pattern.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4c599d47f597ba54bb480d6710e35424
+    m_Address: Assets/textures/entity/boat/bamboo.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4cc7df102406e664e97956a93862be00
+    m_Address: Assets/textures/entity/equipment/llama_body/trader_llama.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4ce239260b3431c4eb2162ccf923ab95
+    m_Address: Assets/textures/entity/rabbit/white_splotched.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4d2d8fe7a7994dc40af6b8bd36ef9697
+    m_Address: Assets/textures/entity/cat/persian.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4e1aa48e7b1ca4b47abe02f17f8d34c2
+    m_Address: Assets/textures/entity/parrot/parrot_red_blue.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4f2b9911f4d4f864e86dbf3fe997985f
+    m_Address: Assets/textures/entity/cat/all_black.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4f358a98440bab045baaae92b83b8667
+    m_Address: Assets/textures/entity/end_portal.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4f3eedd05840632438711ef497dbd2a2
+    m_Address: Assets/textures/entity/signs/acacia.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 500d96926d3d84a47b7a3f4c5fbfe919
+    m_Address: Assets/textures/entity/signs/birch.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5037d09c45abc58468abf51be31581ab
+    m_Address: Assets/textures/entity/zombie_villager/type/taiga.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 506994ccfffa8b44f8ef4d62a3b57f82
+    m_Address: Assets/textures/entity/decorated_pot/heartbreak_pottery_pattern.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 50acaf4d36f77634d901e1e95f3eec05
+    m_Address: Assets/textures/entity/shield/half_vertical.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 50b30c2a83b063a498044d8438c39316
+    m_Address: Assets/textures/entity/fishing_hook.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 51439975158c88c4baf68ec87b000748
+    m_Address: Assets/textures/entity/shield/flower.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 514819fdb49df4d46bd6a9b68eae6c0c
+    m_Address: Assets/textures/entity/chest/copper.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 51a3d1c492b609c4cb45afdf6c9e1761
+    m_Address: Assets/textures/entity/decorated_pot/burn_pottery_pattern.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 51abdad2da623df4b9459714da074d4d
+    m_Address: Assets/textures/entity/signs/hanging/dark_oak.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 535e88710ad63a04591d401525ce0b1d
+    m_Address: Assets/textures/entity/cat/british_shorthair.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 538c475f0236c1045ac44552c2083ef9
+    m_Address: Assets/textures/entity/fish/tropical_a_pattern_1.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 53a14ac85746c4c4ca52bca07411729a
+    m_Address: Assets/textures/entity/pig/temperate_pig.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 53aa6f418d64c5343b4f1077f1c3b07f
+    m_Address: Assets/textures/entity/shield/square_top_right.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 53eaa393e61326f41804a4730dbbbfb3
+    m_Address: Assets/textures/entity/banner/half_horizontal_bottom.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5412539a38f102649b37e5b163452408
+    m_Address: Assets/textures/entity/shield_base.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5424c4e0af7b6f84f8e5aee5a91b3e9f
+    m_Address: Assets/textures/entity/skeleton/bogged_overlay.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 543a34fde1ae5c54ea5f3adcc974a2cf
+    m_Address: Assets/textures/entity/shield/globe.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 55573fcf4b37e5144abc5ebda0b3cd5c
+    m_Address: Assets/textures/entity/decorated_pot/decorated_pot_side.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 55e2e52432573484aa4b9962ad9c1a56
+    m_Address: Assets/textures/entity/zombie_villager/type/desert.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 55ed3b7392a8a53418d25b493e2e1b11
+    m_Address: Assets/textures/entity/signs/hanging/cherry.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 55f120e1178d6c54a8fd653d4cf4d0f0
+    m_Address: Assets/textures/entity/zombie_villager/profession_level/iron.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 55f21c6f3f0071e478f51dfad2763657
+    m_Address: Assets/textures/entity/witch.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 55fda6403a9f59c4cb21054817cc6dd1
+    m_Address: Assets/textures/entity/chest/copper_weathered_left.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 56c47b377669c544eaf280222acdd5e9
+    m_Address: Assets/textures/entity/fish/tropical_b_pattern_3.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 571305ef8df37db46ac30ecbbd37e09e
+    m_Address: Assets/textures/entity/villager/villager.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 575dc36d1d99b76478916d05d24b89a2
+    m_Address: Assets/textures/entity/ghast/happy_ghast.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 57e01dcd83a2f584fbfb1ed672f026b2
+    m_Address: Assets/textures/entity/equipment/donkey_saddle/saddle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 596f394b53d59fc4999ccf9042721d75
+    m_Address: Assets/textures/entity/zombie_villager/type/swamp.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 59e7c33c6d0ea274f9206ad762bc411c
+    m_Address: Assets/textures/entity/shulker/spark.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 59e96ff592568df448155bd7176f4224
+    m_Address: Assets/textures/entity/villager/profession/nitwit.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5a28f20138f50dc40b686d4fa5098226
+    m_Address: Assets/textures/entity/zombie_villager/type/jungle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5a52096e89ccf1f4f8f6dd78dc76236c
+    m_Address: Assets/textures/entity/spider_eyes.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5a6225b43f1d9534a9428464a8c27131
+    m_Address: Assets/textures/entity/banner/flower.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5c34321a054197f4cbc573e0ea560043
+    m_Address: Assets/textures/entity/zombie_villager/zombie_villager.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5cb93c7849f55684fa15e6a44d8ea7fe
+    m_Address: Assets/textures/entity/shield/half_horizontal_bottom.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5e79a9a0db882e94ea1944615b50b2d9
+    m_Address: Assets/textures/entity/skeleton/stray_overlay.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5eadcfa9a7d756e489ad39e9ccc0c437
+    m_Address: Assets/textures/entity/illager/evoker.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5ec46e564e7ae5a4ea14d4e3d765c9ea
+    m_Address: Assets/textures/entity/signs/pale_oak.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5f1cab79b8382ad42b3336085a7c7249
+    m_Address: Assets/textures/entity/shield/cross.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5f76e6aff4623c34f8e279627d9acf49
+    m_Address: Assets/textures/entity/minecart.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5f7dae2c90756434ea8f6c6d942e5a1b
+    m_Address: Assets/textures/entity/equipment/nautilus_body/netherite.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5faa54b2b5ffc6c4cbb9315a379d16cc
+    m_Address: Assets/textures/entity/projectiles/wind_charge.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5fd6a6aa60981dd40bf604b4361c2da8
+    m_Address: Assets/textures/entity/equipment/horse_body/gold.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 602fd02ab005eab45961faeba9a72655
+    m_Address: Assets/textures/entity/goat/goat.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 603663132d8799f43aceefd065a8239a
+    m_Address: Assets/textures/entity/equipment/nautilus_body/diamond.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 61923822e213799489bacd7f43b041c1
+    m_Address: Assets/textures/entity/chest/trapped_left.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6206670ec4a375f4388289fde291a499
+    m_Address: Assets/textures/entity/conduit/closed_eye.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 62a5030e700e4544389b34b5bd939001
+    m_Address: Assets/textures/entity/zombie/husk.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6398f0ec0fe076b4988ea8e4f17385fb
+    m_Address: Assets/textures/entity/zombie_villager/profession/shepherd.png.mcmeta
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 63f3284d97eee4f498dfb02eea377b48
+    m_Address: Assets/textures/entity/shulker/shulker_red.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6562e63b21b02594fb7901d2bc3e900a
+    m_Address: Assets/textures/entity/player/wide/alex.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 65906a4a88dcb22488c03e3bf0e5c68a
+    m_Address: Assets/textures/entity/signs/hanging/pale_oak.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 65d1b37fd5f939f4bbfdc60de3f25a6f
+    m_Address: Assets/textures/entity/bed/magenta.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 66164ac1c731a094182ad5fa9fdb4444
+    m_Address: Assets/textures/entity/equipment/humanoid_leggings/netherite.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6622a588202951c44ab7c2585e49f142
+    m_Address: Assets/textures/entity/villager/profession/weaponsmith.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 664d1516ec69605459e573b292c2ec42
+    m_Address: Assets/textures/entity/equipment/nautilus_body/gold.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 66e265497c113aa4491bd7202437b4b9
+    m_Address: Assets/textures/entity/chest/copper_right.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 670279fc79fc62e4a9642a131aebc124
+    m_Address: Assets/textures/entity/banner/stripe_right.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6735b506d05315344b07a6cc171ce7aa
+    m_Address: Assets/textures/entity/end_crystal/end_crystal_beam.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 67c488f6a22ee3b4abf6b3a7374f4496
+    m_Address: Assets/textures/entity/pig/warm_pig.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 68347f36b809a5749b162b22c64ddd9e
+    m_Address: Assets/textures/entity/piglin/piglin.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 683d0e0f096356543a7d8ac5ad6cfd2d
+    m_Address: Assets/textures/entity/bed/yellow.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 68786258c266a0c46ad698b3b48e5402
+    m_Address: Assets/textures/entity/villager/profession/fisherman.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 68d29a265f1515a43a1c575269a0b070
+    m_Address: Assets/textures/entity/equipment/llama_body/pink.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 68df17933c41961478f2fc7c2e1f691c
+    m_Address: Assets/textures/entity/shield/diagonal_right.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 69252d85688820141b1bb2fc8637633c
+    m_Address: Assets/textures/entity/rabbit/black.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 692f5bcb869eeea4181ba60fd3141443
+    m_Address: Assets/textures/entity/banner/square_bottom_right.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 699ba4ebd55b7fd42b735cd48e9ad8de
+    m_Address: Assets/textures/entity/equipment/llama_body/yellow.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 69a70c888cd27194fb0f446db6bb435a
+    m_Address: Assets/textures/entity/equipment/humanoid_leggings/leather.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 69b47ddaf855362459c88910508b9028
+    m_Address: Assets/textures/entity/bed/black.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 69c9965f3ecb9d8419a75d060e730698
+    m_Address: Assets/textures/entity/horse/horse_creamy.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6aaee1603603d524eb25dcb61a0a01eb
+    m_Address: Assets/textures/entity/equipment/happy_ghast_body/blue_harness.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6abccc23d80b9994c8a3ceb1eeb3f059
+    m_Address: Assets/textures/entity/shulker/shulker_lime.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6ae5ecb3ed85d4d40ab4d8c724671634
+    m_Address: Assets/textures/entity/decorated_pot/prize_pottery_pattern.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6afcbab86d588fb41bfc6c13a7089a52
+    m_Address: Assets/textures/entity/villager/profession/butcher.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6b62704f3ecb5dc459b38b2f6b4e7eaa
+    m_Address: Assets/textures/entity/chest/normal.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6ca3e93206ea9dd4aa59301c61009dd8
+    m_Address: Assets/textures/entity/banner/half_vertical.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6ce4dde0460df08418e7721dc478ae44
+    m_Address: Assets/textures/entity/chest_boat/oak.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6db8520df09e7704fb4c4e66e07b6f24
+    m_Address: Assets/textures/entity/chest_boat/spruce.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6dbea25cc942ea94fb975ca76b602452
+    m_Address: Assets/textures/entity/equipment/horse_body/leather_overlay.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6dc0483f8752ec740b346aaa43ad6496
+    m_Address: Assets/textures/entity/bed/light_gray.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6e0e1c70bc7dc25449b2360afddf3889
+    m_Address: Assets/textures/entity/panda/lazy_panda.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6e11452cab494f9469e46a16e5c2f583
+    m_Address: Assets/textures/entity/projectiles/tipped_arrow.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6eb54af4f5390414d8694b06b1309890
+    m_Address: Assets/textures/entity/equipment/humanoid/leather_overlay.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6eef7bfbf2a7bb34da457869981d950e
+    m_Address: Assets/textures/entity/wolf/wolf_armor_crackiness_medium.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6f6528a1a04e1ca40b633df064a70452
+    m_Address: Assets/textures/entity/chicken/warm_chicken.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6f768c35956cd304da7bccac106bb5ad
+    m_Address: Assets/textures/entity/villager/profession/leatherworker.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6f7823eda203b15459cdd585444abe81
+    m_Address: Assets/textures/entity/armorstand/wood.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 700000c00f20d0d4690ba4d812041a57
+    m_Address: Assets/textures/entity/signs/hanging/jungle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 701e6a76e6d1bd64481c2d1eb1a6b0ed
+    m_Address: Assets/textures/entity/cat/tabby.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 708eaa9c227f0ea43bdaece91d6cd1a2
+    m_Address: Assets/textures/entity/wither/wither_invulnerable.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7158426fe50317b4c94dc46309b39f14
+    m_Address: Assets/textures/entity/fish/tropical_b_pattern_6.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 71c4bb38a5e4ec04482c64a4e2f4d2b5
+    m_Address: Assets/textures/entity/decorated_pot/friend_pottery_pattern.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 725c1f8c787b1fe439e688c0f3a93005
+    m_Address: Assets/textures/entity/equipment/strider_saddle/saddle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 72be354119894a24ca5abae19ffe2bb1
+    m_Address: Assets/textures/entity/conduit/cage.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7312f57a31289104b9c9bd89bbcb013b
+    m_Address: Assets/textures/entity/axolotl/axolotl_lucy.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 731a177861ee5964fb10dd89335bd2c4
+    m_Address: Assets/textures/entity/player/wide/efe.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7321ad1f4acc54442b6fd1a7ed2448dc
+    m_Address: Assets/textures/entity/equipment/humanoid/chainmail.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 73ff7c99eeceac140a440153ff0aae18
+    m_Address: Assets/textures/entity/chest/normal_left.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7406222b809af3b47952b54af26071e7
+    m_Address: Assets/textures/entity/player/slim/zuri.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 749bb9c0780ea5e439752780eb025afc
+    m_Address: Assets/textures/entity/equipment/llama_body/light_gray.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 74ba5e92a8550a04b805e655760cc0ea
+    m_Address: Assets/textures/entity/signs/warped.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 75db55acf28612042af6c06e54554500
+    m_Address: Assets/textures/entity/bat.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 75db6c9d822c87a4cb165a748c8ad843
+    m_Address: Assets/textures/entity/decorated_pot/snort_pottery_pattern.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7676943003baba446b79200c606f469d
+    m_Address: Assets/textures/entity/villager/profession/armorer.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 76a2c081bd78b414298997c1d8d38a44
+    m_Address: Assets/textures/entity/wolf/wolf_striped_angry.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 76f97cc32fd90cf48935668a3852b356
+    m_Address: Assets/textures/entity/beacon_beam.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7725461ad2cf57e4188742d5208a43f0
+    m_Address: Assets/textures/entity/signs/hanging/bamboo.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7762e0091801b244cb5ecab9256320b9
+    m_Address: Assets/textures/entity/equipment/nautilus_body/copper.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 776c415b17a007f4189d46efc5f6b765
+    m_Address: Assets/textures/entity/fish/pufferfish.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 787f71391ef3449429610e68aa049b1c
+    m_Address: Assets/textures/entity/enchanting_table_book.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 78b79801b558b844187f96ef00103c77
+    m_Address: Assets/textures/entity/fish/tropical_b_pattern_5.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7908ace6f2a77f14b9af6449b0468c9e
+    m_Address: Assets/textures/entity/enderdragon/dragon_eyes.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 793267431f9898744a9fc0581a624018
+    m_Address: Assets/textures/entity/shulker/shulker_cyan.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 798541ca7be82ce43a44556c811953fd
+    m_Address: Assets/textures/entity/chest/copper_oxidized.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 79a0b638b8a877a4784cd524275017f1
+    m_Address: Assets/textures/entity/player/wide/kai.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 79eb9864c1cd72e49ad4c18d80990bcf
+    m_Address: Assets/textures/entity/zombie_villager/profession/leatherworker.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7b0afc56fbbb33e4cb9f30a32c28fe8c
+    m_Address: Assets/textures/entity/bee/bee_angry.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7b24dc0fd6be2d4489321b673d9c3e1e
+    m_Address: Assets/textures/entity/chest_boat/pale_oak.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7b33b6af9f372aa44b815990ebb02d00
+    m_Address: Assets/textures/entity/equipment/humanoid_leggings/copper.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7b49daf4703b80b448a8c69f708b0551
+    m_Address: Assets/textures/entity/spider/spider.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7c42fe0489eee214cbea4b26f10d5d30
+    m_Address: Assets/textures/entity/bed/purple.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7c4e01e2292d64845a42cdfcf009342f
+    m_Address: Assets/textures/entity/cat/cat_collar.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7d2c26dfae885ee488105cbb617de74f
+    m_Address: Assets/textures/entity/zombie_villager/type/plains.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7dff18bfb4681d143b036fa6f8e18a56
+    m_Address: Assets/textures/entity/equipment/humanoid/copper.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7e03fd13da4691b4da265cb6481be88a
+    m_Address: Assets/textures/entity/banner/piglin.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7e215dabf37a84244a8ef31b7a885ea9
+    m_Address: Assets/textures/entity/rabbit/salt.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7e877a7b3a3b4be47948f03b04ee3a6e
+    m_Address: Assets/textures/entity/decorated_pot/angler_pottery_pattern.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7e9d5ca647e9a2d47bce56723a9f8e6a
+    m_Address: Assets/textures/entity/equipment/llama_body/lime.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7f7a14ee17acc8848bdfedc89bce0cf8
+    m_Address: Assets/textures/entity/equipment/nautilus_saddle/saddle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 804747eae946863448f5b922c265a1c5
+    m_Address: Assets/textures/entity/fish/tropical_a_pattern_4.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 804957a9651988345a9f33e1143d4ec2
+    m_Address: Assets/textures/entity/equipment/horse_body/copper.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 809562494d370cb4083da96b51a1fad0
+    m_Address: Assets/textures/entity/fish/tropical_a_pattern_2.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 80edf638cd887d44ebe1aa1fa788a328
+    m_Address: Assets/textures/entity/shield/diagonal_up_left.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 81a1e2c3e9fbdb5488b6899845990537
+    m_Address: Assets/textures/entity/signs/hanging/spruce.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 821eff3c67ec0c84f9e24a217b64e65c
+    m_Address: Assets/textures/entity/pig/cold_pig.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 828ad95ef69dae0469210a20acb7dd98
+    m_Address: Assets/textures/entity/end_gateway_beam.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 83596578a67d6f746a7ca98dd6d42d9c
+    m_Address: Assets/textures/entity/nautilus/zombie_nautilus_coral.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8397dfe04485ae54f9b7bc4a576f9d1a
+    m_Address: Assets/textures/entity/decorated_pot/heart_pottery_pattern.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 848ce3c2e71c33648b7357f4fd413ea6
+    m_Address: Assets/textures/entity/copper_golem/weathered_copper_golem.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 84aac0b7e5babd7489a6acc2ee86a6e4
+    m_Address: Assets/textures/entity/signs/hanging/oak.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 84f0aa19d07df564ca6728fcb4923bd2
+    m_Address: Assets/textures/entity/chest_boat/birch.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 85160a15386c0b04880f8f5f6a2a6413
+    m_Address: Assets/textures/entity/skeleton/stray.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 85263d355728bea4d852d8729fdf5142
+    m_Address: Assets/textures/entity/piglin/piglin_brute.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 85522edaaa6a16c419c637a672164471
+    m_Address: Assets/textures/entity/equipment/llama_body/purple.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 856b73ab8726c8240a7c5895700163f7
+    m_Address: Assets/textures/entity/parrot/parrot_grey.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 85a20bd098de0dc4c8c75ffc33ea6a88
+    m_Address: Assets/textures/entity/banner/diagonal_up_right.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 86b2d186584d4ae45b2312e2cc924d56
+    m_Address: Assets/textures/entity/zombie_villager/profession/toolsmith.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8724e629aa1f240468ce2ebb27a68af3
+    m_Address: Assets/textures/entity/decorated_pot/shelter_pottery_pattern.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8798c8de117aa1d4283a4620e5edcfb5
+    m_Address: Assets/textures/entity/illager/evoker_fangs.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 87c215d931deea045976d39cfdd529bf
+    m_Address: Assets/textures/entity/cat/ocelot.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8892288fc93beb54aa24e8b4ec48b659
+    m_Address: Assets/textures/entity/boat/jungle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 89d0ad2819a17da44958e4bf6a0b6273
+    m_Address: Assets/textures/entity/decorated_pot/guster_pottery_pattern.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8ac689efff8e957458edcba18c065e62
+    m_Address: Assets/textures/entity/wolf/wolf_tame.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8ba880c5f5de2d74ea25c1e739f895ba
+    m_Address: Assets/textures/entity/fish/tropical_a_pattern_6.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8cd9a1275b6c1814e91bf0a51c6695a7
+    m_Address: Assets/textures/entity/fox/snow_fox.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8d24e4737007d484386498071d2e3c93
+    m_Address: Assets/textures/entity/equipment/happy_ghast_body/brown_harness.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8d350cb42acc66c48bf6081b08f8f7e0
+    m_Address: Assets/textures/entity/enderdragon/dragon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8d837493aff92bf468050e218bf58019
+    m_Address: Assets/textures/entity/shield/stripe_top.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8d9c3d9f77a0db44fb69e8a3dff7441b
+    m_Address: Assets/textures/entity/equipment/humanoid_leggings/iron.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8da416abae436c041ae1f07acd9436d7
+    m_Address: Assets/textures/entity/shield_base_nopattern.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8ddb518301e140347b4d58eb2dd00ad6
+    m_Address: Assets/textures/entity/decorated_pot/arms_up_pottery_pattern.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8e0ba0eece54428468062a3bd4089a0f
+    m_Address: Assets/textures/entity/fox/fox_sleep.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8e396269473a79a44ad64d6453b1d272
+    m_Address: Assets/textures/entity/shulker/shulker_blue.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8e62227e03741244eaa2dc1affee749f
+    m_Address: Assets/textures/entity/equipment/horse_body/iron.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8e772f8c4d5101549b4c7e25794291dc
+    m_Address: Assets/textures/entity/player/slim/efe.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8f350697f786af0499ee0f49a4f06abc
+    m_Address: Assets/textures/entity/rabbit/white.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8f6d6985f80e78f4887062c8f3c91196
+    m_Address: Assets/textures/entity/equipment/llama_body/blue.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8f6e60e228159f441a64dbe1ae1b8d91
+    m_Address: Assets/textures/entity/boat/spruce.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8fef528302d1b2d42afb96c890656bf9
+    m_Address: Assets/textures/entity/shield/base.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9048edf63b254f3499142b363fd93668
+    m_Address: Assets/textures/entity/wolf/wolf_ashen_tame.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 90d9729405ac7a24392f625798ea905d
+    m_Address: Assets/textures/entity/creeper/creeper.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 91218f83bf271a54da93cecfd85fa40c
+    m_Address: Assets/textures/entity/shield/straight_cross.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 918c3b6e07bc2a34b9a3ca0f83531dc1
+    m_Address: Assets/textures/entity/wolf/wolf_rusty_tame.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 919d59f8c1b53c6459b8fe6d74e60aca
+    m_Address: Assets/textures/entity/banner/flow.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 91af4db3553b00441bcae076405ad77e
+    m_Address: Assets/textures/entity/llama/brown.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9243d65fd325da644b6bc4cdeaa04ee4
+    m_Address: Assets/textures/entity/villager/profession/librarian.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 92a7f1f5394a2254c83130575da02d54
+    m_Address: Assets/textures/entity/player/wide/makena.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 92c049b365fcea0468d77c46fc7038e3
+    m_Address: Assets/textures/entity/shield/stripe_center.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9303f9fb7b31d4f469200c063fbd22cd
+    m_Address: Assets/textures/entity/villager/profession/shepherd.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9304eaf79e6042e4b98ee51d19bab026
+    m_Address: Assets/textures/entity/warden/warden.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 93762e183a48d5c4691b42ec96628b14
+    m_Address: Assets/textures/entity/boat/mangrove.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 93f917b0c4bdcdd4c8f55790fe0c68d4
+    m_Address: Assets/textures/entity/creeper/creeper_armor.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9412b4a6f3889f04a8dd94e4d66c8730
+    m_Address: Assets/textures/entity/signs/bamboo.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 94b85e7167f07e04c80b424ccc4d5a91
+    m_Address: Assets/textures/entity/conduit/open_eye.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 95134eb1c478b684888c1d84b237eb68
+    m_Address: Assets/textures/entity/bed/gray.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 95be6a1e3fe542d40888ef66f8a30737
+    m_Address: Assets/textures/entity/equipment/happy_ghast_body/white_harness.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9617583db5bb9a849bdd8214f65553f5
+    m_Address: Assets/textures/entity/trident_riptide.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 96948c0a13ee5934d943374a0d43b527
+    m_Address: Assets/textures/entity/shulker/shulker_yellow.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 973b18a8138e19040953bd03955f4caa
+    m_Address: Assets/textures/entity/wolf/wolf_snowy_angry.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9744bfa31ed9cb74f82cf4a410d5d767
+    m_Address: Assets/textures/entity/player/slim/kai.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 97b25311350d2c641a042202600d1699
+    m_Address: Assets/textures/entity/banner/half_vertical_right.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 97e00eb18fba5d44097f094a99075257
+    m_Address: Assets/textures/entity/chest/ender.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9830dedf1d6b1c2428aae7e4c4e523a3
+    m_Address: Assets/textures/entity/signs/jungle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 986db2e6b45968e4cbf86957756a89a7
+    m_Address: Assets/textures/entity/shield/stripe_left.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 988f125f63038214180338c25701f685
+    m_Address: Assets/textures/entity/fox/fox.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 98c167a05dbeab745a6fb8ab76d8d73c
+    m_Address: Assets/textures/entity/warden/warden_pulsating_spots_2.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 98ee8faae69e0224ab974b6dd6bf1785
+    m_Address: Assets/textures/entity/equipment/humanoid/iron.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 99d0982b29ebe7242a14142c00f0ea43
+    m_Address: Assets/textures/entity/sheep/sheep.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 99d5a9dda7b52f54ba9951976a1309c6
+    m_Address: Assets/textures/entity/rabbit/toast.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9a535abbd18997f43a1d9466dbb07e53
+    m_Address: Assets/textures/entity/zombie_villager/profession/butcher.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9a663d119d10cac4999cc3d8652c31e8
+    m_Address: Assets/textures/entity/equipment/nautilus_body/iron.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9b56bfb80b0a4a842aebed18d72fa006
+    m_Address: Assets/textures/entity/decorated_pot/mourner_pottery_pattern.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9bcffc1849072ea418a7b2ec3489f814
+    m_Address: Assets/textures/entity/rabbit/caerbannog.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9c2b60ccaa7980e4ba48487f45dbd394
+    m_Address: Assets/textures/entity/nautilus/zombie_nautilus.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9c33bc7fbc93ea54cae983187949096b
+    m_Address: Assets/textures/entity/banner/circle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9c61c669318fd8e40b334dc314b0520d
+    m_Address: Assets/textures/entity/shulker/shulker_white.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9dae54251980f20438394b7fb1688296
+    m_Address: Assets/textures/entity/chest/christmas_right.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9dd2e29384c76644799c98d3ac05b083
+    m_Address: Assets/textures/entity/snow_golem.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9dea220ae536ace40ab2438b154160f7
+    m_Address: Assets/textures/entity/banner/stripe_downleft.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9e0c6cc8bb19d49498e6c3415394a412
+    m_Address: Assets/textures/entity/llama/creamy.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9e5357e59031c274a8bec73df2d0ec6a
+    m_Address: Assets/textures/entity/equipment/llama_body/black.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9ee8c318dd709de44b038adc687233a1
+    m_Address: Assets/textures/entity/axolotl/axolotl_gold.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9f434fea1dcb2904f8869001520766d9
+    m_Address: Assets/textures/entity/banner/diagonal_up_left.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a0a0549e7695f6a4fa6f07e33cf89124
+    m_Address: Assets/textures/entity/shield/piglin.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a1319f27ad7236843a667b45142ef82b
+    m_Address: Assets/textures/entity/signs/oak.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a1fbaf8fc4ca1c64daa1f1609d87fb44
+    m_Address: Assets/textures/entity/banner/triangle_top.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a2695611be5ac1744a16af6f1fc20812
+    m_Address: Assets/textures/entity/wolf/wolf_black_angry.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a27616b00caa3124681aed4bfc877eae
+    m_Address: Assets/textures/entity/zombie_villager/profession_level/diamond.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a2970c7393525a84f9951d9a701ef832
+    m_Address: Assets/textures/entity/panda/aggressive_panda.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a2d9b9e4ccab01349956b7ea29d889c7
+    m_Address: Assets/textures/entity/squid/glow_squid.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a316b9a99bba86c4a93b140f90d263f7
+    m_Address: Assets/textures/entity/projectiles/arrow.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a3b36f3dc08237f448a0581f35c2bbe1
+    m_Address: Assets/textures/entity/villager/profession/cartographer.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a3f02666fde3faf429e7de2eb4a7fb5c
+    m_Address: Assets/textures/entity/equipment/happy_ghast_body/pink_harness.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a40363562fca5914b87393f6a64b42a5
+    m_Address: Assets/textures/entity/creaking/creaking.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a46019fcb1d9ffd4da024da2f7d8d15e
+    m_Address: Assets/textures/entity/lead_knot.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a4809e0973350f548b08482163715903
+    m_Address: Assets/textures/entity/equipment/happy_ghast_body/gray_harness.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a4e1545c4fcd4cd42901042cd5865819
+    m_Address: Assets/textures/entity/villager/profession/fisherman.png.mcmeta
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a55fd59fd74c86245996425a85d0d6de
+    m_Address: Assets/textures/entity/shield/guster.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a6b619eb4d43dfe4e85df9f45730d5f4
+    m_Address: Assets/textures/entity/end_crystal/end_crystal.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a6d8032727398e44babb253e596d3d18
+    m_Address: Assets/textures/entity/villager/profession/shepherd.png.mcmeta
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a7eca2cfd91117246af65235a12ed551
+    m_Address: Assets/textures/entity/zombie_villager/profession/cartographer.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a85635461976de742bc4f433798e609e
+    m_Address: Assets/textures/entity/wolf/wolf_black.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a8b39ef5bab8d4645bf52df60c17d903
+    m_Address: Assets/textures/entity/equipment/wolf_body/armadillo_scute_overlay.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a8c5be68cca621d48bf8f808e54dd34a
+    m_Address: Assets/textures/entity/wolf/wolf_ashen.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a90c33c96293c5d41b463cf59ec43db8
+    m_Address: Assets/textures/entity/conduit/wind_vertical.png.mcmeta
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a94677fb864cf314b8711b570ddce461
+    m_Address: Assets/textures/entity/zombie/zombie.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: aa53315958b69664ba38e45dc077ddfa
+    m_Address: Assets/textures/entity/boat/pale_oak.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: aa5c224fb59266a4680217f788a8861a
+    m_Address: Assets/textures/entity/equipment/llama_body/red.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: aa726f5554dffc04cb4ed1d22d413382
+    m_Address: Assets/textures/entity/hoglin/zoglin.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: aa844f79a3faf74468e0f9f2a4540b71
+    m_Address: Assets/textures/entity/banner/stripe_center.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: aaae4cdf9a93fbf4285643e31072b44c
+    m_Address: Assets/textures/entity/fox/snow_fox_sleep.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: aac6bd259566ace4bb1a1306e7c0816c
+    m_Address: Assets/textures/entity/chest_boat/cherry.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ab3c9ce6defa8c943b4340c7c57600d5
+    m_Address: Assets/textures/entity/bear/polarbear.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ab81d70c6ded6ee48b8c22d853041a5e
+    m_Address: Assets/textures/entity/shield/triangles_top.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ac02456a109ab67409a2cec348d2b430
+    m_Address: Assets/textures/entity/decorated_pot/blade_pottery_pattern.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ac32b291f435e094b8575cac7bc42ff2
+    m_Address: Assets/textures/entity/cow/red_mooshroom.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ac6942faa08843c40bab0816e15b51fb
+    m_Address: Assets/textures/entity/cat/black.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ad17c4917a74e5941a1c2227f76bb6d3
+    m_Address: Assets/textures/entity/banner/stripe_downright.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ad7530b2c1b5c894cab769d160627b9b
+    m_Address: Assets/textures/entity/iron_golem/iron_golem_crackiness_medium.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: aec9b203c27af6144bb1cfcb3c588975
+    m_Address: Assets/textures/entity/shulker/shulker_black.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: afd8485089f5c214d898a7f0342f3ea5
+    m_Address: Assets/textures/entity/equipment/wings/elytra.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: afee76cc8693f7a488712e8972ed9ba9
+    m_Address: Assets/textures/entity/panda/worried_panda.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b0a72093aa9516142b5878910fe86658
+    m_Address: Assets/textures/entity/villager/profession_level/stone.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b1245b0f833f74a49a4cf7fa3b24f9b0
+    m_Address: Assets/textures/entity/banner/creeper.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b16e8935c395dce4daa18c0ee6140725
+    m_Address: Assets/textures/entity/decorated_pot/scrape_pottery_pattern.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b35c9ac2622bcca4785e86972877d3fe
+    m_Address: Assets/textures/entity/spider/cave_spider.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b38ec613b4ab4c84ba8686a014268d99
+    m_Address: Assets/textures/entity/horse/donkey.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b39624cbef70dd246b44228957c4041b
+    m_Address: Assets/textures/entity/hoglin/hoglin.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b3ac7d43b4f504b438dac03990e73933
+    m_Address: Assets/textures/entity/zombie_villager/profession/weaponsmith.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b3c2fced570d47445b3184dbb1315f99
+    m_Address: Assets/textures/entity/skeleton/parched.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b3cfefcdad5c8c64d937b054902798a2
+    m_Address: Assets/textures/entity/equipment/happy_ghast_body/lime_harness.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b4f4d2e654a03fa4db3ead9737c776df
+    m_Address: Assets/textures/entity/copper_golem/copper_golem.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b6a87ffa5bdd33e42b668fee2eb5b16d
+    m_Address: Assets/textures/entity/wandering_trader.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b6eb24d9e4333574b8d3f6b7463c58c7
+    m_Address: Assets/textures/entity/villager/profession/fletcher.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b77c9573db9c1f347a307cc99af1f57c
+    m_Address: Assets/textures/entity/fish/tropical_b_pattern_4.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b7aa825dcc197b1479be4375ac92066b
+    m_Address: Assets/textures/entity/wolf/wolf_rusty.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b8138adcfbca5e541b801322b4f3b8fd
+    m_Address: Assets/textures/entity/shulker/shulker_magenta.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b9464fb0b4dad3c47929d47f4809bf79
+    m_Address: Assets/textures/entity/player/slim/noor.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: babd01709c14a734fb38604f79c5fcb6
+    m_Address: Assets/textures/entity/villager/profession/fletcher.png.mcmeta
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bad25e7d8a71c5241acfc9a04878e637
+    m_Address: Assets/textures/entity/player/wide/ari.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bad5f877a1fa1254eb5f29714182155a
+    m_Address: Assets/textures/entity/shulker/shulker_purple.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bb6e0f5a1eedf8649ba3fa60fb43c5bd
+    m_Address: Assets/textures/entity/equipment/humanoid_leggings/leather_overlay.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bc6813621d2d3fb40822c215dde1d4f0
+    m_Address: Assets/textures/entity/skeleton/skeleton.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bd30061238f186b4a89768ca0016f3a9
+    m_Address: Assets/textures/entity/bed/blue.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bd6f78965d1d70245a1c402f51b999ec
+    m_Address: Assets/textures/entity/chest_boat/bamboo.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bd98adfc1244ee34b861085c1e204d07
+    m_Address: Assets/textures/entity/chest/trapped.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bdd0e41455e0a8c4e8831ba2830e225c
+    m_Address: Assets/textures/entity/banner/rhombus.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: be54cc595e3fc3142ac8054e204d5985
+    m_Address: Assets/textures/entity/fish/tropical_a.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: be5a1323b30f35a448442591ee4d7848
+    m_Address: Assets/textures/entity/allay/allay.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: be6d97237f1c7984b950cd91de2de358
+    m_Address: Assets/textures/entity/banner/skull.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bfad631fc6d0a9b4284cfe8c4fec400a
+    m_Address: Assets/textures/entity/bee/bee_nectar.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c0233841635e99447a3157d52b2f2d65
+    m_Address: Assets/textures/entity/banner/stripe_middle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c0b62c18b963ef64a9a85f13b47a33ba
+    m_Address: Assets/textures/entity/cat/calico.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c0b90b309dc672646b2cafcbf7244013
+    m_Address: Assets/textures/entity/equipment/llama_body/white.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c0c2cb5ed2c2189439d1a3f669e7c161
+    m_Address: Assets/textures/entity/frog/temperate_frog.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c155da6c3bc552448a694276520e38d3
+    m_Address: Assets/textures/entity/squid/squid.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c170013658f09d64c8babbfd9c76a8c7
+    m_Address: Assets/textures/entity/conduit/wind.png.mcmeta
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c2bc5f24262673e40a99d58cb1fff182
+    m_Address: Assets/textures/entity/tadpole/tadpole.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c2e3717fec21a49438e1f2af9292b71e
+    m_Address: Assets/textures/entity/boat/acacia.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c33797867228de04c823356c17892ca8
+    m_Address: Assets/textures/entity/villager/profession/farmer.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c3f664982cd277843a3b4d5fb3a3fffd
+    m_Address: Assets/textures/entity/chest_boat/acacia.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c4151aeef2c164e48bc53063dbba87d3
+    m_Address: Assets/textures/entity/zombie_villager/profession_level/stone.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c417d79ab33c2e84b9c2d995e55d2787
+    m_Address: Assets/textures/entity/wolf/wolf_ashen_angry.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c42a0e7dc990c944ea1431e60f2f657a
+    m_Address: Assets/textures/entity/turtle/big_sea_turtle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c45ae779d518cfc43b679e279471662a
+    m_Address: Assets/textures/entity/wolf/wolf_rusty_angry.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c45d4cb4bc1128e428c5c9e00afd5c50
+    m_Address: Assets/textures/entity/horse/horse_markings_blackdots.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c476dc9900c55094eba41acf258d5c97
+    m_Address: Assets/textures/entity/cat/ragdoll.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c5d2f132ebfe88b47ae9c5c3a5fa0344
+    m_Address: Assets/textures/entity/camel/camel.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c6824467947cbb04fb05550cae4c2bbe
+    m_Address: Assets/textures/entity/equipment/happy_ghast_body/yellow_harness.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c7217233926256244951b3b11295756b
+    m_Address: Assets/textures/entity/banner/triangles_bottom.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c7d18a5213881d64c8a66feda952c725
+    m_Address: Assets/textures/entity/llama/spit.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c83abba5ca5248e4091009ba761325c2
+    m_Address: Assets/textures/entity/signs/cherry.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c886d246b265a704686baaf97505e8c9
+    m_Address: Assets/textures/entity/wolf/wolf_chestnut_tame.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c8a690fd3c41a2f43beed7b1eb9ea783
+    m_Address: Assets/textures/entity/chicken/cold_chicken.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c9c8991efe6285344a3ec8c4a6776625
+    m_Address: Assets/textures/entity/wolf/wolf_snowy.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c9db7b871768f4d489176b422ed88a73
+    m_Address: Assets/textures/entity/chest/copper_exposed_right.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ca40323d5adf83844aedec89bac19dbf
+    m_Address: Assets/textures/entity/rabbit/brown.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cad604edd4f6bcc4abddae1cde33430d
+    m_Address: Assets/textures/entity/player/wide/noor.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: caf01ff74c9256b4bbd5fa75965df101
+    m_Address: Assets/textures/entity/axolotl/axolotl_blue.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cbe9ff24e656a934296df0da7ba900fc
+    m_Address: Assets/textures/entity/zombie_villager/profession_level/emerald.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cbfa920d88821ac4089baca8ae5a7df1
+    m_Address: Assets/textures/entity/bed/pink.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cbffa4679a3ce174cb9daa6105b1fca9
+    m_Address: Assets/textures/entity/shield/triangle_top.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cd2bdf46f2611fd47b14e348cfafc0bc
+    m_Address: Assets/textures/entity/signs/dark_oak.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cd92f11ed5802644f8255b2bbb11815b
+    m_Address: Assets/textures/entity/decorated_pot/decorated_pot_base.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cd9439b4017a52344910cd14bb78788b
+    m_Address: Assets/textures/entity/shulker/shulker.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cdf0f97e56d561d46970e43ba4b06e06
+    m_Address: Assets/textures/entity/bee/bee_stinger.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cf5990fab91ce8a428b0211dcddf8ffd
+    m_Address: Assets/textures/entity/player/wide/zuri.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d0067548f07a5cf4c987671dbd91861b
+    m_Address: Assets/textures/entity/shield/stripe_bottom.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d00e429751efb844a8d6bfb0c023160c
+    m_Address: Assets/textures/entity/wolf/wolf_striped_tame.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d078b74fff99e71489d05fca45b76103
+    m_Address: Assets/textures/entity/llama/white.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d0d67f47162411f4096a806569242177
+    m_Address: Assets/textures/entity/signs/hanging/acacia.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d1e1f22fb82bdca4fb5c995e882297bd
+    m_Address: Assets/textures/entity/bed/white.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d2231fbb9f4aa0b4c99f43898205b11a
+    m_Address: Assets/textures/entity/frog/cold_frog.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d2926781facb5204fa10b9b682ca1b47
+    m_Address: Assets/textures/entity/banner/curly_border.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d2c971f1faf7d2048bbe6a57b8fe3b0f
+    m_Address: Assets/textures/entity/villager/profession_level/iron.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d2d1ee0aeaa8ed14a9fdfb03a6cd189f
+    m_Address: Assets/textures/entity/decorated_pot/plenty_pottery_pattern.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d2f9de632ce45eb40952edec0a1f5f0e
+    m_Address: Assets/textures/entity/villager/type/snow.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d374e412c2fdb304598f176df1dd87f1
+    m_Address: Assets/textures/entity/axolotl/axolotl_cyan.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d37efd8a94c809443a1d1390136f436d
+    m_Address: Assets/textures/entity/equipment/humanoid/turtle_scute.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d47d821b79d3d914cb252b400eef216b
+    m_Address: Assets/textures/entity/illager/ravager.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d54da77c5ae99be49886b3d59b20292b
+    m_Address: Assets/textures/entity/wolf/wolf_armor_crackiness_high.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d6500aa3b5ba8934eb3b34ccbc34433f
+    m_Address: Assets/textures/entity/fish/salmon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d67771385493a794d9ef6eafa62388fc
+    m_Address: Assets/textures/entity/player/slim/alex.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d68a2c7a608c379439d6497ae6c1f9a2
+    m_Address: Assets/textures/entity/signs/hanging/birch.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d70b66e8fe20c8443b56dfb88283dbd6
+    m_Address: Assets/textures/entity/villager/type/desert.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d715d4bd2a97885458693e7c5159bad9
+    m_Address: Assets/textures/entity/equipment/llama_body/brown.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d7224044d8456574fb2391cd447b51a0
+    m_Address: Assets/textures/entity/iron_golem/iron_golem.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d75f1dc5377f1df4e9aac5278bbbf73b
+    m_Address: Assets/textures/entity/banner/globe.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d797dd71691c7414f80211d614a10768
+    m_Address: Assets/textures/entity/villager/profession/mason.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d7fc1888c2f0a6d4399574969c9a4723
+    m_Address: Assets/textures/entity/boat/cherry.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d820b8c022bcd354c93b99fcf8e7a08b
+    m_Address: Assets/textures/entity/bee/bee_angry_nectar.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d849f964cfedf4d41bfedef70d129c09
+    m_Address: Assets/textures/entity/ghast/happy_ghast_ropes.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d87478cdd6535c74091c6ce835c06fd2
+    m_Address: Assets/textures/entity/zombie_villager/profession_level/gold.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d87c37ae98f9bfb4e80c1710fbcd8e94
+    m_Address: Assets/textures/entity/equipment/humanoid/gold.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d8b6f1101631f894cbc4fb4ad46357c1
+    m_Address: Assets/textures/entity/iron_golem/iron_golem_crackiness_low.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d92f49991243743409bcfca66e62c5cc
+    m_Address: Assets/textures/entity/shield/stripe_downleft.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d94e0706484a0a443b7082ec18578b0c
+    m_Address: Assets/textures/entity/shield/circle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d954717e34c1a2f43845360345ad0ff0
+    m_Address: Assets/textures/entity/chest/copper_exposed.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d97241b3907406b49a521bc18481d025
+    m_Address: Assets/textures/entity/piglin/zombified_piglin.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: da7674d3e392737479eb4b17effbdff8
+    m_Address: Assets/textures/entity/shield/square_bottom_left.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: daab81232f73d614b85f69420e6366fa
+    m_Address: Assets/textures/entity/banner/bricks.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dacff2c67772a9645adc9ac8db848001
+    m_Address: Assets/textures/entity/equipment/llama_body/green.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: db27f4c183850b14c9b6d5c1b5741b85
+    m_Address: Assets/textures/entity/shield/half_horizontal.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dc1fe086fbe7e884a9207a14aac5457a
+    m_Address: Assets/textures/entity/wolf/wolf_striped.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dc2506164e1aea442871e6517b2073d3
+    m_Address: Assets/textures/entity/cow/brown_mooshroom.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dcda070c39db35d41a3e08a761fb5ee2
+    m_Address: Assets/textures/entity/equipment/mule_saddle/saddle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dd7e26faaff6b434b809a3b3141fe509
+    m_Address: Assets/textures/entity/horse/horse_zombie.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dd86d2263af56a64c9fde4a9df0b2197
+    m_Address: Assets/textures/entity/equipment/llama_body/cyan.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ddbba5f5ce9558a4dbef38596ce3b999
+    m_Address: Assets/textures/entity/shield/square_bottom_right.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: de30b26a9b6da7043b1fb97149d6305e
+    m_Address: Assets/textures/entity/iron_golem/iron_golem_crackiness_high.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: de4e601e8778b704798f93e0c4e4c15e
+    m_Address: Assets/textures/entity/chest_boat/mangrove.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: deea3dee208651b43946eaa8502156bd
+    m_Address: Assets/textures/entity/decorated_pot/explorer_pottery_pattern.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: df15f04f0f80396409fbcf55401c7bd5
+    m_Address: Assets/textures/entity/zombie_villager/type/snow.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: df5c88b08429d1e43bc524a2f11d92ba
+    m_Address: Assets/textures/entity/equipment/humanoid/netherite.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dfd70342c9cdfe044b6cf98883cc07bf
+    m_Address: Assets/textures/entity/banner/guster.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dffe951aa15c0f2468ba81b0f45c6139
+    m_Address: Assets/textures/entity/shulker/shulker_light_gray.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e0e8553086961ac4e8e922caa1e960f9
+    m_Address: Assets/textures/entity/player/wide/steve.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e0fabe4ac88985a4983dd684dabbc594
+    m_Address: Assets/textures/entity/banner/diagonal_right.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e1ab0d2b57b25b243909dd69c087ac87
+    m_Address: Assets/textures/entity/signs/crimson.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e1b3ecd57f6d726428e19e7425cb30c3
+    m_Address: Assets/textures/entity/boat/birch.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e3766c59118b11444a3306c081e5dd05
+    m_Address: Assets/textures/entity/chest/copper_left.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e41d53ab83c106e4c8c0634bc65b369d
+    m_Address: Assets/textures/entity/equipment/humanoid/diamond.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e42a1710bfc0c24448bbc9c36afaf43c
+    m_Address: Assets/textures/entity/zombie_villager/profession/fisherman.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e4cfd2ee25bf47b48bc027cf4e65813b
+    m_Address: Assets/textures/entity/enderman/enderman.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e4eaae5d67e0aa548a5380a2748c3253
+    m_Address: Assets/textures/entity/equipment/happy_ghast_body/light_gray_harness.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e4f982349b9cb6b4fbc7efb853bfd81d
+    m_Address: Assets/textures/entity/equipment/horse_body/netherite.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e663bc9155b4a4b4ebee5e6047033b38
+    m_Address: Assets/textures/entity/creaking/creaking_eyes.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e6811ee421db5c44f8f84767cfdee3e1
+    m_Address: Assets/textures/entity/parrot/parrot_yellow_blue.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e6c8c311705ac134296a9b13b35ed24b
+    m_Address: Assets/textures/entity/bed/orange.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e79d89a674468d14193bb39fcbf516b2
+    m_Address: Assets/textures/entity/slime/slime.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e810ee7484b80914e989d3fa87d7705f
+    m_Address: Assets/textures/entity/enderdragon/dragon_fireball.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e8690f3b74dc0e14394eb59c0cdb832c
+    m_Address: Assets/textures/entity/shulker/shulker_gray.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e887ee6c9bb41984d892206eb80e2736
+    m_Address: Assets/textures/entity/wolf/wolf_snowy_tame.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e8b59a38671148541a62e76046177e5d
+    m_Address: Assets/textures/entity/horse/horse_white.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e8ee833b381b35342845f680adf20600
+    m_Address: Assets/textures/entity/shield/creeper.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e9a6b099a5b868c448244e7248fc2fac
+    m_Address: Assets/textures/entity/ghast/happy_ghast_baby.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ea006df88d8698748aa8d9e61959a3ae
+    m_Address: Assets/textures/entity/shield/gradient_up.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: eaf09c09495bad0429db69cb4aab5073
+    m_Address: Assets/textures/entity/player/slim/sunny.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: eb1d9876c308a944d83f398747d92c51
+    m_Address: Assets/textures/entity/shield/stripe_right.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: eb91a653d4768d44d914f1e9b103844e
+    m_Address: Assets/textures/entity/warden/warden_bioluminescent_layer.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ec02b801430df7444b94c2fad62e398e
+    m_Address: Assets/textures/entity/equipment/horse_saddle/saddle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ec10da88f4c63fb429508b725692f6c1
+    m_Address: Assets/textures/entity/horse/horse_skeleton.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ec2eda497b6eb464ea7ed1a1a29e1384
+    m_Address: Assets/textures/entity/parrot/parrot_blue.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ec572ba29b72b1b48966f7a1083c6fe5
+    m_Address: Assets/textures/entity/skeleton/bogged.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ede3624c4b7d8594480857cc7de3286c
+    m_Address: Assets/textures/entity/wither/wither.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ee0698118056ef34b9a954bbc9115304
+    m_Address: Assets/textures/entity/equipment/humanoid_leggings/diamond.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ee246e7ec6eeb7c40bc415158be0c304
+    m_Address: Assets/textures/entity/player/slim/ari.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ee87ce8c66a2c934595417ec4f2da6f3
+    m_Address: Assets/textures/entity/banner/square_top_left.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: eeba4c27c80a3244f915fd83f28de1d8
+    m_Address: Assets/textures/entity/phantom_eyes.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: eebc2bfa61f403445ac5cfc6687e6cb4
+    m_Address: Assets/textures/entity/copper_golem/weathered_copper_golem_eyes.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ef339a1189894324db22099a76aa44e1
+    m_Address: Assets/textures/entity/horse/horse_darkbrown.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ef925ff509e8443449690338e06c9c22
+    m_Address: Assets/textures/entity/wolf/wolf.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: efff39481b8941148bb5a6fe3e08a7d6
+    m_Address: Assets/textures/entity/decorated_pot/archer_pottery_pattern.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f000f71716dda264d8e7c6c9a7279f37
+    m_Address: Assets/textures/entity/zombie_villager/profession/fisherman.png.mcmeta
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f220ad4c05b9bd244ace2a26bd45ae1d
+    m_Address: Assets/textures/entity/chest/trapped_right.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f3226f014d5647e4aba353cfe63d158a
+    m_Address: Assets/textures/entity/cat/siamese.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f4e86e06919558b4a95025281e999abd
+    m_Address: Assets/textures/entity/zombie_villager/profession/butcher.png.mcmeta
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f4ebc11160bed604cb4630c340f5088d
+    m_Address: Assets/textures/entity/boat/dark_oak.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f529fd455a1fa0b4ebf924362500a011
+    m_Address: Assets/textures/entity/chest_boat/dark_oak.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f574e76f9083daa48af09098a8038f62
+    m_Address: Assets/textures/entity/wither/wither_armor.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f681d93b700e35f4598f50f002760d21
+    m_Address: Assets/textures/entity/shield/small_stripes.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f719419c1dcbfd24eabd27972aa98fa7
+    m_Address: Assets/textures/entity/fish/tropical_b_pattern_1.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f7742f599cb56dc4594c9660db22bae5
+    m_Address: Assets/textures/entity/shield/triangle_bottom.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f78b7587c66ad3f4eb883bd8195024ef
+    m_Address: Assets/textures/entity/fish/tropical_a_pattern_5.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f7da52ce28706f6468007a8a35859064
+    m_Address: Assets/textures/entity/banner/gradient.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f8bc0d392d255c740bde2d974f535e73
+    m_Address: Assets/textures/entity/equipment/camel_saddle/saddle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f8e966a411bd0c1449a2d503cb395a5e
+    m_Address: Assets/textures/entity/shield/diagonal_left.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f8ed149bebbc914488eb3f8d561aec36
+    m_Address: Assets/textures/entity/banner/triangles_top.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fa277fcd75abfaa4b8c2bdc610506511
+    m_Address: Assets/textures/entity/wolf/wolf_woods_tame.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fa57a5b32dd5fa341bfd2629ecae6cdf
+    m_Address: Assets/textures/entity/shulker/shulker_green.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fa70b7a94146f9843b50eb6ad3ac5f7a
+    m_Address: Assets/textures/entity/banner_base.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fa93cb582f5e687419e4b5f0a13e2369
+    m_Address: Assets/textures/entity/shield/gradient.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fb797676f1dc4a14a9d59a8687ee0dbc
+    m_Address: Assets/textures/entity/wolf/wolf_woods_angry.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fb8f94eafe6b1f543a4f7d649cb7467d
+    m_Address: Assets/textures/entity/zombie_villager/profession/armorer.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fc4be270540972d419c590b6a31c0a00
+    m_Address: Assets/textures/entity/decorated_pot/howl_pottery_pattern.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fc64b44b15d0aac4f96cb5118be5413d
+    m_Address: Assets/textures/entity/cat/white.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fcaca38f7bb6c9d4d9ca40e8ed00e747
+    m_Address: Assets/textures/entity/equipment/humanoid/leather.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fcbb83652f350d144947bcba7a03e322
+    m_Address: Assets/textures/entity/zombie/drowned.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fd022084c76ef1b4aa50e5585a88cb95
+    m_Address: Assets/textures/entity/banner/square_bottom_left.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fd034ec107049074fa57e72f610494e4
+    m_Address: Assets/textures/entity/villager/profession/toolsmith.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fd4f8aa8b0cc59542b39af64b3bcc799
+    m_Address: Assets/textures/entity/bed/light_blue.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fd8d26a948b2f1444a49b424f938b0a1
+    m_Address: Assets/textures/entity/endermite.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fe2f463371ae3af4bae44b205aba1b54
+    m_Address: Assets/textures/entity/axolotl/axolotl_wild.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fe6d19076af14234b9e7f547401adab5
+    m_Address: Assets/textures/entity/copper_golem/copper_golem_eyes.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: feca3de88cb163e41a9ddcabdf833b47
+    m_Address: Assets/textures/entity/shulker/shulker_pink.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ffc2b1e23a0213547913e64a56d577c4
+    m_Address: Assets/textures/entity/wolf/wolf_armor_crackiness_low.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 1f6ca7d155b268c408ed984de8fdd20b, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 7ce0ddb0d654b3f4d8eef0f2a284f96d, type: 2}
+    - {fileID: 11400000, guid: 89d7c6bec67825e4b8a0bd553686fe87, type: 2}

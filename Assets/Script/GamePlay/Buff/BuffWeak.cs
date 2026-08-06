@@ -12,6 +12,7 @@ namespace GamePlay.Buff
         private void OnEnable()
         {
             if (string.IsNullOrEmpty(Name)) Name = "Weak";
+            if (string.IsNullOrEmpty(Description)) Description = "Reduce ATK by {Stacks}. Decays at the end of your turn.";
         }
 
         public override void OnApply(MapUnit owner)

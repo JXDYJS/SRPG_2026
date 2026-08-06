@@ -64,6 +64,9 @@ namespace GamePlay.Skill
             }
 
             caster.RestoreRecordedFacing();
+
+            // 逻辑/视觉分离：所有技能动画解释完毕后再统一结算死亡动画（判断存活并播放）
+            await UnitManager.Instance.FlushDeathAnimations();
         }
 
         private static SkillPhase GetPhaseData(SkillDataSO skillData, int phaseIndex)
@@ -277,11 +280,6 @@ namespace GamePlay.Skill
 
             // 处理 Buff 结算
             ApplyBuffEffects(tResult);
-
-            if (tResult.IsDead)
-            {
-                await targetView.PlayDeathAnimation(() => targetView.HideModel());
-            }
 
             await UniTask.Yield();
         }

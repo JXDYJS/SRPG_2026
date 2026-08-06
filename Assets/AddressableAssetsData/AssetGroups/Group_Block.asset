@@ -16,42 +16,7 @@ MonoBehaviour:
   m_Data:
     m_SerializedData: []
   m_GUID: 3e5ad2ec646d1944e922585ee27e5ba0
-  m_SerializeEntries:
-  - m_GUID: 2e1ffed7ba73dc14ba85100cd83b0f60
-    m_Address: Block_Iron
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 348122e827ab26a4589e778262c39785
-    m_Address: Block_Cobblestone
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 76d193c8c06210f48ab89fcfede3d461
-    m_Address: Magma
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 837001858a6555c41ba50d3f93a11a7c
-    m_Address: Block_Dirt
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: a04e018e534d1c34082c996f7781fdaf
-    m_Address: Block_Grass_
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: a18ef909c9618f747afe6f00d27123a2
-    m_Address: Block_Cobbles_Slab
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: e507b5994683ecd48b0b6c8732ae80ac
-    m_Address: Block_Grass
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
+  m_SerializeEntries: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 1f6ca7d155b268c408ed984de8fdd20b, type: 2}
   m_SchemaSet:

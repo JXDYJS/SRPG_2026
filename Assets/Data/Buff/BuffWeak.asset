@@ -15,7 +15,7 @@ MonoBehaviour:
   ID: weak
   Name: Weak
   Icon: {fileID: 0}
-  Description: Reduces ATK
+  Description: Reduce ATK by {Stacks}. Decays at the end of your turn.
   Stacks: 0
   MaxStacks: 9999
   IsDebuff: 1

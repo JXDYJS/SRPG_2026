@@ -352,7 +352,7 @@ namespace GamePlay.Units
             _cachedModifiers.AddRange(ActiveBuffs);
 
             // 2. Add Relics from Global Manager (Only if this is a Player Unit)
-            if (CompareTag("Player") && RunManager.Instance != null)
+            if (Faction == FactionType.Player && RunManager.Instance != null)
             {
                 // 假设 RunManager.Relics 里的对象也继承自 CombatModifier
                 // 因为我们之前设计 RelicBase 继承自 CombatModifier，所以这里是可以直接转型的
@@ -679,21 +679,19 @@ namespace GamePlay.Units
             Debug.Log($"{name} has died.");
             UndoSystem.Instance.RegisterDirty(this);
             UnitManager.Instance.UnregisterUnit(this);
-            UnitManager.Instance.onUnitDead();
-            
-            // 交给 View 播放死亡动画并自动隐藏；无 View 时（如环境伤害）立即隐藏
+            UnitManager.Instance.onUnitDead?.Invoke();
+
+            // 逻辑/视觉分离：逻辑层只登记死亡，死亡动画由视觉层（SkillPerformer 等）统一播放；
+            // 无 View 时（如环境伤害）立即隐藏
             if (View != null)
             {
-                _ = View.PlayDeathAnimation(() =>
-                {
-                    if (this != null) View.HideModel();
-                });
+                UnitManager.Instance.RegisterDeath(this);
             }
             else
             {
                 gameObject.SetActive(false);
             }
-            
+
             SwitchState(UnitState.Dead);
         }
 
@@ -867,6 +865,60 @@ namespace GamePlay.Units
                 mod.OnWait(this);
             }
             //TODO
+        }
+
+        //=============Battle Lifecycle===============
+        /// <summary>
+        /// 战斗开始：先挂载被动遗物（OnApply），再分发全部 modifier 的 OnBattleStart。
+        /// 由 TurnManager.StartBattle 在部署完成后统一调用。
+        /// </summary>
+        public virtual void OnBattleStart()
+        {
+            //Debug.LogError("Enter OnBattleStart");
+            ApplyRelicPassives();
+            foreach (var mod in GetModifiers())
+            {
+                mod.OnBattleStart(this);
+            }
+            SetModifiersDirty();
+        }
+
+        /// <summary>
+        /// 战斗结束：分发 OnBattleEnd，并清理被动遗物（OnRemove）。
+        /// 由战斗结算流程在清场前统一调用。
+        /// </summary>
+        public virtual void OnBattleEnd()
+        {
+            foreach (var mod in GetModifiers())
+            {
+                mod.OnBattleEnd(this);
+            }
+            RemoveRelicPassives();
+            SetModifiersDirty();
+        }
+
+        // 被动遗物：OnApply/OnRemove 生命周期（与 Buff 的 AddBuff→OnApply 路径互不冲突）
+        // 仅玩家阵营单位生效（遗物只进 Player 单位的 modifier 缓存）
+        private void ApplyRelicPassives()
+        {
+            //Debug.LogError("Enter ApplyRelicPassives");
+            if (RunManager.Instance == null) return;
+            if (Faction != FactionType.Player) return;
+            //Debug.LogError("Enter for");
+            foreach (var relic in RunManager.Instance.Relics)
+            {
+                relic.OnApply(this);
+            }
+        }
+
+        private void RemoveRelicPassives()
+        {
+            if (RunManager.Instance == null) return;
+            if (Faction != FactionType.Player) return;
+            foreach (var relic in RunManager.Instance.Relics)
+            {
+                relic.OnRemove(this);
+            }
         }
 
 

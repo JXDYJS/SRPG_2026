@@ -60,6 +60,45 @@ namespace Utils
                 return null;
             }
         }
+        /// <summary>
+        /// 用来生成节点的时候组装种子
+        /// </summary>
+        /// <param name="seed"></param>
+        /// <param name="row"></param>
+        /// <param name="col"></param>
+        /// <returns></returns>
+        public static int CombineSeed(int seed, int row, int col)
+        {
+            uint h = (uint)seed;
+            h ^= (uint)row * 0x9E3779B1u;   // 大奇数，mod 2^32 下是置换
+            h ^= (uint)col * 0x85EBCA77u;   // 另一个大奇数
+                                            // 雪崩阶段：让输出每一位都依赖输入的每一位
+            h ^= h >> 16;
+            h *= 0x7FEB352Du;
+            h ^= h >> 15;
+            h *= 0x846CA68Bu;
+            h ^= h >> 16;
+            return (int)h;
+        }
+
+/// <summary>
+/// 洗牌实现
+/// </summary>
+/// <typeparam name="T"></typeparam>
+/// <param name="list"></param>
+/// <exception cref="ArgumentNullException"></exception>
+        public static void Shuffle<T>(this IList<T> list)
+        {
+            if (list == null) throw new ArgumentNullException(nameof(list));
+
+            int n = list.Count;
+
+            for (int i = n - 1; i > 0; i--)
+            {
+                int j = UnityEngine.Random.Range(0, i + 1);
+                (list[i], list[j]) = (list[j], list[i]);
+            }
+        }
     }
 
     public static class DT

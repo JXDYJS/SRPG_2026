@@ -15,6 +15,7 @@ namespace GamePlay.Buff
         private void OnEnable()
         {
             if (string.IsNullOrEmpty(Name)) Name = "Bulwark";
+            if (string.IsNullOrEmpty(Description)) Description = "Gain +{Stacks} DEF. Decays by 1 stack at the start of your turn.";
         }
 
         public override void OnApply(MapUnit owner)

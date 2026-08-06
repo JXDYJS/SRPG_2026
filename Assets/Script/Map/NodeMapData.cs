@@ -5,6 +5,8 @@ using System.Linq;
 using Core.Data;
 using Newtonsoft.Json;
 using Random = UnityEngine.Random;
+using RelicConfig = Core.Data.TableData.RelicConfig;
+using Global;
 
 namespace Map
 {
@@ -75,6 +77,11 @@ namespace Map
             type = MapType.Battle;
         }
     }
+    public struct ShopSlotData
+    {
+        public int price;
+        public string itemId;//一般情况下 就是 价格->一个商品 暂时不考虑特殊情况
+    }
 
     [Serializable]
     public class ShopNode : BaseNode
@@ -87,6 +94,79 @@ namespace Map
         public ShopNode(string id) : base(id)
         {
             type = MapType.Shop;
+        }
+        public List<ShopSlotData> itemSlots;
+        public static ShopNode genShopNode()
+        {
+            int shopItemCount = Random.Range(Data.Config.shopConfig.minShopItemCount, Data.Config.shopConfig.maxShopItemCount);
+            Dictionary<Global.RarityType, List<RelicConfig>> relicMap = new();
+            foreach (var relic in Core.Data.Data.Table.RelicConfigs.Values)
+            {
+                if (!relicMap.TryGetValue(relic.rarity, out var list))
+                {
+                    list = new List<RelicConfig>();
+                    relicMap[relic.rarity] = list;
+                }
+                list.Add(relic);
+            }
+            foreach (var relicList in relicMap.Values)
+            {
+                Utils.Utils.Shuffle<RelicConfig>(relicList);
+            }
+            Dictionary<Global.RarityType, int> relicRarityCount = new();
+            float sumRate = 0.0f;
+            foreach (var key in relicMap.Keys)
+            {
+                sumRate += Data.Config.shopConfig.rarityProbability[key];
+            }
+            int sumCount = 0;
+            foreach (var key in relicMap.Keys)
+            {
+                relicRarityCount[key] = UnityEngine.Mathf.FloorToInt(shopItemCount * (Data.Config.shopConfig.rarityProbability[key] / sumRate));
+                sumCount += relicRarityCount[key];
+            }
+            if (sumCount < shopItemCount)
+            {
+                // 差值不超过实际存在的稀有度数量，这里只对配表中已出现的稀有度分配
+                var types = new Global.RarityType[relicMap.Keys.Count];
+                relicMap.Keys.CopyTo(types, 0);
+                for (int i = 0; i < shopItemCount - sumCount; i++)
+                {
+                    int index = (i) % types.Length;
+                    relicRarityCount[types[index]]++;
+                }
+            }
+            int actualGetCount = 0;
+            ShopNode node = new() { itemSlots = new List<ShopSlotData>() };
+            foreach (var (rarity, count) in relicRarityCount)
+            {
+                var relicList = relicMap[rarity];
+                for (int i = 0; i < relicMap[rarity].Count; i++)
+                {
+                    if (i >= count) break;
+                    var relicConfig = relicList[i];
+                    int price = Random.Range(relicConfig.minPrice, relicConfig.maxPrice);
+                    ShopSlotData slotData = new();
+                    slotData.itemId = relicConfig.id;
+                    slotData.price = price;
+                    node.itemSlots.Add(slotData);
+                    actualGetCount++;
+                }
+            }
+            if (actualGetCount < shopItemCount)
+            {
+                var relicConfig = Data.Table.RelicConfigs[Data.Config.shopConfig.repeatShopItemId];
+                for (int i = 0; i < shopItemCount - actualGetCount; i++)
+                {
+                    int price = Random.Range(relicConfig.minPrice, relicConfig.maxPrice);
+                    ShopSlotData slotData = new();
+                    slotData.price = price;
+                    slotData.itemId = relicConfig.id;
+                    node.itemSlots.Add(slotData);
+                }
+            }
+            Utils.Utils.Shuffle<ShopSlotData>(node.itemSlots);
+            return node;
         }
     }
 
@@ -143,10 +223,17 @@ namespace Map
             BattleNode node2 = new("n_002") { level = "lv_002", row = 1, col = 1 };
             BattleNode node3 = new("n_003") { level = "lv_001", row = 0, col = 2 };
 
+            // 第一层并入商店节点（自动生成商品槽位）
+            ShopNode shop = ShopNode.genShopNode();
+            shop.row = 1;
+            shop.col = 0;
+
             node1.connections.Add(node2.id);
+            shop.connections.Add(node2.id);
             node2.connections.Add(node3.id);
 
             mapData.layers[0].Add(node1);
+            mapData.layers[0].Add(shop);
             mapData.layers[1].Add(node2);
             mapData.layers[2].Add(node3);
 

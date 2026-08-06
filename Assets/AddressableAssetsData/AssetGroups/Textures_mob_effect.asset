@@ -1,0 +1,225 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Textures_mob_effect
+  m_EditorClassIdentifier: 
+  m_GroupName: Textures_mob_effect
+  m_Data:
+    m_SerializedData: []
+  m_GUID: 0417ad7eee4bf41448b7f81d9ea6dfa8
+  m_SerializeEntries:
+  - m_GUID: 0cb5bae6f687b0b468a40b0063643373
+    m_Address: Assets/textures/mob_effect/levitation.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 118b3b4e700ac6a47b56878efe100678
+    m_Address: Assets/textures/mob_effect/unluck.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 21430030b7984c849a5be7103668ef48
+    m_Address: Assets/textures/mob_effect/bad_omen.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2d073cbcd1d5a0a4c8402addbca0a38f
+    m_Address: Assets/textures/mob_effect/conduit_power.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3e493319c962ce441890f06dda5bc176
+    m_Address: Assets/textures/mob_effect/slowness.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 45433db0604fdc54dbf243ea12371501
+    m_Address: Assets/textures/mob_effect/wind_charged.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5965ecf0888c65341b22fbdfc7c49883
+    m_Address: Assets/textures/mob_effect/instant_damage.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5d38ad2343a8d464ab5fa98603c10417
+    m_Address: Assets/textures/mob_effect/darkness.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6074e8d64f6df4741a8fc84194bc9b2f
+    m_Address: Assets/textures/mob_effect/haste.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 616e97bc96b70dc4dae7a23383bffd16
+    m_Address: Assets/textures/mob_effect/nausea.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 623efd559e3adc345865b4828546a398
+    m_Address: Assets/textures/mob_effect/poison.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 62ea590127de57d4ea11154e5539d667
+    m_Address: Assets/textures/mob_effect/invisibility.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 686f30c06f319d24d9a9a92f972d4827
+    m_Address: Assets/textures/mob_effect/hunger.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6a3712532b87a654a8bacbd45d194d5e
+    m_Address: Assets/textures/mob_effect/oozing.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 76f83296a01700e4bb9637c987ec38af
+    m_Address: Assets/textures/mob_effect/hero_of_the_village.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7bc6291486dc3474387512e1ab7c5d8d
+    m_Address: Assets/textures/mob_effect/weaving.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 82185975b2e7fef4cb9f36202d628420
+    m_Address: Assets/textures/mob_effect/water_breathing.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8837a292a98a8c646a78c2032d14abd8
+    m_Address: Assets/textures/mob_effect/regeneration.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 89ee9d43764802d448335a3959cbf43b
+    m_Address: Assets/textures/mob_effect/trial_omen.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8c9b371b5e2e2ee4e9d70d7e6682353d
+    m_Address: Assets/textures/mob_effect/instant_health.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9bf9b47caf6d8484b9d550654eb6b011
+    m_Address: Assets/textures/mob_effect/strength.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a31a0a874b61b694990cee1da9285409
+    m_Address: Assets/textures/mob_effect/night_vision.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: aa0167d7a0a1ca7448011b92591833d3
+    m_Address: Assets/textures/mob_effect/glowing.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ab84fbae05c4f494dac6ec26b5584176
+    m_Address: Assets/textures/mob_effect/resistance.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: abe7c075836b25544a6eaf2fcd5fbe7e
+    m_Address: Assets/textures/mob_effect/speed.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ad6383b8c33d5014dbc78dd82f54e30e
+    m_Address: Assets/textures/mob_effect/slow_falling.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b0e61a2846bea6e47ab16ec0f726a333
+    m_Address: Assets/textures/mob_effect/health_boost.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b429e74ec14177f49b44106c0c223d3a
+    m_Address: Assets/textures/mob_effect/weakness.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b803ffdeacf64a644a1e978196542ca7
+    m_Address: Assets/textures/mob_effect/mining_fatigue.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c2ee574db2b83e14492ec5bb0729dfe5
+    m_Address: Assets/textures/mob_effect/dolphins_grace.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c43626065c23511418945e63c79bee56
+    m_Address: Assets/textures/mob_effect/breath_of_the_nautilus.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c6837a89a9d2f8046bfccaa62b01c0dc
+    m_Address: Assets/textures/mob_effect/fire_resistance.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c99426aaf9c2f104f82010250a264faa
+    m_Address: Assets/textures/mob_effect/blindness.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cc91441b3204fc947be19d64967c9a18
+    m_Address: Assets/textures/mob_effect/luck.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cdc1a0885c7a4d14aa6e32c01d63c6a8
+    m_Address: Assets/textures/mob_effect/absorption.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d26f9842f886a9e4db9ea238631c368b
+    m_Address: Assets/textures/mob_effect/infested.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d9bbc23600ea5b54eb0743fabd7aeffe
+    m_Address: Assets/textures/mob_effect/wither.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: df7b5225a6b7bae408dc9ba2d6d7cd89
+    m_Address: Assets/textures/mob_effect/saturation.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e7f27adbae94dc640a71de1ffeff59aa
+    m_Address: Assets/textures/mob_effect/raid_omen.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f5c007fd2d8fcd14fb00714b71a39b5c
+    m_Address: Assets/textures/mob_effect/jump_boost.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 1f6ca7d155b268c408ed984de8fdd20b, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 432a3ea899204974aabd8d5a51e00935, type: 2}
+    - {fileID: 11400000, guid: 05e55824874d1fe4bb7da4ea8f78b8d4, type: 2}
