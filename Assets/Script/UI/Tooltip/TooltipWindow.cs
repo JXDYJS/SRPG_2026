@@ -93,10 +93,18 @@ namespace UI.Tooltip
                 {
                     desc = ItemView.ResolveByID(td.id);
                 }
-                BuildContent(desc);
-                PositionAt(td.screenPosition);
+                _ = OpenAsync(desc, td.screenPosition);
             }
+        }
 
+        /// <summary>
+        /// 异步编排打开流程：先让 Canvas 自然更新一帧使 TMP 文本度量就绪，
+        /// 同步收敛布局后用最终尺寸定位，最后淡入 —— 确保首帧位置正确且零闪烁。
+        /// </summary>
+        private async UniTask OpenAsync(IItemDescriptor desc, Vector2 screenPosition)
+        {
+            await BuildContent(desc);
+            PositionAt(screenPosition);
             FadeIn();
         }
 
@@ -108,7 +116,7 @@ namespace UI.Tooltip
 
         // ==================== 内容构建 ====================
 
-        private void BuildContent(IItemDescriptor main)
+        private async UniTask BuildContent(IItemDescriptor main)
         {
             ClearContent();
             if (main == null) return;
@@ -122,6 +130,9 @@ namespace UI.Tooltip
             {
                 CreateColumn(column);
             }
+            // 让出 1 帧：TMP 文本度量在 Canvas 自然更新后才真正就绪，
+            // 同帧内 ForceMeshUpdate 拿到的 preferred 值仍不准确。
+            await UniTask.NextFrame();
             RefreshLayout();
         }
 
