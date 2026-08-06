@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using UI.Panel;
@@ -122,6 +123,7 @@ namespace UI.Tooltip
             {
                 CreateColumn(column);
             }
+            RefreshLayout();
         }
 
         /// <summary>
@@ -177,15 +179,50 @@ namespace UI.Tooltip
             foreach (IItemDescriptor desc in cards)
             {
                 GameObject cardGo = Instantiate(TooltipPrefab, colTransform);
-                Tooltip card = cardGo.GetComponent<Tooltip>();
-                if (card == null) continue;
-
-                card.Init(desc, _refNames);
+                SetCardText(cardGo, desc, _refNames);
                 // 订阅源变化（层数等）实时刷新卡片
-                Action refresh = () => card.Init(desc, _refNames);
+                Action refresh = () =>
+                {
+                    SetCardText(cardGo, desc, _refNames);
+                    RefreshLayout();
+                };
                 desc.Changed += refresh;
                 _unsubscribers.Add(() => desc.Changed -= refresh);
             }
+        }
+
+        /// <summary>
+        /// 设置单张卡片的 Title/Desc 文本（卡片结构约定：root → TextContent → Title/Desc）。
+        /// 替代已移除的 Tooltip 组件，文本设置与实时刷新统一走这里。
+        /// </summary>
+        private static void SetCardText(GameObject cardGo, IItemDescriptor desc, IReadOnlyDictionary<string, string> refNames)
+        {
+            TextMeshProUGUI title = cardGo.transform.Find("TextContent/Title")?.GetComponent<TextMeshProUGUI>();
+            TextMeshProUGUI descText = cardGo.transform.Find("TextContent/Desc")?.GetComponent<TextMeshProUGUI>();
+
+            if (title != null)
+            {
+                title.text = desc?.Name ?? string.Empty;
+            }
+            if (descText != null)
+            {
+                string body = string.IsNullOrEmpty(desc?.Tooltip) ? desc?.Subtext : desc.Tooltip;
+                descText.text = DescMarkup.RenderRichText(body ?? string.Empty, refNames);
+            }
+        }
+
+        /// <summary>
+        /// 同步收敛布局：TMP 文本生成默认延后到 canvas 更新周期，首帧同步读取会拿到旧 preferred 值。
+        /// 这里强制立刻生成文本，再跑两轮布局——第 1 轮结算宽度链，第 2 轮用最终宽度算 TMP 换行高度。
+        /// </summary>
+        private void RefreshLayout()
+        {
+            foreach (TextMeshProUGUI tmp in GetComponentsInChildren<TextMeshProUGUI>(true))
+            {
+                tmp.ForceMeshUpdate();
+            }
+            UnityEngine.UI.LayoutRebuilder.ForceRebuildLayoutImmediate(transform as RectTransform);
+            Canvas.ForceUpdateCanvases();
         }
 
         // ==================== 清理 ====================
