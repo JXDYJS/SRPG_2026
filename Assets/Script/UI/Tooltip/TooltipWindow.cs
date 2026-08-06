@@ -109,7 +109,7 @@ namespace UI.Tooltip
 
         // ==================== 内容构建 ====================
 
-        private void BuildContent(IItemDescriptor main)
+        private async UniTask BuildContent(IItemDescriptor main)
         {
             ClearContent();
             if (main == null) return;
@@ -123,7 +123,9 @@ namespace UI.Tooltip
             {
                 CreateColumn(column);
             }
-            RefreshLayout();
+            await UniTask.NextFrame();
+            //RefreshLayout();
+            UnityEngine.UI.LayoutRebuilder.ForceRebuildLayoutImmediate(transform as RectTransform);
         }
 
         /// <summary>
@@ -251,35 +253,42 @@ namespace UI.Tooltip
 
         /// <summary>
         /// 定位到屏幕坐标（光标跟随）。
-        /// 屏幕坐标 → 父层级 RectTransform 本地坐标，再 clamp 在父边界内，避免弹窗出屏。
-        /// 锚点约定：prefab 上子锚点/pivot 取 (0.5,0.5)（默认），anchoredPosition 以父 pivot 为原点。
+        /// 屏幕坐标 → 父层级本地坐标（ScreenPointToLocalPointInRectangle 内部已除以 lossyScale，
+        /// 自动处理 CanvasScaler 缩放），再转换到以父左上角为原点的 anchoredPosition 空间
+        /// （prefab 锚点取父左上角 (0,1)）。
+        /// 窗口 pivot 在左上角 (0,1)，即整窗从鼠标位置向右(+x)向下(-y)生长，clamp 保证不出父边界。
         /// </summary>
         public void PositionAt(Vector2 screenPosition, Vector2? offset = null)
         {
             RectTransform parent = _rectTransform.parent as RectTransform;
             if (parent == null) return;
 
+            // 屏幕坐标 → 父层级本地坐标（以父 pivot 为中心，已含 Canvas 缩放）
             if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(
                     parent, screenPosition, null, out Vector2 local))
             {
                 return;
             }
 
-            local += offset ?? _cursorOffset;
-
             // 强制刷新一次布局，确保 ContentSizeFitter 已算出实际尺寸（首次打开必需；高频移动可后续优化）
             Canvas.ForceUpdateCanvases();
             Vector2 size = _rectTransform.rect.size;
             Rect parentRect = parent.rect;
 
-            local.x = Mathf.Clamp(local.x,
-                -parentRect.width * 0.5f + size.x * 0.5f,
-                parentRect.width * 0.5f - size.x * 0.5f);
-            local.y = Mathf.Clamp(local.y,
-                -parentRect.height * 0.5f + size.y * 0.5f,
-                parentRect.height * 0.5f - size.y * 0.5f);
+            // 父左上角在本地坐标（父 pivot 居中）为 (-w/2, +h/2)。
+            // 锚点参考点为父左上角，故 anchoredPosition = local - 父左上角。
+            Vector2 anchored = new Vector2(
+                local.x + parentRect.width * 0.5f,
+                local.y - parentRect.height * 0.5f);
 
-            _rectTransform.anchoredPosition = local;
+            anchored += offset ?? _cursorOffset;
+
+            // 窗口 pivot 在左上角 (0,1)：向右(+x)向下(-y)生长，
+            // 保证整窗落在父边界内（pivot.x ∈ [0, w-size.x]，pivot.y ∈ [-(h-size.y), 0]）
+            anchored.x = Mathf.Clamp(anchored.x, 0f, Mathf.Max(0f, parentRect.width - size.x));
+            anchored.y = Mathf.Clamp(anchored.y, Mathf.Min(0f, -(parentRect.height - size.y)), 0f);
+
+            _rectTransform.anchoredPosition = anchored;
         }
 
         /// <summary>供 OnPointerMove 等高频调用重定位的入口，语义与 PositionAt 一致</summary>
