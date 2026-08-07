@@ -463,9 +463,7 @@ namespace GamePlay.Battle
             }
 
             CleanupLevel();
-            UIManager.Instance.ClosePanel<TimelinePanel>();
-            var mapPopWindow = UIManager.Instance.OpenPanel<MapPopWindow>();
-            mapPopWindow.NextLevel();
+            Utils.Utils.FinishNode<TimelinePanel>();
         }
         public bool isLevelEnd()
         {

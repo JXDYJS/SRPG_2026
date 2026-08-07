@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Core.Data;
 using Map;
 using Managers;
@@ -20,8 +19,6 @@ namespace GamePlay.Event
     /// </summary>
     public static class EventFlow
     {
-        private static readonly Dictionary<string, Type> _panelTypeCache = new();
-
         public static EventNode CurrentNode { get; private set; }
         public static TableData.EventConfig CurrentConfig { get; private set; }
         public static string CurrentScreenId { get; private set; }
@@ -43,7 +40,7 @@ namespace GamePlay.Event
                 !Data.Table.EventConfigs.TryGetValue(node.eventId, out TableData.EventConfig config))
             {
                 Debug.LogError($"[EventFlow] 事件节点缺少有效 eventId: '{node.eventId}'");
-                ReturnToMap();
+                Utils.Utils.ReturnToMap();
                 return;
             }
 
@@ -53,11 +50,11 @@ namespace GamePlay.Event
             // panelName 非空 → 短路打开专用窗口（小游戏钩子）
             if (!string.IsNullOrEmpty(config.panelName))
             {
-                Type panelType = ResolvePanelType(config.panelName);
+                Type panelType = UIManager.ResolvePanelType(config.panelName);
                 if (panelType == null)
                 {
                     Debug.LogError($"[EventFlow] 无法解析事件面板: '{config.panelName}'");
-                    ReturnToMap();
+                    Utils.Utils.ReturnToMap();
                     return;
                 }
                 UIManager.Instance.OpenPanel(panelType, node, UILayer.Popup);
@@ -105,35 +102,6 @@ namespace GamePlay.Event
         public static void SwitchScreen(string screenId)
         {
             CurrentScreenId = screenId;
-        }
-
-        /// <summary>唯一"回到地图"入口：关掉当前事件窗口 + 重开地图 + 解锁下一层</summary>
-        public static void Finish<T>() where T : BaseUIPanel
-        {
-            UIManager.Instance.ClosePanel<T>();
-            ReturnToMap();
-        }
-
-        private static void ReturnToMap()
-        {
-            var mapPopWindow = UIManager.Instance.OpenPanel<MapPopWindow>();
-            if (mapPopWindow != null)
-            {
-                mapPopWindow.NextLevel();
-            }
-        }
-
-        /// <summary>按窗口类名解析 UI.Panel 下的面板 Type</summary>
-        private static Type ResolvePanelType(string panelName)
-        {
-            if (_panelTypeCache.TryGetValue(panelName, out Type cached)) return cached;
-
-            Type type = Utils.Utils.ResolveType(panelName);
-            if (type != null)
-            {
-                _panelTypeCache[panelName] = type;
-            }
-            return type;
         }
     }
 }

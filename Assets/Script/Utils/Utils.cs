@@ -8,6 +8,7 @@ using UnityEngine.AddressableAssets;
 using Cysharp.Threading.Tasks;
 using System;
 using DG.Tweening;
+using UI.Panel;
 namespace Utils
 {
     public static class Utils
@@ -60,6 +61,28 @@ namespace Utils
                 }
             }
             return null;
+        }
+
+        /// <summary>
+        /// 重开地图并解锁下一层（不关窗口）。用于节点弹窗流程中的降级/兜底路径。
+        /// </summary>
+        public static void ReturnToMap()
+        {
+            var mapPopWindow = UIManager.Instance.OpenPanel<MapPopWindow>();
+            if (mapPopWindow != null)
+            {
+                mapPopWindow.NextLevel();
+            }
+        }
+
+        /// <summary>
+        /// 完成节点弹窗流程：关闭指定窗口 + 重开地图 + 解锁下一层。
+        /// 事件/商店/战斗等节点弹窗结束后统一走这里回到地图。
+        /// </summary>
+        public static void FinishNode<T>() where T : BaseUIPanel
+        {
+            UIManager.Instance.ClosePanel<T>();
+            ReturnToMap();
         }
 
 

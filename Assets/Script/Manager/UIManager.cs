@@ -352,6 +352,24 @@ namespace Managers
             return UI_PREFAB_PATH + panelType.Name;
         }
 
+        private static readonly Dictionary<string, Type> _panelTypeCache = new();
+
+        /// <summary>
+        /// 按窗口类名解析面板 Type（支持短类名/全限定名，带缓存）。
+        /// 供按字符串分发打开面板的场景使用（如事件配表的 panelName）。
+        /// </summary>
+        public static Type ResolvePanelType(string panelName)
+        {
+            if (_panelTypeCache.TryGetValue(panelName, out Type cached)) return cached;
+
+            Type type = Utils.Utils.ResolveType(panelName);
+            if (type != null)
+            {
+                _panelTypeCache[panelName] = type;
+            }
+            return type;
+        }
+
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
             EnsureSingleEventSystem();

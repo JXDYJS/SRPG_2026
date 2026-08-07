@@ -84,7 +84,7 @@ namespace UI.Panel
             if (!found.HasValue)
             {
                 Debug.LogError($"[EventChoicePanel] 找不到屏幕: {EventFlow.CurrentScreenId}");
-                EventFlow.Finish<EventChoicePanel>();
+                Utils.Utils.FinishNode<EventChoicePanel>();
                 return;
             }
             TableData.EventScreen screen = found.Value;
@@ -132,14 +132,14 @@ namespace UI.Panel
         {
             if (!_lastOption.HasValue)
             {
-                EventFlow.Finish<EventChoicePanel>();
+                Utils.Utils.FinishNode<EventChoicePanel>();
                 return;
             }
 
             string next = EventFlow.ResolveNextScreen(_lastOption.Value);
             if (string.IsNullOrEmpty(next))
             {
-                EventFlow.Finish<EventChoicePanel>();
+                Utils.Utils.FinishNode<EventChoicePanel>();
                 return;
             }
 

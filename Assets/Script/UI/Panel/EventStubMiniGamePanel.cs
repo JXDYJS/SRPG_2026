@@ -1,4 +1,3 @@
-using GamePlay.Event;
 using Map;
 using TMPro;
 using UnityEngine;
@@ -35,7 +34,7 @@ namespace UI.Panel
             if (exitButton != null)
             {
                 exitButton.onClick.RemoveAllListeners();
-                exitButton.onClick.AddListener(() => EventFlow.Finish<EventStubMiniGamePanel>());
+                exitButton.onClick.AddListener(() => Utils.Utils.FinishNode<EventStubMiniGamePanel>());
             }
         }
     }
