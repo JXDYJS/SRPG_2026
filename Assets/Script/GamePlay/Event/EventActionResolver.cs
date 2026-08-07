@@ -24,7 +24,7 @@ namespace GamePlay.Event
                 return;
             }
 
-            Debug.LogWarning($"[EventActionResolver] action '{name}' 未找到（C# 反射失败，Lua 兜底待接入）");
+            //Debug.LogWarning($"[EventActionResolver] action '{name}' 未找到（C# 反射失败，Lua 兜底待接入）");
         }
 
         public static bool InvokeBool(string name)
@@ -42,23 +42,6 @@ namespace GamePlay.Event
             return false;
         }
 
-        /// <summary>按类名解析任意程序集内的公开类型（支持短类名与全限定名）</summary>
-        public static Type ResolveType(string className)
-        {
-            var assembly = typeof(EventActionResolver).Assembly;
-            Type type = assembly.GetType(className);
-            if (type != null) return type;
-
-            foreach (var t in assembly.GetExportedTypes())
-            {
-                if (t.FullName == className || t.Name == className)
-                {
-                    return t;
-                }
-            }
-            return null;
-        }
-
         private static MethodInfo ResolveCSharp(string name)
         {
             if (_csCache.TryGetValue(name, out MethodInfo cached)) return cached;
@@ -69,12 +52,12 @@ namespace GamePlay.Event
             {
                 string className = name.Substring(0, lastDot);
                 string methodName = name.Substring(lastDot + 1);
-                method = ResolveType(className)?.GetMethod(methodName, BindingFlags.Public | BindingFlags.Static);
+                method = Utils.Utils.ResolveType(className)?.GetMethod(methodName, BindingFlags.Public | BindingFlags.Static);
             }
             else
             {
                 // 未带类名时默认在 EventActions 中查找
-                method = ResolveType("EventActions")?.GetMethod(name, BindingFlags.Public | BindingFlags.Static);
+                method = Utils.Utils.ResolveType("EventActions")?.GetMethod(name, BindingFlags.Public | BindingFlags.Static);
             }
 
             if (method != null)

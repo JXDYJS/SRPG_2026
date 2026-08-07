@@ -128,7 +128,7 @@ namespace GamePlay.Event
         {
             if (_panelTypeCache.TryGetValue(panelName, out Type cached)) return cached;
 
-            Type type = EventActionResolver.ResolveType(panelName);
+            Type type = Utils.Utils.ResolveType(panelName);
             if (type != null)
             {
                 _panelTypeCache[panelName] = type;

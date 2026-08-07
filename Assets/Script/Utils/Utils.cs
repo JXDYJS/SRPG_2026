@@ -43,6 +43,25 @@ namespace Utils
             return "error type";
         }
 
+        /// <summary>
+        /// 按类名解析当前程序集内的公开类型（支持短类名与全限定名）
+        /// </summary>
+        public static Type ResolveType(string className)
+        {
+            var assembly = typeof(Utils).Assembly;
+            Type type = assembly.GetType(className);
+            if (type != null) return type;
+
+            foreach (var t in assembly.GetExportedTypes())
+            {
+                if (t.FullName == className || t.Name == className)
+                {
+                    return t;
+                }
+            }
+            return null;
+        }
+
 
         /// <summary>
         /// 直接从 Addressables 加载并实例化资源到指定父级下
