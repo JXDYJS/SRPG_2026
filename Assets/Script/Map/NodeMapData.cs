@@ -173,6 +173,8 @@ namespace Map
     [Serializable]
     public class EventNode : BaseNode
     {
+        public string eventId;
+
         public EventNode() : base()
         {
             type = MapType.Event;
@@ -245,7 +247,8 @@ namespace Map
             int maxPerLayer = Data.Config.ViewConfig.mapNodeMaxPerLayer;
             NodeMapData mapData = new(layerCount);
             var allTypes = (MapType[])Enum.GetValues(typeof(MapType));
-            var mapTypes = Array.FindAll(allTypes, t => t != MapType.Empty);
+            bool hasEventConfig = Data.Table.EventConfigs.Count > 0;
+            var mapTypes = Array.FindAll(allTypes, t => t != MapType.Empty && (t != MapType.Event || hasEventConfig));
 
             for (int i = 0; i < layerCount; i++)
             {
@@ -259,7 +262,7 @@ namespace Map
                     {
                         MapType.Battle => new BattleNode { level = "test" },
                         MapType.Shop => new ShopNode(),
-                        MapType.Event => new EventNode(),
+                        MapType.Event => new EventNode { eventId = GetRandomEventId() },
                         MapType.Boss => new BossNode(),
                         _ => new BattleNode { level = "test" },
                     };
@@ -287,6 +290,13 @@ namespace Map
             }
 
             return mapData;
+        }
+
+        private static string GetRandomEventId()
+        {
+            var keys = new string[Data.Table.EventConfigs.Count];
+            Data.Table.EventConfigs.Keys.CopyTo(keys, 0);
+            return keys[Random.Range(0, keys.Length)];
         }
     }
 }

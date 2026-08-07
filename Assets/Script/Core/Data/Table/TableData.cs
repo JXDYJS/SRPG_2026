@@ -41,6 +41,31 @@ namespace Core.Data
         public struct EventNodeConfig
         {
             public string id;
+            public string eventId;
+        }
+
+        public struct EventOption
+        {
+            public string title;
+            public string desc;
+            public string action;
+            public string result;
+            public string condition;
+            public string nextScreen;
+        }
+
+        public struct EventScreen
+        {
+            public string id;
+            public List<EventOption> options;
+        }
+
+        public struct EventConfig
+        {
+            public string id;
+            public string panelName;
+            public string startScreen;
+            public List<EventScreen> screens;
         }
 
         public struct BossNodeConfig
@@ -105,8 +130,16 @@ namespace Core.Data
         {
         };
 
+        public readonly Dictionary<string, EventConfig> EventConfigs = new()
+        {
+            { "ev_chest", new() { id = "ev_chest", panelName = "", startScreen = "s_main", screens = new() { new() { id = "s_main", options = new() { new() { title = "拿走遗物", desc = "你看见里面放着一件发光的遗物。", action = "EventActions.GiveRelic", result = "你获得了遗物 Beacon！", condition = "", nextScreen = "" }, new() { title = "拿走金币", desc = "里面散落着一堆闪亮的金币。", action = "EventActions.GainGold", result = "你获得了 50 金币！", condition = "", nextScreen = "" }, new() { title = "离开", desc = "多一事不如少一事。", action = "", result = "", condition = "", nextScreen = "" } } } } } },
+            { "ev_gamble", new() { id = "ev_gamble", panelName = "", startScreen = "s_bet", screens = new() { new() { id = "s_bet", options = new() { new() { title = "下注 50", desc = "押上 50 金币，掷骰子定输赢。", action = "EventActions.Bet50", result = "", condition = "EventActions.CanAffordBet50", nextScreen = "s_bet" }, new() { title = "离开", desc = "见好就收。", action = "", result = "", condition = "", nextScreen = "" } } } } } }
+        };
+
         public readonly Dictionary<string, EventNodeConfig> EventNodeConfigs = new()
         {
+            { "n_003", new() { id = "n_003", eventId = "ev_chest" } },
+            { "n_004", new() { id = "n_004", eventId = "ev_gamble" } }
         };
 
         public readonly Dictionary<string, LevelConfig> LevelConfigs = new()

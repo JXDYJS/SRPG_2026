@@ -3,6 +3,7 @@ using Map;
 using UnityEngine.UI;
 using Core.Data;
 using GamePlay.Battle;
+using GamePlay.Event;
 using Cysharp.Threading.Tasks;
 using Managers;
 using UI.Panel;
@@ -85,6 +86,10 @@ namespace UI.Slot
                     {
                         shop.Init(shopNode);
                     }
+                }
+                else if (node is EventNode eventNode)
+                {
+                    EventFlow.Start(eventNode);
                 }
                 node._onEnterNode.Invoke();
             });

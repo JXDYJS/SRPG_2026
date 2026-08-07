@@ -1,2 +1,4 @@
-_className,_tableName,_isDic,*id
-EventNodeConfig,EventNodeConfigs,true,string
+_className,_tableName,_isDic,*id,eventId
+EventNodeConfig,EventNodeConfigs,true,string,string
+,,,n_003,ev_chest
+,,,n_004,ev_gamble
