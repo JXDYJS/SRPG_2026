@@ -49,6 +49,13 @@ namespace UI.Panel
                 _resultCanvasGroup = resultView.GetComponent<CanvasGroup>();
             }
         }
+        private void OnEnable()
+        {
+            for (int i = optionContainer.childCount - 1; i >= 0; i--)
+            {
+                Destroy(optionContainer.GetChild(i).gameObject);
+            }
+        }
 
         public override void OnOpen(object data = null)
         {
@@ -61,7 +68,7 @@ namespace UI.Panel
 
         public void Init(EventNode node)
         {
-            if (titleText != null && EventFlow.CurrentConfig.id != null)
+            if (titleText != null)
             {
                 titleText.text = string.IsNullOrEmpty(EventFlow.CurrentConfig.id) ? "" : $"Event: {EventFlow.CurrentConfig.id}";
             }
