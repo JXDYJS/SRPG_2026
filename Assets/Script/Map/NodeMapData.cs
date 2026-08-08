@@ -230,12 +230,17 @@ namespace Map
             shop.row = 1;
             shop.col = 0;
 
+            // 第一层并入事件节点（自动获取随机事件）
+            EventNode eventNode = new("n_004") { eventId = GetRandomEventId(), row = 2, col = 0 };
+
             node1.connections.Add(node2.id);
             shop.connections.Add(node2.id);
+            eventNode.connections.Add(node2.id);
             node2.connections.Add(node3.id);
 
             mapData.layers[0].Add(node1);
             mapData.layers[0].Add(shop);
+            mapData.layers[0].Add(eventNode);
             mapData.layers[1].Add(node2);
             mapData.layers[2].Add(node3);
 
