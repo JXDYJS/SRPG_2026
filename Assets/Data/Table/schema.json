@@ -25,7 +25,26 @@
         "id": "string"
     },
     "EventNodeConfig": {
-        "id": "string"
+        "id": "string",
+        "eventId": "string"
+    },
+    "EventOption": {
+        "title": "string",
+        "desc": "string",
+        "action": "string",
+        "result": "string",
+        "condition": "string",
+        "nextScreen": "string"
+    },
+    "EventScreen": {
+        "id": "string",
+        "options": "List<EventOption>"
+    },
+    "EventConfig": {
+        "id": "string",
+        "panelName": "string",
+        "startScreen": "string",
+        "screens": "List<EventScreen>"
     },
     "BossNodeConfig": {
         "id": "string"

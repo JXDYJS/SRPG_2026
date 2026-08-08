@@ -47,13 +47,8 @@ namespace UI.Panel
 
         private void OnExitClick()
         {
-            // 参照战斗结算 EndLevel：关店→重开地图→锁定商店节点并解锁下一层连接
-            UIManager.Instance.ClosePanel<ShopPopPanel>();
-            var mapPopWindow = UIManager.Instance.OpenPanel<MapPopWindow>();
-            if (mapPopWindow != null)
-            {
-                mapPopWindow.NextLevel();
-            }
+            // 关店 → 重开地图 → 锁定商店节点并解锁下一层连接
+            Utils.Utils.FinishNode<ShopPopPanel>();
         }
 
         public void Init(ShopNode node)

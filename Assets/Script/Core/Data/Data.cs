@@ -81,6 +81,7 @@ namespace Core.Data
         public readonly BalanceConfigData BalanceConfig = new BalanceConfigData();
         public readonly ViewConfigData ViewConfig = new ViewConfigData();
         public readonly ShopConfigData shopConfig = new ShopConfigData();
+        public readonly EventConfigData eventConfig = new EventConfigData();
     }
 
     public class RuntimeData

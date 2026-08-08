@@ -173,6 +173,8 @@ namespace Map
     [Serializable]
     public class EventNode : BaseNode
     {
+        public string eventId;
+
         public EventNode() : base()
         {
             type = MapType.Event;
@@ -228,12 +230,17 @@ namespace Map
             shop.row = 1;
             shop.col = 0;
 
+            // 第一层并入事件节点（FlyBird小游戏）
+            EventNode eventNode = new("n_ev_flappy") { eventId = "ev_flappy", row = 2, col = 0 };
+
             node1.connections.Add(node2.id);
             shop.connections.Add(node2.id);
+            eventNode.connections.Add(node2.id);
             node2.connections.Add(node3.id);
 
             mapData.layers[0].Add(node1);
             mapData.layers[0].Add(shop);
+            mapData.layers[0].Add(eventNode);
             mapData.layers[1].Add(node2);
             mapData.layers[2].Add(node3);
 
@@ -245,7 +252,8 @@ namespace Map
             int maxPerLayer = Data.Config.ViewConfig.mapNodeMaxPerLayer;
             NodeMapData mapData = new(layerCount);
             var allTypes = (MapType[])Enum.GetValues(typeof(MapType));
-            var mapTypes = Array.FindAll(allTypes, t => t != MapType.Empty);
+            bool hasEventConfig = Data.Table.EventConfigs.Count > 0;
+            var mapTypes = Array.FindAll(allTypes, t => t != MapType.Empty && (t != MapType.Event || hasEventConfig));
 
             for (int i = 0; i < layerCount; i++)
             {
@@ -259,7 +267,7 @@ namespace Map
                     {
                         MapType.Battle => new BattleNode { level = "test" },
                         MapType.Shop => new ShopNode(),
-                        MapType.Event => new EventNode(),
+                        MapType.Event => new EventNode { eventId = GetRandomEventId() },
                         MapType.Boss => new BossNode(),
                         _ => new BattleNode { level = "test" },
                     };
@@ -287,6 +295,13 @@ namespace Map
             }
 
             return mapData;
+        }
+
+        private static string GetRandomEventId()
+        {
+            var keys = new string[Data.Table.EventConfigs.Count];
+            Data.Table.EventConfigs.Keys.CopyTo(keys, 0);
+            return keys[Random.Range(0, keys.Length)];
         }
     }
 }

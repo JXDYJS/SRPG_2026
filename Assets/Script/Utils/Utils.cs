@@ -8,6 +8,7 @@ using UnityEngine.AddressableAssets;
 using Cysharp.Threading.Tasks;
 using System;
 using DG.Tweening;
+using UI.Panel;
 namespace Utils
 {
     public static class Utils
@@ -41,6 +42,47 @@ namespace Utils
             type == SkillSlotType.Passive5) return "Passive";
             if (type == SkillSlotType.Ultimate) return "Ultimate";
             return "error type";
+        }
+
+        /// <summary>
+        /// 按类名解析当前程序集内的公开类型（支持短类名与全限定名）
+        /// </summary>
+        public static Type ResolveType(string className)
+        {
+            var assembly = typeof(Utils).Assembly;
+            Type type = assembly.GetType(className);
+            if (type != null) return type;
+
+            foreach (var t in assembly.GetExportedTypes())
+            {
+                if (t.FullName == className || t.Name == className)
+                {
+                    return t;
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// 重开地图并解锁下一层（不关窗口）。用于节点弹窗流程中的降级/兜底路径。
+        /// </summary>
+        public static void ReturnToMap()
+        {
+            var mapPopWindow = UIManager.Instance.OpenPanel<MapPopWindow>();
+            if (mapPopWindow != null)
+            {
+                mapPopWindow.NextLevel();
+            }
+        }
+
+        /// <summary>
+        /// 完成节点弹窗流程：关闭指定窗口 + 重开地图 + 解锁下一层。
+        /// 事件/商店/战斗等节点弹窗结束后统一走这里回到地图。
+        /// </summary>
+        public static void FinishNode<T>() where T : BaseUIPanel
+        {
+            UIManager.Instance.ClosePanel<T>();
+            ReturnToMap();
         }
 
 

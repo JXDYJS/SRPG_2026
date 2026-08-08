@@ -41,6 +41,31 @@ namespace Core.Data
         public struct EventNodeConfig
         {
             public string id;
+            public string eventId;
+        }
+
+        public struct EventOption
+        {
+            public string title;
+            public string desc;
+            public string action;
+            public string result;
+            public string condition;
+            public string nextScreen;
+        }
+
+        public struct EventScreen
+        {
+            public string id;
+            public List<EventOption> options;
+        }
+
+        public struct EventConfig
+        {
+            public string id;
+            public string panelName;
+            public string startScreen;
+            public List<EventScreen> screens;
         }
 
         public struct BossNodeConfig
@@ -105,8 +130,17 @@ namespace Core.Data
         {
         };
 
+        public readonly Dictionary<string, EventConfig> EventConfigs = new()
+        {
+            { "ev_chest", new() { id = "ev_chest", panelName = "", startScreen = "s_main", screens = new() { new() { id = "s_main", options = new() { new() { title = "Take Relic", desc = "You see a glowing relic lying inside.", action = "EventActions.GiveRelic", result = "You obtained the relic Beacon!", condition = "", nextScreen = "" }, new() { title = "Take Gold", desc = "A pile of shiny gold coins is scattered inside.", action = "EventActions.GainGold", result = "You gained 50 gold!", condition = "", nextScreen = "" }, new() { title = "Leave", desc = "Better safe than sorry.", action = "", result = "", condition = "", nextScreen = "" } } } } } },
+            { "ev_gamble", new() { id = "ev_gamble", panelName = "", startScreen = "s_bet", screens = new() { new() { id = "s_bet", options = new() { new() { title = "Bet 50", desc = "Stake 50 gold and roll the dice to decide the winner.", action = "EventActions.Bet50", result = "", condition = "EventActions.CanAffordBet50", nextScreen = "s_bet" }, new() { title = "Leave", desc = "Quit while you are ahead.", action = "", result = "", condition = "", nextScreen = "" } } } } } },
+            { "ev_flappy", new() { id = "ev_flappy", panelName = "FlyBirdWindow", startScreen = "" } }
+        };
+
         public readonly Dictionary<string, EventNodeConfig> EventNodeConfigs = new()
         {
+            { "n_003", new() { id = "n_003", eventId = "ev_chest" } },
+            { "n_004", new() { id = "n_004", eventId = "ev_gamble" } }
         };
 
         public readonly Dictionary<string, LevelConfig> LevelConfigs = new()
