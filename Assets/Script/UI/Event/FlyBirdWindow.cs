@@ -194,13 +194,13 @@ namespace UI.Panel
             RotateBird(cfg);
         }
 
-        /// <summary>点击(按钮)累加上升速度，带连点间隔与上限</summary>
+        /// <summary>点击(按钮)直接设定上升速度，经典Flappy手感：连点不会叠加，节奏可预测</summary>
         private void TryFlap()
         {
             EventConfigData.FlyBirdData cfg = Data.Config.eventConfig.flyBirdData;
             if (Time.time - _lastFlapTime < cfg.clickInterval) return;
             _lastFlapTime = Time.time;
-            _vy = Mathf.Min(_vy + cfg.flapVel, cfg.maxClimbSpeed);
+            _vy = cfg.flapVel;
         }
 
         private void IntegrateBird(EventConfigData.FlyBirdData cfg)
