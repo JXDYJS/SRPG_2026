@@ -125,7 +125,7 @@ namespace UI.Panel
             flyBirdObstacles.Add(obs);
         }
 
-        /// <summary>计算下一根管柱的洞中心Y（受 maxGapDelta 限制防必死局）</summary>
+        /// <summary>计算下一根管柱的洞中心Y。随机游走 + 反射边界(到达边界弹回，不粘底/顶)</summary>
         private float NextGapCenter(EventConfigData.FlyBirdData cfg)
         {
             if (flyBirdObstacles.Count == 0)
@@ -133,9 +133,12 @@ namespace UI.Panel
                 _lastGapCenter = UnityEngine.Random.Range(cfg.gapCenterMin, cfg.gapCenterMax);
                 return _lastGapCenter;
             }
-            _lastGapCenter = Mathf.Clamp(
-                _lastGapCenter + UnityEngine.Random.Range(-cfg.maxGapDelta, cfg.maxGapDelta),
-                cfg.gapCenterMin, cfg.gapCenterMax);
+            float next = _lastGapCenter + UnityEngine.Random.Range(-cfg.maxGapDelta, cfg.maxGapDelta);
+            if (next < cfg.gapCenterMin)
+                next = cfg.gapCenterMin + (cfg.gapCenterMin - next);
+            else if (next > cfg.gapCenterMax)
+                next = cfg.gapCenterMax - (next - cfg.gapCenterMax);
+            _lastGapCenter = Mathf.Clamp(next, cfg.gapCenterMin, cfg.gapCenterMax);
             return _lastGapCenter;
         }
 
