@@ -28,6 +28,7 @@ namespace UI.Panel
         private float speed;
         private float _vy;
         private float _lastFlapTime = -10f;
+        private bool _started;
 
         public void Init(EventNode node)
         {
@@ -45,11 +46,22 @@ namespace UI.Panel
         }
         public void Update()
         {
+            if (!_started) return;
             MoveBG();
             UpdateBird();
             UpdateObs();
             DeleteMaskObs();
             CreateObs();
+        }
+
+        /// <summary>全屏按钮点击：第一次点击开始游戏并起跳，之后点击=扇翅</summary>
+        public void OnGameButtonClick()
+        {
+            if (!_started)
+            {
+                _started = true;
+            }
+            TryFlap();
         }
         public void SpeedUp()
         {
@@ -178,15 +190,14 @@ namespace UI.Panel
             if (birdRect == null) return;
             EventConfigData.FlyBirdData cfg = Data.Config.eventConfig.flyBirdData;
 
-            TryFlap(cfg);
             IntegrateBird(cfg);
             RotateBird(cfg);
         }
 
-        private void TryFlap(EventConfigData.FlyBirdData cfg)
+        /// <summary>点击(按钮)累加上升速度，带连点间隔与上限</summary>
+        private void TryFlap()
         {
-            bool pressed = Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space);
-            if (!pressed) return;
+            EventConfigData.FlyBirdData cfg = Data.Config.eventConfig.flyBirdData;
             if (Time.time - _lastFlapTime < cfg.clickInterval) return;
             _lastFlapTime = Time.time;
             _vy = Mathf.Min(_vy + cfg.flapVel, cfg.maxClimbSpeed);
