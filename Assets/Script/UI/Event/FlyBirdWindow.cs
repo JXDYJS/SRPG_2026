@@ -5,6 +5,7 @@ using UI.Panel;
 using UI.Slot;
 using UnityEngine;
 using UnityEngine.UI;
+using Utils;
 namespace UI.Panel
 {
     [UIPanelResource("UI/Event/MiniGame/FlyBirdWindow")]
@@ -13,11 +14,14 @@ namespace UI.Panel
         public Transform BGContent;
         public RectMask2D Mask;
         public GameObject Obstacle;
+        public RectTransform OBSContent;    // 障碍物父容器(与BG平级的Content子节点)
         public RectTransform birdRect;      // 鸟碰撞/位移节点(永不旋转)
         public RectTransform birdSprite;    // 鸟视觉节点(只旋转朝向)
         private HorizontalLayoutGroup BGLayout;
         private RectTransform _bgContentRect;
-        private List<FlyBirdObstacle> flyBirdObstacles;
+        private readonly List<FlyBirdObstacle> flyBirdObstacles = new();
+        private GameObjectPool _obstaclePool;
+        private float _lastGapCenter;
 
         private float _period;
         private float _scrollX;
@@ -34,11 +38,18 @@ namespace UI.Panel
             _bgContentRect = BGContent as RectTransform;
             MeasurePeriod();
             speed = Data.Config.eventConfig.flyBirdData.speed;
+            if (Obstacle != null && OBSContent != null)
+            {
+                _obstaclePool = new GameObjectPool(Obstacle, OBSContent, 4, 2);
+            }
         }
         public void Update()
         {
             MoveBG();
             UpdateBird();
+            UpdateObs();
+            DeleteMaskObs();
+            CreateObs();
         }
         public void SpeedUp()
         {
@@ -51,6 +62,97 @@ namespace UI.Panel
             var pos = _bgContentRect.anchoredPosition;
             pos.x = -_scrollX;
             _bgContentRect.anchoredPosition = pos;
+        }
+        public void UpdateObs()
+        {
+            foreach(var obs in flyBirdObstacles)
+            {
+                var rect = obs.GetComponent<RectTransform>();
+                rect.anchoredPosition = new Vector2(rect.anchoredPosition.x - Time.deltaTime * speed,rect.anchoredPosition.y);
+            }
+        }
+        public void DeleteMaskObs()
+        {
+            //因为保证新出现的在队列的尾端 所以从0开始遍历到第一个在mask内的就可以退出
+            for (int i = 0; i < flyBirdObstacles.Count; i++)
+            {
+                if (!flyBirdObstacles[i].IsFullyOffScreenLeft(GetMaskLeftWorldX()))
+                    break;
+                _obstaclePool.Return(flyBirdObstacles[i].gameObject);
+                flyBirdObstacles.RemoveAt(i);
+                i--;
+            }
+        }
+        public void CreateObs()
+        {
+            if (_obstaclePool == null) return;
+            //检查最后一个obs是否有边界 距离 屏幕边缘大于 设定距离
+            if (flyBirdObstacles.Count > 0)
+            {
+                var last = flyBirdObstacles[flyBirdObstacles.Count - 1];
+                float distanceToRight = GetMaskRightWorldX() - GetObsLeftWorldX(last);
+                if (distanceToRight < Data.Config.eventConfig.flyBirdData.spacing) return;
+            }
+
+            //新生成的要设置锚点在content的屏幕外 也就是xmin = 1 xmax = 1 锚点x = 0 这样正好在外面
+            GameObject go = _obstaclePool.Get();
+            RectTransform rect = go.GetComponent<RectTransform>();
+            rect.anchorMin = new Vector2(1f, 0f);
+            rect.anchorMax = new Vector2(1f, 1f);
+            rect.pivot = new Vector2(0f, 0.5f);   // 左边缘对齐右边界 → 完全在屏幕外
+            rect.anchoredPosition = new Vector2(0f, 0f);
+
+            EventConfigData.FlyBirdData cfg = Data.Config.eventConfig.flyBirdData;
+            float gapCenter = NextGapCenter(cfg);
+            float totalHeight = OBSContent.rect.height;
+            float gapPercent = cfg.gapSize / totalHeight;
+            float blowPercent = (gapCenter - cfg.gapSize * 0.5f) / totalHeight;
+
+            FlyBirdObstacle obs = go.GetComponent<FlyBirdObstacle>();
+            obs.Init(rect.rect.width, gapPercent, blowPercent, OnHitObs, OnThroughGap);
+            flyBirdObstacles.Add(obs);
+        }
+
+        /// <summary>计算下一根管柱的洞中心Y（受 maxGapDelta 限制防必死局）</summary>
+        private float NextGapCenter(EventConfigData.FlyBirdData cfg)
+        {
+            if (flyBirdObstacles.Count == 0)
+            {
+                _lastGapCenter = UnityEngine.Random.Range(cfg.gapCenterMin, cfg.gapCenterMax);
+                return _lastGapCenter;
+            }
+            _lastGapCenter = Mathf.Clamp(
+                _lastGapCenter + UnityEngine.Random.Range(-cfg.maxGapDelta, cfg.maxGapDelta),
+                cfg.gapCenterMin, cfg.gapCenterMax);
+            return _lastGapCenter;
+        }
+
+        private float GetMaskLeftWorldX()
+        {
+            Vector3[] corners = new Vector3[4];
+            OBSContent.GetWorldCorners(corners);
+            return corners[0].x;
+        }
+        private float GetMaskRightWorldX()
+        {
+            Vector3[] corners = new Vector3[4];
+            OBSContent.GetWorldCorners(corners);
+            return corners[2].x;
+        }
+        private float GetObsLeftWorldX(FlyBirdObstacle obs)
+        {
+            Vector3[] corners = new Vector3[4];
+            obs.GetComponent<RectTransform>().GetWorldCorners(corners);
+            return corners[0].x;
+        }
+
+        private void OnHitObs()
+        {
+            // TODO: 撞管结算
+        }
+        private void OnThroughGap()
+        {
+            // TODO: 计分
         }
 
         /// <summary>
