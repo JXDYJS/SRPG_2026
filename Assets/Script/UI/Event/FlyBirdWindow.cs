@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using Core.Data;
+using Managers;
 using Map;
+using TMPro;
 using UI.Panel;
 using UI.Slot;
 using UnityEngine;
@@ -17,6 +19,8 @@ namespace UI.Panel
         public RectTransform OBSContent;    // 障碍物父容器(与BG平级的Content子节点)
         public RectTransform birdRect;      // 鸟碰撞/位移节点(永不旋转)
         public RectTransform birdSprite;    // 鸟视觉节点(只旋转朝向)
+        public TextMeshProUGUI ResultText;
+        public TextMeshProUGUI ScoreText;
         private HorizontalLayoutGroup BGLayout;
         private RectTransform _bgContentRect;
         private readonly List<FlyBirdObstacle> flyBirdObstacles = new();
@@ -29,9 +33,18 @@ namespace UI.Panel
         private float _vy;
         private float _lastFlapTime = -10f;
         private bool _started;
+        private bool _gameOver;
+        private int _score;
 
         public void Init(EventNode node)
         {
+            _started = false;
+            _gameOver = false;
+            _score = 0;
+            _vy = 0f;
+            _lastFlapTime = -10f;
+            if (ResultText != null) ResultText.gameObject.SetActive(false);
+            RefreshScoreText();
         }
         protected override void Awake()
         {
@@ -46,22 +59,33 @@ namespace UI.Panel
         }
         public void Update()
         {
-            if (!_started) return;
+            if (!_started || _gameOver) return;
             MoveBG();
             UpdateBird();
             UpdateObs();
             DeleteMaskObs();
             CreateObs();
+            CheckCollision();
+            CheckOutOfBounds();
         }
 
-        /// <summary>全屏按钮点击：第一次点击开始游戏并起跳，之后点击=扇翅</summary>
+        /// <summary>全屏按钮点击：未开始→开始并起跳；游戏中→扇翅；结束后→结算确认关闭回地图</summary>
         public void OnGameButtonClick()
         {
+            if (_gameOver)
+            {
+                FinishGame();
+                return;
+            }
             if (!_started)
             {
                 _started = true;
             }
             TryFlap();
+        }
+        public void FinishGame()
+        {
+            Utils.Utils.FinishNode<FlyBirdWindow>();
         }
         public void SpeedUp()
         {
@@ -163,11 +187,69 @@ namespace UI.Panel
 
         private void OnHitObs()
         {
-            // TODO: 撞管结算
+            GameOver();
         }
         private void OnThroughGap()
         {
-            // TODO: 计分
+            _score++;
+            RefreshScoreText();
+        }
+
+        // ==================== 碰撞与结算 ====================
+
+        private void CheckCollision()
+        {
+            foreach (var obs in flyBirdObstacles)
+            {
+                if (obs.IsHit(birdRect))
+                {
+                    OnHitObs();
+                    return;
+                }
+                obs.TryScore(birdRect);
+            }
+        }
+
+        private void CheckOutOfBounds()
+        {
+            Vector3[] birdC = new Vector3[4];
+            birdRect.GetWorldCorners(birdC);
+            Vector3[] maskC = new Vector3[4];
+            OBSContent.GetWorldCorners(maskC);
+            float birdTop = birdC[2].y;
+            float birdBottom = birdC[0].y;
+            float maskTop = maskC[2].y;
+            float maskBottom = maskC[0].y;
+            if (birdTop < maskBottom || birdBottom > maskTop)
+            {
+                GameOver();
+            }
+        }
+
+        private void GameOver()
+        {
+            if (_gameOver) return;
+            _gameOver = true;
+
+            int gold = _score * 10;
+            if (RunManager.Instance != null)
+            {
+                RunManager.Instance.AddGold(gold);
+            }
+
+            if (ResultText != null)
+            {
+                ResultText.gameObject.SetActive(true);
+                ResultText.text = string.Format("You get {0,5} gold", gold);
+            }
+        }
+
+        private void RefreshScoreText()
+        {
+            if (ScoreText != null)
+            {
+                ScoreText.text = string.Format("Score: {0,4}", _score);
+            }
         }
 
         /// <summary>

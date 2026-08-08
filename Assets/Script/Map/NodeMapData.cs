@@ -230,8 +230,8 @@ namespace Map
             shop.row = 1;
             shop.col = 0;
 
-            // 第一层并入事件节点（自动获取随机事件）
-            EventNode eventNode = new("n_004") { eventId = GetRandomEventId(), row = 2, col = 0 };
+            // 第一层并入事件节点（FlyBird小游戏）
+            EventNode eventNode = new("n_004") { eventId = "ev_flappy", row = 2, col = 0 };
 
             node1.connections.Add(node2.id);
             shop.connections.Add(node2.id);
