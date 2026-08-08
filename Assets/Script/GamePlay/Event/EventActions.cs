@@ -29,7 +29,7 @@ namespace GamePlay.Event
         {
             if (!RunManager.Instance.TrySpendGold(50))
             {
-                EventFlow.ResultText = "金币不足，无法下注。";
+                EventFlow.ResultText = "Not enough gold to place the bet.";
                 return;
             }
 
@@ -37,11 +37,11 @@ namespace GamePlay.Event
             if (win)
             {
                 RunManager.Instance.AddGold(100);
-                EventFlow.ResultText = "骰子滚出大点，你赢了！返还 100 金币。";
+                EventFlow.ResultText = "The dice rolled high, you win! 100 gold returned.";
             }
             else
             {
-                EventFlow.ResultText = "骰子滚出小点，你输了，50 金币打了水漂。";
+                EventFlow.ResultText = "The dice rolled low, you lost the 50 gold.";
             }
         }
     }

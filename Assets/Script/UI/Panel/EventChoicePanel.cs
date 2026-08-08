@@ -63,7 +63,7 @@ namespace UI.Panel
         {
             if (titleText != null && EventFlow.CurrentConfig.id != null)
             {
-                titleText.text = string.IsNullOrEmpty(EventFlow.CurrentConfig.id) ? "" : $"事件：{EventFlow.CurrentConfig.id}";
+                titleText.text = string.IsNullOrEmpty(EventFlow.CurrentConfig.id) ? "" : $"Event: {EventFlow.CurrentConfig.id}";
             }
             EventFlow.SwitchScreen(EventFlow.CurrentConfig.startScreen);
             RenderCurrentScreen();
