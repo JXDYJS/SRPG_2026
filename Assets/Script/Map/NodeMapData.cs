@@ -231,7 +231,7 @@ namespace Map
             shop.col = 0;
 
             // 第一层并入事件节点（FlyBird小游戏）
-            EventNode eventNode = new("n_004") { eventId = "ev_flappy", row = 2, col = 0 };
+            EventNode eventNode = new("n_ev_flappy") { eventId = "ev_flappy", row = 2, col = 0 };
 
             node1.connections.Add(node2.id);
             shop.connections.Add(node2.id);

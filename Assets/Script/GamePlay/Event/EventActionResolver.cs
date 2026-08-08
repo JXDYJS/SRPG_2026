@@ -6,7 +6,7 @@ using UnityEngine;
 namespace GamePlay.Event
 {
     /// <summary>
-    /// 事件 action 解析 — C# 反射优先，Lua 兜底预留。
+    /// 事件 action 解析 — C# 反射。
     ///
     /// 约定：配表 action/condition 列写 "EventActions.方法名"（或任意静态类全名.方法名）。
     /// 无参调用，所需信息通过全局单例（RunManager/Data.Persistent 等）获取。
@@ -21,10 +21,7 @@ namespace GamePlay.Event
             if (method != null)
             {
                 method.Invoke(null, null);
-                return;
             }
-
-            //Debug.LogWarning($"[EventActionResolver] action '{name}' 未找到（C# 反射失败，Lua 兜底待接入）");
         }
 
         public static bool InvokeBool(string name)
