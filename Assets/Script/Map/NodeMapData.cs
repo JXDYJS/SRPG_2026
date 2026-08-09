@@ -31,6 +31,10 @@ namespace Map
     [Serializable]
     public abstract class BaseNode : IMapNode
     {
+        // id 的 setter 是 private，Newtonsoft 默认不会反序列化私有 setter 的属性，
+        // 必须显式 [JsonProperty]，否则读档后节点 id 仍是构造器生成的随机 GUID，
+        // 导致 connections 里的引用（如 "n_002"）在 _nodeIdLookup 中匹配不到，连线消失。
+        [JsonProperty]
         public string id { get; private set; }
         public MapType type { get; protected set; }
         public int col{get;set;}
