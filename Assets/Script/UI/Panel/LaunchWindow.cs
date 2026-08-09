@@ -62,28 +62,20 @@ namespace UI.Panel
         /// </summary>
         public async UniTask LoadSamPleScene(LoadWindow window)
         {
-            AsyncOperationHandle<SceneInstance> handle =
-                Addressables.LoadSceneAsync("Assets/Scenes/SampleScene.unity", LoadSceneMode.Single, activateOnLoad: false);
+            // [临时测试] 改走 SceneManager 直接加载，验证是否 Addressable 场景依赖问题
+            AsyncOperation op = SceneManager.LoadSceneAsync("SampleScene", LoadSceneMode.Single);
+            op.allowSceneActivation = false;
 
-            // 加载阶段实际进度 0~0.9，归一化给进度条
-            while (!handle.IsDone)
+            while (op.progress < 0.9f)
             {
-                window.SetProgress(handle.PercentComplete);
+                window.SetProgress(op.progress);
                 await UniTask.Yield();
             }
 
-            if (handle.Status != AsyncOperationStatus.Succeeded)
-            {
-                Debug.LogError($"[LaunchWindow] 加载 SampleScene 失败: {handle.OperationException}");
-                window.Close();
-                return;
-            }
-
             window.SetProgress(1f);
-            await UniTask.Delay(TimeSpan.FromMilliseconds(400)); // 最小展示时长，避免秒闪
+            await UniTask.Delay(TimeSpan.FromMilliseconds(400));
 
-            await handle.Result.ActivateAsync().ToUniTask();
-            Addressables.Release(handle);
+            op.allowSceneActivation = true;
             window.Close();
         }
     }

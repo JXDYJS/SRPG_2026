@@ -36,6 +36,8 @@ Assets/AddressableAssetsData/**
 Assets/Scenes/LaunchScene.unity
 # 未启用的练习/过渡场景，不进 Addressables
 Assets/Scenes/LoadScene.unity
+# [临时测试] SampleScene 临时改走 Build Settings 直接构建，验证 Addressable 场景依赖问题
+Assets/Scenes/SampleScene.unity
 
 # 资源代码/脚本/配置，不入 Addressables
 Assets/Script/**
