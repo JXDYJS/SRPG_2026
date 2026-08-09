@@ -3,6 +3,9 @@ using Cysharp.Threading.Tasks;
 using Core.Data;
 using Managers;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
+using UnityEngine.ResourceManagement.ResourceProviders;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 namespace UI.Panel
@@ -53,25 +56,34 @@ namespace UI.Panel
 
         /// <summary>
         /// 异步加载 SampleScene 并驱动 LoadWindow 进度条。
+        /// SampleScene 是 Addressable 场景（Scenes 分组），必须用 Addressables.LoadSceneAsync，
+        /// 不能走 SceneManager（打包后 Build Settings 场景列表里没有它）。
         /// 注意：加载完成后 LaunchScene 会卸载，因此这里只依赖 window（挂在 UIRoot/DontDestroyOnLoad 上）。
         /// </summary>
         public async UniTask LoadSamPleScene(LoadWindow window)
         {
-            AsyncOperation op = SceneManager.LoadSceneAsync("SampleScene");
-            op.allowSceneActivation = false;
+            AsyncOperationHandle<SceneInstance> handle =
+                Addressables.LoadSceneAsync("Assets/Scenes/SampleScene.unity", LoadSceneMode.Single, activateOnLoad: false);
 
-            // 实际进度 0~0.9，归一化给进度条
-            while (op.progress < 0.9f)
+            // 加载阶段实际进度 0~0.9，归一化给进度条
+            while (!handle.IsDone)
             {
-                window.SetProgress(op.progress / 0.9f);
+                window.SetProgress(handle.PercentComplete);
                 await UniTask.Yield();
+            }
+
+            if (handle.Status != AsyncOperationStatus.Succeeded)
+            {
+                Debug.LogError($"[LaunchWindow] 加载 SampleScene 失败: {handle.OperationException}");
+                window.Close();
+                return;
             }
 
             window.SetProgress(1f);
             await UniTask.Delay(TimeSpan.FromMilliseconds(400)); // 最小展示时长，避免秒闪
 
-            op.allowSceneActivation = true;
-            await op.ToUniTask();
+            await handle.Result.ActivateAsync().ToUniTask();
+            Addressables.Release(handle);
             window.Close();
         }
     }

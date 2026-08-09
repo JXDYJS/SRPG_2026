@@ -62,11 +62,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 019ddbd845cf57d4991762d79ab297a5
-    m_Address: Assets/textures/block/brown_mushroom.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 01a276fa457fe2d459ebef884376135d
     m_Address: Assets/textures/block/pumpkin_side.png
     m_ReadOnly: 0
@@ -114,11 +109,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 031ecba34301f7f41ad00d755d8e45e7
     m_Address: Assets/textures/block/chain_command_block_front.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 0337135f68a3ad543b49947bbbbfcf73
-    m_Address: Assets/textures/block/open_eyeblossom.png.mcmeta
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -202,11 +192,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 05cf1f2ea4ed626439367389314e34c2
-    m_Address: Assets/textures/block/dandelion.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 05d06afcaefd64545894c60237c544bf
     m_Address: Assets/textures/block/cauldron_top.png
     m_ReadOnly: 0
@@ -262,18 +247,8 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 07c434b48dc9123418afc259f41d2586
-    m_Address: Assets/textures/block/azalea_leaves.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 08404d5afc27d994d8c86ba207c4f1ee
     m_Address: Assets/textures/block/blackstone_top.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 085016aecb027f24b812b58b7c4623bb
-    m_Address: Assets/textures/block/sweet_berry_bush_stage0.png.mcmeta
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -319,11 +294,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0aa7d9b42c8766f499cb63d835d087d7
     m_Address: Assets/textures/block/lightning_rod.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 0aaa00b6e99d07c44828450538065e2c
-    m_Address: Assets/textures/block/copper_lantern.png.mcmeta
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -387,16 +357,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 0c29757a9cbd94c46943137c99491e19
-    m_Address: Assets/textures/block/mangrove_roots_side.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 0c33a58a30a815c42a4c88730c8db33c
-    m_Address: Assets/textures/block/sculk_vein.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0cb663a3b81605e4dbe1db115ea98892
     m_Address: Assets/textures/block/bamboo_block.png
     m_ReadOnly: 0
@@ -434,11 +394,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0da8e87b6009441408f120800a08d162
     m_Address: Assets/textures/block/magma.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 0dcdbdf8fa726654994187aaac9d1d3b
-    m_Address: Assets/textures/block/repeating_command_block_front.png.mcmeta
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -702,11 +657,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 17b8dbf2058d1de42b6095b8e480f8e8
-    m_Address: Assets/textures/block/nether_portal.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 17d0b6ff1aab1cc47ba54861305c4f49
     m_Address: Assets/textures/block/tall_grass_bottom.png
     m_ReadOnly: 0
@@ -812,11 +762,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 1bca25dc3f55d5a4b9cdf650e54f1d5a
-    m_Address: Assets/textures/block/chain_command_block_conditional.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1c02b129dae8a894facfcf4412cf65c9
     m_Address: Assets/textures/block/birch_door_bottom.png
     m_ReadOnly: 0
@@ -829,11 +774,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1c6033d6bd6b4f0469bb248b99fb1a1c
     m_Address: Assets/textures/block/weathered_copper_bulb_powered.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 1cc635056e74aa043a9afda0a768f46b
-    m_Address: Assets/textures/block/fire_0.png.mcmeta
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -879,11 +819,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1eea42d696a150e41972930669ec18bb
     m_Address: Assets/textures/block/acacia_shelf.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 1f25331e4b19ccb4a933a1151b058aad
-    m_Address: Assets/textures/block/torchflower.png.mcmeta
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -992,11 +927,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 25f3b98d64b2f14438e79265d0796c20
-    m_Address: Assets/textures/block/water_flow.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 25fa3f06cbdb5c04d81eb1f46bd9ae4f
     m_Address: Assets/textures/block/wheat_stage3.png
     m_ReadOnly: 0
@@ -1042,11 +972,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 28cf9c7bed1a13448ba8ee57439252f8
-    m_Address: Assets/textures/block/magma.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 28f98d12204b3c343bd47ee3d8137d28
     m_Address: Assets/textures/block/quartz_block_top.png
     m_ReadOnly: 0
@@ -1069,16 +994,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2968f721ee2d3a74389d3a813b36c36a
     m_Address: Assets/textures/block/light_gray_candle_lit.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 29ba97de6c57e104cb821b9df01c58ea
-    m_Address: Assets/textures/block/cactus_flower.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 29c5535ce80f05d4eb4301244c71cdff
-    m_Address: Assets/textures/block/weathered_copper_lantern.png.mcmeta
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1207,11 +1122,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 30bbb174c9800b24c8ba095631ed269f
-    m_Address: Assets/textures/block/campfire_log_lit.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 30c61ca9f199e3544ac8de1122d74aa6
     m_Address: Assets/textures/block/light_gray_terracotta.png
     m_ReadOnly: 0
@@ -1242,11 +1152,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 33a357967eb8398469ddca1bc527b8e9
-    m_Address: Assets/textures/block/red_tulip.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 33b2461f1c09bc6479743bb3a3ecee50
     m_Address: Assets/textures/block/dried_ghast_hydration_2_south.png
     m_ReadOnly: 0
@@ -1259,11 +1164,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3420547593d2dea4693caf475680f3ef
     m_Address: Assets/textures/block/bee_nest_front_honey.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 342676a0b069d8b499b2dd652c667d4b
-    m_Address: Assets/textures/block/warped_fungus.png.mcmeta
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1334,11 +1234,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 37153a3a011cd78439b7a663cd6c4705
     m_Address: Assets/textures/block/cobblestone.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 3753c29485a1cd842b34a88902042dea
-    m_Address: Assets/textures/block/chain_command_block_back.png.mcmeta
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1462,11 +1357,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 3c1bd745b102bf347b1b3504f8d33691
-    m_Address: Assets/textures/block/command_block_side.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3ca0269f50c2ce84b8240c6573bd133d
     m_Address: Assets/textures/block/fire_0.png
     m_ReadOnly: 0
@@ -1557,11 +1447,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 4176023d4762a0945a7f1542fa628a04
-    m_Address: Assets/textures/block/poppy.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 418e051207c2d6a4ba6b78c1c8614a55
     m_Address: Assets/textures/block/dropper_front.png
     m_ReadOnly: 0
@@ -1587,18 +1472,8 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 42ba3c040cc79a24c8cc9ead4c028def
-    m_Address: Assets/textures/block/firefly_bush_emissive.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 430b4fa8a46b0a149888a00138241023
     m_Address: Assets/textures/block/packed_ice.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 43ff49f861945ee41abe1f468d688ffe
-    m_Address: Assets/textures/block/soul_lantern.png.mcmeta
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1634,11 +1509,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 46198030b18cdb242b3c7a3fd755958c
     m_Address: Assets/textures/block/frosted_ice_0.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 465c5f92f9cafe4428e4a3b4097fdac2
-    m_Address: Assets/textures/block/exposed_copper_lantern.png.mcmeta
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1684,11 +1554,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 480daff6b51d1c141ba03cbabced4a70
     m_Address: Assets/textures/block/nether_wart_stage1.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 48554ce046d8e8f4680c2a0eb2c2e875
-    m_Address: Assets/textures/block/sculk_catalyst_side_bloom.png.mcmeta
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1827,18 +1692,8 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 4d17e9b47b3ba59429b68ce2dde8bbcf
-    m_Address: Assets/textures/block/amethyst_cluster.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4d28fc85ba96e124da19fb7bfc97a08c
     m_Address: Assets/textures/block/short_grass.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 4d360747fa9205a4fa0a47d6eba7d0f7
-    m_Address: Assets/textures/block/cornflower.png.mcmeta
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1852,18 +1707,8 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 4dae6f2f988a12b4f9344d415c19c070
-    m_Address: Assets/textures/block/lantern.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4dc442289d95fd948b50e1ee36675972
     m_Address: Assets/textures/block/wheat_stage0.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 4dd5a4aa6750c054b9fc9498206ece47
-    m_Address: Assets/textures/block/oxeye_daisy.png.mcmeta
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1884,11 +1729,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4f4b08a116031da4abf3b497783ee072
     m_Address: Assets/textures/block/vault_top_ejecting.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 4f544d5f79bca924091fff325ddc8b42
-    m_Address: Assets/textures/block/redstone_dust_line1.png.mcmeta
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1944,11 +1784,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 515349bf4cf6f7242b897299d0c4beed
     m_Address: Assets/textures/block/lava_flow.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 51b42d49d7624cf42bd6ba67b0d1f3ef
-    m_Address: Assets/textures/block/redstone_dust_line0.png.mcmeta
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -2037,11 +1872,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 558cfe8c1e002114bbc37ac6df101597
-    m_Address: Assets/textures/block/azure_bluet.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 55b166b00349b8d4297739f2dd1723ba
     m_Address: Assets/textures/block/jungle_log_top.png
     m_ReadOnly: 0
@@ -2089,16 +1919,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 572c43aeb98d16f4ab452a68204efe1e
     m_Address: Assets/textures/block/cyan_concrete.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 578f2d35350f38a4cb25dbed6856edbc
-    m_Address: Assets/textures/block/command_block_front.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 57d0a9972bf5bb848b9b76eb6f9987ff
-    m_Address: Assets/textures/block/soul_campfire_fire.png.mcmeta
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -2232,11 +2052,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 5ccd7e2cc76703e4f97375f5bbbd5163
-    m_Address: Assets/textures/block/spruce_leaves.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5cd0b5d9fafed89439a0bb7c4f67b150
     m_Address: Assets/textures/block/carrots_stage1.png
     m_ReadOnly: 0
@@ -2272,18 +2087,8 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 5e975c01ce6de7947b1aeab349df6d32
-    m_Address: Assets/textures/block/flowering_azalea_leaves.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5ef6611681d0ccd4a9e5352dfeae5b09
     m_Address: Assets/textures/block/mangrove_log_top.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 5f72b39dcb19ad8419ef95659edfd8e9
-    m_Address: Assets/textures/block/allium.png.mcmeta
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -2344,16 +2149,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 61dad7b9d7d13ec4891c620ca1929c3a
     m_Address: Assets/textures/block/dried_ghast_hydration_2_east.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 61f0953ca0fba8945be54a98ca1f58a0
-    m_Address: Assets/textures/block/blast_furnace_front_on.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 61fe707179828b146b4d47580de5f0de
-    m_Address: Assets/textures/block/kelp_plant.png.mcmeta
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -2422,11 +2217,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 6559c341ed9ac2747a771195e777fea6
-    m_Address: Assets/textures/block/crimson_stem.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 65b5b7fbcc24fd24eae28cacca387c9c
     m_Address: Assets/textures/block/pale_oak_shelf.png
     m_ReadOnly: 0
@@ -2477,11 +2267,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 67b886ef2dfa78545aeb763ac5475a66
-    m_Address: Assets/textures/block/oak_leaves.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 67cfb705fda3a464f9f47dd37fe19a48
     m_Address: Assets/textures/block/cyan_candle.png
     m_ReadOnly: 0
@@ -2489,11 +2274,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 67dbae3bc0c4661429ed265771ae9e5f
     m_Address: Assets/textures/block/vault_bottom_ominous.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 67e9eb1bf3a19034891106c5a28592e1
-    m_Address: Assets/textures/block/repeating_command_block_side.png.mcmeta
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -2602,11 +2382,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 6cc38da41bc0a2146a245b29c40e3867
-    m_Address: Assets/textures/block/mangrove_leaves.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 6dce57454e5747c4298c66660360053e
     m_Address: Assets/textures/block/pointed_dripstone_down_base.png
     m_ReadOnly: 0
@@ -2684,11 +2459,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 717a92caa88fce64092d28e2a23160a8
     m_Address: Assets/textures/block/pale_oak_leaves.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 717ddfb15b50cf54da8aa5933bae158d
-    m_Address: Assets/textures/block/command_block_back.png.mcmeta
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -2789,11 +2559,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 75ffbe727d0c3814dbdca10beebe8e9a
     m_Address: Assets/textures/block/coal_block.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 764b9b66aa6fab446b0d77bb800ef134
-    m_Address: Assets/textures/block/acacia_leaves.png.mcmeta
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -2947,18 +2712,8 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 7d45f6cca97e050498ced936038bd7a2
-    m_Address: Assets/textures/block/sculk_sensor_tendril_inactive.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 7d46fb08cd8a8134284a3ad5d2f0e213
     m_Address: Assets/textures/block/chiseled_stone_bricks.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 7d6f7f43b07e7f54f9950b070f2e8b69
-    m_Address: Assets/textures/block/sculk_shrieker_inner_top.png.mcmeta
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -3024,11 +2779,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 811f78ac92fb9874081d1739dc82f9bd
     m_Address: Assets/textures/block/oak_shelf.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 819b608e7254adc44b58dcbb7233ced2
-    m_Address: Assets/textures/block/tall_seagrass_bottom.png.mcmeta
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -3127,11 +2877,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 84b3a4cfcd35d974eb7572b72671642a
-    m_Address: Assets/textures/block/campfire_fire.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 84bf593c0e681904582add575448264d
     m_Address: Assets/textures/block/cave_vines_plant_lit.png
     m_ReadOnly: 0
@@ -3157,18 +2902,8 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 85db342fc00caaa4cb6e93c88752a73b
-    m_Address: Assets/textures/block/repeating_command_block_conditional.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 85e23a53b079c9549a33179e4c8d9b29
     m_Address: Assets/textures/block/bamboo_door_top.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 86474870362224248b59b2820e79abf8
-    m_Address: Assets/textures/block/pink_tulip.png.mcmeta
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -3327,11 +3062,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 8c9e62ac8c6fa744bb5f70eaf8aa2bd0
-    m_Address: Assets/textures/block/lava_flow.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8cc2ebac7c79f404a914489f76ea2198
     m_Address: Assets/textures/block/sniffer_egg_very_cracked_west.png
     m_ReadOnly: 0
@@ -3412,11 +3142,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 8fef72a27b7188b438ab8e5b59f1b3a2
-    m_Address: Assets/textures/block/tall_seagrass_top.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 902f43d130ceec240b2b549434d996ef
     m_Address: Assets/textures/block/cyan_wool.png
     m_ReadOnly: 0
@@ -3442,11 +3167,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 92150702c4e1773418a9b9abdbea0f0f
-    m_Address: Assets/textures/block/medium_amethyst_bud.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 921c3d57c6e91f94189d16b330582854
     m_Address: Assets/textures/block/stonecutter_bottom.png
     m_ReadOnly: 0
@@ -3464,11 +3184,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 925106e926d01dc45bfdc6d6b646ce5a
     m_Address: Assets/textures/block/suspicious_gravel_0.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 926a8321d4a21a34389e06c965b3ddb0
-    m_Address: Assets/textures/block/prismarine.png.mcmeta
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -3494,11 +3209,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 93454f452023a484d8c5484dba52a873
     m_Address: Assets/textures/block/orange_concrete_powder.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 934e89884de77fe4e9a6529d62f89c88
-    m_Address: Assets/textures/block/closed_eyeblossom.png.mcmeta
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -3587,11 +3297,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 98204a340ca3190409001168f90ae293
-    m_Address: Assets/textures/block/wither_rose.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 988dc272e0bdac7469f324d3f3ccaf6a
     m_Address: Assets/textures/block/observer_front.png
     m_ReadOnly: 0
@@ -3644,16 +3349,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 9a67458a051ece34d8668874938664e9
     m_Address: Assets/textures/block/jungle_trapdoor.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 9aa49af2fd6bb5840827104793b75311
-    m_Address: Assets/textures/block/lava_still.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 9ac8c47800bf3974c9e6c50e421a2a6b
-    m_Address: Assets/textures/block/redstone_dust_overlay.png.mcmeta
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -3772,11 +3467,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 9f226eb91394cce4081cb380d5642e5d
-    m_Address: Assets/textures/block/blue_orchid.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 9f386b5e2e49ef1448e91b1e7ff2e331
     m_Address: Assets/textures/block/sunflower_top.png
     m_ReadOnly: 0
@@ -3807,18 +3497,8 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 9fed41823e472324397f07fa53041851
-    m_Address: Assets/textures/block/nether_sprouts.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 9ff1940d1b28d51478fce4716e77b6dc
     m_Address: Assets/textures/block/dark_oak_log.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: a01487e7972d5ee45bca8ce100e394e9
-    m_Address: Assets/textures/block/sculk_sensor_tendril_active.png.mcmeta
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -3962,11 +3642,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: a63878b1aec56ba4ea37e1d739b43c17
-    m_Address: Assets/textures/block/sculk_shrieker_can_summon_inner_top.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a658891e6318af1498ef25950745a800
     m_Address: Assets/textures/block/trial_spawner_bottom.png
     m_ReadOnly: 0
@@ -3979,11 +3654,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a6cc7b8c8cc87184ba03c3dc31cb8970
     m_Address: Assets/textures/block/water_flow.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: a6ebaa8d4fceb634dbf565a2618fab26
-    m_Address: Assets/textures/block/sculk.png.mcmeta
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -4102,11 +3772,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: ad928074c822c774d9b53fdca188745a
-    m_Address: Assets/textures/block/crimson_fungus.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ada3b23aacc5f2e4fad3053b833a2667
     m_Address: Assets/textures/block/black_candle_lit.png
     m_ReadOnly: 0
@@ -4142,11 +3807,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: aeff452f8aa7e614dae8e4217bbd1d62
-    m_Address: Assets/textures/block/birch_leaves.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: af0ea873414f78746a6e796a7b4b6cf9
     m_Address: Assets/textures/block/campfire_log.png
     m_ReadOnly: 0
@@ -4154,11 +3814,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: af283e5cd46a1e14ea913789becc5e5c
     m_Address: Assets/textures/block/oxidized_copper_door_top.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: af3e0534f45f88f42b5d7450d93cc08d
-    m_Address: Assets/textures/block/chain_command_block_side.png.mcmeta
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -4212,11 +3867,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: b131acb68ebebff449b3fc73bffd2a3f
-    m_Address: Assets/textures/block/mangrove_roots_top.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b1d6b6e4cf2d0ab42a1fc97a64f67097
     m_Address: Assets/textures/block/suspicious_sand_1.png
     m_ReadOnly: 0
@@ -4252,11 +3902,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: b2f6cf2f9be99574bb2692f85ad76f61
-    m_Address: Assets/textures/block/soul_campfire_log_lit.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b33065ef775ff8346be4a7e042b710f4
     m_Address: Assets/textures/block/copper_grate.png
     m_ReadOnly: 0
@@ -4269,11 +3914,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b4143b5209e4c86419c2e6bf0597a0b1
     m_Address: Assets/textures/block/lilac_top.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: b42d203304039dd4196bfc08b571c7a0
-    m_Address: Assets/textures/block/warped_stem.png.mcmeta
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -4387,11 +4027,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: b7ce17e86644fdd40a6978150b0c862c
-    m_Address: Assets/textures/block/dark_oak_leaves.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b7ee27699c3ebae46a3f20419b9cfccc
     m_Address: Assets/textures/block/destroy_stage_8.png
     m_ReadOnly: 0
@@ -4414,11 +4049,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b8b3dc75e4872954bbece8914b1d972c
     m_Address: Assets/textures/block/dried_ghast_hydration_2_top.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: b92e98d8721bf494586274449f839a3a
-    m_Address: Assets/textures/block/command_block_conditional.png.mcmeta
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -4462,11 +4092,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: bb2bbb6247d66344f80fe8e61f589cad
-    m_Address: Assets/textures/block/sea_lantern.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: bbea603baa3de3b4397318c61201352f
     m_Address: Assets/textures/block/smoker_front_on.png
     m_ReadOnly: 0
@@ -4494,11 +4119,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: bd63639f96b9b4543b39b7847164427e
     m_Address: Assets/textures/block/deepslate_gold_ore.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: bd87e43ab448b2949824a04c068614e9
-    m_Address: Assets/textures/block/small_amethyst_bud.png.mcmeta
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -4567,18 +4187,8 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: c0517819250550b4dbfd438acdf59f6b
-    m_Address: Assets/textures/block/respawn_anchor_top.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c06a31e562da96043a7abc08355dc7f9
     m_Address: Assets/textures/block/light_gray_glazed_terracotta.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: c06ead1a310de2b4d9a8c4dfb01f2bfc
-    m_Address: Assets/textures/block/jungle_leaves.png.mcmeta
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -4594,11 +4204,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c0c5fada038765949be17a8a87dceeb0
     m_Address: Assets/textures/block/oxidized_chiseled_copper.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: c13b02658742b0b46bcaa56fabd443ee
-    m_Address: Assets/textures/block/chain_command_block_front.png.mcmeta
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -4619,11 +4224,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c2850cbb6dcea9f4f82f98ab156c7821
     m_Address: Assets/textures/block/chorus_flower.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: c2a5cfe6743401d499ce40b5e7b704ca
-    m_Address: Assets/textures/block/seagrass.png.mcmeta
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -4777,11 +4377,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: c8f1d6e89e32e1046b2cc3b74588e5e2
-    m_Address: Assets/textures/block/red_mushroom.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c90928837caa15f409ed4af2dc920017
     m_Address: Assets/textures/block/command_block_back.png
     m_ReadOnly: 0
@@ -4794,11 +4389,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c941eaf60256da945954110c09a91edd
     m_Address: Assets/textures/block/spawner.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: c948592824d0f294980dab31ad05e311
-    m_Address: Assets/textures/block/white_tulip.png.mcmeta
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -4882,11 +4472,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: cbe9bd104ef847d46a81895c501e3bb5
-    m_Address: Assets/textures/block/repeating_command_block_back.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: cbed34a00810cfd4b99733df8c40a4d1
     m_Address: Assets/textures/block/warped_roots_pot.png
     m_ReadOnly: 0
@@ -4944,11 +4529,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ced05499b95080a4799598db1033214a
     m_Address: Assets/textures/block/vault_top.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: ced13e49ffa3ebc428130e963d016253
-    m_Address: Assets/textures/block/soul_fire_0.png.mcmeta
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -5027,11 +4607,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: d360505f9fd9bcf48b494566681ea839
-    m_Address: Assets/textures/block/redstone_dust_dot.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d3ab25f6b0f126b44b94e912dcc408ed
     m_Address: Assets/textures/block/stripped_spruce_log_top.png
     m_ReadOnly: 0
@@ -5064,11 +4639,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d445b47a11b07ff44a67fcb63cab0529
     m_Address: Assets/textures/block/exposed_copper_chain.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: d4c26d2b7156a5b45b9001c613f95934
-    m_Address: Assets/textures/block/sculk_catalyst_top_bloom.png.mcmeta
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -5252,11 +4822,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: daf645968594e2346ac1aca17fb06ae1
-    m_Address: Assets/textures/block/water_still.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: dbc4d77421f02154cbcf5c4e0d7cb1d6
     m_Address: Assets/textures/block/red_wool.png
     m_ReadOnly: 0
@@ -5352,11 +4917,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: e077fd0ce8731fa449c9b98d0f09ab4c
-    m_Address: Assets/textures/block/large_amethyst_bud.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e07d86211d66f754d847fe93631137ec
     m_Address: Assets/textures/block/acacia_leaves.png
     m_ReadOnly: 0
@@ -5409,11 +4969,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e496ef456737eaf4886bcca225cbf02f
     m_Address: Assets/textures/block/sniffer_egg_slightly_cracked_top.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: e4ee2d06e9be430438917748e324fa86
-    m_Address: Assets/textures/block/oxidized_copper_lantern.png.mcmeta
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -5507,11 +5062,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: e894009272717b24294550853dba1c78
-    m_Address: Assets/textures/block/glass.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e8e5eebd81813ab4aaee1e2c82f09261
     m_Address: Assets/textures/block/calibrated_sculk_sensor_top.png
     m_ReadOnly: 0
@@ -5524,11 +5074,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e9dc53530ef4f8747b64702d41398008
     m_Address: Assets/textures/block/iron_block.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: eaf61b9fa33b2494ab3ba12e00f74e4c
-    m_Address: Assets/textures/block/fire_1.png.mcmeta
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -5682,11 +5227,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: f274a3540786964428af7a35b6d6848a
-    m_Address: Assets/textures/block/cherry_leaves.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f411be831c894d44aadeda56ce804336
     m_Address: Assets/textures/block/sculk.png
     m_ReadOnly: 0
@@ -5699,11 +5239,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f43a5fb3c45589f4991714146e8d56cd
     m_Address: Assets/textures/block/polished_basalt_side.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: f44b93b5be77d3a498b6f220f5d39a59
-    m_Address: Assets/textures/block/kelp.png.mcmeta
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -5757,18 +5292,8 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: f599090b73c5d774b830bf40d4890e08
-    m_Address: Assets/textures/block/soul_fire_1.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f59a7568e322d5b46ac62b21ede1cd65
     m_Address: Assets/textures/block/yellow_concrete.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: f60757777e4178840874226082be1445
-    m_Address: Assets/textures/block/orange_tulip.png.mcmeta
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -5804,16 +5329,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f6e086ac00781a84e8eb542baa4f36c3
     m_Address: Assets/textures/block/crimson_fungus.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: f72539ec445348a45b81d4acf2b46fb1
-    m_Address: Assets/textures/block/lily_of_the_valley.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: f7637ce1bfff1d84cad4aab3ea5dd57a
-    m_Address: Assets/textures/block/stonecutter_saw.png.mcmeta
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -5927,11 +5442,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: fa256518291fdea429ede4c443f4beaa
-    m_Address: Assets/textures/block/pale_oak_leaves.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: fa4400ac75bb5f44e9aa03bded48f153
     m_Address: Assets/textures/block/copper_chain.png
     m_ReadOnly: 0
@@ -5989,11 +5499,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: fcd45230ba9f8a94dbaec66a1fbee0c1
     m_Address: Assets/textures/block/warped_stem.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: fd10cc03bd991fb4899110d4b0259ffc
-    m_Address: Assets/textures/block/smoker_front_on.png.mcmeta
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

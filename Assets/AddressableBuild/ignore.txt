@@ -13,6 +13,8 @@
 *.js
 *.asmdef
 *.rsp
+# Minecraft 贴图包元数据，Unity 无法识别导入
+*.mcmeta
 
 # 开发工具/杂项文件
 *.json
@@ -28,6 +30,12 @@ Assets/XLua/**
 Assets/TutorialInfo/**
 Assets/TextMesh Pro/**
 Assets/AddressableAssetsData/**
+
+# 启动场景走 Build Settings(SceneManager 加载)，不能成为 Addressable
+# （否则会与 Build Settings 冲突：BuildPlayerContent 报场景双重包含）
+Assets/Scenes/LaunchScene.unity
+# 未启用的练习/过渡场景，不进 Addressables
+Assets/Scenes/LoadScene.unity
 
 # 资源代码/脚本/配置，不入 Addressables
 Assets/Script/**

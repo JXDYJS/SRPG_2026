@@ -138,6 +138,7 @@ namespace EditorTools
                 case ".rsp":
                 case ".uxml":
                 case ".uss":
+                case ".mcmeta": // Minecraft 贴图包元数据，Unity 无法识别导入
                     return false;
                 default:
                     return true;

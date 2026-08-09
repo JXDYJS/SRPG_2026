@@ -17,11 +17,6 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: 3bdd344fb77931f4cb2dc25ab9980238
   m_SerializeEntries:
-  - m_GUID: 0129e42512cccce4ebb7454667b4bea7
-    m_Address: Assets/textures/gui/sprites/widget/text_field.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0171617faa1322a4e8c3113dd1aac37f
     m_Address: Assets/textures/gui/sprites/hud/crosshair_attack_indicator_background.png
     m_ReadOnly: 0
@@ -167,11 +162,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 0e22486920203384a991796f01664c4b
-    m_Address: Assets/textures/gui/sprites/container/bundle/bundle_progressbar_fill.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0e5c4423ae3f76546856100dcdfa9c7d
     m_Address: Assets/textures/gui/sprites/advancements/tab_right_middle.png
     m_ReadOnly: 0
@@ -227,11 +217,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 15be3011e062c4148b0fb9e7bdfba679
-    m_Address: Assets/textures/gui/sprites/container/slot_highlight_back.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1794a424bcace0f4e9324c080048c22d
     m_Address: Assets/textures/gui/sprites/container/creative_inventory/tab_top_selected_5.png
     m_ReadOnly: 0
@@ -272,11 +257,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 1a7b1fcf4d6bbdf4aa45ba01be6f271e
-    m_Address: Assets/textures/gui/sprites/hud/locator_bar_arrow_down.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1b34a8eccbf8cb84ca9214778b64c4c7
     m_Address: Assets/textures/gui/sprites/advancements/task_frame_obtained.png
     m_ReadOnly: 0
@@ -304,16 +284,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1c709f2bb1e42644e89da3ef9368553e
     m_Address: Assets/textures/gui/sprites/boss_bar/purple_progress.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 1c724b71d0141aa43933713e0ca2fb0f
-    m_Address: Assets/textures/gui/sprites/hud/locator_bar_background.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 1c83c289c3a5243408a2bf6cce588df2
-    m_Address: Assets/textures/gui/sprites/container/bundle/bundle_progressbar_border.png.mcmeta
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -357,11 +327,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 1f6505e739dfba94a9d83888942989b9
-    m_Address: Assets/textures/gui/sprites/widget/slider_handle_highlighted.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 206417c773df2324ab14cb9c2deaa8eb
     m_Address: Assets/textures/gui/sprites/hud/heart/withered_half.png
     m_ReadOnly: 0
@@ -387,11 +352,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 226352cb8bfa78f46b9918c5219b0984
-    m_Address: Assets/textures/gui/sprites/widget/text_field_highlighted.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 22684e85ffa0f4d44b078340e1b17110
     m_Address: Assets/textures/gui/sprites/server_list/pinging_1.png
     m_ReadOnly: 0
@@ -402,11 +362,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 23c0a7ed3898a764e9af5b1024580fdd
-    m_Address: Assets/textures/gui/sprites/recipe_book/overlay_recipe.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 23dccc080908c0349b600fb4d560b80b
     m_Address: Assets/textures/gui/sprites/widget/slider_handle_highlighted.png
     m_ReadOnly: 0
@@ -414,11 +369,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 23e981b4094bf0743bb3cd183e373eba
     m_Address: Assets/textures/gui/sprites/hud/heart/absorbing_hardcore_full_blinking.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 24290cda411432545ab3345b1b0cd9b9
-    m_Address: Assets/textures/gui/sprites/popup/background.png.mcmeta
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -477,11 +427,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 29d06a09ff3e17f48a77ec6404041419
-    m_Address: Assets/textures/gui/sprites/container/bundle/slot_highlight_back.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 29df514b29e141945a9f60cfdeb97667
     m_Address: Assets/textures/gui/sprites/recipe_book/furnace_overlay_disabled_highlighted.png
     m_ReadOnly: 0
@@ -512,11 +457,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 2be4586e3a4f6f940bda668f5bc96253
-    m_Address: Assets/textures/gui/sprites/advancements/box_unobtained.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2d3ea1408a42ebf489e57b1522458b50
     m_Address: Assets/textures/gui/sprites/statistics/item_crafted.png
     m_ReadOnly: 0
@@ -539,11 +479,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2f34045c0fe558e488a0a9cd5417ed08
     m_Address: Assets/textures/gui/sprites/container/slot/saddle.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 2f8449d74150cb549a934222fc9b7aa8
-    m_Address: Assets/textures/gui/sprites/advancements/box_obtained.png.mcmeta
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -612,11 +547,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 34217227813d7574d940e8653ecdcad4
-    m_Address: Assets/textures/gui/sprites/widget/scroller_background.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3437269716707ee4db2585eaf72fb465
     m_Address: Assets/textures/gui/sprites/icon/draft_report.png
     m_ReadOnly: 0
@@ -632,11 +562,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 3743bd006ac3a0f4ebebc03f209f610d
-    m_Address: Assets/textures/gui/sprites/tooltip/frame.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3747be1fa4605c840bc731b968138887
     m_Address: Assets/textures/gui/sprites/container/anvil/text_field.png
     m_ReadOnly: 0
@@ -649,11 +574,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 37c5aabe3030cfc4f9c983a988319135
     m_Address: Assets/textures/gui/book.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 37fbbbcecf5ea0041be8d61aa4cbb018
-    m_Address: Assets/textures/gui/sprites/widget/tab_selected.png.mcmeta
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -947,11 +867,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 50d1506151a330642bd1845d8c829fb7
-    m_Address: Assets/textures/gui/sprites/container/inventory/effect_background_ambient.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 51ad6c2bbf5856241b91c3bbd21a5738
     m_Address: Assets/textures/gui/sprites/hud/heart/frozen_hardcore_full.png
     m_ReadOnly: 0
@@ -959,11 +874,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 52b12620807a6964b8c54056c3ac899a
     m_Address: Assets/textures/gui/sprites/hud/heart/frozen_full_blinking.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 54d23ebf53c64b04d8d1a9ec8f536268
-    m_Address: Assets/textures/gui/sprites/widget/scroller.png.mcmeta
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1047,11 +957,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 5bc3b8003faafd449abc9421a6101dfd
-    m_Address: Assets/textures/gui/sprites/hud/locator_bar_arrow_up.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5bdfa0d0ba9435348b5847614305c9ca
     m_Address: Assets/textures/gui/sprites/recipe_book/page_backward.png
     m_ReadOnly: 0
@@ -1059,11 +964,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5be82cae63343604a9500a2548ea842a
     m_Address: Assets/textures/gui/sprites/recipe_book/furnace_overlay_disabled.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 5c0291a945d28174d8848c4987492b1c
-    m_Address: Assets/textures/gui/sprites/tooltip/background.png.mcmeta
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1242,11 +1142,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 6abe01b9dc80c4749b62c36f9b2fa174
-    m_Address: Assets/textures/gui/sprites/toast/system.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 6ae0add4a168aca4681590e2f725f1c7
     m_Address: Assets/textures/gui/sprites/advancements/tab_left_middle_selected.png
     m_ReadOnly: 0
@@ -1294,11 +1189,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 6dca7235a62817e4ea316618d33f2b7e
     m_Address: Assets/textures/gui/sprites/container/bundle/slot_highlight_back.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 6eb274215e59b7444982e7b87cc1a054
-    m_Address: Assets/textures/gui/sprites/widget/tab_highlighted.png.mcmeta
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1387,11 +1277,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 75d8c6e33efac6f41828a1a090e36783
-    m_Address: Assets/textures/gui/sprites/toast/tutorial.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 763b1196ee338e540b9b57e73a35ec87
     m_Address: Assets/textures/gui/sprites/container/slot/banner_pattern.png
     m_ReadOnly: 0
@@ -1429,11 +1314,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 79b0303ee8c94a1448188155d4c3b9f4
     m_Address: Assets/textures/gui/sprites/server_list/ping_3.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 79dc15a1b50c50945a5137de33253292
-    m_Address: Assets/textures/gui/sprites/widget/tab_selected_highlighted.png.mcmeta
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1592,11 +1472,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 8a484701908c2f7489b7f7ff6f9f2943
-    m_Address: Assets/textures/gui/sprites/container/inventory/effect_background.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8aa5ba06a838c6945bbc4e722d40a560
     m_Address: Assets/textures/gui/realms/empty_frame.png
     m_ReadOnly: 0
@@ -1627,16 +1502,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 8dfee0ccacc6ed342b56bfc5c1ad97ea
-    m_Address: Assets/textures/gui/sprites/widget/button_highlighted.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 8e03bf5030e30d0458bf128f0dbd5275
-    m_Address: Assets/textures/gui/sprites/container/bundle/bundle_progressbar_full.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8e7ac7cbacb4932449284a9f5fc10186
     m_Address: Assets/textures/gui/hanging_signs/cherry.png
     m_ReadOnly: 0
@@ -1649,11 +1514,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 9046f569bce19d041aa36bfeb87a8763
     m_Address: Assets/textures/gui/sprites/spectator/scroll_left.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 9080fdab44ea330479614e027fdbfef5
-    m_Address: Assets/textures/gui/sprites/icon/trial_available.png.mcmeta
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1704,16 +1564,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 941243a3d2f78224c92b206ade12f484
     m_Address: Assets/textures/gui/sprites/server_list/ping_5.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 9582b5789ea63bc4f9089c5cd8eb8714
-    m_Address: Assets/textures/gui/sprites/widget/button.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 959b64e34bedff74087e83d1a5f0eec9
-    m_Address: Assets/textures/gui/sprites/toast/now_playing.png.mcmeta
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1997,11 +1847,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: ad8fa6132291ac647833c6acf985aa1a
-    m_Address: Assets/textures/gui/sprites/widget/button_disabled.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: adcf745563d7b8e4ea41e96717bb77df
     m_Address: Assets/textures/gui/sprites/recipe_book/crafting_overlay_disabled.png
     m_ReadOnly: 0
@@ -2049,11 +1894,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: afe061bb8ed4d6b459b9598fc93f8d33
     m_Address: Assets/textures/gui/sprites/world_list/error_highlighted.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: b0146d386d645db4f94b554309d4569e
-    m_Address: Assets/textures/gui/sprites/container/bundle/slot_highlight_front.png.mcmeta
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -2137,11 +1977,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: b5ccf733f083c914ba6e41d197143026
-    m_Address: Assets/textures/gui/sprites/widget/slider.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b5fa40a9a4a51d64da527fac48c092ee
     m_Address: Assets/textures/gui/sprites/social_interactions/report_button.png
     m_ReadOnly: 0
@@ -2214,11 +2049,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c0573eb4615ffc04ab9c0f3d5e37f4a2
     m_Address: Assets/textures/gui/sprites/boss_bar/yellow_progress.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: c0585e17744599045b9b217a9f419030
-    m_Address: Assets/textures/gui/sprites/widget/slider_highlighted.png.mcmeta
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -2417,11 +2247,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: d6c434b3145a6fe468e9bf81924e839d
-    m_Address: Assets/textures/gui/sprites/advancements/title_box.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d6dc0054aa04fce4b89973f0de428681
     m_Address: Assets/textures/gui/container/creative_inventory/tab_inventory.png
     m_ReadOnly: 0
@@ -2597,11 +2422,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: e86571a221cee2443825d6893c47558b
-    m_Address: Assets/textures/gui/sprites/container/slot_highlight_front.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e87c722d6198ac348b0fc2aa853da2c1
     m_Address: Assets/textures/gui/sprites/widget/tab_selected.png
     m_ReadOnly: 0
@@ -2624,11 +2444,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ea180793a4a28584f801cbc3fd984a12
     m_Address: Assets/textures/gui/sprites/hud/heart/absorbing_hardcore_half.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: ea2d021f54f9aaf4bb50e2a76d52c071
-    m_Address: Assets/textures/gui/sprites/widget/slider_handle.png.mcmeta
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -2659,11 +2474,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ed010a30b7fa09b41a0c574edc9dd185
     m_Address: Assets/textures/gui/sprites/icon/unseen_notification.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: ee500a355b2ca1b48bf311b6439d3a9a
-    m_Address: Assets/textures/gui/sprites/widget/tab.png.mcmeta
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -2757,11 +2567,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: f7466bde8db281c46b0caad2f65f2851
-    m_Address: Assets/textures/gui/sprites/container/bundle/slot_background.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f8a04cb079fe1c84b81e9b5e6e16e9a5
     m_Address: Assets/textures/gui/sprites/container/stonecutter/recipe_highlighted.png
     m_ReadOnly: 0
@@ -2792,16 +2597,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: fb26655703b68c941b9ef11329e94946
-    m_Address: Assets/textures/gui/sprites/icon/music_notes.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: fb8c7e662bb610549850abd0cccc573d
-    m_Address: Assets/textures/gui/sprites/realm_status/expires_soon.png.mcmeta
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: fc13622b3af271747af50cdd0c870197
     m_Address: Assets/textures/gui/sprites/widget/unlocked_button.png
     m_ReadOnly: 0
@@ -2829,11 +2624,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: fe89f2f4f0612ac4c8a741f8df3f6966
     m_Address: Assets/textures/gui/sprites/hud/air_bursting.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: febd6283809de4f4caf4ffc2e4712c43
-    m_Address: Assets/textures/gui/sprites/social_interactions/background.png.mcmeta
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
