@@ -34,5 +34,9 @@ namespace Core.Data.Persistent
 
         public int seed;
         public NodeMapData nodeMapData;
+
+        /// <summary>玩家在地图上的当前位置（层/行），配合 nodeMapData 恢复地图进度</summary>
+        public int currentPlayerLayer;
+        public int currentPlayerRow;
     }
 }

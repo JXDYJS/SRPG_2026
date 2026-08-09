@@ -90,6 +90,18 @@ namespace Core.Data
         public readonly AIRuntimeData AI = new AIRuntimeData();
     }
 
+    /// <summary>存档摘要，供 launch 界面展示（不持有完整存档）</summary>
+    public class SaveSummary
+    {
+        public bool Exists;
+        public string SaveTime;
+        public string CurrentStageId;
+        public int Gold;
+        public int PartyCount;
+        public int PlayerLayer;
+        public int PlayerRow;
+    }
+
     public class PersistentData
     {
         public SaveData Data;
@@ -100,6 +112,48 @@ namespace Core.Data
         private static readonly Newtonsoft.Json.JsonSerializerSettings _jsonSettings =
             new() { TypeNameHandling = Newtonsoft.Json.TypeNameHandling.Auto };
 
+        /// <summary>是否存在存档文件</summary>
+        public static bool HasSaveFile()
+        {
+            return global::System.IO.File.Exists(SavePath);
+        }
+
+        /// <summary>
+        /// 读取存档摘要（launch 界面展示用）。
+        /// 无档返回 Exists=false 的摘要，文件损坏/反序列化异常时返回 Exists=false 并告警。
+        /// </summary>
+        public static SaveSummary LoadSummary()
+        {
+            SaveSummary summary = new SaveSummary { Exists = false };
+            try
+            {
+                if (!global::System.IO.File.Exists(SavePath))
+                {
+                    return summary;
+                }
+                string json = global::System.IO.File.ReadAllText(SavePath);
+                SaveData data = Newtonsoft.Json.JsonConvert.DeserializeObject<SaveData>(json, _jsonSettings);
+                if (data == null)
+                {
+                    Debug.LogWarning("[PersistentData] LoadSummary: 存档反序列化为 null");
+                    return summary;
+                }
+                summary.Exists = true;
+                summary.SaveTime = data.saveTime;
+                summary.CurrentStageId = data.currentStageId;
+                summary.Gold = data.progress?.gold?.Value ?? 0;
+                summary.PartyCount = data.party?.Count ?? 0;
+                summary.PlayerLayer = data.currentPlayerLayer;
+                summary.PlayerRow = data.currentPlayerRow;
+                return summary;
+            }
+            catch (global::System.Exception e)
+            {
+                Debug.LogWarning($"[PersistentData] LoadSummary 失败: {e.Message}");
+                return summary;
+            }
+        }
+
         /// <summary>持久化存档到磁盘</summary>
         public void Save()
         {
@@ -109,7 +163,7 @@ namespace Core.Data
             Debug.Log($"[PersistentData] Saved to {SavePath}");
         }
 
-        /// <summary>从磁盘加载存档，若文件不存在则返回 null</summary>
+        /// <summary>从磁盘加载存档，若文件不存在或损坏则返回 null</summary>
         public static PersistentData Load()
         {
             if (!global::System.IO.File.Exists(SavePath))
@@ -117,10 +171,18 @@ namespace Core.Data
                 Debug.Log("[PersistentData] No save file found");
                 return null;
             }
-            string json = global::System.IO.File.ReadAllText(SavePath);
-            SaveData data = Newtonsoft.Json.JsonConvert.DeserializeObject<SaveData>(json, _jsonSettings);
-            Debug.Log($"[PersistentData] Loaded save: version={data.version}, stage={data.currentStageId}, party={data.party.Count}");
-            return new PersistentData { Data = data };
+            try
+            {
+                string json = global::System.IO.File.ReadAllText(SavePath);
+                SaveData data = Newtonsoft.Json.JsonConvert.DeserializeObject<SaveData>(json, _jsonSettings);
+                Debug.Log($"[PersistentData] Loaded save: version={data.version}, stage={data.currentStageId}, party={data.party.Count}");
+                return new PersistentData { Data = data };
+            }
+            catch (global::System.Exception e)
+            {
+                Debug.LogError($"[PersistentData] 存档加载失败: {e.Message}");
+                return null;
+            }
         }
 
         /// <summary>重置存档（新游戏）</summary>

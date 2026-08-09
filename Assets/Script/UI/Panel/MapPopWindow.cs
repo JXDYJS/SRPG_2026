@@ -6,8 +6,10 @@ using Map;
 using UI.Component;
 using UI.Slot;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Utils;
+using Managers;
 
 namespace UI.Panel
 {
@@ -283,6 +285,9 @@ namespace UI.Panel
                 nextNode.isLock = false;
             }
             Refresh();
+
+            // 解锁下一层后立即持久化，保证续档恢复的是最新锁定状态
+            SaveCurrentProgress();
         }
         public void unLockFirstLayer()
         {
@@ -291,6 +296,33 @@ namespace UI.Panel
             {
                 node.isLock = false;
             }
+        }
+
+        /// <summary>恢复玩家位置（读档时由 Bootstrap 在 Init 后调用）</summary>
+        public void SetPlayerPosition(int layer, int row)
+        {
+            playerLayer = layer;
+            playerRow = row;
+        }
+
+        /// <summary>把当前地图进度（nodeMapData + 玩家位置）写入存档并落盘</summary>
+        public void SaveCurrentProgress()
+        {
+            MapPersistence.SaveMap(nodeMapData, playerLayer, playerRow);
+        }
+
+        /// <summary>
+        /// 保存进度并返回主菜单（仅地图界面提供此入口，节点/战斗内不可退出）。
+        /// 先落盘再清面板缓存，最后切回 LaunchScene。
+        /// </summary>
+        public void QuitToMainMenu()
+        {
+            SaveCurrentProgress();
+            if (UIManager.Instance != null)
+            {
+                UIManager.Instance.DestroyAllPanels();
+            }
+            SceneManager.LoadScene("LaunchScene");
         }
     }
 }

@@ -62,6 +62,17 @@ namespace Managers
         /// <summary>当前金币余额</summary>
         public int Gold => Data.Persistent?.Data?.progress?.gold?.Value ?? 0;
 
+        /// <summary>
+        /// 清空当前 run 的运行时状态（队伍/遗物）。
+        /// RunManager 是 DontDestroyOnLoad，新游戏时必须清掉上一局残留数据。
+        /// </summary>
+        public void ResetRun()
+        {
+            MyTeam.Clear();
+            Relics.Clear();
+            Debug.Log("[RunManager] Run 运行时状态已重置");
+        }
+
         public void AddGold(int amount)
         {
             if (amount <= 0 || Data.Persistent?.Data == null) return;

@@ -69,6 +69,10 @@ namespace UI.Slot
                 if (node is BattleNode battleNode)
                 {
                     var level = battleNode.level;
+                    if (Data.Persistent?.Data != null)
+                    {
+                        Data.Persistent.Data.currentStageId = battleNode.level;
+                    }
                     if (Data.Table.LevelConfigs.TryGetValue(battleNode.level, out var levelConfig))
                     {
                         BattleFlowManager.Instance.LoadLevelAsync(levelConfig).Forget();
@@ -92,6 +96,12 @@ namespace UI.Slot
                     EventFlow.Start(eventNode);
                 }
                 node._onEnterNode.Invoke();
+
+                // 进入节点后记录地图进度（玩家位置 + 该节点锁定状态），供续档恢复
+                if (win != null)
+                {
+                    win.SaveCurrentProgress();
+                }
             });
 
             this.node._onLockChange += updateMask;
