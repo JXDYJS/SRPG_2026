@@ -122,3 +122,7 @@ console_dump.txt.meta
 # Addressables 平台构建产物（content_state 等，可重新生成，不提交）
 Assets/AddressableAssetsData/Windows/
 Assets/AddressableAssetsData/Windows.meta
+
+# 打包脚本临时拷贝的构建产物（构建完会清理，防中断残留）
+Assets/StreamingAssets/aa/
+Assets/StreamingAssets/Lua/

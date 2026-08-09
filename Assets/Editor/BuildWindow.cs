@@ -20,9 +20,10 @@ namespace EditorTools
     /// 构建流程（与 BuildPipeline 教学一致）：
     ///   1. Addressables 内容构建（可选）
     ///   2. 拷贝 bundle：Library/com.unity.addressables/aa → Assets/StreamingAssets/aa
-    ///   3. 清理输出目录
-    ///   4. BuildPipeline.BuildPlayer
-    ///   5. 构建后清理 StreamingAssets/aa（该目录不应进版本库）
+    ///   3. 拷贝 Lua：Assets/Lua → Assets/StreamingAssets/Lua（LuaManager 打包后从这读）
+    ///   4. 清理输出目录
+    ///   5. BuildPipeline.BuildPlayer
+    ///   6. 构建后清理 StreamingAssets/aa 与 StreamingAssets/Lua（不该进版本库）
     /// </summary>
     public class BuildWindow : EditorWindow
     {
@@ -32,6 +33,7 @@ namespace EditorTools
         private string _buildName = "SRPG_2026";
         private BuildTarget _buildTarget = BuildTarget.StandaloneWindows64;
         private bool _buildAddressables = true;
+        private bool _copyLua = true;
         private bool _developmentMode = false;
         private bool _openFolderAfter = true;
 
@@ -53,6 +55,7 @@ namespace EditorTools
             _buildName = EditorPrefs.GetString(PrefPrefix + "Name", _buildName);
             _buildTarget = (BuildTarget)EditorPrefs.GetInt(PrefPrefix + "Target", (int)_buildTarget);
             _buildAddressables = EditorPrefs.GetBool(PrefPrefix + "Addr", _buildAddressables);
+            _copyLua = EditorPrefs.GetBool(PrefPrefix + "Lua", _copyLua);
             _developmentMode = EditorPrefs.GetBool(PrefPrefix + "Dev", _developmentMode);
             _openFolderAfter = EditorPrefs.GetBool(PrefPrefix + "Open", _openFolderAfter);
         }
@@ -63,6 +66,7 @@ namespace EditorTools
             EditorPrefs.SetString(PrefPrefix + "Name", _buildName);
             EditorPrefs.SetInt(PrefPrefix + "Target", (int)_buildTarget);
             EditorPrefs.SetBool(PrefPrefix + "Addr", _buildAddressables);
+            EditorPrefs.SetBool(PrefPrefix + "Lua", _copyLua);
             EditorPrefs.SetBool(PrefPrefix + "Dev", _developmentMode);
             EditorPrefs.SetBool(PrefPrefix + "Open", _openFolderAfter);
         }
@@ -77,6 +81,7 @@ namespace EditorTools
             EditorGUILayout.Space(8);
             EditorGUILayout.LabelField("构建选项", EditorStyles.boldLabel);
             _buildAddressables = EditorGUILayout.Toggle("构建 Addressables", _buildAddressables);
+            _copyLua = EditorGUILayout.Toggle("拷贝 Lua 到 StreamingAssets", _copyLua);
             _developmentMode = EditorGUILayout.Toggle("Development 模式", _developmentMode);
             _openFolderAfter = EditorGUILayout.Toggle("完成后打开目录", _openFolderAfter);
 
@@ -117,14 +122,24 @@ namespace EditorTools
                 //    否则玩家运行时 Addressables 一个都加载不到
                 CopyDirectory("Library/com.unity.addressables/aa", "Assets/StreamingAssets/aa");
 
-                // 3. 清理输出目录
+                // 3. 拷贝 Lua 到 StreamingAssets（LuaManager 打包后从 streamingAssetsPath 读）
+                //    排除 TypeHint(IDE提示)/EmmyLuaSnippetToolData(工具数据)/.meta
+                if (_copyLua)
+                {
+                    CopyDirectory("Assets/Lua", "Assets/StreamingAssets/Lua", rel =>
+                        rel.StartsWith("TypeHint", StringComparison.OrdinalIgnoreCase) ||
+                        rel.StartsWith("EmmyLuaSnippetToolData", StringComparison.OrdinalIgnoreCase) ||
+                        rel.EndsWith(".meta", StringComparison.OrdinalIgnoreCase));
+                }
+
+                // 4. 清理输出目录
                 if (Directory.Exists(_outputDir))
                 {
                     Directory.Delete(_outputDir, true);
                 }
                 Directory.CreateDirectory(_outputDir);
 
-                // 4. 玩家构建
+                // 5. 玩家构建
                 //    只取 Build Settings 里 enabled 的场景（本项目只有 LaunchScene，
                 //    SampleScene 是 Addressable 场景，走 bundle，不能出现在场景数组里）
                 string[] scenes = EditorBuildSettings.scenes
@@ -153,10 +168,14 @@ namespace EditorTools
             }
             finally
             {
-                // 5. 清理 StreamingAssets/aa，保持仓库干净（内容构建已配置 cleanup=1，这里再兜底）
+                // 6. 清理 StreamingAssets 里打包脚本产生的临时拷贝，保持仓库干净
                 if (Directory.Exists("Assets/StreamingAssets/aa"))
                 {
                     Directory.Delete("Assets/StreamingAssets/aa", true);
+                }
+                if (Directory.Exists("Assets/StreamingAssets/Lua"))
+                {
+                    Directory.Delete("Assets/StreamingAssets/Lua", true);
                 }
                 AssetDatabase.Refresh();
                 _isBuilding = false;
@@ -176,7 +195,7 @@ namespace EditorTools
             }
         }
 
-        private static void CopyDirectory(string src, string dst)
+        private static void CopyDirectory(string src, string dst, Func<string, bool> exclude = null)
         {
             if (!Directory.Exists(src))
             {
@@ -190,6 +209,10 @@ namespace EditorTools
             foreach (string file in Directory.GetFiles(src, "*", SearchOption.AllDirectories))
             {
                 string rel = Path.GetRelativePath(src, file);
+                if (exclude != null && exclude(rel))
+                {
+                    continue;
+                }
                 Directory.CreateDirectory(Path.Combine(dst, Path.GetDirectoryName(rel) ?? string.Empty));
                 File.Copy(file, Path.Combine(dst, rel), true);
             }

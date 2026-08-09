@@ -12,6 +12,16 @@ namespace Lua
 
         public LuaEnv LuaEnv { get; private set; }
 
+        /// <summary>
+        /// Lua 根目录：
+        ///   - 编辑器下 = 工程源码 Assets/Lua（dataPath 在编辑器里就是 <工程>/Assets）
+        ///   - 打包后 = StreamingAssets/Lua（打包脚本会把 Assets/Lua 拷贝过去，
+        ///     dataPath 在打包后指向 <游戏>_Data/，源码目录不存在）
+        /// </summary>
+        private static string LuaRoot => Application.isEditor
+            ? Path.Combine(Application.dataPath, "Lua")
+            : Path.Combine(Application.streamingAssetsPath, "Lua");
+
         private LuaManager()
         {
             LuaEnv = new LuaEnv();
@@ -30,8 +40,7 @@ namespace Lua
 
         private static byte[] Loader(ref string filepath)
         {
-            string path = Path.Combine(Application.dataPath, "Lua",
-                filepath.Replace(".", "/") + ".lua");
+            string path = Path.Combine(LuaRoot, filepath.Replace(".", "/") + ".lua");
 
             if (File.Exists(path))
             {
@@ -44,7 +53,7 @@ namespace Lua
 
         private void RegisterAllModules()
         {
-            string luaRoot = Path.Combine(Application.dataPath, "Lua");
+            string luaRoot = LuaRoot;
             if (!Directory.Exists(luaRoot))
             {
                 Debug.LogWarning($"[LuaManager] Lua 根目录不存在: {luaRoot}");
