@@ -172,7 +172,23 @@ namespace EditorTools
                 }
                 Directory.CreateDirectory(_outputDir);
 
-                // 5. 玩家构建
+                // 5. 生成 version.json（全量基线：app/minApp = 当前 App 版本）
+                //    远程入口: <发布根>/update/version.json（玩家启动检查用）
+                //    本地基线: Assets/StreamingAssets/update/version.json（打进玩家包，客户端对比自身状态用）
+                //    注意：本地基线必须在 BuildPlayer 之前生成，否则不会打进包
+                AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;
+                string remoteRoot = settings != null
+                    ? settings.profileSettings.EvaluateString(settings.activeProfileId, AddressableAssetSettings.kRemoteBuildPath)
+                    : null;
+
+                int fileCount = 0;
+                if (!string.IsNullOrEmpty(remoteRoot))
+                {
+                    fileCount = GenerateManifest(remoteRoot, _appVersion, _appVersion, _contentVersion,
+                        localStreamingPath: "Assets/StreamingAssets/update/version.json");
+                }
+
+                // 6. 玩家构建
                 //    只取 Build Settings 里 enabled 的场景（本项目只有 LaunchScene，
                 //    SampleScene 是 Addressable 场景，走 bundle，不能出现在场景数组里）
                 string[] scenes = EditorBuildSettings.scenes
@@ -190,27 +206,11 @@ namespace EditorTools
                     _buildTarget,
                     options);
 
-                if (report.summary.result == BuildResult.Succeeded)
-                {
-                    // 6. 生成 version.json（appVersion / minAppVersion = 当前 App 版本，contentVersion = 初始）
-                    AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;
-                    string remoteRoot = settings != null
-                        ? settings.profileSettings.EvaluateString(settings.activeProfileId, AddressableAssetSettings.kRemoteBuildPath)
-                        : null;
-
-                    int fileCount = 0;
-                    if (!string.IsNullOrEmpty(remoteRoot))
-                    {
-                        fileCount = GenerateManifest(remoteRoot, _appVersion, _appVersion, _contentVersion);
-                    }
-
-                    _log = $"[OK] 构建成功: {report.summary.outputPath}  ({report.summary.totalSize / 1048576f:F1} MB)\n" +
-                           $"version.json: app={_appVersion} / minApp={_appVersion} / content={_contentVersion}，{fileCount} 个远程文件 → {remoteRoot}";
-                }
-                else
-                {
-                    _log = $"[ERROR] 构建失败: {report.summary.result}";
-                }
+                _log = report.summary.result == BuildResult.Succeeded
+                    ? $"[OK] 构建成功: {report.summary.outputPath}  ({report.summary.totalSize / 1048576f:F1} MB)\n" +
+                      $"version.json: app={_appVersion} / minApp={_appVersion} / content={_contentVersion}，{fileCount} 个远程文件 → {remoteRoot}\n" +
+                      $"本地基线 StreamingAssets/update/version.json 已随包发布"
+                    : $"[ERROR] 构建失败: {report.summary.result}";
             }
             catch (Exception e)
             {
@@ -227,6 +227,10 @@ namespace EditorTools
                 if (Directory.Exists("Assets/StreamingAssets/Lua"))
                 {
                     Directory.Delete("Assets/StreamingAssets/Lua", true);
+                }
+                if (Directory.Exists("Assets/StreamingAssets/update"))
+                {
+                    Directory.Delete("Assets/StreamingAssets/update", true);
                 }
                 AssetDatabase.Refresh();
                 _isBuilding = false;
@@ -364,8 +368,10 @@ namespace EditorTools
         ///   - minAppVersion：低于它的客户端必须全量更新
         ///   - contentVersion：内容版本（资源/Lua），补丁时递增
         ///   - files：远程内容文件（remoteRoot 下）的 md5 清单
+        /// 若 localStreamingPath 非空，同时把同一份清单写到该路径（全量构建时打进玩家包，
+        /// 作为客户端的本地基线，供启动时与远程对比自身状态）。
         /// </summary>
-        private static int GenerateManifest(string remoteRoot, string appVersion, string minAppVersion, string contentVersion)
+        private static int GenerateManifest(string remoteRoot, string appVersion, string minAppVersion, string contentVersion, string localStreamingPath = null)
         {
             string dir = Path.GetFullPath(remoteRoot);
             if (!Directory.Exists(dir)) return 0;
@@ -397,11 +403,23 @@ namespace EditorTools
                 files = list.ToArray(),
             };
 
+            string json = JsonUtility.ToJson(manifest, true);
+
             // 稳定入口：<发布根>/update/version.json（与内容目录分开，URL 恒定）
             string publishRoot = Path.GetDirectoryName(dir) ?? dir;
             string updateDir = Path.Combine(publishRoot, "update");
             Directory.CreateDirectory(updateDir);
-            File.WriteAllText(Path.Combine(updateDir, "version.json"), JsonUtility.ToJson(manifest, true));
+            File.WriteAllText(Path.Combine(updateDir, "version.json"), json);
+
+            // 本地基线：打进玩家包（StreamingAssets 会原样随包发布）
+            if (!string.IsNullOrEmpty(localStreamingPath))
+            {
+                string localPath = Path.GetFullPath(localStreamingPath);
+                string localDir = Path.GetDirectoryName(localPath);
+                if (!string.IsNullOrEmpty(localDir)) Directory.CreateDirectory(localDir);
+                File.WriteAllText(localPath, json);
+            }
+
             return list.Count;
         }
 
