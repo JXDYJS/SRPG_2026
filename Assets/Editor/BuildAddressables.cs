@@ -87,6 +87,24 @@ namespace EditorTools
                 added++;
             }
 
+            // 3. 所有分组统一开启 Prevent Updates（可热更）——覆盖 preserve 分组（如 Group_Buff）与既有分组
+            int updated = 0;
+            foreach (AddressableAssetGroup group in settings.groups)
+            {
+                if (group == null) continue;
+                ContentUpdateGroupSchema cu = group.GetSchema<ContentUpdateGroupSchema>();
+                if (cu == null) continue;
+                if (!cu.StaticContent)
+                {
+                    cu.StaticContent = true;
+                    updated++;
+                }
+            }
+            if (updated > 0)
+            {
+                Debug.Log($"[BuildAddressables] {updated} 个分组开启 Prevent Updates（可热更）");
+            }
+
             AssetDatabase.SaveAssets();
             Debug.Log($"[BuildAddressables] 完成：{added} 个资源写入地址，脚本分组 {mapping.OwnedGroups.Count} 个");
         }
@@ -105,12 +123,32 @@ namespace EditorTools
         private static AddressableAssetGroup GetOrCreateGroup(AddressableAssetSettings settings, string groupName)
         {
             AddressableAssetGroup group = settings.FindGroup(groupName);
-            if (group != null) return group;
+            if (group == null)
+            {
+                group = settings.CreateGroup(groupName, false, false, false, null, typeof(BundledAssetGroupSchema));
+                group.AddSchema(typeof(ContentUpdateGroupSchema), true);
+                Debug.Log($"[BuildAddressables] 创建分组: {groupName}");
+            }
 
-            group = settings.CreateGroup(groupName, false, false, false, null, typeof(BundledAssetGroupSchema));
-            group.AddSchema(typeof(ContentUpdateGroupSchema), true);
-            Debug.Log($"[BuildAddressables] 创建分组: {groupName}");
+            // 新建/既有分组统一开启 Prevent Updates，保证内容更新能检测到该组变更
+            EnsurePreventUpdates(group);
             return group;
+        }
+
+        /// <summary>
+        /// 开启分组的 Prevent Updates（ContentUpdateGroupSchema.StaticContent）。
+        /// 注意：Prevent Updates 勾上 = 该组资源在发补丁时会被挪进远程组，是"可热更"的前提；
+        /// 不勾则 GatherModifiedEntries 会跳过该组，补丁永远检测不到变更。
+        /// </summary>
+        private static void EnsurePreventUpdates(AddressableAssetGroup group)
+        {
+            if (group == null) return;
+            ContentUpdateGroupSchema cu = group.GetSchema<ContentUpdateGroupSchema>();
+            if (cu == null) return;
+            if (!cu.StaticContent)
+            {
+                cu.StaticContent = true;
+            }
         }
 
         private static void ClearGroup(AddressableAssetSettings settings, AddressableAssetGroup group)
