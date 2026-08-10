@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 namespace UI.Panel
 {
-    [UIPanelResource("UI/Battle/ChoosePopWindow")]
+    [UIPanelResource("Assets/UI/Battle/ChoosePopWindow.prefab")]
     public class ChoosePopWindowPanel : BaseUIPanel
     {
         [Header("布局")]

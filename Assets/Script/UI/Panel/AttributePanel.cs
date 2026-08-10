@@ -4,7 +4,7 @@ using GamePlay.Units;
 
 namespace UI.Panel
 {
-    [UIPanelResource("UI/Battle/Attribute")]
+    [UIPanelResource("Assets/UI/Battle/Attribute.prefab")]
     public class AttributePanel : BaseUIPanel
     {
         [Header("属性文本引用")]

@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.SceneManagement;
 using UI;
 using UI.Panel;
@@ -21,7 +23,7 @@ namespace Managers
     {
         public static UIManager Instance { get; private set; }
 
-        private const string UI_PREFAB_PATH = "UI/";
+        private const string UI_PREFAB_PATH = "Assets/UI/";
         private const string UIROOT_PREFAB = "UI/UIRoot";
 
         private UIRoot _uiRoot;
@@ -185,11 +187,11 @@ namespace Managers
             }
 
             string prefabPath = ResolvePanelResourcePath(panelType);
-            GameObject prefab = Resources.Load<GameObject>(prefabPath);
+            GameObject prefab = LoadPanelPrefab(prefabPath);
 
             if (prefab == null)
             {
-                Debug.LogError($"UIManager: 无法加载面板 Prefab — Resources/{prefabPath}");
+                Debug.LogError($"UIManager: 无法加载面板 Prefab — Addressables/{prefabPath}");
                 return null;
             }
 
@@ -235,11 +237,11 @@ namespace Managers
             }
 
             string prefabPath = ResolvePanelResourcePath(type);
-            GameObject prefab = Resources.Load<GameObject>(prefabPath);
+            GameObject prefab = LoadPanelPrefab(prefabPath);
 
             if (prefab == null)
             {
-                Debug.LogError($"UIManager: 无法加载面板 Prefab — Resources/{prefabPath}");
+                Debug.LogError($"UIManager: 无法加载面板 Prefab — Addressables/{prefabPath}");
                 return null;
             }
 
@@ -350,6 +352,39 @@ namespace Managers
                 return attr.Path;
 
             return UI_PREFAB_PATH + panelType.Name;
+        }
+
+        /// <summary>
+        /// 经 Addressables 同步加载面板 Prefab（地址 = [UIPanelResource] 配置的 Assets/UI/... 路径）。
+        /// 兼容带扩展名的地址（构建时地址 = Assets/UI/... 全路径，可能带 .prefab 后缀）。
+        /// </summary>
+        private GameObject LoadPanelPrefab(string address)
+        {
+            AsyncOperationHandle<GameObject> handle = Addressables.LoadAssetAsync<GameObject>(address);
+            try
+            {
+                GameObject prefab = handle.WaitForCompletion();
+                if (prefab != null) return prefab;
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning($"UIManager: Addressables 加载面板失败 '{address}': {e.Message}");
+            }
+
+            if (!address.EndsWith(".prefab", StringComparison.Ordinal))
+            {
+                AsyncOperationHandle<GameObject> fallbackHandle = Addressables.LoadAssetAsync<GameObject>(address + ".prefab");
+                try
+                {
+                    return fallbackHandle.WaitForCompletion();
+                }
+                catch
+                {
+                    return null;
+                }
+            }
+
+            return null;
         }
 
         private static readonly Dictionary<string, Type> _panelTypeCache = new();

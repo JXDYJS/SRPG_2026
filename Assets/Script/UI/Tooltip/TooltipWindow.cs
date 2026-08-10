@@ -22,7 +22,7 @@ namespace UI.Tooltip
     ///   全局去重（每个 id 只在最早出现的列渲染一次），深度有上限 _maxDepth 兜底防环。
     /// 生命周期：OnOpen 重建内容 + 订阅各卡 Changed（层数等实时刷新），OnClose 退订 + 清空。
     /// </summary>
-    [UIPanelResource("UI/Tooltip/TooltipWindow")]
+    [UIPanelResource("Assets/UI/Tooltip/TooltipWindow.prefab")]
     public class TooltipWindow : BaseUIPanel
     {
         [Header("Tooltip 基架配置")]

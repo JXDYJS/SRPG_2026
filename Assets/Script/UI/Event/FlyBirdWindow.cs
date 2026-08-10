@@ -10,7 +10,7 @@ using UnityEngine.UI;
 using Utils;
 namespace UI.Panel
 {
-    [UIPanelResource("UI/Event/MiniGame/FlyBirdWindow")]
+    [UIPanelResource("Assets/UI/Event/MiniGame/FlyBirdWindow.prefab")]
     public class FlyBirdWindow : BaseUIPanel, IEventPanel
     {
         public Transform BGContent;

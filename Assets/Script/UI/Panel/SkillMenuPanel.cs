@@ -9,7 +9,7 @@ using UI.Component;
 
 namespace UI.Panel
 {
-    [UIPanelResource("UI/Battle/SkillPanel")]
+    [UIPanelResource("Assets/UI/Battle/SkillPanel.prefab")]
     public class SkillMenuPanel : BaseUIPanel
     {
         [Header("UI组件引用")]

@@ -21,7 +21,7 @@ namespace UI.Panel
     ///   optionContainer / optionPrefab(挂 EventOptionSlot) / resultView / resultText /
     ///   confirmButton / titleText
     /// </summary>
-    [UIPanelResource("UI/Event/EventChoicePanel")]
+    [UIPanelResource("Assets/UI/Event/EventChoicePanel.prefab")]
     public class EventChoicePanel : BaseUIPanel, IEventPanel
     {
         [Header("布局")]

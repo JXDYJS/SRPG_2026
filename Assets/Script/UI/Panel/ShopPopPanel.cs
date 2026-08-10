@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityEngine.UI;
 namespace UI.Panel
 {
-    [UIPanelResource("UI/Main/Shop/ShopPopPanel")]
+    [UIPanelResource("Assets/UI/Main/Shop/ShopPopPanel.prefab")]
     public class ShopPopPanel : BaseUIPanel
     {
         public Transform Content;

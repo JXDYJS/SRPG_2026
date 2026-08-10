@@ -13,7 +13,7 @@ using Managers;
 
 namespace UI.Panel
 {
-    [UIPanelResource("UI/Main/MapWindow")]
+    [UIPanelResource("Assets/UI/Main/MapWindow.prefab")]
     public class MapPopWindow : BaseUIPanel
     {
         private RectTransform Content;

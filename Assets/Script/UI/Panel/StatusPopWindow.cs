@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using UI.Item;
 namespace UI.Panel
 {
-    [UIPanelResource("UI/Battle/StatusPopWindow")]
+    [UIPanelResource("Assets/UI/Battle/StatusPopWindow.prefab")]
     public class StatusPopWindow : BaseUIPanel
     {
         public UnityEngine.UI.GridLayoutGroup BuffContent;

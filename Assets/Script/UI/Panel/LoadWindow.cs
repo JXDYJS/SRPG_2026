@@ -6,7 +6,7 @@ namespace UI.Panel
 {
     public delegate UniTask LoadAction(LoadWindow window);
 
-    [UIPanelResource("UI/Load/LoadWindow")]
+    [UIPanelResource("Assets/UI/Load/LoadWindow.prefab")]
     public class LoadWindow : BaseUIPanel
     {
         public Slider slider;

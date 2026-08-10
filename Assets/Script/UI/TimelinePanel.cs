@@ -6,7 +6,7 @@ using UI.Panel;
 
 namespace UI
 {
-    [UIPanelResource("UI/Battle/Timeline")]
+    [UIPanelResource("Assets/UI/Battle/Timeline.prefab")]
     public class TimelinePanel : BaseUIPanel
     {
         [Header("UI引用")]

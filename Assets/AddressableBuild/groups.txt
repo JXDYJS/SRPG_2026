@@ -15,6 +15,9 @@ Assets/Map/        = Maps          # 地图数据 MapDataSO
 # Lua 脚本（热更走 Addressable，TypeHint/EmmyLua 已在 ignore.txt 排除）
 Assets/Lua/     = Group_Lua
 
+# UI 面板（UIManager.OpenPanel 按地址加载，地址 = Assets/UI/... 全路径，与 [UIPanelResource] 一致）
+Assets/UI/      = Group_UI
+
 # 遗物/物品图标、方块贴图、实体图、商店 UI 贴图
 Assets/textures/item/   = Textures_item
 Assets/textures/block/  = Textures_block
@@ -29,6 +32,6 @@ Assets/textures/mob_effect/    = Textures_mob_effect
 
 # ===== preserve：运行时按地址字符串加载的分组，脚本不重建、不改地址 =====
 # 仅 Group_Buff 需要：BuffManager 用 buffID 作地址加载（Addressables.LoadAssetAsync<BuffBase>(buffID)）
-# 其它分组（Characters/Skills/UI/Class 等）都用 AssetReference(GUID) 或 Resources 加载，地址无关，
-# 路径命中的资产会被迁移到对应分组并改写为 Assets/ 路径地址。
+# 其它分组（Characters/Skills/Class 等）都用 AssetReference(GUID) 加载，地址无关；
+# UI 分组已按 Assets/UI/ 前缀由脚本统一重建（地址 = 全路径）。路径命中的资产会被迁移到对应分组并改写为 Assets/ 路径地址。
 preserve = Group_Buff

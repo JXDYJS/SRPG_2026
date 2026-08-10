@@ -10,7 +10,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 namespace UI.Panel
 {
-    [UIPanelResource("UI/Launch/LaunchWindow")]
+    [UIPanelResource("Assets/UI/Launch/LaunchWindow.prefab")]
     public class LaunchWindow : BaseUIPanel
     {
         public Button NewGameBtn;
