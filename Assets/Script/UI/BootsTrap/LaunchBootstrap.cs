@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using Lua;
 using Managers;
 using UI.Panel;
 using UnityEngine;
@@ -23,10 +24,13 @@ namespace UI.BootsTrap
             UIManager.Instance.OpenPanel<LoadWindow>().Init(RunStartupFlow);
         }
 
-        /// <summary>启动流程：版本检查 → 热更新 → 进入主菜单。</summary>
+        /// <summary>启动流程：版本检查 → 热更新 → Lua 预取 → 进入主菜单。</summary>
         private async UniTask RunStartupFlow(LoadWindow window)
         {
             await UpdateManager.CheckAndUpdate(window);
+
+            // Lua 已 Addressable 化，必须在 catalog 更新后初始化，否则预取到旧内容
+            await LuaManager.Instance.InitializeAsync();
 
             window.Close();
             UIManager.Instance.OpenPanel<LaunchWindow>();

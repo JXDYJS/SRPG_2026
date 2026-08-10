@@ -25,10 +25,10 @@ namespace EditorTools
     /// 构建流程（与 BuildPipeline 教学一致）：
     ///   1. Addressables 内容构建（可选）
     ///   2. 拷贝 bundle：Library/com.unity.addressables/aa → Assets/StreamingAssets/aa
-    ///   3. 拷贝 Lua：Assets/Lua → Assets/StreamingAssets/Lua（LuaManager 打包后从这读）
-    ///   4. 清理输出目录
-    ///   5. BuildPipeline.BuildPlayer
-    ///   6. 构建后清理 StreamingAssets/aa 与 StreamingAssets/Lua（不该进版本库）
+    ///   3. 清理输出目录
+    ///   4. BuildPipeline.BuildPlayer
+    ///   5. 构建后清理 StreamingAssets/aa 与 StreamingAssets/update（不该进版本库）
+    ///   注：Lua 已 Addressable 化（Group_Lua），随 bundle 打包，无需单独拷贝
     /// </summary>
     public class BuildWindow : EditorWindow
     {
@@ -38,7 +38,6 @@ namespace EditorTools
         private string _buildName = "SRPG_2026";
         private BuildTarget _buildTarget = BuildTarget.StandaloneWindows64;
         private bool _buildAddressables = true;
-        private bool _copyLua = true;
         private bool _developmentMode = false;
         private bool _openFolderAfter = true;
         private string _appVersion = "1.0.0";
@@ -62,7 +61,6 @@ namespace EditorTools
             _buildName = EditorPrefs.GetString(PrefPrefix + "Name", _buildName);
             _buildTarget = (BuildTarget)EditorPrefs.GetInt(PrefPrefix + "Target", (int)_buildTarget);
             _buildAddressables = EditorPrefs.GetBool(PrefPrefix + "Addr", _buildAddressables);
-            _copyLua = EditorPrefs.GetBool(PrefPrefix + "Lua", _copyLua);
             _developmentMode = EditorPrefs.GetBool(PrefPrefix + "Dev", _developmentMode);
             _openFolderAfter = EditorPrefs.GetBool(PrefPrefix + "Open", _openFolderAfter);
             _appVersion = EditorPrefs.GetString(PrefPrefix + "AppVersion", _appVersion);
@@ -75,7 +73,6 @@ namespace EditorTools
             EditorPrefs.SetString(PrefPrefix + "Name", _buildName);
             EditorPrefs.SetInt(PrefPrefix + "Target", (int)_buildTarget);
             EditorPrefs.SetBool(PrefPrefix + "Addr", _buildAddressables);
-            EditorPrefs.SetBool(PrefPrefix + "Lua", _copyLua);
             EditorPrefs.SetBool(PrefPrefix + "Dev", _developmentMode);
             EditorPrefs.SetBool(PrefPrefix + "Open", _openFolderAfter);
             EditorPrefs.SetString(PrefPrefix + "AppVersion", _appVersion);
@@ -92,7 +89,6 @@ namespace EditorTools
             EditorGUILayout.Space(8);
             EditorGUILayout.LabelField("构建选项", EditorStyles.boldLabel);
             _buildAddressables = EditorGUILayout.Toggle("构建 Addressables", _buildAddressables);
-            _copyLua = EditorGUILayout.Toggle("拷贝 Lua 到 StreamingAssets", _copyLua);
             _developmentMode = EditorGUILayout.Toggle("Development 模式", _developmentMode);
             _openFolderAfter = EditorGUILayout.Toggle("完成后打开目录", _openFolderAfter);
 
@@ -153,19 +149,10 @@ namespace EditorTools
 
                 // 2. 拷贝 bundle 到 StreamingAssets（Local.LoadPath = StreamingAssets/aa/Windows）
                 //    否则玩家运行时 Addressables 一个都加载不到
+                //    Lua 已 Addressable 化（Group_Lua），随 bundle 打包，不再单独拷贝
                 CopyDirectory("Library/com.unity.addressables/aa", "Assets/StreamingAssets/aa");
 
-                // 3. 拷贝 Lua 到 StreamingAssets（LuaManager 打包后从 streamingAssetsPath 读）
-                //    排除 TypeHint(IDE提示)/EmmyLuaSnippetToolData(工具数据)/.meta
-                if (_copyLua)
-                {
-                    CopyDirectory("Assets/Lua", "Assets/StreamingAssets/Lua", rel =>
-                        rel.StartsWith("TypeHint", StringComparison.OrdinalIgnoreCase) ||
-                        rel.StartsWith("EmmyLuaSnippetToolData", StringComparison.OrdinalIgnoreCase) ||
-                        rel.EndsWith(".meta", StringComparison.OrdinalIgnoreCase));
-                }
-
-                // 4. 清理输出目录
+                // 3. 清理输出目录
                 if (Directory.Exists(_outputDir))
                 {
                     Directory.Delete(_outputDir, true);
@@ -224,10 +211,6 @@ namespace EditorTools
                 if (Directory.Exists("Assets/StreamingAssets/aa"))
                 {
                     Directory.Delete("Assets/StreamingAssets/aa", true);
-                }
-                if (Directory.Exists("Assets/StreamingAssets/Lua"))
-                {
-                    Directory.Delete("Assets/StreamingAssets/Lua", true);
                 }
                 if (Directory.Exists("Assets/StreamingAssets/update"))
                 {

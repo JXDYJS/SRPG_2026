@@ -41,10 +41,13 @@ Assets/Scenes/SampleScene.unity
 
 # 资源代码/脚本/配置，不入 Addressables
 Assets/Script/**
-Assets/Lua/**
 Assets/Editor/**
 Assets/shader/**
 Assets/Data/**
+
+# Lua 走 Addressable 热更（Group_Lua），仅排除 IDE 提示/工具数据目录
+Assets/Lua/TypeHint/**
+Assets/Lua/EmmyLuaSnippetToolData/**
 
 # Resources 体系独立于 Addressables，不打包
 Assets/Resources/**

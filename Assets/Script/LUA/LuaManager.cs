@@ -1,10 +1,23 @@
 using System;
-using System.IO;
+using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.AddressableAssets.ResourceLocators;
 using XLua;
 
 namespace Lua
 {
+    /// <summary>
+    /// LuaManager — Lua 运行时环境。
+    ///
+    /// Lua 脚本已通过 ScriptedImporter 变为 TextAsset 并被 Addressables 管理（Group_Lua），
+    /// 因此加载不再走文件 IO，而是预取 Addressable 资源到内存缓存：
+    ///   - 启动流程（LaunchBootstrap）在 catalog 更新后调用 InitializeAsync()
+    ///   - 枚举所有 Assets/Lua/ 地址 → LoadAssetAsync&lt;TextAsset&gt; → 缓存模块名→字节
+    ///   - XLua 的 Loader 读缓存，缺失即报错（不设文件兜底）
+    /// 这样 Lua 热更完全复用 Addressables 内容更新管线。
+    /// </summary>
     public class LuaManager
     {
         private static LuaManager _instance;
@@ -12,18 +25,26 @@ namespace Lua
 
         public LuaEnv LuaEnv { get; private set; }
 
-        /// <summary>
-        /// Lua 根目录：
-        ///   - 编辑器下 = 工程源码 Assets/Lua（dataPath 在编辑器里就是 <工程>/Assets）
-        ///   - 打包后 = StreamingAssets/Lua（打包脚本会把 Assets/Lua 拷贝过去，
-        ///     dataPath 在打包后指向 <游戏>_Data/，源码目录不存在）
-        /// </summary>
-        private static string LuaRoot => Application.isEditor
-            ? Path.Combine(Application.dataPath, "Lua")
-            : Path.Combine(Application.streamingAssetsPath, "Lua");
+        private const string LuaAddressPrefix = "Assets/Lua/";
+        private const string LuaAddressSuffix = ".lua";
+
+        /// <summary>Lua 模块名（如 Buffs.BuffBase）→ 原始字节。</summary>
+        private readonly Dictionary<string, byte[]> _luaCache = new Dictionary<string, byte[]>();
 
         private LuaManager()
         {
+        }
+
+        /// <summary>
+        /// 初始化 Lua 环境（幂等）。必须在 Addressables 初始化且 catalog 更新完成后调用，
+        /// 否则拿到的可能是旧内容。
+        /// </summary>
+        public async UniTask InitializeAsync()
+        {
+            if (LuaEnv != null) return;
+
+            await PreloadLuaCache();
+
             LuaEnv = new LuaEnv();
             LuaEnv.AddLoader(Loader);
             LuaEnv.DoString(@"
@@ -38,45 +59,68 @@ namespace Lua
             RegisterAllModules();
         }
 
-        private static byte[] Loader(ref string filepath)
+        /// <summary>枚举 Addressable 中所有 Assets/Lua/ 地址并预取为字节缓存。</summary>
+        private async UniTask PreloadLuaCache()
         {
-            string path = Path.Combine(LuaRoot, filepath.Replace(".", "/") + ".lua");
-
-            if (File.Exists(path))
+            List<string> addresses = new List<string>();
+            foreach (IResourceLocator locator in Addressables.ResourceLocators)
             {
-                return File.ReadAllBytes(path);
+                foreach (object key in locator.Keys)
+                {
+                    if (key is string s &&
+                        s.StartsWith(LuaAddressPrefix, StringComparison.Ordinal) &&
+                        s.EndsWith(LuaAddressSuffix, StringComparison.Ordinal))
+                    {
+                        addresses.Add(s);
+                    }
+                }
+            }
+            addresses.Sort(StringComparer.Ordinal);
+
+            foreach (string address in addresses)
+            {
+                try
+                {
+                    var handle = Addressables.LoadAssetAsync<TextAsset>(address);
+                    TextAsset asset = await handle.ToUniTask();
+                    if (asset == null)
+                    {
+                        Debug.LogWarning($"[LuaManager] Lua 资源为空: {address}");
+                        continue;
+                    }
+
+                    string module = address.Substring(LuaAddressPrefix.Length, address.Length - LuaAddressPrefix.Length - LuaAddressSuffix.Length);
+                    module = module.Replace('/', '.');
+                    _luaCache[module] = asset.bytes;
+                }
+                catch (Exception e)
+                {
+                    Debug.LogWarning($"[LuaManager] 加载 Lua 失败: {address} → {e.Message}");
+                }
             }
 
-            Debug.LogWarning($"[LuaManager] 找不到 Lua 文件: {path}");
+            Debug.Log($"[LuaManager] 预取 {_luaCache.Count} 个 Lua 模块");
+        }
+
+        private byte[] Loader(ref string filepath)
+        {
+            if (_luaCache.TryGetValue(filepath, out byte[] bytes))
+            {
+                return bytes;
+            }
+
+            Debug.LogWarning($"[LuaManager] 找不到 Lua 模块: {filepath}");
             return null;
         }
 
         private void RegisterAllModules()
         {
-            string luaRoot = LuaRoot;
-            if (!Directory.Exists(luaRoot))
+            foreach (string module in _luaCache.Keys)
             {
-                Debug.LogWarning($"[LuaManager] Lua 根目录不存在: {luaRoot}");
-                return;
-            }
-
-            var files = Directory.GetFiles(luaRoot, "*.lua", SearchOption.AllDirectories);
-            Array.Sort(files);
-
-            foreach (var file in files)
-            {
-                string relative = file.Substring(luaRoot.Length + 1);
-
-                if (relative.StartsWith("TypeHint" + Path.DirectorySeparatorChar) ||
-                    relative.StartsWith("TypeHint" + Path.AltDirectorySeparatorChar))
+                if (module == "Class" || module == "Logger" || module == "Event")
+                {
                     continue;
-
-                if (relative == "Class.lua" || relative == "Logger.lua" || relative == "Event.lua")
-                    continue;
-
-                string module = relative.Replace(Path.DirectorySeparatorChar, '.')
-                                        .Replace(Path.AltDirectorySeparatorChar, '.');
-                module = Path.ChangeExtension(module, null);
+                }
 
                 try
                 {
@@ -91,13 +135,14 @@ namespace Lua
 
         public void Require(string module)
         {
-            LuaEnv.DoString($"require('{module}')");
+            LuaEnv?.DoString($"require('{module}')");
         }
 
         public void Dispose()
         {
             LuaEnv?.Dispose();
             LuaEnv = null;
+            _luaCache.Clear();
             _instance = null;
         }
     }

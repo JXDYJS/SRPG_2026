@@ -12,6 +12,9 @@ Assets/Perfob/     = Perfob        # 方块/怪物 prefab
 Assets/Scenes/     = Scenes        # 战斗地图场景
 Assets/Map/        = Maps          # 地图数据 MapDataSO
 
+# Lua 脚本（热更走 Addressable，TypeHint/EmmyLua 已在 ignore.txt 排除）
+Assets/Lua/     = Group_Lua
+
 # 遗物/物品图标、方块贴图、实体图、商店 UI 贴图
 Assets/textures/item/   = Textures_item
 Assets/textures/block/  = Textures_block
