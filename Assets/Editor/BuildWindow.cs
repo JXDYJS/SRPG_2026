@@ -185,6 +185,7 @@ namespace EditorTools
                 if (!string.IsNullOrEmpty(remoteRoot))
                 {
                     fileCount = GenerateManifest(remoteRoot, _appVersion, _appVersion, _contentVersion,
+                        GetServerBaseUrl(settings),
                         localStreamingPath: "Assets/StreamingAssets/update/version.json");
                 }
 
@@ -311,7 +312,7 @@ namespace EditorTools
                 ManifestData previous = ReadManifest(Path.Combine(publishRoot, "update", "version.json"));
                 string appVersion = previous?.appVersion ?? _appVersion;
                 string minAppVersion = previous?.minAppVersion ?? _appVersion;
-                int fileCount = GenerateManifest(remoteRoot, appVersion, minAppVersion, _contentVersion);
+                int fileCount = GenerateManifest(remoteRoot, appVersion, minAppVersion, _contentVersion, GetServerBaseUrl(settings));
 
                 _log = $"[OK] 内容补丁构建成功：{modified.Count} 个资源，{fileCount} 个远程文件已发布到 {remoteRoot}\n" +
                        $"version.json: app={appVersion} / minApp={minAppVersion} / content={_contentVersion}\n" +
@@ -351,6 +352,7 @@ namespace EditorTools
             public string appVersion;
             public string minAppVersion;
             public string contentVersion;
+            public string serverBaseUrl;
             public ManifestFileInfo[] files;
         }
 
@@ -371,7 +373,7 @@ namespace EditorTools
         /// 若 localStreamingPath 非空，同时把同一份清单写到该路径（全量构建时打进玩家包，
         /// 作为客户端的本地基线，供启动时与远程对比自身状态）。
         /// </summary>
-        private static int GenerateManifest(string remoteRoot, string appVersion, string minAppVersion, string contentVersion, string localStreamingPath = null)
+        private static int GenerateManifest(string remoteRoot, string appVersion, string minAppVersion, string contentVersion, string serverBaseUrl = null, string localStreamingPath = null)
         {
             string dir = Path.GetFullPath(remoteRoot);
             if (!Directory.Exists(dir)) return 0;
@@ -400,6 +402,7 @@ namespace EditorTools
                 appVersion = appVersion,
                 minAppVersion = minAppVersion,
                 contentVersion = contentVersion,
+                serverBaseUrl = serverBaseUrl,
                 files = list.ToArray(),
             };
 
@@ -421,6 +424,21 @@ namespace EditorTools
             }
 
             return list.Count;
+        }
+
+        /// <summary>
+        /// 计算客户端用的"服务器根"（Remote.LoadPath 去掉 /[BuildTarget] 后的部分）。
+        /// 例：http://192.168.x.x:59306/Windows → http://192.168.x.x:59306
+        /// 客户端用它拼 {serverBaseUrl}/update/version.json 做版本检查。
+        /// </summary>
+        private static string GetServerBaseUrl(AddressableAssetSettings settings)
+        {
+            string template = settings.profileSettings.GetValueByName(settings.activeProfileId, AddressableAssetSettings.kRemoteLoadPath);
+            if (string.IsNullOrEmpty(template)) return null;
+
+            string rootTemplate = template.Replace("/[BuildTarget]", "").TrimEnd('/');
+            string resolved = settings.profileSettings.EvaluateString(settings.activeProfileId, rootTemplate);
+            return resolved.TrimEnd('/');
         }
 
         /// <summary>读取已有 version.json（补丁时用于沿用 appVersion / minAppVersion），不存在或损坏返回 null。</summary>
@@ -448,6 +466,7 @@ namespace EditorTools
 
         private static string GetPlayerExtension(BuildTarget target)
         {
+            // 触发性注释：仅用于推动编辑器重编译检测
             switch (target)
             {
                 case BuildTarget.StandaloneWindows:

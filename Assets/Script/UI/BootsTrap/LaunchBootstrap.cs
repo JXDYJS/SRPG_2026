@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using Managers;
 using UI.Panel;
 using UnityEngine;
@@ -6,7 +7,8 @@ namespace UI.BootsTrap
 {
     /// <summary>
     /// LaunchBootstrap — 主菜单场景启动器。
-    /// UIRoot/UIManager 由 BeforeSceneLoad 自动初始化，这里只需在 Start 拉起 LaunchWindow。
+    /// UIRoot/UIManager 由 BeforeSceneLoad 自动初始化。
+    /// 启动先拉起 LoadWindow 跑版本检查 + 热更新，确认无问题后再进入主菜单 LaunchWindow。
     /// </summary>
     public class LaunchBootstrap : MonoBehaviour
     {
@@ -17,6 +19,16 @@ namespace UI.BootsTrap
                 Debug.LogError("UIRoot 未就绪");
                 return;
             }
+
+            UIManager.Instance.OpenPanel<LoadWindow>().Init(RunStartupFlow);
+        }
+
+        /// <summary>启动流程：版本检查 → 热更新 → 进入主菜单。</summary>
+        private async UniTask RunStartupFlow(LoadWindow window)
+        {
+            await UpdateManager.CheckAndUpdate(window);
+
+            window.Close();
             UIManager.Instance.OpenPanel<LaunchWindow>();
         }
     }
