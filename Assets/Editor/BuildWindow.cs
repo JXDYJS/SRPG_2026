@@ -1,7 +1,12 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using UnityEditor;
+using UnityEditor.AddressableAssets;
+using UnityEditor.AddressableAssets.Build;
+using UnityEditor.AddressableAssets.Settings;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
 
@@ -36,6 +41,8 @@ namespace EditorTools
         private bool _copyLua = true;
         private bool _developmentMode = false;
         private bool _openFolderAfter = true;
+        private string _appVersion = "1.0.0";
+        private string _contentVersion = "100";
 
         private bool _isBuilding;
         private string _log;
@@ -46,7 +53,7 @@ namespace EditorTools
         public static void Open()
         {
             BuildWindow w = GetWindow<BuildWindow>("Build");
-            w.minSize = new Vector2(440, 360);
+            w.minSize = new Vector2(440, 420);
         }
 
         private void OnEnable()
@@ -58,6 +65,8 @@ namespace EditorTools
             _copyLua = EditorPrefs.GetBool(PrefPrefix + "Lua", _copyLua);
             _developmentMode = EditorPrefs.GetBool(PrefPrefix + "Dev", _developmentMode);
             _openFolderAfter = EditorPrefs.GetBool(PrefPrefix + "Open", _openFolderAfter);
+            _appVersion = EditorPrefs.GetString(PrefPrefix + "AppVersion", _appVersion);
+            _contentVersion = EditorPrefs.GetString(PrefPrefix + "ContentVersion", _contentVersion);
         }
 
         private void OnDisable()
@@ -69,6 +78,8 @@ namespace EditorTools
             EditorPrefs.SetBool(PrefPrefix + "Lua", _copyLua);
             EditorPrefs.SetBool(PrefPrefix + "Dev", _developmentMode);
             EditorPrefs.SetBool(PrefPrefix + "Open", _openFolderAfter);
+            EditorPrefs.SetString(PrefPrefix + "AppVersion", _appVersion);
+            EditorPrefs.SetString(PrefPrefix + "ContentVersion", _contentVersion);
         }
 
         private void OnGUI()
@@ -85,11 +96,21 @@ namespace EditorTools
             _developmentMode = EditorGUILayout.Toggle("Development 模式", _developmentMode);
             _openFolderAfter = EditorGUILayout.Toggle("完成后打开目录", _openFolderAfter);
 
+            EditorGUILayout.Space(8);
+            EditorGUILayout.LabelField("版本配置", EditorStyles.boldLabel);
+            _appVersion = EditorGUILayout.TextField("App 版本（全量构建）", _appVersion);
+            _contentVersion = EditorGUILayout.TextField("内容版本（补丁）", _contentVersion);
+
             EditorGUILayout.Space(16);
             GUI.enabled = !_isBuilding;
             if (GUILayout.Button(_isBuilding ? "构建中..." : "开始构建", GUILayout.Height(40)))
             {
                 StartBuild();
+            }
+            EditorGUILayout.Space(8);
+            if (GUILayout.Button(_isBuilding ? "构建中..." : "开始更新", GUILayout.Height(40)))
+            {
+                StartUpdata();
             }
             GUI.enabled = true;
 
@@ -107,14 +128,26 @@ namespace EditorTools
             // BuildPlayer 是同步阻塞的，用 delayCall 让按钮点击事件先结束，避免 GUI 卡死
             EditorApplication.delayCall += RunBuild;
         }
+        private void StartUpdata()
+        {
+            _isBuilding  =  true;
+            _log = "开始构建更新..." ;
+            EditorApplication.delayCall += RunUpdate;
+        }
 
         private void RunBuild()
         {
             try
             {
+                // 0. 写入 App 版本（影响 PlayerSettings 与远程 catalog 命名，需在构建内容前设置）
+                PlayerSettings.bundleVersion = _appVersion;
+
                 // 1. Addressables 内容构建（本项目运行时大量 LoadAssetAsync，必须先做）
                 if (_buildAddressables)
                 {
+                    // 基线构建也需开启远程目录，content_state.bin 才会记录远程 catalog 信息，
+                    // 否则后续「开始更新」无法基于它产出补丁
+                    EnsureRemoteConfig(AddressableAssetSettingsDefaultObject.Settings);
                     BuildAddressables.BuildContent();
                 }
 
@@ -157,9 +190,27 @@ namespace EditorTools
                     _buildTarget,
                     options);
 
-                _log = report.summary.result == BuildResult.Succeeded
-                    ? $"[OK] 构建成功: {report.summary.outputPath}  ({report.summary.totalSize / 1048576f:F1} MB)"
-                    : $"[ERROR] 构建失败: {report.summary.result}";
+                if (report.summary.result == BuildResult.Succeeded)
+                {
+                    // 6. 生成 version.json（appVersion / minAppVersion = 当前 App 版本，contentVersion = 初始）
+                    AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;
+                    string remoteRoot = settings != null
+                        ? settings.profileSettings.EvaluateString(settings.activeProfileId, AddressableAssetSettings.kRemoteBuildPath)
+                        : null;
+
+                    int fileCount = 0;
+                    if (!string.IsNullOrEmpty(remoteRoot))
+                    {
+                        fileCount = GenerateManifest(remoteRoot, _appVersion, _appVersion, _contentVersion);
+                    }
+
+                    _log = $"[OK] 构建成功: {report.summary.outputPath}  ({report.summary.totalSize / 1048576f:F1} MB)\n" +
+                           $"version.json: app={_appVersion} / minApp={_appVersion} / content={_contentVersion}，{fileCount} 个远程文件 → {remoteRoot}";
+                }
+                else
+                {
+                    _log = $"[ERROR] 构建失败: {report.summary.result}";
+                }
             }
             catch (Exception e)
             {
@@ -180,6 +231,200 @@ namespace EditorTools
                 AssetDatabase.Refresh();
                 _isBuilding = false;
                 Repaint();
+            }
+        }
+        /// <summary>
+        /// 「开始更新」：基于上一次基线构建的 content_state.bin，产出内容补丁（变更 bundle + 新远程 catalog）到 ServerData/。
+        ///
+        /// 流程：
+        ///   1. 确保远程目录配置（BuildRemoteCatalog + RemoteCatalogBuildPath/LoadPath）
+        ///   2. 从 settings/profile 读取 content_state.bin 路径（不硬编码）
+        ///   3. 找出自基线以来的变更资源
+        ///   4. 挪进 Content Update 组（底层自动设置 Remote.BuildPath/LoadPath）
+        ///   5. BuildContentUpdate 构建补丁 → 落到 Remote.BuildPath（ServerData/[BuildTarget]）
+        ///   6. 生成 version.json manifest（客户端启动检查用）
+        ///
+        /// 注意：发布基线后、发补丁期间，不要重跑「开始构建」，否则会覆盖 content_state.bin 导致补丁失效。
+        /// </summary>
+        private void RunUpdate()
+        {
+            try
+            {
+                AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;
+                if (settings == null)
+                {
+                    _log = "[ERROR] 找不到 AddressableAssetSettings，请先初始化 Addressables";
+                    return;
+                }
+
+                // 1. 确保远程目录配置就绪（幂等）
+                EnsureRemoteConfig(settings);
+                AssetDatabase.SaveAssets();
+
+                // 2. content_state.bin 路径从 settings/profile 解析（不硬编码）
+                string binPath = ContentUpdateScript.GetContentStateDataPath(false, settings);
+                if (string.IsNullOrEmpty(binPath) || !File.Exists(binPath))
+                {
+                    _log = $"[ERROR] 找不到内容状态文件: {binPath}\n请先跑一次「开始构建」生成基线包，再发补丁。";
+                    return;
+                }
+
+                // 3. 找出自基线以来的变更资源
+                List<AddressableAssetEntry> modified = ContentUpdateScript.GatherModifiedEntries(settings, binPath);
+                if (modified == null || modified.Count == 0)
+                {
+                    _log = "没有检测到变更资源，无需发补丁";
+                    return;
+                }
+
+                Debug.Log($"[BuildWindow] 检测到 {modified.Count} 个变更资源：");
+                foreach (AddressableAssetEntry entry in modified)
+                {
+                    Debug.Log($"  - {entry.address}");
+                }
+
+                // 4. 把变更资源挪进 Content Update 组（底层自动设 Remote.BuildPath/LoadPath）
+                ContentUpdateScript.CreateContentUpdateGroup(settings, modified, "Content Update");
+
+                // 5. 构建补丁 → 变更 bundle + 新远程 catalog 落到 Remote.BuildPath
+                var result = ContentUpdateScript.BuildContentUpdate(settings, binPath);
+                if (result == null)
+                {
+                    _log = "[ERROR] 内容补丁构建失败（请检查 Console：基线是否开了 BuildRemoteCatalog、远程目录是否与基线一致）";
+                    return;
+                }
+                if (!string.IsNullOrEmpty(result.Error))
+                {
+                    _log = "[ERROR] 内容补丁构建失败: " + result.Error;
+                    Debug.LogError(result.Error);
+                    return;
+                }
+
+                // 6. 生成 version.json manifest（沿用已有 appVersion / minAppVersion，只更新 contentVersion）
+                string remoteRoot = settings.profileSettings.EvaluateString(
+                    settings.activeProfileId, AddressableAssetSettings.kRemoteBuildPath);
+                string publishRoot = Path.GetDirectoryName(Path.GetFullPath(remoteRoot)) ?? Path.GetFullPath(remoteRoot);
+                ManifestData previous = ReadManifest(Path.Combine(publishRoot, "update", "version.json"));
+                string appVersion = previous?.appVersion ?? _appVersion;
+                string minAppVersion = previous?.minAppVersion ?? _appVersion;
+                int fileCount = GenerateManifest(remoteRoot, appVersion, minAppVersion, _contentVersion);
+
+                _log = $"[OK] 内容补丁构建成功：{modified.Count} 个资源，{fileCount} 个远程文件已发布到 {remoteRoot}\n" +
+                       $"version.json: app={appVersion} / minApp={minAppVersion} / content={_contentVersion}\n" +
+                       "补丁期间请勿重跑「开始构建」，否则 content_state.bin 被覆盖、补丁将失效。";
+            }
+            catch (Exception e)
+            {
+                _log = "[ERROR] " + e.Message;
+                Debug.LogException(e);
+            }
+            finally
+            {
+                _isBuilding = false;
+                Repaint();
+            }
+        }
+
+        /// <summary>
+        /// 确保 Addressables 远程目录配置就绪：
+        ///   - BuildRemoteCatalog：开启（基线构建也需开启，bin 才记录远程 catalog 信息）
+        ///   - RemoteCatalogBuildPath / RemoteCatalogLoadPath：指向 profile 的 Remote.BuildPath / Remote.LoadPath
+        /// </summary>
+        private static void EnsureRemoteConfig(AddressableAssetSettings settings)
+        {
+            if (settings == null) return;
+
+            settings.BuildRemoteCatalog = true;
+            settings.RemoteCatalogBuildPath.SetVariableByName(settings, AddressableAssetSettings.kRemoteBuildPath);
+            settings.RemoteCatalogLoadPath.SetVariableByName(settings, AddressableAssetSettings.kRemoteLoadPath);
+        }
+
+        // ==================== version.json manifest ====================
+
+        [Serializable]
+        private sealed class ManifestData
+        {
+            public string appVersion;
+            public string minAppVersion;
+            public string contentVersion;
+            public ManifestFileInfo[] files;
+        }
+
+        [Serializable]
+        private sealed class ManifestFileInfo
+        {
+            public string path;
+            public string md5;
+            public long size;
+        }
+
+        /// <summary>
+        /// 在 <发布根>/update/version.json 生成版本清单：
+        ///   - appVersion：客户端 App 版本（代码/包体版本）
+        ///   - minAppVersion：低于它的客户端必须全量更新
+        ///   - contentVersion：内容版本（资源/Lua），补丁时递增
+        ///   - files：远程内容文件（remoteRoot 下）的 md5 清单
+        /// </summary>
+        private static int GenerateManifest(string remoteRoot, string appVersion, string minAppVersion, string contentVersion)
+        {
+            string dir = Path.GetFullPath(remoteRoot);
+            if (!Directory.Exists(dir)) return 0;
+
+            string[] files = Directory.GetFiles(dir, "*", SearchOption.AllDirectories)
+                .Where(f => !f.EndsWith(".meta", StringComparison.OrdinalIgnoreCase))
+                .OrderBy(f => f, StringComparer.OrdinalIgnoreCase)
+                .ToArray();
+
+            var list = new List<ManifestFileInfo>();
+            foreach (string file in files)
+            {
+                string rel = Path.GetRelativePath(dir, file).Replace('\\', '/');
+
+                byte[] bytes = File.ReadAllBytes(file);
+                list.Add(new ManifestFileInfo
+                {
+                    path = rel,
+                    md5 = ComputeMd5(bytes),
+                    size = bytes.Length,
+                });
+            }
+
+            var manifest = new ManifestData
+            {
+                appVersion = appVersion,
+                minAppVersion = minAppVersion,
+                contentVersion = contentVersion,
+                files = list.ToArray(),
+            };
+
+            // 稳定入口：<发布根>/update/version.json（与内容目录分开，URL 恒定）
+            string publishRoot = Path.GetDirectoryName(dir) ?? dir;
+            string updateDir = Path.Combine(publishRoot, "update");
+            Directory.CreateDirectory(updateDir);
+            File.WriteAllText(Path.Combine(updateDir, "version.json"), JsonUtility.ToJson(manifest, true));
+            return list.Count;
+        }
+
+        /// <summary>读取已有 version.json（补丁时用于沿用 appVersion / minAppVersion），不存在或损坏返回 null。</summary>
+        private static ManifestData ReadManifest(string path)
+        {
+            if (!File.Exists(path)) return null;
+            try
+            {
+                return JsonUtility.FromJson<ManifestData>(File.ReadAllText(path));
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private static string ComputeMd5(byte[] bytes)
+        {
+            using (MD5 md5 = MD5.Create())
+            {
+                byte[] hash = md5.ComputeHash(bytes);
+                return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
             }
         }
 
