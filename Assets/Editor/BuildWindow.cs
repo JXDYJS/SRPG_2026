@@ -359,7 +359,12 @@ namespace EditorTools
         private static int GenerateManifest(string remoteRoot, string appVersion, string minAppVersion, string contentVersion, string serverBaseUrl = null, string localStreamingPath = null)
         {
             string dir = Path.GetFullPath(remoteRoot);
-            if (!Directory.Exists(dir)) return 0;
+            Debug.Log($"[BuildWindow] GenerateManifest: remoteRoot={remoteRoot} resolved={dir} exists={Directory.Exists(dir)} cwd={Directory.GetCurrentDirectory()}");
+            if (!Directory.Exists(dir))
+            {
+                Debug.LogWarning($"[BuildWindow] GenerateManifest: 远程目录不存在({dir})，跳过 version.json 生成");
+                return 0;
+            }
 
             string[] files = Directory.GetFiles(dir, "*", SearchOption.AllDirectories)
                 .Where(f => !f.EndsWith(".meta", StringComparison.OrdinalIgnoreCase))
