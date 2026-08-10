@@ -164,9 +164,7 @@ namespace EditorTools
                 //    本地基线: Assets/StreamingAssets/update/version.json（打进玩家包，客户端对比自身状态用）
                 //    注意：本地基线必须在 BuildPlayer 之前生成，否则不会打进包
                 AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;
-                string remoteRoot = settings != null
-                    ? settings.profileSettings.EvaluateString(settings.activeProfileId, AddressableAssetSettings.kRemoteBuildPath)
-                    : null;
+                string remoteRoot = ResolveRemoteBuildPath(settings);
 
                 int fileCount = 0;
                 if (!string.IsNullOrEmpty(remoteRoot))
@@ -289,8 +287,7 @@ namespace EditorTools
                 }
 
                 // 6. 生成 version.json manifest（沿用已有 appVersion / minAppVersion，只更新 contentVersion）
-                string remoteRoot = settings.profileSettings.EvaluateString(
-                    settings.activeProfileId, AddressableAssetSettings.kRemoteBuildPath);
+                string remoteRoot = ResolveRemoteBuildPath(settings);
                 string publishRoot = Path.GetDirectoryName(Path.GetFullPath(remoteRoot)) ?? Path.GetFullPath(remoteRoot);
                 ManifestData previous = ReadManifest(Path.Combine(publishRoot, "update", "version.json"));
                 string appVersion = previous?.appVersion ?? _appVersion;
@@ -412,6 +409,19 @@ namespace EditorTools
             }
 
             return list.Count;
+        }
+
+        /// <summary>
+        /// 解析 Remote.BuildPath 的实际输出目录（如 ServerData/StandaloneWindows64）。
+        /// 注意：EvaluateString 只处理带 [占位符] 的模板串，直接传变量名会原样返回（如 "Remote.BuildPath"），
+        /// 必须先 GetValueByName 取出变量值，再 EvaluateString 求值 [BuildTarget] 等占位符。
+        /// </summary>
+        private static string ResolveRemoteBuildPath(AddressableAssetSettings settings)
+        {
+            if (settings == null) return null;
+            string template = settings.profileSettings.GetValueByName(settings.activeProfileId, AddressableAssetSettings.kRemoteBuildPath);
+            if (string.IsNullOrEmpty(template)) return null;
+            return settings.profileSettings.EvaluateString(settings.activeProfileId, template);
         }
 
         /// <summary>
