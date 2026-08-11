@@ -126,6 +126,7 @@ Assets/AddressableAssetsData/Windows.meta
 # 打包脚本临时拷贝的构建产物（构建完会清理，防中断残留）
 Assets/StreamingAssets/aa/
 Assets/StreamingAssets/Lua/
+Assets/StreamingAssets/Lua.meta
 Assets/StreamingAssets/update/
 Assets/StreamingAssets/update.meta
 
