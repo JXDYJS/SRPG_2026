@@ -1,6 +1,7 @@
 using UnityEngine;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using Utils;
 
 namespace UI.Panel
 {
@@ -10,6 +11,8 @@ namespace UI.Panel
         [Header("动画配置")]
         [SerializeField] protected float _animationDuration = 0.25f;
         [SerializeField] protected float _slideDistance = 300f;
+        [Tooltip("下拉动画距离；<=0 时自动取父级(画布)高度，保证从屏幕上方完整滑入")]
+        [SerializeField] protected float _dropDistance = 0f;
         [SerializeField] protected AnimationDirection _enterDirection = AnimationDirection.Left;
         [SerializeField] protected AnimationDirection _exitDirection = AnimationDirection.Right;
 
@@ -27,6 +30,13 @@ namespace UI.Panel
 
         public GameObject PanelObject => gameObject;
         public bool IsInitialized { get; protected set; }
+
+        /// <summary>面板是否处于打开状态（由 UIManager 维护，防止关闭动画未播完时被重新打开导致误关闭）</summary>
+        public bool IsOpen { get; set; }
+
+        /// <summary>打开/关闭时是否播放"从上往下"下拉动画。弹窗层(Popup)面板由 UIManager 自动启用，
+        /// Window 层的弹窗面板可自行设为 true，Tooltip 等指示型面板保持 false。</summary>
+        public bool AnimateOnOpenClose { get; set; }
 
         protected virtual void Awake()
         {
@@ -92,6 +102,45 @@ namespace UI.Panel
             await _rectTransform.DOAnchorPos(endPos, _animationDuration)
                                 .SetEase(Ease.OutCubic)
                                 .AsyncWaitForCompletion();
+        }
+
+        // ==================== 弹窗层通用下拉动画（从上往下） ====================
+
+        /// <summary>
+        /// "从上往下"入场：从屏幕上方下落到原位。
+        /// 全程只用 anchoredPosition 驱动（移动锚点比直接改 posY 更安全，适配任意锚点配置）。
+        /// </summary>
+        public virtual async UniTask PlayDropInAnimation()
+        {
+            if (_rectTransform == null) return;
+            _rectTransform.DOKill();
+            _rectTransform.anchoredPosition = _originalPosition + Vector2.up * GetDropDistance();
+
+            await DT.Append(_rectTransform.DOAnchorPos(_originalPosition, _animationDuration)
+                                          .SetEase(Ease.OutCubic))
+                    .AsyncWaitForCompletion();
+        }
+
+        /// <summary>
+        /// "从上往下"退场：从原位下落到屏幕下方后由 UIManager 隐藏。
+        /// </summary>
+        public virtual async UniTask PlayDropOutAnimation()
+        {
+            if (_rectTransform == null) return;
+            _rectTransform.DOKill();
+
+            await DT.Append(_rectTransform.DOAnchorPos(_originalPosition + Vector2.down * GetDropDistance(), _animationDuration)
+                                          .SetEase(Ease.InCubic))
+                    .AsyncWaitForCompletion();
+        }
+
+        /// <summary>计算下拉距离：优先使用面板自定义的 _dropDistance，否则取父级(画布)高度，兜底 _slideDistance</summary>
+        protected virtual float GetDropDistance()
+        {
+            if (_dropDistance > 0f) return _dropDistance;
+            RectTransform parent = _rectTransform.parent as RectTransform;
+            float parentHeight = parent != null ? parent.rect.height : 0f;
+            return parentHeight > 0f ? parentHeight : _slideDistance;
         }
 
         private Vector2 GetDirectionVector(AnimationDirection direction)

@@ -7,6 +7,7 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.SceneManagement;
 using UI;
 using UI.Panel;
+using Cysharp.Threading.Tasks;
 using Object = UnityEngine.Object;
 
 namespace Managers
@@ -180,7 +181,9 @@ namespace Managers
                 {
                     if (!cachedPanel.gameObject.activeSelf)
                         cachedPanel.gameObject.SetActive(true);
+                    cachedPanel.IsOpen = true;
                     cachedPanel.OnOpen(data);
+                    PlayOpenAnimation(cachedPanel, layer);
                     return cachedPanel;
                 }
                 _panelCache.Remove(panelType);
@@ -215,6 +218,8 @@ namespace Managers
 
             panel.OnInit();
             panel.OnOpen(data);
+            panel.IsOpen = true;
+            PlayOpenAnimation(panel, layer);
 
             _panelCache[panelType] = panel;
             return panel;
@@ -230,7 +235,9 @@ namespace Managers
                 {
                     if (!cachedPanel.gameObject.activeSelf)
                         cachedPanel.gameObject.SetActive(true);
+                    cachedPanel.IsOpen = true;
                     cachedPanel.OnOpen(data);
+                    PlayOpenAnimation(cachedPanel, layer);
                     return cachedPanel as T;
                 }
                 _panelCache.Remove(type);
@@ -265,6 +272,8 @@ namespace Managers
 
             panel.OnInit();
             panel.OnOpen(data);
+            panel.IsOpen = true;
+            PlayOpenAnimation(panel, layer);
 
             _panelCache[type] = panel;
             return panel;
@@ -273,10 +282,54 @@ namespace Managers
         public void ClosePanel<T>() where T : BaseUIPanel
         {
             Type type = typeof(T);
+            if (!_panelCache.TryGetValue(type, out BaseUIPanel panel) || panel == null) return;
 
-            if (_panelCache.TryGetValue(type, out BaseUIPanel panel))
+            panel.OnClose();
+            panel.IsOpen = false;
+
+            // 需要动画的面板先播"从上往下"退场再隐藏；其余立即隐藏
+            if (!panel.AnimateOnOpenClose || !panel.gameObject.activeSelf)
             {
-                panel.OnClose();
+                panel.gameObject.SetActive(false);
+                return;
+            }
+
+            panel.SetInteractable(false);
+            CloseWithAnimation(panel).Forget();
+        }
+
+        /// <summary>
+        /// 弹窗层面板打开时统一播放"从上往下"入场动画。
+        /// 弹窗层(Popup)面板自动启用；Window 层的弹窗面板（地图/状态等）通过 AnimateOnOpenClose 自行启用。
+        /// Tooltip 等指示型面板不在此列，保持无动画。
+        /// </summary>
+        private void PlayOpenAnimation(BaseUIPanel panel, UILayer layer)
+        {
+            if (layer == UILayer.Popup)
+            {
+                panel.AnimateOnOpenClose = true;
+            }
+            if (!panel.AnimateOnOpenClose) return;
+
+            panel.SetInteractable(false);
+            OpenWithAnimation(panel);
+        }
+
+        private async UniTask OpenWithAnimation(BaseUIPanel panel)
+        {
+            await panel.PlayDropInAnimation();
+            if (panel != null && panel.gameObject != null && panel.IsOpen)
+            {
+                panel.SetInteractable(true);
+            }
+        }
+
+        private async UniTask CloseWithAnimation(BaseUIPanel panel)
+        {
+            await panel.PlayDropOutAnimation();
+            // 若退场动画期间被重新打开（IsOpen 变回 true），则放弃本次隐藏，避免误关刚打开的面板
+            if (panel != null && panel.gameObject != null && !panel.IsOpen)
+            {
                 panel.gameObject.SetActive(false);
             }
         }
@@ -287,6 +340,7 @@ namespace Managers
 
             if (_panelCache.TryGetValue(type, out BaseUIPanel panel))
             {
+                panel.IsOpen = false;
                 panel.OnClose();
                 _panelCache.Remove(type);
                 Destroy(panel.gameObject);
@@ -314,6 +368,7 @@ namespace Managers
             {
                 if (kvp.Value != null)
                 {
+                    kvp.Value.IsOpen = false;
                     kvp.Value.OnClose();
                     kvp.Value.gameObject.SetActive(false);
                 }
@@ -326,6 +381,7 @@ namespace Managers
             {
                 if (kvp.Value != null)
                 {
+                    kvp.Value.IsOpen = false;
                     kvp.Value.OnClose();
                     Destroy(kvp.Value.gameObject);
                 }

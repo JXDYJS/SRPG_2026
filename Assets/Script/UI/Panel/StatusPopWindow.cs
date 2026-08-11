@@ -25,6 +25,13 @@ namespace UI.Panel
         public int RowCount = 3;
         public float SlotSize = 40f;
         public Shader targetShader;
+
+        protected override void Awake()
+        {
+            base.Awake();
+            AnimateOnOpenClose = true;
+        }
+
         public void initBuffStatus(MapUnit unit)
         {
             int count = unit.ActiveBuffs.Count;

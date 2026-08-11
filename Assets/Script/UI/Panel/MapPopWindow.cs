@@ -35,6 +35,12 @@ namespace UI.Panel
         public int playerLayer = 0;
         public int playerRow = 0;
 
+        protected override void Awake()
+        {
+            base.Awake();
+            AnimateOnOpenClose = true;
+        }
+
         public void Init(NodeMapData nodeMapData)
         {
             this.nodeMapData = nodeMapData;
