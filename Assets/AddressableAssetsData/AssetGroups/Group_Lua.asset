@@ -1,0 +1,105 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Group_Lua
+  m_EditorClassIdentifier: 
+  m_GroupName: Group_Lua
+  m_Data:
+    m_SerializedData: []
+  m_GUID: 51af209e76941ab4a9d37409f843847c
+  m_SerializeEntries:
+  - m_GUID: 04281b253b637534ca210b2ff3748f80
+    m_Address: Assets/Lua/Buffs/BuffPower.lua
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1460cdda5979adb40b591427d0bcd042
+    m_Address: Assets/Lua/Buffs/BuffBase.lua
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3077d9861ee9cb24f92f018ce5e51a53
+    m_Address: Assets/Lua/Buffs/BuffDefPlus.lua
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4a37bf0329cb0e548834e513b2d1a052
+    m_Address: Assets/Lua/Relic/RelicBase.lua
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 65b35960caefff14e97c5f3701d1dc4b
+    m_Address: Assets/Lua/Event.lua
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6af215ff73820404b9e1e8f405f94e16
+    m_Address: Assets/Lua/Buffs/BuffStrength.lua
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 70205c942add7e443820d6561c052e30
+    m_Address: Assets/Lua/Skills/SteveSkill.lua
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 76a0868ccaacac24f8317dc21d47f8c5
+    m_Address: Assets/Lua/Buffs/BuffPreciseShot.lua
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a1e8f68a4e09d4e4f8f21e856de60922
+    m_Address: Assets/Lua/Buffs/BuffTaunt.lua
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a33713ca254a18c4d989b1bc6ae37656
+    m_Address: Assets/Lua/Buffs/BuffFortitude.lua
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: be72abee2c40f674b9f7db2fd3ed07aa
+    m_Address: Assets/Lua/Buffs/BuffZombieSkin.lua
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dc3683f2dc71fc14fb26e57dee6a13a3
+    m_Address: Assets/Lua/Class.lua
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ebff043460014bd492f88c1a8d808a39
+    m_Address: Assets/Lua/Skills/AriSkill.lua
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fa216f96c367bd64782ba2b050f79d26
+    m_Address: Assets/Lua/Buffs/BuffBattleCry.lua
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fd68f45a52cfa13498ffafb2e22590da
+    m_Address: Assets/Lua/Logger.lua
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ff3c2a53a2c1158409b6207114b79658
+    m_Address: Assets/Lua/Skills/AlexSkill.lua
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 1f6ca7d155b268c408ed984de8fdd20b, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 263f7a00c604f83479991cc0435b3c28, type: 2}
+    - {fileID: 11400000, guid: ffc8060167e2774419eda3e8625e7991, type: 2}
