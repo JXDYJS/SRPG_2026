@@ -10,6 +10,8 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Utils;
 using Managers;
+using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 
 namespace UI.Panel
 {
@@ -26,6 +28,7 @@ namespace UI.Panel
         private Dictionary<string, (int layer, int row)> _nodeIdLookup = new();
         public NodeMapData nodeMapData;
         public GameObject _layerPrefab;
+        public Button ExitBtn;
         private float _layerHeight;
         public int bufferSize = 2;
         private GameObjectPool _pool;
@@ -248,6 +251,10 @@ namespace UI.Panel
             {
                 Init(nodeMapData);
             }
+            ExitBtn.onClick.AddListener(() =>
+            {
+                BackToLaunchWindow();
+            });
         }
 
         private void ClearAllLines()
@@ -323,6 +330,19 @@ namespace UI.Panel
                 UIManager.Instance.DestroyAllPanels();
             }
             SceneManager.LoadScene("LaunchScene");
+        }
+        private async UniTask BackToLaunchWindow()
+        {
+            // 先落盘进度，再销毁全部面板（地图窗口随之释放），最后切回主菜单。
+            // 面板挂在 DontDestroyOnLoad 的 UIRoot 下，切场景不会自动销毁，必须在此提前清理，
+            // 否则地图窗口会一直压在 LaunchScene 之上且池化对象不释放。
+            SaveCurrentProgress();
+            if (UIManager.Instance != null)
+            {
+                UIManager.Instance.DestroyAllPanels();
+            }
+
+            await SceneManager.LoadSceneAsync("LaunchScene", LoadSceneMode.Single).ToUniTask();
         }
     }
 }

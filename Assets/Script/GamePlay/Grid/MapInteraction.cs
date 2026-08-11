@@ -25,6 +25,9 @@ namespace GamePlay.Grid
 
         void Update()
         {
+            // 切场景后 mainCam 可能已被销毁（本组件随旧场景销毁前最后一帧），防御性空引用检查
+            if (mainCam == null) return;
+
             Vector2 mousePos = InputManager.Actions.Gameplay.Point.ReadValue<Vector2>();
             Ray ray = mainCam.ScreenPointToRay(mousePos);
             RaycastHit hit;
