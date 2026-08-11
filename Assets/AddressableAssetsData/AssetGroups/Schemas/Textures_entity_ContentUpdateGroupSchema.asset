@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Textures_entity_ContentUpdateGroupSchema
   m_EditorClassIdentifier: 
   m_Group: {fileID: 11400000, guid: 1ab4c70a18ca5194c86c3bfd698ed905, type: 2}
-  m_StaticContent: 0
+  m_StaticContent: 1

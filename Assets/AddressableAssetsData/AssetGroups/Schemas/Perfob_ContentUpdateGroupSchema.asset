@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Perfob_ContentUpdateGroupSchema
   m_EditorClassIdentifier: 
   m_Group: {fileID: 11400000, guid: 07bb57c7ab9d0ef4aba0fa4d3569f7d4, type: 2}
-  m_StaticContent: 0
+  m_StaticContent: 1

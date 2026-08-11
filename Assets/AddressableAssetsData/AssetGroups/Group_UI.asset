@@ -17,8 +17,43 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: b07f89c5d2b157b4096f9659323bad5a
   m_SerializeEntries:
+  - m_GUID: 00b30b03549153a4c8d1f5d364076963
+    m_Address: Assets/UI/Mat_CursorLowlight.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0416615973ead9b4291ad8d51de6ac22
+    m_Address: Assets/UI/Event/Option.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0b3fd872f413ca64f8471ce512ae4c61
-    m_Address: SelectHighLight
+    m_Address: Assets/UI/SelectHighLight.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 11e49a0b4d2f1c246913c3aca909d3a9
+    m_Address: Assets/UI/Load/LoadWindow.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 17f96277b112ac1488c5ccf4254342ef
+    m_Address: Assets/UI/Main/MapWindow.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 29edd8586e8cde246b488aa0955b449e
+    m_Address: Assets/UI/Event/EventChoicePanel.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3dacff96901dbba4e849d298aac99d77
+    m_Address: Assets/UI/Battle/SkillPanel.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 40cb635345aad7e42833062c339c8d26
+    m_Address: Assets/UI/Lowlight.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -27,8 +62,43 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4a3766439ee283340b3a5575bf45f4ab
+    m_Address: Assets/UI/Battle/Attribute.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 54c41846b333b4d4999ab72269c8e2f2
+    m_Address: Assets/UI/Tooltip/Tooltip.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 56a5bc5d70a815f469fded0f61249c91
+    m_Address: Assets/UI/Battle/ActionMenuPanel.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 641f65ef8405772408d2b3e60876ea88
+    m_Address: Assets/UI/Battle/Slot/ChoosePlayerSlot.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6f8a6b984af5210449435203a998a48d
+    m_Address: Assets/UI/Battle/RenderTexture/VirtualCamera.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 732ac50125401824498fa9fc0491fa33
-    m_Address: Button
+    m_Address: Assets/UI/Button.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 76640128932142b45996ae8200bf2327
+    m_Address: Assets/UI/Battle/Slot/StatsSlot.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7ac9a65eeeb02214f81ca604de521581
+    m_Address: Assets/UI/Battle/Slot/SkillSlot.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -37,23 +107,88 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8ec69a34d0fde4e4f856fa3e18e63c32
+    m_Address: Assets/UI/Main/Shop/Slot/ShopItemSlot.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9690ac61bd950724e81cdf4c5387f4a4
+    m_Address: Assets/UI/Event/MiniGame/OBS.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9c57baa5c7f19324097e5b265a63a97b
+    m_Address: Assets/UI/Battle/ChoosePopWindow.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9d0328a0b5820cb4fbd5622debf9bc37
+    m_Address: Assets/UI/Event/MiniGame/FlyBirdWindow.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9ddfe9e1e5d618f4abd02673790eebe8
+    m_Address: Assets/UI/Main/Shop/ShopPopPanel.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a1daac440ea664a47b9c2193dfec0274
+    m_Address: Assets/UI/Tooltip/TooltipCol.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ac45ea6cdea7b0044bd81b10572ee84a
+    m_Address: Assets/UI/Main/Slot/MapNodeSlot.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b91182ec6e11a4943bb8b73647fa431e
+    m_Address: Assets/UI/Battle/StatusPopWindow.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c3f53bd577417ee65931e32ceb967342
     m_Address: Assets/UI/UIRoot.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d2c84475cbbc6ac4b9af2850d17961cf
+    m_Address: Assets/UI/Battle/Timeline.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d63d0863a2eb09849bf5c7cd87f46990
+    m_Address: Assets/UI/Battle/RenderTexture/StatusPopWindowShowRenderTexture.renderTexture
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d63f8b7ba506f4542bd5136112a5b1aa
-    m_Address: DamageUI
+    m_Address: Assets/UI/DamageUI.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d9e88bb0d73d2e545b596fca2872fd4a
-    m_Address: BattleActionMenu
+    m_Address: Assets/UI/BattleActionMenu.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: dda72fa6f849a6e41b6431e4220a50e4
-    m_Address: Highlight
+    m_Address: Assets/UI/Highlight.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ec82055f2fed95f48a580960cd88eebb
+    m_Address: Assets/UI/Battle/Slot/SimpleSlot.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f0313f7fcaf00704eb58678cff209305
+    m_Address: Assets/UI/Main/Slot/MapLayer.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f130f5f941b21af4e8d9923438fc5a2a
+    m_Address: Assets/UI/Tooltip/TooltipWindow.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

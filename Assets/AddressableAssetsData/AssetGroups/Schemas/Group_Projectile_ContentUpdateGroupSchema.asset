@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Group_Projectile_ContentUpdateGroupSchema
   m_EditorClassIdentifier: 
   m_Group: {fileID: 11400000, guid: c7011e4e28e34b8428e9660be27ccfeb, type: 2}
-  m_StaticContent: 0
+  m_StaticContent: 1
