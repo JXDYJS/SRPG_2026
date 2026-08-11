@@ -251,10 +251,7 @@ namespace UI.Panel
             {
                 Init(nodeMapData);
             }
-            ExitBtn.onClick.AddListener(() =>
-            {
-                BackToLaunchWindow();
-            });
+            ExitBtn.onClick.AddListener(OnExitBtnClick);
         }
 
         private void ClearAllLines()
@@ -268,6 +265,7 @@ namespace UI.Panel
         {
             ClearAllLines();
             scroll.onValueChanged.RemoveListener(OnScrollChanged);
+            ExitBtn.onClick.RemoveListener(OnExitBtnClick);
         }
 
         public void OnDestroy()
@@ -330,6 +328,10 @@ namespace UI.Panel
                 UIManager.Instance.DestroyAllPanels();
             }
             SceneManager.LoadScene("LaunchScene");
+        }
+        private void OnExitBtnClick()
+        {
+            BackToLaunchWindow();
         }
         private async UniTask BackToLaunchWindow()
         {
