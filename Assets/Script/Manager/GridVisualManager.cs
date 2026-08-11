@@ -40,10 +40,16 @@ namespace GamePlay.Visual
         {
             if (_cursorHighlightObj == null) return;
 
-            bool wasActive = _cursorHighlightObj.activeSelf;
+            // 悬停格上方是实体(如墙壁侧面)时不可站立，隐藏光圈避免残影停在上一格
+            var upPos = gridPos + new Vector3Int(0, 1, 0);
+            if (MapManager.Instance.logicalGrid.GetBlock(upPos) != BlockType.Air)
+            {
+                HideCursor();
+                return;
+            }
+
             _cursorHighlightObj.SetActive(true);
             _cursorHighlightObj.transform.position = MapManager.Instance.GetWorldPosition(gridPos) + Vector3.up * 0.02f;
-            //Debug.Log($"[Cursor] ShowCursorAt({gridPos}) wasActive={wasActive}");
         }
 
         public void HideCursor()
