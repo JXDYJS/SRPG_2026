@@ -58,7 +58,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.29803923}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1166,6 +1166,7 @@ MonoBehaviour:
   NewGameBtn: {fileID: 4720513504846712389}
   ContinueBtn: {fileID: 1764077165075470000}
   ExitBtn: {fileID: 1286434018536102031}
+  LaunchMat: {fileID: 2100000, guid: 15bae78d383180642a3144b4eae91247, type: 2}
 --- !u!1 &8386116066018011239
 GameObject:
   m_ObjectHideFlags: 0

@@ -126,3 +126,9 @@ Assets/AddressableAssetsData/Windows.meta
 # 打包脚本临时拷贝的构建产物（构建完会清理，防中断残留）
 Assets/StreamingAssets/aa/
 Assets/StreamingAssets/Lua/
+Assets/StreamingAssets/update/
+Assets/StreamingAssets/update.meta
+
+# 由全景贴图生成的天空盒 cubemap（体积大，克隆后可重新生成，不入库）
+*.cubemap
+*.cubemap.meta

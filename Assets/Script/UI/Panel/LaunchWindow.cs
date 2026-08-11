@@ -16,6 +16,8 @@ namespace UI.Panel
         public Button NewGameBtn;
         public Button ContinueBtn;
         public Button ExitBtn;
+        public Material LaunchMat;
+        private Material saveMat;
         public void OnEnable()
         {
             if (ContinueBtn != null)
@@ -25,6 +27,8 @@ namespace UI.Panel
             NewGameBtn?.onClick.AddListener(OnNewGameClick);
             ContinueBtn?.onClick.AddListener(OnContinueClick);
             ExitBtn?.onClick.AddListener(OnExitBtnClick);
+            saveMat = RenderSettings.skybox;
+            RenderSettings.skybox = LaunchMat;
         }
         public void OnNewGameClick()
         {
@@ -52,6 +56,7 @@ namespace UI.Panel
             NewGameBtn?.onClick.RemoveListener(OnNewGameClick);
             ContinueBtn?.onClick.RemoveListener(OnContinueClick);
             ExitBtn?.onClick.RemoveListener(OnExitBtnClick);
+            RenderSettings.skybox = saveMat;
         }
 
         /// <summary>
@@ -76,6 +81,7 @@ namespace UI.Panel
             await UniTask.Delay(TimeSpan.FromMilliseconds(400));
 
             op.allowSceneActivation = true;
+            await UniTask.Delay(TimeSpan.FromMilliseconds(100));
             window.Close();
         }
     }
