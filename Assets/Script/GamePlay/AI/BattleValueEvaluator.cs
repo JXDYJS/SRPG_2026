@@ -134,23 +134,40 @@ namespace GamePlay.AI
 
         /// <summary>
         /// 走位（移动到 landingPos）的统一货币价值：
-        /// 机会增量(前瞻) + 安全增益 + 生存价值 + 推进价值
+        /// 机会增量(前瞻) + 推进价值(A*路径进度) + 安全修正(有界) + 生存价值
         /// </summary>
-        public static float RepositionValue(MapUnit caster, Vector3Int landingPos, AITaskContext ctx)
+        /// <param name="pathProgress">A* 寻路到目标的路径进度 (0~1)，推进候选传入，撤退候选传 0</param>
+        public static float RepositionValue(MapUnit caster, Vector3Int landingPos, float pathProgress, AITaskContext ctx)
         {
             if (caster == null || ctx == null) return 0f;
 
             float oppNow = ctx.GetOpportunityAt(caster.gridPosition);
             float oppLand = ctx.GetOpportunityAt(landingPos);
+
+            // 1. 机会增量：落点换取下一回合的攻击机会
             float oppGain = (oppLand - oppNow) * Data.Config.AIConfig.futureDiscount;
 
+            // 2. 推进价值：沿 A* 路径向敌人推进（够不着时前压的主要价值来源）。
+            //    仅当"当前位置打不到"时才给推进价值——本回合能打到时应直接攻击，
+            //    避免推进分压过真实攻击分。两侧都够不着时用保底推进值，保证"该前压就前压"。
+            float advanceValue = 0f;
+            if (oppNow <= 0f)
+            {
+                float refValue = Mathf.Max(oppLand, Data.Config.AIConfig.advanceBaseValue);
+                advanceValue = refValue * Mathf.Clamp01(pathProgress) * Data.Config.AIConfig.futureDiscount;
+            }
+
+            float baseValue = Mathf.Max(0f, oppGain + advanceValue);
+
+            // 3. 安全修正（有界）：落点通常更靠近敌人→威胁更高→safety 常为负。
+            //    只允许负面安全最多抵消 safetyCapRatio 比例的推进价值，避免"稍危险就完全不敢动"。
             float threatNow = ctx.ThreatMap.GetScore(caster.gridPosition);
             float threatLand = ctx.ThreatMap.GetScore(landingPos);
-
-            // 安全增益：避免的承伤（占己方血池）
             float safetyGain = (threatNow - threatLand) * Data.Config.AIConfig.threatToDamageScale / ctx.AllyTeamHP;
+            float safetyFloor = -baseValue * Data.Config.AIConfig.safetyCapRatio;
+            float cappedSafety = Mathf.Max(safetyGain, safetyFloor);
 
-            // 生存价值：低血/高威胁时，保住自身未来贡献
+            // 4. 生存价值：低血/高威胁时，保住自身未来贡献（撤退候选主要靠此项）
             float survivalGain = 0f;
             float ownSurvival = 1f - Mathf.Clamp01(threatNow * Data.Config.AIConfig.threatToDamageScale / Mathf.Max(1f, caster.Character.statSystem.currentHP));
             float landSurvival = 1f - Mathf.Clamp01(threatLand * Data.Config.AIConfig.threatToDamageScale / Mathf.Max(1f, caster.Character.statSystem.currentHP));
@@ -159,21 +176,7 @@ namespace GamePlay.AI
                 survivalGain = ctx.GetOpportunityAt(caster.gridPosition) * (landSurvival - ownSurvival);
             }
 
-            // 推进价值：机会增量≈0 时，纯接近敌人也有价值
-            float progressGain = 0f;
-            if (oppLand <= oppNow)
-            {
-                int distNow = ManhattanToEnemy(caster.gridPosition, ctx);
-                int distLand = ManhattanToEnemy(landingPos, ctx);
-                if (distLand < distNow)
-                {
-                    progressGain = Data.Config.AIConfig.advanceProgressValue
-                                 * Data.Config.AIConfig.futureDiscount
-                                 * ((distNow - distLand) / Mathf.Max(1, distNow));
-                }
-            }
-
-            return Mathf.Max(0f, oppGain + safetyGain + survivalGain + progressGain);
+            return Mathf.Max(0f, baseValue + cappedSafety + survivalGain);
         }
 
         // ==========================================================
@@ -343,17 +346,6 @@ namespace GamePlay.AI
             float incoming = ctx.ThreatMap.GetScore(pos) * Data.Config.AIConfig.threatToDamageScale;
             float hp = caster.Character.statSystem.currentHP;
             return Mathf.Clamp01(incoming / Mathf.Max(1f, hp));
-        }
-
-        private static int ManhattanToEnemy(Vector3Int pos, AITaskContext ctx)
-        {
-            int best = int.MaxValue;
-            foreach (MapUnit e in ctx.Enemies)
-            {
-                int d = Mathf.Abs(pos.x - e.gridPosition.x) + Mathf.Abs(pos.z - e.gridPosition.z);
-                if (d < best) best = d;
-            }
-            return best == int.MaxValue ? 0 : best;
         }
     }
 }

@@ -17,7 +17,8 @@ namespace Core.Data
 
         // ── 走位 / 推进 ──
         public readonly float futureDiscount = 0.6f;         // 未来价值折扣：走位机会增量打折
-        public readonly float advanceProgressValue = 0.08f;   // 每回合推进的基准价值（够不着时仍有价值）
+        public readonly float advanceBaseValue = 0.06f;      // 够不着时每回合推进的基准价值（占血池比例）
+        public readonly float safetyCapRatio = 0.5f;         // 走位中负面威胁最多抵消推进价值的比例
 
         // ── 治疗/增益 相对伤害权重 ──
         public readonly float allyHealWeight = 0.8f;         // 治疗相对伤害价值（进攻略优先）

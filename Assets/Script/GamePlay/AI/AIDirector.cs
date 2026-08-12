@@ -129,10 +129,17 @@ namespace GamePlay.AI
             MapUnit advanceTarget = SelectAdvanceTarget(unit, ctx);
             if (advanceTarget != null)
             {
-                Vector3Int? advancePos = FindAdvancePositionAlongPath(unit, advanceTarget, ctx);
+                Vector3Int? advancePos = FindAdvancePositionAlongPath(unit, advanceTarget, ctx, out float pathProgress);
+                if (!advancePos.HasValue)
+                {
+                    // 兜底：A* 失败（被阻挡/终点不可达）时，选可达格中离最近敌人最近的
+                    advancePos = FindClosestReachableTileToEnemy(unit, ctx);
+                    pathProgress = 0.5f; // 保守估计
+                }
+
                 if (advancePos.HasValue && advancePos.Value != unit.gridPosition)
                 {
-                    float score = BattleValueEvaluator.RepositionValue(unit, advancePos.Value, ctx);
+                    float score = BattleValueEvaluator.RepositionValue(unit, advancePos.Value, pathProgress, ctx);
                     pool.Add(new AIAction
                     {
                         Category = AICategory.Reposition,
@@ -152,7 +159,7 @@ namespace GamePlay.AI
                 Vector3Int? safePos = FindSafestReachableTile(unit, ctx, currentThreat);
                 if (safePos.HasValue && safePos.Value != unit.gridPosition)
                 {
-                    float score = BattleValueEvaluator.RepositionValue(unit, safePos.Value, ctx);
+                    float score = BattleValueEvaluator.RepositionValue(unit, safePos.Value, 0f, ctx);
                     if (score > 0f)
                     {
                         pool.Add(new AIAction
@@ -206,8 +213,10 @@ namespace GamePlay.AI
         /// A*寻路到目标（不限行动力），沿路径在移动力内选最佳落点
         /// score = 路径进度×0.6 + 安全度×0.4
         /// </summary>
-        private Vector3Int? FindAdvancePositionAlongPath(MapUnit unit, MapUnit target, AITaskContext ctx)
+        private Vector3Int? FindAdvancePositionAlongPath(MapUnit unit, MapUnit target, AITaskContext ctx, out float pathProgress)
         {
+            pathProgress = 0f;
+
             List<Vector3Int> path = AStar.FindPathToOccupied(
                 unit.gridPosition, target.gridPosition,
                 MapManager.Instance.logicalGrid, unit.moveStats);
@@ -249,12 +258,73 @@ namespace GamePlay.AI
                 {
                     bestScore = score;
                     bestPos = tile;
+                    pathProgress = progress;
                 }
 
                 lastPos = tile;
             }
 
             return bestPos;
+        }
+
+        /// <summary>
+        /// 兜底推进落点：A* 失败时，在可达格中选离最近敌人曼哈顿距离更近的（纯走位逼近）。
+        /// 没有比当前位置更近的格子时返回 null。
+        /// </summary>
+        private Vector3Int? FindClosestReachableTileToEnemy(MapUnit unit, AITaskContext ctx)
+        {
+            int distNow = ManhattanToNearestEnemy(unit.gridPosition, ctx);
+            if (distNow == int.MaxValue)
+            {
+                return null;
+            }
+
+            Vector3Int? bestPos = null;
+            int bestDist = distNow;
+
+            foreach (Vector3Int tile in ctx.ReachableTiles)
+            {
+                if (tile == unit.gridPosition)
+                {
+                    continue;
+                }
+
+                MapUnit occupying = UnitManager.Instance.GetUnitAt(tile);
+                if (occupying != null)
+                {
+                    continue;
+                }
+
+                int d = ManhattanToNearestEnemy(tile, ctx);
+                if (d < bestDist)
+                {
+                    bestDist = d;
+                    bestPos = tile;
+                }
+            }
+
+            return bestPos;
+        }
+
+        /// <summary>
+        /// 到最近敌人的曼哈顿距离（无可达敌人时返回 int.MaxValue）
+        /// </summary>
+        private static int ManhattanToNearestEnemy(Vector3Int pos, AITaskContext ctx)
+        {
+            int best = int.MaxValue;
+            foreach (MapUnit e in ctx.Enemies)
+            {
+                if (e == null || !e.IsAlive)
+                {
+                    continue;
+                }
+                int d = Mathf.Abs(pos.x - e.gridPosition.x) + Mathf.Abs(pos.z - e.gridPosition.z);
+                if (d < best)
+                {
+                    best = d;
+                }
+            }
+            return best;
         }
 
         /// <summary>
