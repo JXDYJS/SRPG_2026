@@ -3256,6 +3256,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _animationDuration: 0.25
   _slideDistance: 300
+  _dropDistance: 0
   _enterDirection: 0
   _exitDirection: 1
   _buttonContainer: {fileID: 1198330072}
@@ -3804,6 +3805,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _animationDuration: 0.25
   _slideDistance: 300
+  _dropDistance: 0
   _enterDirection: 0
   _exitDirection: 1
   nameText: {fileID: 1614043123}
@@ -6908,7 +6910,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 22400762, guid: 67117722a812a2e46ab8cb8eafbf5f5e, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.000015258789
+      value: -0.000022888184
       objectReference: {fileID: 0}
     - target: {fileID: 22426080, guid: 67117722a812a2e46ab8cb8eafbf5f5e, type: 3}
       propertyPath: m_AnchorMax.x
@@ -10753,6 +10755,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Plane
+      objectReference: {fileID: 0}
+    - target: {fileID: 1070284442107103112, guid: 0b857e9b823281c439e33f2c36d4cb72,
+        type: 3}
+      propertyPath: m_Layer
+      value: 4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -63,6 +63,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Block_Dirt
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 3a04cc56b71045f4893c2c984d1ee886,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -94,10 +99,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10e8ba6e6eae4cf46934b8b6a582ae64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  blockConfigId: 
   prefabId: 2
   type: 1
   isWalkable: 1
+  XCellSize: 1
+  YCellSize: 1
+  ZCellSize: 1
+  XRound: 0
+  ZRound: 0
+  YRound: 0
   heightOffset: 0.5
+  OnEnterEffect: []
+  OnExitEffect: []
+  OnStayEffect: []
 --- !u!65 &7856351711468067749
 BoxCollider:
   m_ObjectHideFlags: 0

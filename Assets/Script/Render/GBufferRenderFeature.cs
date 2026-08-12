@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
@@ -16,6 +17,17 @@ public class GBufferRenderFeature : ScriptableRendererFeature
 
     class GBufferPass : ScriptableRenderPass
     {
+        // 与 URP DrawObjectsPass 一致：overrideMaterial 仍要求原 shader 存在匹配 pass，
+        // 必须同时匹配 SRPDefaultUnlit（无标签/旧 shader）与 UniversalForward（URP Lit 等）
+        static readonly List<ShaderTagId> k_ShaderTags = new List<ShaderTagId>
+        {
+            new ShaderTagId("SRPDefaultUnlit"),
+            new ShaderTagId("UniversalForward"),
+            new ShaderTagId("UniversalForwardOnly"),
+        };
+
+        static readonly int k_GBufferTexId = Shader.PropertyToID("_GBuffer");
+
         RTHandle m_GBuffer;
         Settings m_Settings;
 
@@ -55,6 +67,9 @@ public class GBufferRenderFeature : ScriptableRendererFeature
 
                 // 占用步：pass 3 = ZTest Always + Blend One One，只画单位
                 DrawLayerPass(cmd, context, ref renderingData, "Unit", 3, RenderQueueRange.opaque, SortingCriteria.CommonOpaque);
+
+                // 暴露为全局纹理 _GBuffer，供描边/SSR 等后续 shader 采样
+                cmd.SetGlobalTexture(k_GBufferTexId, m_GBuffer);
             }
             context.ExecuteCommandBuffer(cmd);
             CommandBufferPool.Release(cmd);
@@ -63,14 +78,12 @@ public class GBufferRenderFeature : ScriptableRendererFeature
         void DrawLayerPass(CommandBuffer cmd, ScriptableRenderContext context, ref RenderingData renderingData, string layerName, int passIndex, RenderQueueRange queueRange, SortingCriteria sortingCriteria)
         {
             var culling = renderingData.cullResults;
-            var sorting = new SortingSettings(renderingData.cameraData.camera) { criteria = sortingCriteria };
             var layer = 1 << LayerMask.NameToLayer(layerName);
 
-            var ds = new DrawingSettings(new ShaderTagId("SRPDefaultUnlit"), sorting)
-            {
-                overrideMaterial = m_Settings.Mat,
-                overrideMaterialPassIndex = passIndex
-            };
+            var ds = CreateDrawingSettings(k_ShaderTags, ref renderingData, sortingCriteria);
+            ds.overrideMaterial = m_Settings.Mat;
+            ds.overrideMaterialPassIndex = passIndex;
+
             var fs = new FilteringSettings(queueRange, layer);
 
             // RendererList：把 DrawRenderers 转为可写入 CommandBuffer 的绘制（否则 pass 在 Frame Debugger 不可见）
