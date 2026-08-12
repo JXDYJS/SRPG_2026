@@ -18,7 +18,6 @@ public class GBufferRenderFeature : ScriptableRendererFeature
     {
         RTHandle m_GBuffer;
         Settings m_Settings;
-        static bool s_didLog;
 
         public GBufferPass(Settings settings)
         {
@@ -42,16 +41,13 @@ public class GBufferRenderFeature : ScriptableRendererFeature
         {
             if (m_Settings.Mat == null) return;
 
-            if (!s_didLog)
-            {
-                Debug.Log($"[GBufferRenderFeature] pass 执行 frame={Time.frameCount} camera={renderingData.cameraData.camera.name}");
-                s_didLog = true;
-            }
-
             // 用带名 CommandBuffer 包裹，ProfilingScope 写入 BeginSample marker → Frame Debugger 可见
             var cmd = CommandBufferPool.Get("GBufferPass");
             using (new ProfilingScope(cmd, profilingSampler))
             {
+                // 每帧清空类型缓冲（只清颜色，不动相机深度），否则跨帧累积成拖影
+                cmd.ClearRenderTarget(RTClearFlags.Color, Color.clear, 1.0f, 0);
+
                 // 可见步：ZTest LEqual（对着相机深度）——低 nibble 写 visibleType
                 DrawLayerPass(cmd, context, ref renderingData, "Block", 0, RenderQueueRange.opaque, SortingCriteria.CommonOpaque);
                 DrawLayerPass(cmd, context, ref renderingData, "Unit", 1, RenderQueueRange.opaque, SortingCriteria.CommonOpaque);
