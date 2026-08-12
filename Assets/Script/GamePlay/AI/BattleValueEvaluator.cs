@@ -1,0 +1,359 @@
+using System.Collections.Generic;
+using UnityEngine;
+using GamePlay.Buff;
+using GamePlay.Grid;
+using GamePlay.Skill;
+using GamePlay.Units;
+using Managers;
+using Grid;
+using Global;
+using Core.Data;
+
+namespace GamePlay.AI
+{
+    /// <summary>
+    /// 统一战斗价值引擎 — 所有 AI 行动折算为同一货币：
+    /// "占敌方/己方有效血池的比例"（TeamHP 归一），保证跨类别可比。
+    ///
+    /// 各类行动的价值构成：
+    ///   伤害   = 总伤害 / 敌TeamHP（AoE 按总伤害自然计价，无需额外加分）
+    ///   治疗   = 治疗量 / 己TeamHP × allyHealWeight
+    ///   护盾   = 盾量 / 己TeamHP × shieldWeight
+    ///   buff   = BuffAIValue × 层数 × 目标权重（设计者手工标定基准，机械缩放）
+    ///   斩杀   = 伤害值 + 移除目标未来威胁（自然折算，无平白加分）
+    ///   走位   = 机会增量(前瞻) × futureDiscount + 安全增益 + 生存价值 + 推进价值
+    ///   风险   = 进攻动作 × (1 − 反击承伤 / 自身HP)
+    /// </summary>
+    public static class BattleValueEvaluator
+    {
+        // ==========================================================
+        // 伤害估算（纯数值，含减伤）
+        // ==========================================================
+
+        /// <summary>
+        /// 估算技能对单个目标造成的伤害（简化版，不经过完整 modifier pipeline）
+        /// </summary>
+        public static float EstimateDamageValue(MapUnit caster, SkillDataSO skill, MapUnit target)
+        {
+            if (caster == null || caster.Character == null || target == null
+                || skill == null || skill.Phases == null || skill.Phases.Count == 0) return 0f;
+
+            int casterATK = (int)caster.Character.statSystem.ATK.getValue();
+            float total = 0f;
+            foreach (SkillPhase phase in skill.Phases)
+            {
+                if (phase.Effects == null) continue;
+                foreach (SkillEffect effect in phase.Effects)
+                {
+                    if (effect.EffectType == EffectType.Damage)
+                    {
+                        float raw = effect.CalculateValue(casterATK);
+                        total += MitigateDamage(raw, effect.DamageType, target);
+                    }
+                }
+            }
+            return total;
+        }
+
+        /// <summary>
+        /// 简化伤害减免
+        /// Physical: max(0, raw − DEF)；Magic: raw × (1 − RES)；其他无减免
+        /// </summary>
+        public static float MitigateDamage(float raw, DamageType dtype, MapUnit target)
+        {
+            switch (dtype)
+            {
+                case DamageType.Physical:
+                    int def = (int)target.Character.statSystem.DEF.getValue();
+                    return Mathf.Max(0f, raw - def);
+
+                case DamageType.Magic:
+                    float res = target.Character.statSystem.RES.getValue();
+                    return raw * (1f - Mathf.Clamp01(res));
+
+                default:
+                    return raw;
+            }
+        }
+
+        // ==========================================================
+        // 技能行动价值（主入口，含 AoE/治疗/buff/斩杀/风险）
+        // ==========================================================
+
+        /// <summary>
+        /// 计算一次技能行动的统一货币价值。
+        /// </summary>
+        /// <param name="castPos">施放位置（已在范围时传当前格）</param>
+        /// <param name="isLethal">输出：该动作是否构成斩杀</param>
+        public static float SkillActionValue(MapUnit caster, SkillDataSO skill, MapUnit primaryTarget,
+                                             Vector3Int castPos, AITaskContext ctx, out bool isLethal)
+        {
+            isLethal = false;
+            if (caster == null || caster.Character == null
+                || skill == null || primaryTarget == null || ctx == null) return 0f;
+            if (skill.Phases == null || skill.Phases.Count == 0) return 0f;
+
+            int casterATK = (int)caster.Character.statSystem.ATK.getValue();
+            bool offensive = skill.IsOffensiveSkill();
+            float total = 0f;
+
+            foreach (SkillPhase phase in skill.Phases)
+            {
+                if (phase.Effects == null || phase.Effects.Count == 0) continue;
+                total += EvaluatePhase(caster, primaryTarget, phase, casterATK, castPos, ctx, ref isLethal);
+            }
+
+            // 设计者单技能偏好倍率
+            total *= Mathf.Max(0f, skill.AIPriority);
+
+            // MP 代价惩罚
+            if (skill.Cost > 0)
+            {
+                total *= (1f - Mathf.Clamp01(skill.Cost / 20f) * Data.Config.AIConfig.resourcePenaltyFactor);
+            }
+
+            // 集火衰减：队友已盯上同一目标时，边际价值下降
+            if (offensive && total > 0f && SharedTaskBoard.Instance != null)
+            {
+                total *= SharedTaskBoard.Instance.GetCommitmentFactor(caster, primaryTarget);
+            }
+
+            // 进攻风险：站在 castPos 承担反击
+            if (offensive && total > 0f)
+            {
+                float risk = CounterRisk(caster, castPos, ctx);
+                total *= (1f - risk);
+            }
+
+            return Mathf.Max(0f, total);
+        }
+
+        // ==========================================================
+        // 走位价值
+        // ==========================================================
+
+        /// <summary>
+        /// 走位（移动到 landingPos）的统一货币价值：
+        /// 机会增量(前瞻) + 安全增益 + 生存价值 + 推进价值
+        /// </summary>
+        public static float RepositionValue(MapUnit caster, Vector3Int landingPos, AITaskContext ctx)
+        {
+            if (caster == null || ctx == null) return 0f;
+
+            float oppNow = ctx.GetOpportunityAt(caster.gridPosition);
+            float oppLand = ctx.GetOpportunityAt(landingPos);
+            float oppGain = (oppLand - oppNow) * Data.Config.AIConfig.futureDiscount;
+
+            float threatNow = ctx.ThreatMap.GetScore(caster.gridPosition);
+            float threatLand = ctx.ThreatMap.GetScore(landingPos);
+
+            // 安全增益：避免的承伤（占己方血池）
+            float safetyGain = (threatNow - threatLand) * Data.Config.AIConfig.threatToDamageScale / ctx.AllyTeamHP;
+
+            // 生存价值：低血/高威胁时，保住自身未来贡献
+            float survivalGain = 0f;
+            float ownSurvival = 1f - Mathf.Clamp01(threatNow * Data.Config.AIConfig.threatToDamageScale / Mathf.Max(1f, caster.Character.statSystem.currentHP));
+            float landSurvival = 1f - Mathf.Clamp01(threatLand * Data.Config.AIConfig.threatToDamageScale / Mathf.Max(1f, caster.Character.statSystem.currentHP));
+            if (landSurvival > ownSurvival)
+            {
+                survivalGain = ctx.GetOpportunityAt(caster.gridPosition) * (landSurvival - ownSurvival);
+            }
+
+            // 推进价值：机会增量≈0 时，纯接近敌人也有价值
+            float progressGain = 0f;
+            if (oppLand <= oppNow)
+            {
+                int distNow = ManhattanToEnemy(caster.gridPosition, ctx);
+                int distLand = ManhattanToEnemy(landingPos, ctx);
+                if (distLand < distNow)
+                {
+                    progressGain = Data.Config.AIConfig.advanceProgressValue
+                                 * Data.Config.AIConfig.futureDiscount
+                                 * ((distNow - distLand) / Mathf.Max(1, distNow));
+                }
+            }
+
+            return Mathf.Max(0f, oppGain + safetyGain + survivalGain + progressGain);
+        }
+
+        // ==========================================================
+        // 内部实现
+        // ==========================================================
+
+        private static float EvaluatePhase(MapUnit caster, MapUnit primaryTarget, SkillPhase phase,
+                                           int casterATK, Vector3Int castPos, AITaskContext ctx,
+                                           ref bool isLethal)
+        {
+            float phaseValue = 0f;
+
+            // Self 阶段：效果作用于施法者自身
+            if (phase.TargetType == TargetType.Self)
+            {
+                foreach (SkillEffect effect in phase.Effects)
+                {
+                    phaseValue += EvaluateEffectOnUnit(caster, effect, casterATK, ctx, ref isLethal);
+                }
+                return phaseValue;
+            }
+
+            // 以目标/落点为中心的 AoE（单体即 SingleTarget）
+            List<Vector3Int> aoeTiles = AttackRangeSystem.GetAoERange3D(castPos, primaryTarget.gridPosition, phase);
+            foreach (Vector3Int tile in aoeTiles)
+            {
+                MapUnit hitUnit = UnitManager.Instance.GetUnitAt(tile);
+                if (hitUnit == null) continue;
+                if (!AttackRangeSystem.IsTargetValidForPhase(hitUnit, phase, caster.Faction, caster)) continue;
+
+                foreach (SkillEffect effect in phase.Effects)
+                {
+                    phaseValue += EvaluateEffectOnUnit(hitUnit, effect, casterATK, ctx, ref isLethal);
+                }
+            }
+
+            return phaseValue;
+        }
+
+        private static float EvaluateEffectOnUnit(MapUnit target, SkillEffect effect,
+                                                  int casterATK, AITaskContext ctx, ref bool isLethal)
+        {
+            switch (effect.EffectType)
+            {
+                case EffectType.Damage:
+                {
+                    float raw = effect.CalculateValue(casterATK);
+                    float dmg = MitigateDamage(raw, effect.DamageType, target);
+                    float value = dmg / ctx.EnemyTeamHP;
+
+                    // 斩杀自然折算：消灭目标 = 移除其未来威胁
+                    if (dmg >= target.Character.statSystem.currentHP)
+                    {
+                        isLethal = true;
+                        value += ExecuteBonus(target, dmg, ctx);
+                    }
+                    return value;
+                }
+
+                case EffectType.Heal:
+                {
+                    float heal = effect.CalculateValue(casterATK);
+                    float value = heal / ctx.AllyTeamHP * Data.Config.AIConfig.allyHealWeight;
+                    // 救援自然折算：把濒死队友拉回来 = 保住其未来贡献
+                    value += RescueBonus(target, ctx);
+                    return value;
+                }
+
+                case EffectType.AddBuff:
+                {
+                    if (string.IsNullOrEmpty(effect.BuffID)) return 0f;
+                    float buffValue = BuffManager.GetBuffAIValue(effect.BuffID);
+                    float stacks = Mathf.Max(1, effect.BuffStacks);
+                    float targetWeight = TargetWeight(target, ctx);
+                    return buffValue * stacks * targetWeight;
+                }
+
+                case EffectType.RemoveBuff:
+                    return RemoveBuffValue(target);
+
+                default:
+                    return 0f;
+            }
+        }
+
+        /// <summary>
+        /// 斩杀附加价值：目标未来的每回合威胁 × 它本还能活几回合（由我方伤害推算）
+        /// </summary>
+        private static float ExecuteBonus(MapUnit target, float damageDealt, AITaskContext ctx)
+        {
+            float futureThreatPerTurn = 0f;
+            SkillDataSO threatSkill = target.NormalAttackSkill;
+            if (threatSkill != null)
+            {
+                futureThreatPerTurn = EstimateDamageValue(target, threatSkill, ctx.Unit);
+            }
+
+            if (futureThreatPerTurn <= 0f) return 0f;
+
+            float hp = target.Character.statSystem.currentHP;
+            int remainingTurns = Mathf.Clamp(
+                Mathf.CeilToInt(hp / Mathf.Max(1f, damageDealt)),
+                1, Data.Config.AIConfig.executeFutureTurns);
+
+            return futureThreatPerTurn * remainingTurns / ctx.AllyTeamHP;
+        }
+
+        /// <summary>
+        /// 救援附加价值：目标正承受致命威胁时，治疗/护盾保住其未来贡献
+        /// </summary>
+        private static float RescueBonus(MapUnit ally, AITaskContext ctx)
+        {
+            float hp = ally.Character.statSystem.currentHP;
+            float maxHp = ally.Character.statSystem.maxHP.getValue();
+            if (hp >= maxHp) return 0f;
+
+            float incoming = ctx.ThreatMap.GetScore(ally.gridPosition) * Data.Config.AIConfig.threatToDamageScale;
+            if (incoming < hp) return 0f; // 暂无死亡风险，不额外给分
+
+            // 濒死 → 保住它每回合的贡献
+            float allyValue = 0f;
+            if (ctx.Enemies.Count > 0)
+            {
+                SkillDataSO atkSkill = ally.NormalAttackSkill;
+                if (atkSkill != null)
+                {
+                    allyValue = EstimateDamageValue(ally, atkSkill, ctx.Enemies[0]) / ctx.EnemyTeamHP;
+                }
+            }
+            return allyValue;
+        }
+
+        /// <summary>
+        /// 移除减益价值：被移除的减益当前剩余价值（由 BuffAIValue × 层数 定义）
+        /// </summary>
+        private static float RemoveBuffValue(MapUnit target)
+        {
+            if (target.ActiveBuffs == null) return 0f;
+            float total = 0f;
+            foreach (var buff in target.ActiveBuffs)
+            {
+                if (buff == null || !buff.IsDebuff) continue;
+                float aiValue = buff.AIValue;
+                if (aiValue <= 0f) continue;
+                total += aiValue * Mathf.Max(1, buff.Stacks);
+            }
+            return total;
+        }
+
+        /// <summary>
+        /// 目标权重：以 maxHP 相对全队均值为基准，强者/坦克更值得 buff/debuff
+        /// </summary>
+        private static float TargetWeight(MapUnit unit, AITaskContext ctx)
+        {
+            float maxHp = unit.Character.statSystem.maxHP.getValue();
+            float w = maxHp / Mathf.Max(1f, ctx.AvgUnitHP);
+            return Mathf.Clamp(w,
+                               Data.Config.AIConfig.targetWeightMin,
+                               Data.Config.AIConfig.targetWeightMax);
+        }
+
+        /// <summary>
+        /// 反击风险：castPos 的预期承伤占自身当前HP的比例（0~1）
+        /// </summary>
+        private static float CounterRisk(MapUnit caster, Vector3Int pos, AITaskContext ctx)
+        {
+            float incoming = ctx.ThreatMap.GetScore(pos) * Data.Config.AIConfig.threatToDamageScale;
+            float hp = caster.Character.statSystem.currentHP;
+            return Mathf.Clamp01(incoming / Mathf.Max(1f, hp));
+        }
+
+        private static int ManhattanToEnemy(Vector3Int pos, AITaskContext ctx)
+        {
+            int best = int.MaxValue;
+            foreach (MapUnit e in ctx.Enemies)
+            {
+                int d = Mathf.Abs(pos.x - e.gridPosition.x) + Mathf.Abs(pos.z - e.gridPosition.z);
+                if (d < best) best = d;
+            }
+            return best == int.MaxValue ? 0 : best;
+        }
+    }
+}

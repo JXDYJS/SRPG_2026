@@ -15,6 +15,7 @@ namespace GamePlay.Buff
         {
             if (string.IsNullOrEmpty(Name)) Name = "Vampire";
             if (string.IsNullOrEmpty(Description)) Description = "Heal {Stacks} HP whenever you deal damage.";
+            AIValue = 0.05f;
         }
 
         public override void OnApply(MapUnit owner)

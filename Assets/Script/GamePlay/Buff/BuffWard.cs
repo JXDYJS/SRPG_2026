@@ -14,6 +14,7 @@ namespace GamePlay.Buff
         {
             if (string.IsNullOrEmpty(Name)) Name = "Ward";
             if (string.IsNullOrEmpty(Description)) Description = "Reduce incoming damage by {Stacks}. Decays by 1 stack at the start of your turn.";
+            AIValue = 0.06f;
         }
 
         public override void OnApply(MapUnit owner)

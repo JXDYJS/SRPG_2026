@@ -14,6 +14,7 @@ namespace GamePlay.Buff
             DecayAtTurnStart = false;
             canAddStacks = false;
             IsHidden = true;
+            AIValue = 0.03f;
         }
 
         public override void OnApply(MapUnit owner)
