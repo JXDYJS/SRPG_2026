@@ -195,6 +195,7 @@ public class UnitStrokeRenderFeature : ScriptableRendererFeature
         public override void OnCameraSetup(CommandBuffer cmd, ref RenderingData renderingData)
         {
             var desc = renderingData.cameraData.cameraTargetDescriptor;
+            desc.depthBufferBits = 0;
             RenderingUtils.ReAllocateIfNeeded(ref m_SceneColor, desc, name: "UnitStrokeSceneColor");
         }
 
@@ -206,14 +207,14 @@ public class UnitStrokeRenderFeature : ScriptableRendererFeature
             var cmd = CommandBufferPool.Get("UnitStroke");
             using (new ProfilingScope(cmd, profilingSampler))
             {
-                var camColor = renderingData.cameraData.renderer.cameraColorTargetHandle;
+                var source = renderingData.cameraData.renderer.cameraColorTargetHandle;
 
-                // 1. 把当前画面颜色拷贝到临时 RT（不能直接采样正在写的相机目标）
-                Blitter.BlitCameraTexture(cmd, camColor, m_SceneColor);
+                // 1. 用描边材质把当前画面颜色处理后写入临时 RT
+                //    Blitter 会把 source 绑定为 _BlitTexture（与项目 ApplyExposure 相同的已验证写法）
+                Blitter.BlitCameraTexture(cmd, source, m_SceneColor, mat, 0);
 
-                // 2. 用描边材质画回相机目标；Blitter 自动把 m_SceneColor 绑定为 _BlitTexture 并处理翻转
-                //    必须在渲染器资产里把本 feature 排在 GBufferRenderFeature 之后（_GBuffer 需先写入）
-                Blitter.BlitCameraTexture(cmd, m_SceneColor, camColor, mat, 0);
+                // 2. 拷回相机目标
+                cmd.Blit(m_SceneColor, source);
             }
             context.ExecuteCommandBuffer(cmd);
             CommandBufferPool.Release(cmd);
