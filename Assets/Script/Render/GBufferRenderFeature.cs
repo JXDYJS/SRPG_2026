@@ -48,16 +48,23 @@ public class GBufferRenderFeature : ScriptableRendererFeature
                 s_didLog = true;
             }
 
-            // 可见步：ZTest LEqual（对着相机深度）——低 nibble 写 visibleType
-            DrawLayerPass(context, ref renderingData, "Block", 0, RenderQueueRange.opaque, SortingCriteria.CommonOpaque);
-            DrawLayerPass(context, ref renderingData, "Unit", 1, RenderQueueRange.opaque, SortingCriteria.CommonOpaque);
-            DrawLayerPass(context, ref renderingData, "Water", 2, RenderQueueRange.transparent, SortingCriteria.CommonTransparent);
+            // 用带名 CommandBuffer 包裹，ProfilingScope 写入 BeginSample marker → Frame Debugger 可见
+            var cmd = CommandBufferPool.Get("GBufferPass");
+            using (new ProfilingScope(cmd, profilingSampler))
+            {
+                // 可见步：ZTest LEqual（对着相机深度）——低 nibble 写 visibleType
+                DrawLayerPass(cmd, context, ref renderingData, "Block", 0, RenderQueueRange.opaque, SortingCriteria.CommonOpaque);
+                DrawLayerPass(cmd, context, ref renderingData, "Unit", 1, RenderQueueRange.opaque, SortingCriteria.CommonOpaque);
+                DrawLayerPass(cmd, context, ref renderingData, "Water", 2, RenderQueueRange.transparent, SortingCriteria.CommonTransparent);
 
-            // 占用步：pass 3 = ZTest Always + Blend One One，只画单位
-            DrawLayerPass(context, ref renderingData, "Unit", 3, RenderQueueRange.opaque, SortingCriteria.CommonOpaque);
+                // 占用步：pass 3 = ZTest Always + Blend One One，只画单位
+                DrawLayerPass(cmd, context, ref renderingData, "Unit", 3, RenderQueueRange.opaque, SortingCriteria.CommonOpaque);
+            }
+            context.ExecuteCommandBuffer(cmd);
+            CommandBufferPool.Release(cmd);
         }
 
-        void DrawLayerPass(ScriptableRenderContext context, ref RenderingData renderingData, string layerName, int passIndex, RenderQueueRange queueRange, SortingCriteria sortingCriteria)
+        void DrawLayerPass(CommandBuffer cmd, ScriptableRenderContext context, ref RenderingData renderingData, string layerName, int passIndex, RenderQueueRange queueRange, SortingCriteria sortingCriteria)
         {
             var culling = renderingData.cullResults;
             var sorting = new SortingSettings(renderingData.cameraData.camera) { criteria = sortingCriteria };
@@ -69,9 +76,11 @@ public class GBufferRenderFeature : ScriptableRendererFeature
                 overrideMaterialPassIndex = passIndex
             };
             var fs = new FilteringSettings(queueRange, layer);
-            var rsb = new RenderStateBlock(RenderStateMask.Nothing);
 
-            context.DrawRenderers(culling, ref ds, ref fs, ref rsb);
+            // RendererList：把 DrawRenderers 转为可写入 CommandBuffer 的绘制（否则 pass 在 Frame Debugger 不可见）
+            var rlParams = new RendererListParams(culling, ds, fs);
+            var rl = context.CreateRendererList(ref rlParams);
+            cmd.DrawRendererList(rl);
         }
 
         public void Cleanup()
