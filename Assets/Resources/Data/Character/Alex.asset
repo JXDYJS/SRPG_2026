@@ -15,7 +15,7 @@ MonoBehaviour:
   ID: 4
   CharacterName: Alex
   Description: 
-  Icon: {fileID: 0}
+  Icon: {fileID: 946684167, guid: 6562e63b21b02594fb7901d2bc3e900a, type: 3}
   Prefab:
     m_AssetGUID: b0f5187749f5bab4bb37e83651d7e69a
     m_SubObjectName: 
