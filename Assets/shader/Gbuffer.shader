@@ -1,6 +1,6 @@
 // ================ GBuffer 类型写入 Shader ================
-// 供 GbufferRenderFeature 以 override 材质 + overrideMaterialPassIndex 调用，不参与常规渲染。
-// pass 索引约定（与 GbufferRenderFeature.cs 的 drawLayerPass 保持一致）:
+// 供 GBufferRenderFeature 以 override 材质 + overrideMaterialPassIndex 调用，不参与常规渲染。
+// pass 索引约定（与 GBufferRenderFeature.cs 的 DrawLayerPass 保持一致）:
 //   0 = BlockVisible   1 = UnitVisible   2 = WaterVisible   3 = UnitOccupancy
 // 目标缓冲 (R8G8B8A8_UNorm) 布局:
 //   R = visibleType(低4bit) | occupancyType(高4bit)   0=sky 1=block 2=unit 3=water
