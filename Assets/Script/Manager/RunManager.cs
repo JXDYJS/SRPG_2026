@@ -148,14 +148,20 @@ namespace Managers
         }
 
         /// <summary>
-        /// 从存档数据填充 MyTeam（异步，需要加载 Addressables 技能）
+        /// 从存档数据填充 MyTeam（异步，需要加载 Addressables 技能）。
+        /// 存档无队伍（新游戏/无档）时，回退到 BattleConfig.InitialPlayer 作为初始队伍。
         /// </summary>
         public async UniTask PopulateFromSaveData(List<CharacterSaveData> savedCharacters)
         {
             MyTeam.Clear();
 
             if (savedCharacters == null || savedCharacters.Count == 0)
-                return;
+            {
+                savedCharacters = BuildInitialParty();
+                if (savedCharacters.Count == 0)
+                    return;
+                Debug.Log($"[RunManager] 无存档队伍，使用配置初始角色 {savedCharacters.Count} 名");
+            }
 
             foreach (var sd in savedCharacters)
             {
@@ -195,6 +201,27 @@ namespace Managers
                 }
                 Debug.Log($"[RunManager] 恢复了 {Relics.Count} 个遗物");
             }
+        }
+
+        /// <summary>
+        /// 由 BattleConfig.InitialPlayer 的角色名列表生成初始队伍（Lv.1）。
+        /// 配置按 CharacterName 填写，此处先解析出 CharacterData 再取其规范 ID。
+        /// </summary>
+        private List<CharacterSaveData> BuildInitialParty()
+        {
+            List<CharacterSaveData> list = new List<CharacterSaveData>();
+            List<CharacterData> all = CharacterData.LoadAll();
+            foreach (string name in Data.Config.BattleConfig.InitialPlayer)
+            {
+                CharacterData cd = all.Find(c => c.CharacterName == name);
+                if (cd == null)
+                {
+                    Debug.LogWarning($"[RunManager] 初始角色 '{name}' 未找到对应 CharacterData，已跳过");
+                    continue;
+                }
+                list.Add(new CharacterSaveData { characterId = cd.ID, level = 1 });
+            }
+            return list;
         }
 
         private void ApplyLevelBonusesFromSave(CharacterInstance ci, CharacterSaveData sd)
