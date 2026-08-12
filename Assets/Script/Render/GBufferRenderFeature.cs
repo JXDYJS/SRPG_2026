@@ -18,10 +18,12 @@ public class GBufferRenderFeature : ScriptableRendererFeature
     {
         RTHandle m_GBuffer;
         Settings m_Settings;
+        static bool s_didLog;
 
         public GBufferPass(Settings settings)
         {
             m_Settings = settings;
+            profilingSampler = new ProfilingSampler("GBufferPass");
         }
 
         public override void OnCameraSetup(CommandBuffer cmd, ref RenderingData renderingData)
@@ -39,6 +41,12 @@ public class GBufferRenderFeature : ScriptableRendererFeature
         public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
         {
             if (m_Settings.Mat == null) return;
+
+            if (!s_didLog)
+            {
+                Debug.Log($"[GBufferRenderFeature] pass 执行 frame={Time.frameCount} camera={renderingData.cameraData.camera.name}");
+                s_didLog = true;
+            }
 
             // 可见步：ZTest LEqual（对着相机深度）——低 nibble 写 visibleType
             DrawLayerPass(context, ref renderingData, "Block", 0, RenderQueueRange.opaque, SortingCriteria.CommonOpaque);
