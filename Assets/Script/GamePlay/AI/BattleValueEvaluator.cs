@@ -161,19 +161,23 @@ namespace GamePlay.AI
 
             // 3. 安全修正（有界）：落点通常更靠近敌人→威胁更高→safety 常为负。
             //    只允许负面安全最多抵消 safetyCapRatio 比例的推进价值，避免"稍危险就完全不敢动"。
-            float threatNow = ctx.ThreatMap.GetScore(caster.gridPosition);
-            float threatLand = ctx.ThreatMap.GetScore(landingPos);
-            float safetyGain = (threatNow - threatLand) * Data.Config.AIConfig.threatToDamageScale / ctx.AllyTeamHP;
+            //    威胁用归一化因子（threatFactor 0~1），正收益上限 safetyMaxValue，绝不喧宾夺主。
+            float threatFactorNow = ThreatFactor(ctx, caster.gridPosition);
+            float threatFactorLand = ThreatFactor(ctx, landingPos);
+            float safetyGain = (threatFactorNow - threatFactorLand) * Data.Config.AIConfig.safetyMaxValue;
             float safetyFloor = -baseValue * Data.Config.AIConfig.safetyCapRatio;
-            float cappedSafety = Mathf.Max(safetyGain, safetyFloor);
+            float cappedSafety = Mathf.Clamp(safetyGain, safetyFloor, Data.Config.AIConfig.safetyMaxValue);
 
-            // 4. 生存价值：低血/高威胁时，保住自身未来贡献（撤退候选主要靠此项）
+            // 4. 生存价值（有界）：死亡风险降低 → 保住自身未来贡献（撤退候选主要靠此项）
             float survivalGain = 0f;
-            float ownSurvival = 1f - Mathf.Clamp01(threatNow * Data.Config.AIConfig.threatToDamageScale / Mathf.Max(1f, caster.Character.statSystem.currentHP));
-            float landSurvival = 1f - Mathf.Clamp01(threatLand * Data.Config.AIConfig.threatToDamageScale / Mathf.Max(1f, caster.Character.statSystem.currentHP));
-            if (landSurvival > ownSurvival)
+            float deathRiskNow = Mathf.Clamp01(threatFactorNow * Data.Config.AIConfig.survivalWeight);
+            float deathRiskLand = Mathf.Clamp01(threatFactorLand * Data.Config.AIConfig.survivalWeight);
+            if (deathRiskLand < deathRiskNow)
             {
-                survivalGain = ctx.GetOpportunityAt(caster.gridPosition) * (landSurvival - ownSurvival);
+                float contribution = Mathf.Max(oppNow, oppLand, Data.Config.AIConfig.advanceBaseValue);
+                survivalGain = Mathf.Clamp(
+                    (deathRiskNow - deathRiskLand) * contribution,
+                    0f, Data.Config.AIConfig.survivalMaxValue);
             }
 
             return Mathf.Max(0f, baseValue + cappedSafety + survivalGain);
@@ -293,8 +297,9 @@ namespace GamePlay.AI
             float maxHp = ally.Character.statSystem.maxHP.getValue();
             if (hp >= maxHp) return 0f;
 
-            float incoming = ctx.ThreatMap.GetScore(ally.gridPosition) * Data.Config.AIConfig.threatToDamageScale;
-            if (incoming < hp) return 0f; // 暂无死亡风险，不额外给分
+            // 死亡风险由归一化威胁因子估算；低于阈值不额外给分
+            float deathRisk = Mathf.Clamp01(ThreatFactor(ctx, ally.gridPosition) * Data.Config.AIConfig.survivalWeight);
+            if (deathRisk < Data.Config.AIConfig.rescueThreatThreshold) return 0f;
 
             // 濒死 → 保住它每回合的贡献
             float allyValue = 0f;
@@ -306,7 +311,7 @@ namespace GamePlay.AI
                     allyValue = EstimateDamageValue(ally, atkSkill, ctx.Enemies[0]) / ctx.EnemyTeamHP;
                 }
             }
-            return allyValue;
+            return Mathf.Clamp(allyValue, 0f, Data.Config.AIConfig.survivalMaxValue);
         }
 
         /// <summary>
@@ -339,13 +344,23 @@ namespace GamePlay.AI
         }
 
         /// <summary>
-        /// 反击风险：castPos 的预期承伤占自身当前HP的比例（0~1）
+        /// 反击风险：由 castPos 的归一化威胁因子折算（有界，不会把攻击分清零，
+        /// 极端危险时仍靠走位/撤退的生存项来规避，而不是硬性禁止攻击）
         /// </summary>
         private static float CounterRisk(MapUnit caster, Vector3Int pos, AITaskContext ctx)
         {
-            float incoming = ctx.ThreatMap.GetScore(pos) * Data.Config.AIConfig.threatToDamageScale;
-            float hp = caster.Character.statSystem.currentHP;
-            return Mathf.Clamp01(incoming / Mathf.Max(1f, hp));
+            return Mathf.Clamp01(ThreatFactor(ctx, pos) * Data.Config.AIConfig.counterRiskWeight);
+        }
+
+        /// <summary>
+        /// 归一化威胁因子 (0~1)：威胁图分数是影响力值不是伤害，统一先除以 threatNormalizeBase
+        /// </summary>
+        private static float ThreatFactor(AITaskContext ctx, Vector3Int pos)
+        {
+            if (ctx == null || ctx.ThreatMap == null) return 0f;
+            float baseValue = Data.Config.AIConfig.threatNormalizeBase;
+            if (baseValue <= 0f) return 0f;
+            return Mathf.Clamp01(ctx.ThreatMap.GetScore(pos) / baseValue);
         }
     }
 }

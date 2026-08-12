@@ -11,9 +11,25 @@ namespace Core.Data
     /// </summary>
     public class AIConfigData
     {
-        // ── 威胁 → 预期承伤 HP 折算 ──
-        // 威胁图分数不是 HP，需要一个统一折算系数：1 威胁分 ≈ threatToDamageScale HP 预期承伤
-        public readonly float threatToDamageScale = 0.8f;
+        // ── 威胁感知 ──
+        // 威胁图分数是"影响力值"（属性威胁×10×性格），不是伤害 HP。
+        // 所有安全/生存/风险计算统一先归一化：threatFactor = clamp01(threat / threatNormalizeBase)。
+        public readonly float threatNormalizeBase = 50f;
+
+        // 进攻风险：从威胁因子为 1 的格子攻击时，最多打多少折（0~1，越大越怂）
+        public readonly float counterRiskWeight = 0.6f;
+
+        // 走位安全项：避开的威胁（threatFactor 差）折算的上限（占血池比例，有界避免喧宾夺主）
+        public readonly float safetyMaxValue = 0.08f;
+
+        // 死亡风险映射：threatFactor × survivalWeight = 死亡风险 (0~1)
+        public readonly float survivalWeight = 0.8f;
+
+        // 走位生存项：死亡风险降低带来的"保住未来贡献"价值上限
+        public readonly float survivalMaxValue = 0.10f;
+
+        // 救援触发：队友死亡风险超过此值才给救援附加价值
+        public readonly float rescueThreatThreshold = 0.5f;
 
         // ── 走位 / 推进 ──
         public readonly float futureDiscount = 0.6f;         // 未来价值折扣：走位机会增量打折
