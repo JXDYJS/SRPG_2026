@@ -38,6 +38,7 @@ namespace GamePlay.Battle
 
             GameObject unitObj = handle.Result;
             unitObj.SetActive(SetActive);
+            SetLayerRecursively(unitObj, "Unit");
             MapUnit unit = unitObj.GetComponent<MapUnit>();
             
             if (unit == null)
@@ -79,6 +80,19 @@ namespace GamePlay.Battle
                 }
             }
             return unit;
+        }
+
+        /// <summary>
+        /// 递归设置整棵层级树的 layer（renderer 所在子物体也需要）
+        /// </summary>
+        private static void SetLayerRecursively(GameObject go, string layerName)
+        {
+            int layer = LayerMask.NameToLayer(layerName);
+            if (layer < 0) return;
+            foreach (Transform t in go.GetComponentsInChildren<Transform>(true))
+            {
+                t.gameObject.layer = layer;
+            }
         }
 
         /// <summary>

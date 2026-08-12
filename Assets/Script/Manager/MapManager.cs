@@ -206,6 +206,7 @@ namespace Managers
                         Quaternion rot = Quaternion.Euler(0, blockData.rotationY, 0);
 
                         GameObject obj = Instantiate(prefab, pos, rot, mapRoot);
+                        SetLayerRecursively(obj, "Block");
                         MapObject instanceMapObj = obj.GetComponent<MapObject>();
 
                         allObjects.Add(instanceMapObj);
@@ -217,6 +218,19 @@ namespace Managers
             logicalGrid.Build(allObjects);
 
             Debug.Log($"地图加载完毕，构建了 {logicalGrid.BlockCount} 个逻辑方块。");
+        }
+
+        /// <summary>
+        /// 递归设置整棵层级树的 layer（renderer 所在子物体也需要）
+        /// </summary>
+        private static void SetLayerRecursively(GameObject go, string layerName)
+        {
+            int layer = LayerMask.NameToLayer(layerName);
+            if (layer < 0) return;
+            foreach (Transform t in go.GetComponentsInChildren<Transform>(true))
+            {
+                t.gameObject.layer = layer;
+            }
         }
 
 
@@ -350,6 +364,7 @@ namespace Managers
                 {
                     obj = Instantiate(prefabGo, pos, rot, mapRoot);
                 }
+                SetLayerRecursively(obj, "Block");
 
                 MapObject mapObj = obj.GetComponent<MapObject>();
 
