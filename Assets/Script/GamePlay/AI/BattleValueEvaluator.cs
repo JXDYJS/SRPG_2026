@@ -18,11 +18,11 @@ namespace GamePlay.AI
     /// 各类行动的价值构成：
     ///   伤害   = 总伤害 / 敌TeamHP（AoE 按总伤害自然计价，无需额外加分）
     ///   治疗   = 治疗量 / 己TeamHP × allyHealWeight
-    ///   护盾   = 盾量 / 己TeamHP × shieldWeight
     ///   buff   = BuffAIValue × 层数 × 目标权重（设计者手工标定基准，机械缩放）
     ///   斩杀   = 伤害值 + 移除目标未来威胁（自然折算，无平白加分）
-    ///   走位   = 机会增量(前瞻) × futureDiscount + 安全增益 + 生存价值 + 推进价值
-    ///   风险   = 进攻动作 × (1 − 反击承伤 / 自身HP)
+    ///   走位   = 机会增量(前瞻) + 推进价值(A*路径进度) + 安全修正(有界) + 生存价值
+    ///   风险   = 进攻动作 × (1 − threatFactor × counterRiskWeight)
+    ///            （threatFactor = clamp01(威胁 / threatNormalizeBase)，有界，不清零攻击）
     /// </summary>
     public static class BattleValueEvaluator
     {
@@ -61,6 +61,11 @@ namespace GamePlay.AI
         /// </summary>
         public static float MitigateDamage(float raw, DamageType dtype, MapUnit target)
         {
+            if (target == null || target.Character == null || target.Character.statSystem == null)
+            {
+                return raw;
+            }
+
             switch (dtype)
             {
                 case DamageType.Physical:
@@ -106,10 +111,11 @@ namespace GamePlay.AI
             // 设计者单技能偏好倍率
             total *= Mathf.Max(0f, skill.AIPriority);
 
-            // MP 代价惩罚
+            // MP 代价惩罚：按单位实际 MP 池归一（无 MP 属性时用配置参考值）
             if (skill.Cost > 0)
             {
-                total *= (1f - Mathf.Clamp01(skill.Cost / 20f) * Data.Config.AIConfig.resourcePenaltyFactor);
+                float maxMP = caster.MaxMP > 0 ? caster.MaxMP : Data.Config.AIConfig.resourceMaxMP;
+                total *= (1f - Mathf.Clamp01(skill.Cost / maxMP) * Data.Config.AIConfig.resourcePenaltyFactor);
             }
 
             // 集火衰减：队友已盯上同一目标时，边际价值下降
@@ -267,17 +273,12 @@ namespace GamePlay.AI
         }
 
         /// <summary>
-        /// 斩杀附加价值：目标未来的每回合威胁 × 它本还能活几回合（由我方伤害推算）
+        /// 斩杀附加价值：目标未来的每回合威胁 × 它本还能活几回合（由我方伤害推算）。
+        /// 未来威胁用目标最强的进攻手段估算（普攻与主动技能取最大伤害）。
         /// </summary>
         private static float ExecuteBonus(MapUnit target, float damageDealt, AITaskContext ctx)
         {
-            float futureThreatPerTurn = 0f;
-            SkillDataSO threatSkill = target.NormalAttackSkill;
-            if (threatSkill != null)
-            {
-                futureThreatPerTurn = EstimateDamageValue(target, threatSkill, ctx.Unit);
-            }
-
+            float futureThreatPerTurn = EstimateBestOffensiveDamage(target, ctx.Unit);
             if (futureThreatPerTurn <= 0f) return 0f;
 
             float hp = target.Character.statSystem.currentHP;
@@ -286,6 +287,27 @@ namespace GamePlay.AI
                 1, Data.Config.AIConfig.executeFutureTurns);
 
             return futureThreatPerTurn * remainingTurns / ctx.AllyTeamHP;
+        }
+
+        /// <summary>
+        /// 单位对 victim 每回合能打出的最大伤害（普攻 + 主动进攻技能取最大）
+        /// </summary>
+        private static float EstimateBestOffensiveDamage(MapUnit unit, MapUnit victim)
+        {
+            if (unit == null || unit.Character == null || victim == null) return 0f;
+
+            float best = EstimateDamageValue(unit, unit.NormalAttackSkill, victim);
+            List<SkillDataSO> skills = unit.GetActiveSkills();
+            if (skills != null)
+            {
+                foreach (SkillDataSO skill in skills)
+                {
+                    if (skill == null || !skill.IsOffensiveSkill()) continue;
+                    float dmg = EstimateDamageValue(unit, skill, victim);
+                    if (dmg > best) best = dmg;
+                }
+            }
+            return best;
         }
 
         /// <summary>
@@ -301,15 +323,11 @@ namespace GamePlay.AI
             float deathRisk = Mathf.Clamp01(ThreatFactor(ctx, ally.gridPosition) * Data.Config.AIConfig.survivalWeight);
             if (deathRisk < Data.Config.AIConfig.rescueThreatThreshold) return 0f;
 
-            // 濒死 → 保住它每回合的贡献
+            // 濒死 → 保住它每回合的贡献（用其最强进攻手段估算）
             float allyValue = 0f;
             if (ctx.Enemies.Count > 0)
             {
-                SkillDataSO atkSkill = ally.NormalAttackSkill;
-                if (atkSkill != null)
-                {
-                    allyValue = EstimateDamageValue(ally, atkSkill, ctx.Enemies[0]) / ctx.EnemyTeamHP;
-                }
+                allyValue = EstimateBestOffensiveDamage(ally, ctx.Enemies[0]) / ctx.EnemyTeamHP;
             }
             return Mathf.Clamp(allyValue, 0f, Data.Config.AIConfig.survivalMaxValue);
         }

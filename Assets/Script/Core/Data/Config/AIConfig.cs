@@ -55,7 +55,11 @@ namespace Core.Data
         public readonly int executeFutureTurns = 3;          // 斩杀移除未来威胁折算的回合数上限
 
         // ── 资源惩罚 ──
-        public readonly float resourcePenaltyFactor = 0.30f; // cost/maxMP 的最大惩罚比例
+        public readonly float resourcePenaltyFactor = 0.30f; // cost 相对 MP 池的最大惩罚比例
+        public readonly float resourceMaxMP = 20f;           // 单位无 MP 属性时，资源惩罚归一化的参考 MP 池
+
+        // ── 推进目标选择 ──
+        public readonly float advanceTargetDistanceNormalize = 20f; // 目标选择时距离因子归一化基准（曼哈顿距离）
 
         // ── 撤退 / 自保触发 ──
         public readonly float lowHPThreshold = 0.35f;          // HP 低于此比例考虑撤退

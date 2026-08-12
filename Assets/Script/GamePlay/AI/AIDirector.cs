@@ -57,6 +57,10 @@ namespace GamePlay.AI
                 }
 
                 bool offensive = skill.IsOffensiveSkill();
+
+                // 嘲讽约束（仅进攻技能收窄目标池）——提升到目标循环外，避免重复扫描
+                MapUnit forcedTarget = offensive ? TauntSystem.GetForcedTargetForSkill(unit, skill, ctx) : null;
+
                 List<MapUnit> targets = GetValidTargetsForSkill(unit, skill);
 
                 foreach (MapUnit target in targets)
@@ -66,18 +70,14 @@ namespace GamePlay.AI
                         continue;
                     }
 
-                    // 嘲讽约束（仅进攻技能收窄目标池）
-                    if (offensive)
+                    if (forcedTarget != null && target != forcedTarget)
                     {
-                        MapUnit forced = TauntSystem.GetForcedTargetForSkill(unit, skill, ctx);
-                        if (forced != null && target != forced)
-                        {
-                            continue;
-                        }
+                        continue;
                     }
-                    else if (HasHealEffect(skill))
+
+                    // 治疗阈值（仅非进攻技能）：满血不治疗
+                    if (!offensive && HasHealEffect(skill))
                     {
-                        // 治疗阈值：满血不治疗
                         if (GetHPPercent(target) > Data.Config.AIConfig.healThreshold)
                         {
                             continue;
@@ -195,7 +195,7 @@ namespace GamePlay.AI
 
                 int manhattan = Mathf.Abs(unit.gridPosition.x - enemy.gridPosition.x)
                               + Mathf.Abs(unit.gridPosition.z - enemy.gridPosition.z);
-                float distanceFactor = 1.0f - Mathf.Clamp01((float)manhattan / 20f);
+                float distanceFactor = 1.0f - Mathf.Clamp01((float)manhattan / Data.Config.AIConfig.advanceTargetDistanceNormalize);
                 float hpFactor = 1.0f - GetHPPercent(enemy);
 
                 float score = distanceFactor * 0.5f + hpFactor * 0.5f;
@@ -251,7 +251,7 @@ namespace GamePlay.AI
 
                 float progress = (float)(i + 1) / path.Count;
                 float threat = ctx.ThreatMap.GetScore(tile);
-                float safety = 1.0f - Mathf.Clamp01(threat / 50f);
+                float safety = 1.0f - Mathf.Clamp01(threat / Data.Config.AIConfig.threatNormalizeBase);
 
                 float score = progress * 0.6f + safety * 0.4f;
                 if (score > bestScore)

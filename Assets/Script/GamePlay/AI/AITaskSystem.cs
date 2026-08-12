@@ -68,38 +68,53 @@ namespace GamePlay.AI
             // ─── 1. 等待威胁图重建完成 ───
             yield return WaitForThreatMapReady();
 
-            // ─── 2. 预计算上下文 ───
-            AITaskContext ctx = new AITaskContext(unit);
+            // ─── 2. 决策阶段（纯计算，无 yield，可安全 try/catch）───
+            // 防御性包裹：任何未预期异常都不得卡死回合（softlock），记日志后兜底待机。
+            AIAction best = null;
+            AIPlan plan = null;
+            try
+            {
+                // 预计算上下文
+                AITaskContext ctx = new AITaskContext(unit);
 
-            // ─── 3. 生成候选行动池 ───
-            List<AIAction> candidates = _director.GenerateCandidateActions(unit, ctx);
+                // 生成候选行动池
+                List<AIAction> candidates = _director.GenerateCandidateActions(unit, ctx);
 
-            // ─── 4. 选择最优行动 ───
-            AIAction best = _selector.Select(candidates);
-            if (best == null)
+                // 选择最优行动
+                best = _selector.Select(candidates);
+                if (best != null)
+                {
+                    Debug.Log($"[AITaskSystem] {unit.name} 选择: {best.Category} score={best.Score:F4}" +
+                              (best.HasSkill ? $" 技能={best.Skill.SkillName} 目标={best.TargetUnit.name}" : ""));
+
+                    // 更新集火承诺
+                    if (SharedTaskBoard.Instance != null)
+                    {
+                        SharedTaskBoard.Instance.UpdateUnitCommitments(unit, ExtractCommitTargets(best));
+                    }
+
+                    // 生成执行计划
+                    plan = _planBuilder.Build(unit, best, ctx);
+                }
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError($"[AITaskSystem] {unit.name} AI 决策异常，已兜底待机: {e}");
+                best = null;
+            }
+
+            // ─── 3. 执行阶段 ───
+            if (best == null || plan == null)
             {
                 Debug.Log($"[AITaskSystem] {unit.name} 无可用行动，待机");
                 yield return new WaitForSeconds(Data.Config.AIConfig.planStepWaitSeconds);
-                TurnManager.Instance.EndCurrentUnitTurn();
-                yield break;
             }
-
-            Debug.Log($"[AITaskSystem] {unit.name} 选择: {best.Category} score={best.Score:F4}" +
-                      (best.HasSkill ? $" 技能={best.Skill.SkillName} 目标={best.TargetUnit.name}" : ""));
-
-            // ─── 5. 更新集火承诺 ───
-            if (SharedTaskBoard.Instance != null)
+            else
             {
-                SharedTaskBoard.Instance.UpdateUnitCommitments(unit, ExtractCommitTargets(best));
+                yield return _executor.ExecutePlan(unit, plan);
             }
 
-            // ─── 6. 生成执行计划 ───
-            AIPlan plan = _planBuilder.Build(unit, best, ctx);
-
-            // ─── 7. 执行计划 ───
-            yield return _executor.ExecutePlan(unit, plan);
-
-            // ─── 8. 结束回合 ───
+            // ─── 4. 结束回合 ───
             TurnManager.Instance.EndCurrentUnitTurn();
         }
 

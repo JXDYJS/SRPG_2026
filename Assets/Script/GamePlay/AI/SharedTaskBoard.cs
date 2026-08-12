@@ -58,10 +58,17 @@ namespace GamePlay.AI
             }
 
             int count = 0;
+            List<MapUnit> deadUnits = null;
             foreach (var kv in _unitCommitments)
             {
                 MapUnit unit = kv.Key;
-                if (unit == null || unit == actingUnit || !unit.IsAlive)
+                if (unit == null || !unit.IsAlive)
+                {
+                    // 惰性清理已阵亡单位的承诺记录，避免字典随死亡无限增长
+                    (deadUnits ??= new List<MapUnit>()).Add(unit);
+                    continue;
+                }
+                if (unit == actingUnit)
                 {
                     continue;
                 }
@@ -72,21 +79,16 @@ namespace GamePlay.AI
                 count++;
             }
 
+            if (deadUnits != null)
+            {
+                foreach (MapUnit dead in deadUnits)
+                {
+                    _unitCommitments.Remove(dead);
+                }
+            }
+
             float penalty = count * Data.Config.AIConfig.focusFirePenaltyPerUnit;
             return Mathf.Max(Data.Config.AIConfig.commitmentPenaltyFloor, 1f - penalty);
-        }
-
-        /// <summary>
-        /// 目标阵亡时清理其承诺记录
-        /// </summary>
-        public void TargetDied(MapUnit target)
-        {
-            if (target == null) return;
-            _unitCommitments.Remove(target);
-            foreach (var kv in _unitCommitments)
-            {
-                kv.Value?.Remove(target);
-            }
         }
     }
 }
