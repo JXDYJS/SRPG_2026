@@ -79,6 +79,10 @@ namespace GamePlay.Battle
                     characterInstance.LevelUp();
                 }
             }
+
+            // 10. 注册描边 objID（写入 GBuffer G 通道 + 初始化白色描边）
+            UnitStrokeRenderFeature.RegisterUnit(unit);
+
             return unit;
         }
 

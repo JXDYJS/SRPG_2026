@@ -97,6 +97,7 @@ public class TurnManager : MonoBehaviour
         // 4. 正式让这个人开始行动
         ActiveUnit = nextUnit;
         Debug.Log($"[TURN] ActiveUnit set to: {nextUnit.name} (Faction={nextUnit.Faction})");
+        UnitStrokeRenderFeature.RefreshColors();
         StartUnitTurn(ActiveUnit);
     }
 
@@ -133,6 +134,7 @@ public class TurnManager : MonoBehaviour
 
         var endedUnit = ActiveUnit;
         ActiveUnit = null;
+        UnitStrokeRenderFeature.RefreshColors();
 
         // 通知外部系统：一个单位的回合已结束
         OnUnitTurnEnded?.Invoke(endedUnit);
