@@ -140,12 +140,12 @@ namespace UI
             float[] targetX = new float[actionQueue.Count];
 
             float lastPlacedX = usableWidth + iconWidth;
-
+            HashSet<MapUnit>iconAlive = new(_activeIcons.Keys);
             for (int i = 0; i < actionQueue.Count; i++)
             {
                 var unit = actionQueue[i];
-                if (unit == null || !_activeIcons.ContainsKey(unit)) continue;
-
+                if (unit == null || !_activeIcons.ContainsKey(unit))continue;
+                iconAlive.Remove(unit);
                 float rawX = (1f - Mathf.Clamp01(unit.CurrentActionValue / maxAV)) * usableWidth;
 
                 if (TurnManager.Instance.ActiveUnit == unit)
@@ -154,7 +154,10 @@ namespace UI
                 targetX[i] = Mathf.Min(rawX, lastPlacedX - iconWidth);
                 lastPlacedX = targetX[i];
             }
-
+            foreach(var unit in iconAlive)
+            {
+                RemoveUnit(unit);
+            }
             float nextPlacedX = -iconWidth;
 
             for (int i = actionQueue.Count - 1; i >= 0; i--)
