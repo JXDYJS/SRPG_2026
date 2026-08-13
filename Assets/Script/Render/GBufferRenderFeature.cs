@@ -29,6 +29,8 @@ public class GBufferRenderFeature : ScriptableRendererFeature
         static readonly int k_GBufferTexId = Shader.PropertyToID("_GBuffer");
 
         RTHandle m_GBuffer;
+        RTHandle m_UnitDepth;
+        RTHandle m_CameraDepth;
         Settings m_Settings;
 
         public GBufferPass(Settings settings)
@@ -45,8 +47,16 @@ public class GBufferRenderFeature : ScriptableRendererFeature
             desc.graphicsFormat = UnityEngine.Experimental.Rendering.GraphicsFormat.R8G8B8A8_UNorm;
             RenderingUtils.ReAllocateIfNeeded(ref m_GBuffer, desc, FilterMode.Point, TextureWrapMode.Clamp, name: "GBufferType");
 
+            // 单位深度 RT：只存单位之间互相遮挡后的最近深度，与相机深度无关（穿墙保留）
+            var depthDesc = renderingData.cameraData.cameraTargetDescriptor;
+            depthDesc.msaaSamples = 1;
+            depthDesc.graphicsFormat = UnityEngine.Experimental.Rendering.GraphicsFormat.None;
+            depthDesc.depthBufferBits = 24;
+            RenderingUtils.ReAllocateIfNeeded(ref m_UnitDepth, depthDesc, name: "GBufferUnitDepth");
+
             // 目标 = 类型缓冲 + 相机真实深度；ZTest 直接对着相机深度测，不用自己渲深度
-            ConfigureTarget(m_GBuffer, renderingData.cameraData.renderer.cameraDepthTargetHandle);
+            m_CameraDepth = renderingData.cameraData.renderer.cameraDepthTargetHandle;
+            ConfigureTarget(m_GBuffer, m_CameraDepth);
         }
 
         public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
@@ -57,18 +67,26 @@ public class GBufferRenderFeature : ScriptableRendererFeature
             var cmd = CommandBufferPool.Get("GBufferPass");
             using (new ProfilingScope(cmd, profilingSampler))
             {
-                // 每帧清空类型缓冲（只清颜色，不动相机深度），否则跨帧累积成拖影
+                // 1. 每帧清空类型缓冲（只清颜色，不动相机深度），否则跨帧累积成拖影
+                CoreUtils.SetRenderTarget(cmd, m_GBuffer, m_CameraDepth);
                 cmd.ClearRenderTarget(RTClearFlags.Color, Color.clear, 1.0f, 0);
 
-                // 可见步：ZTest LEqual（对着相机深度）——低 nibble 写 visibleType
+                // 2. 可见步：ZTest LEqual（对着相机深度）——低 nibble 写 visibleType
                 DrawLayerPass(cmd, context, ref renderingData, "Block", 0, RenderQueueRange.opaque, SortingCriteria.CommonOpaque);
                 DrawLayerPass(cmd, context, ref renderingData, "Unit", 1, RenderQueueRange.opaque, SortingCriteria.CommonOpaque);
                 DrawLayerPass(cmd, context, ref renderingData, "Water", 2, RenderQueueRange.transparent, SortingCriteria.CommonTransparent);
 
-                // 占用步：pass 3 = ZTest Always + Blend One One，只画单位
+                // 3. 单位深度预绘制：清深度后 draw 一次 Unit（pass4 只写深度不写颜色）
+                //    单位间互相 depth test → 每像素留下最近单位的深度；墙不参与该缓冲 → 穿墙保留
+                CoreUtils.SetRenderTarget(cmd, m_GBuffer, m_UnitDepth);
+                cmd.ClearRenderTarget(RTClearFlags.Depth, Color.clear, 1.0f, 0);
+                DrawLayerPass(cmd, context, ref renderingData, "Unit", 4, RenderQueueRange.opaque, SortingCriteria.CommonOpaque);
+
+                // 4. 占用步：再 draw 一次 Unit，ZTest LEqual 对着单位深度RT，覆盖写（无 Blend）
+                //    只有最近单位通过 → R 恒为 34，G=最近单位 objID，不再累加溢出
                 DrawLayerPass(cmd, context, ref renderingData, "Unit", 3, RenderQueueRange.opaque, SortingCriteria.CommonOpaque);
 
-                // 暴露为全局纹理 _GBuffer，供描边/SSR 等后续 shader 采样
+                // 5. 暴露为全局纹理 _GBuffer，供描边/SSR 等后续 shader 采样
                 cmd.SetGlobalTexture(k_GBufferTexId, m_GBuffer);
             }
             context.ExecuteCommandBuffer(cmd);
@@ -95,6 +113,7 @@ public class GBufferRenderFeature : ScriptableRendererFeature
         public void Cleanup()
         {
             m_GBuffer?.Release();
+            m_UnitDepth?.Release();
         }
     }
 

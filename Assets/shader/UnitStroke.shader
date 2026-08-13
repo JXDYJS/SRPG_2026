@@ -65,7 +65,7 @@ Shader "Custom/UnitStroke"
                     {
                         if (i == 0 && j == 0) continue;
 
-                        float2 offsetUV = uv + float2(i, j) * _ScreenSize.zw * _StrokeWidth;
+                        float2 offsetUV = uv + float2(i, j) * _ScreenSize.zw * 1.0;
 
                         half4 neighborRaw = SAMPLE_TEXTURE2D_LOD(_GBuffer, sampler_GBuffer, offsetUV, 0);
                         GBufferData neighborData;
@@ -95,6 +95,7 @@ Shader "Custom/UnitStroke"
 
                 // _BlitTexture = UnitStrokeRenderFeature 绑定的当前画面颜色
                 return SAMPLE_TEXTURE2D_X(_BlitTexture, sampler_LinearClamp, uv);
+                //return half4();
             }
             ENDHLSL
         }
