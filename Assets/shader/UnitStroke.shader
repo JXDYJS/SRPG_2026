@@ -65,13 +65,13 @@ Shader "Custom/UnitStroke"
                     {
                         if (i == 0 && j == 0) continue;
 
-                        float2 offsetUV = uv + float2(i, j) * _ScreenSize.zw * 1.0;
+                        float2 offsetUV = uv + float2(i, j) * _ScreenSize.zw * _StrokeWidth;
 
                         half4 neighborRaw = SAMPLE_TEXTURE2D_LOD(_GBuffer, sampler_GBuffer, offsetUV, 0);
                         GBufferData neighborData;
                         readData(neighborRaw, neighborData);
 
-                        if (!neighborData.isUnit)
+                        if (!neighborData.isUnit || neighborData.objID != bufferData.objID)
                         {
                             return true;
                         }
