@@ -103,6 +103,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: Magma
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: a50bdbf034c1034418f12a01fc902047,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 1637280867006841693, guid: a50bdbf034c1034418f12a01fc902047,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 65702495048144492, guid: a50bdbf034c1034418f12a01fc902047, type: 3}
@@ -136,6 +146,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10e8ba6e6eae4cf46934b8b6a582ae64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  blockConfigId: 
   prefabId: 5
   type: 1
   isWalkable: 1

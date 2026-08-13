@@ -3,6 +3,7 @@ using GamePlay.Units;
 using Character.instance;
 using Status.state;
 using Managers;
+using Utils;
 using Cysharp.Threading.Tasks;
 using UnityEngine.AddressableAssets;
 
@@ -38,6 +39,7 @@ namespace GamePlay.Battle
 
             GameObject unitObj = handle.Result;
             unitObj.SetActive(SetActive);
+            Utils.Utils.SetLayerRecursively(unitObj, "Unit");
             MapUnit unit = unitObj.GetComponent<MapUnit>();
             
             if (unit == null)
@@ -78,6 +80,10 @@ namespace GamePlay.Battle
                     characterInstance.LevelUp();
                 }
             }
+
+            // 10. 注册描边 objID（写入 GBuffer G 通道 + 初始化白色描边）
+            UnitStrokeRenderFeature.RegisterUnit(unit);
+
             return unit;
         }
 

@@ -206,6 +206,7 @@ namespace Managers
                         Quaternion rot = Quaternion.Euler(0, blockData.rotationY, 0);
 
                         GameObject obj = Instantiate(prefab, pos, rot, mapRoot);
+                        Utils.Utils.SetLayerRecursively(obj, "Block");
                         MapObject instanceMapObj = obj.GetComponent<MapObject>();
 
                         allObjects.Add(instanceMapObj);
@@ -350,6 +351,7 @@ namespace Managers
                 {
                     obj = Instantiate(prefabGo, pos, rot, mapRoot);
                 }
+                Utils.Utils.SetLayerRecursively(obj, "Block");
 
                 MapObject mapObj = obj.GetComponent<MapObject>();
 

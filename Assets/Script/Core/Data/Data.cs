@@ -16,7 +16,7 @@ namespace Core.Data
     /// Data — 全局数据根节点（静态单例）
     ///
     /// 访问约定：
-    ///   Data.Config.AIConfig.threatNormalizeBase    // 配置
+    ///   Data.Config.AIConfig.categoryBand           // 配置
     ///   Data.Runtime.Battle.CurrentRound            // 运行时
     ///   Data.Persistent.Save()                      // 持久化
     ///
@@ -87,7 +87,6 @@ namespace Core.Data
     public class RuntimeData
     {
         public readonly BattleRuntimeData Battle = new BattleRuntimeData();
-        public readonly AIRuntimeData AI = new AIRuntimeData();
     }
 
     /// <summary>存档摘要，供 launch 界面展示（不持有完整存档）</summary>

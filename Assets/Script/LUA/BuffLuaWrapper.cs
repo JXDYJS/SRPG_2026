@@ -29,6 +29,9 @@ namespace Lua
             IsDebuff = LuaInstance.Get<bool>("IsDebuff");
             DecayAtTurnStart = LuaInstance.Get<bool>("DecayAtTurnStart");
 
+            // AI 战术价值基准：Lua 侧可声明 AIValue 覆盖 C# 默认值
+            AIValue = ReadOptionalFloat("AIValue");
+
             // 优先使用 Lua 侧配置的展示名，缺省回退到 BuffID
             if (string.IsNullOrEmpty(Name)) Name = ID;
 
@@ -43,6 +46,18 @@ namespace Lua
         private bool ReadOptionalBool(string key)
         {
             return LuaInstance.Get<object>(key) is bool b && b;
+        }
+
+        /// <summary>
+        /// 安全读取可选 Lua 数值字段（AIValue）：未声明或类型不符时保持 C# 默认值。
+        /// </summary>
+        private float ReadOptionalFloat(string key)
+        {
+            object v = LuaInstance.Get<object>(key);
+            if (v is float f) return f;
+            if (v is int i) return i;
+            if (v is double d) return (float)d;
+            return AIValue;
         }
 
         public override void OnApply(MapUnit owner)

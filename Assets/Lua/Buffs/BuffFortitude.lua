@@ -25,7 +25,7 @@ function BuffFortitude:OnBeHurt(damageInfo)
     local hp = unit.Character.statSystem.currentHP
 
     if hp <= maxHp * self.HpThreshold then
-        CS.GamePlay.Buff.BuffManager.ApplyBuffToUnit(unit, "DefPlus", self.DefBonus)
+        CS.GamePlay.Buff.BuffManager.ApplyBuffToUnit(unit, "def_plus", self.DefBonus)
         if self._Wrapper then
             unit:RemoveBuff(self._Wrapper)
         end

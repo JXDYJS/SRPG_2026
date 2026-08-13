@@ -12,6 +12,14 @@ namespace GamePlay.Buff{
         public int MaxStacks;    // 最大层数限制
         public bool IsDebuff;    // 是增益还是减益（用于净化逻辑）
         public bool IsHidden;    // 被动技能等隐藏Buff，不在UI显示
+
+        /// <summary>
+        /// AI 战术价值基准：每层相当于"打掉敌方/保住己方 血池的比例"（0~N，默认 0.05）。
+        /// 各 buff 效果异构，无法公式化推导，由设计者手工标定一次；
+        /// 实际估值 = AIValue × 层数 × 目标权重（见 BattleValueEvaluator）。
+        /// </summary>
+        [Tooltip("AI战术价值：每层相当于打掉/保住 血池的比例 (0~N)，设计者手工标定")]
+        public float AIValue = 0.05f;
         /// <summary>
         /// 语义标记：是否具有"嘲讽"效果（AI 强制索敌依赖此标记）。
         /// C# 子类可在构造函数中置 true；Lua Buff 通过 BuffLuaWrapper 读取同名字段。

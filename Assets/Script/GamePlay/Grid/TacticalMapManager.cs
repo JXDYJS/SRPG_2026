@@ -168,16 +168,6 @@ namespace Grid
             }
         }
 
-        // ================ 战略图 ================
-
-        // 这个通常在回合开始，或者接取新任务时更新。不需要频繁刷。
-        public void UpdateStrategicMap(TacticalGoal currentGoal)
-        {
-            StrategicMap.Clear();
-            // 伪代码：如果当前目标是占领(10, 0, 10)，就在该点周围涂抹高分
-            // StrategicMap.AddScore(new Vector3Int(10,0,10), 100f);
-        }
-
         // ================ 辅助方法 ================
 
         public float getThreatRange(int min, int max, int var)

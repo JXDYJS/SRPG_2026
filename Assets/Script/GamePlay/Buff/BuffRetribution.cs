@@ -18,6 +18,7 @@ namespace GamePlay.Buff
             if (string.IsNullOrEmpty(Name)) Name = "Retribution";
             if (string.IsNullOrEmpty(Description)) Description = "Reflect {Stacks} damage back to attackers.";
             MaxStacks = 999;
+            AIValue = 0.05f;
         }
 
         public override void OnApply(MapUnit owner)

@@ -5,105 +5,44 @@ using Grid;
 using GamePlay.Grid;
 using GamePlay.Skill;
 using GamePlay.Units;
-using GamePlay.AI.Tasks;
 using Core.Data;
 using Global;
 
 namespace GamePlay.AI
 {
     /// <summary>
-    /// AI 导演 — 扫描战场态势，为当前行动的单位生成候选任务池
+    /// AI 导演 — 扫描战场态势，为当前行动单位生成候选行动池（统一 AIAction）。
+    /// 生成：直接动作（进攻/治疗/增益，含斩杀判定）+ 走位动作（推进/撤退）+ 待机兜底。
     /// </summary>
     public class AIDirector
     {
-        public List<AITask> GenerateCandidateTasks(MapUnit actingUnit, AITaskContext ctx)
+        public List<AIAction> GenerateCandidateActions(MapUnit unit, AITaskContext ctx)
         {
-            List<AITask> taskPool = new List<AITask>();
+            List<AIAction> pool = new List<AIAction>();
 
-            float t0 = Time.realtimeSinceStartup;
+            GenerateDirectActions(unit, ctx, pool);
+            GenerateRepositionActions(unit, ctx, pool);
 
-            GenerateAttackTasks(actingUnit, taskPool, ctx);
-            float t1 = Time.realtimeSinceStartup;
+            pool.Add(new AIAction { Category = AICategory.Wait, Score = 0f });
 
-            GenerateSupportTasks(actingUnit, taskPool, ctx);
-            float t2 = Time.realtimeSinceStartup;
-
-            GenerateDefendTasks(actingUnit, taskPool, ctx);
-            float t3 = Time.realtimeSinceStartup;
-
-            GenerateSkillTasks(actingUnit, taskPool, ctx);
-            float t4 = Time.realtimeSinceStartup;
-
-            GenerateMoveTasks(actingUnit, taskPool, ctx);
-            float t5 = Time.realtimeSinceStartup;
-
-            taskPool.Add(new WaitTask(0f));
-
-            // float tTotal = (t5 - t0) * 1000f;
-            // UnityEngine.Debug.Log($"[AIDirector·性能] ─────────────────────────────");
-            // UnityEngine.Debug.Log($"[AIDirector·性能]  Attack:  {(t1 - t0) * 1000f:F1} ms  → {CountByType(taskPool, AITaskType.Attack)} 个任务");
-            // UnityEngine.Debug.Log($"[AIDirector·性能]  Support: {(t2 - t1) * 1000f:F1} ms  → {CountByType(taskPool, AITaskType.Support)} 个任务");
-            // UnityEngine.Debug.Log($"[AIDirector·性能]  Defend:  {(t3 - t2) * 1000f:F1} ms  → {CountByType(taskPool, AITaskType.Defend)} 个任务");
-            // UnityEngine.Debug.Log($"[AIDirector·性能]  Skill:   {(t4 - t3) * 1000f:F1} ms  → {CountByType(taskPool, AITaskType.Skill)} 个任务");
-            // UnityEngine.Debug.Log($"[AIDirector·性能]  Move:    {(t5 - t4) * 1000f:F1} ms  → {CountByType(taskPool, AITaskType.Move)} 个任务");
-            // UnityEngine.Debug.Log($"[AIDirector·性能]  总计:    {tTotal:F1} ms  → {taskPool.Count} 个任务");
-            // UnityEngine.Debug.Log($"[AIDirector·性能] ─────────────────────────────");
-
-            return taskPool;
-        }
-
-        private int CountByType(List<AITask> pool, AITaskType type)
-        {
-            int count = 0;
-            foreach (var t in pool)
-                if (t.TaskType == type)
-                    count++;
-            return count;
+            return pool;
         }
 
         // ==============================================================
-        // 攻击任务生成
+        // 直接动作生成
         // ==============================================================
-        private void GenerateAttackTasks(MapUnit unit, List<AITask> pool, AITaskContext ctx)
+        private void GenerateDirectActions(MapUnit unit, AITaskContext ctx, List<AIAction> pool)
         {
-            List<MapUnit> players = UnitManager.Instance.GetAllAlivePlayers();
-
-            // 嘲讽约束：普攻永远单体。若嘲讽者"移动后可被单体手段打到"，其余玩家的攻击任务全部作废。
-            MapUnit forcedTarget = TauntSystem.GetForcedTarget(unit, ctx);
-
-            foreach (MapUnit player in players)
+            if (unit == null || unit.Character == null)
             {
-                if (player == null || !player.IsAlive)
-                {
-                    continue;
-                }
-
-                if (forcedTarget != null && player != forcedTarget)
-                {
-                    continue;
-                }
-
-                if (!IsUnitReachable(unit, player, ctx))
-                {
-                    continue;
-                }
-
-                pool.Add(new AttackTask(player, 1f));
+                return;
             }
-        }
 
-        // ==============================================================
-        // 支援任务生成
-        // ==============================================================
-        private void GenerateSupportTasks(MapUnit unit, List<AITask> pool, AITaskContext ctx)
-        {
             List<SkillDataSO> activeSkills = unit.GetActiveSkills();
             if (activeSkills == null || activeSkills.Count == 0)
             {
                 return;
             }
-
-            List<MapUnit> allies = GetAliveAllies(unit);
 
             foreach (SkillDataSO skill in activeSkills)
             {
@@ -112,200 +51,156 @@ namespace GamePlay.AI
                     continue;
                 }
 
-                if (!IsSupportSkill(skill))
+                if (skill.Cost > 0 && !unit.Character.HasEnoughMP(skill.Cost))
                 {
                     continue;
                 }
 
-                if (!HasEnoughMPForSkill(unit, skill))
-                {
-                    continue;
-                }
+                bool offensive = skill.IsOffensiveSkill();
 
-                foreach (MapUnit ally in allies)
-                {
-                    if (!ally.IsAlive)
-                    {
-                        continue;
-                    }
-
-                    float hpPercent = GetHPPercent(ally);
-                    if (hpPercent > Data.Config.AIConfig.healThreshold)
-                    {
-                        continue;
-                    }
-
-                    if (!IsTargetInSkillRange(unit, skill, ally, ctx))
-                    {
-                        continue;
-                    }
-
-                    pool.Add(new SupportTask(skill, ally, 1f));
-                }
-
-                float ownHP = GetHPPercent(unit);
-                if (ownHP < 0.5f && CanTargetSelf(skill) && IsTargetInSkillRange(unit, skill, unit, ctx))
-                {
-                    pool.Add(new SupportTask(skill, unit, 1f));
-                }
-            }
-        }
-
-        // ==============================================================
-        // 防御任务生成
-        // ==============================================================
-        private void GenerateDefendTasks(MapUnit unit, List<AITask> pool, AITaskContext ctx)
-        {
-            InfluenceMapLayer threatMap = ctx.ThreatMap;
-            float currentThreat = threatMap.GetScore(unit.gridPosition);
-
-            float hpPercent = GetHPPercent(unit);
-            if (currentThreat < Data.Config.AIConfig.dangerThreatThreshold && hpPercent > Data.Config.AIConfig.lowHPThreshold)
-            {
-                return;
-            }
-
-            HashSet<Vector3Int> reachableTiles = ctx.ReachableTiles;
-
-            Vector3Int bestSafePos = unit.gridPosition;
-            float bestThreat = currentThreat;
-
-            foreach (Vector3Int tile in reachableTiles)
-            {
-                if (tile == unit.gridPosition)
-                {
-                    continue;
-                }
-
-                MapUnit occupying = UnitManager.Instance.GetUnitAt(tile);
-                if (occupying != null)
-                {
-                    continue;
-                }
-
-                float threat = threatMap.GetScore(tile);
-                if (threat < bestThreat)
-                {
-                    bestThreat = threat;
-                    bestSafePos = tile;
-                }
-            }
-
-            if (bestThreat < currentThreat * Data.Config.AIConfig.threatImprovementRatio)
-            {
-                pool.Add(new DefendTask(bestSafePos, 1f));
-            }
-        }
-
-        // ==============================================================
-        // 技能任务生成
-        // ==============================================================
-        private void GenerateSkillTasks(MapUnit unit, List<AITask> pool, AITaskContext ctx)
-        {
-            List<SkillDataSO> activeSkills = unit.GetActiveSkills();
-            if (activeSkills == null || activeSkills.Count == 0)
-            {
-                return;
-            }
-
-            SkillDataSO normalAttack = unit.NormalAttackSkill;
-
-            foreach (SkillDataSO skill in activeSkills)
-            {
-                if (skill == null || skill == normalAttack)
-                {
-                    continue;
-                }
-
-                if (!HasEnoughMPForSkill(unit, skill))
-                {
-                    continue;
-                }
-
-                // 嘲讽约束（逐技能）：仅"单体进攻型"技能受限制——若嘲讽者可被该技能打到，
-                // 该技能的目标池收窄到嘲讽者；AoE/Global/辅助技能不受限，保留完整目标池。
-                MapUnit forcedTarget = TauntSystem.GetForcedTargetForSkill(unit, skill, ctx);
+                // 嘲讽约束（仅进攻技能收窄目标池）——提升到目标循环外，避免重复扫描
+                MapUnit forcedTarget = offensive ? TauntSystem.GetForcedTargetForSkill(unit, skill, ctx) : null;
 
                 List<MapUnit> targets = GetValidTargetsForSkill(unit, skill);
 
                 foreach (MapUnit target in targets)
                 {
+                    if (target == null || !target.IsAlive)
+                    {
+                        continue;
+                    }
+
                     if (forcedTarget != null && target != forcedTarget)
                     {
                         continue;
                     }
 
-                    if (!IsTargetInSkillRange(unit, skill, target, ctx))
+                    // 治疗阈值（仅非进攻技能）：满血不治疗
+                    if (!offensive && HasHealEffect(skill))
+                    {
+                        if (GetHPPercent(target) > Data.Config.AIConfig.healThreshold)
+                        {
+                            continue;
+                        }
+                    }
+
+                    // 施放位置
+                    bool inRange = AttackRangeSystem.CanCastTo(unit.gridPosition, target.gridPosition, skill);
+                    Vector3Int? castPos = null;
+                    if (!inRange)
+                    {
+                        castPos = FindBestCastPosition(unit, skill, target, ctx);
+                        if (castPos == null)
+                        {
+                            continue; // 移动后仍够不着
+                        }
+                    }
+
+                    Vector3Int effectiveCastPos = inRange ? unit.gridPosition : castPos.Value;
+                    float score = BattleValueEvaluator.SkillActionValue(
+                        unit, skill, target, effectiveCastPos, ctx, out bool lethal);
+                    if (score <= 0f)
                     {
                         continue;
                     }
 
-                    pool.Add(new SkillTask(skill, target, 1f));
+                    AICategory category = lethal
+                        ? AICategory.Execute
+                        : offensive ? AICategory.Damage : AICategory.HealBuff;
+
+                    pool.Add(new AIAction
+                    {
+                        Category = category,
+                        Score = score,
+                        Skill = skill,
+                        TargetUnit = target,
+                        TargetPos = castPos
+                    });
                 }
             }
         }
 
         // ==============================================================
-        // 移动任务生成
-        // 前压 — MoveTask 只负责逼近敌人。撤退交由 GenerateDefendTasks 处理。
+        // 走位动作生成（推进 / 撤退）
         // ==============================================================
-        private void GenerateMoveTasks(MapUnit unit, List<AITask> pool, AITaskContext ctx)
+        private void GenerateRepositionActions(MapUnit unit, AITaskContext ctx, List<AIAction> pool)
         {
-            if (!HasLivingEnemy(unit))
-                return;
-
-            MapUnit bestTarget = SelectAdvanceTarget(unit, ctx);
-            if (bestTarget == null)
-                return;
-
-            Vector3Int? advancePos = FindAdvancePositionAlongPath(unit, bestTarget, ctx);
-            if (advancePos.HasValue && advancePos.Value != unit.gridPosition)
+            // 推进候选：向最有价值敌人推进
+            MapUnit advanceTarget = SelectAdvanceTarget(unit, ctx);
+            if (advanceTarget != null)
             {
-                float hpPercent = GetHPPercent(unit);
-                float priority = Mathf.Clamp01(hpPercent * 0.6f + 0.2f);
-                pool.Add(new MoveTask(advancePos.Value, priority));
+                Vector3Int? advancePos = FindAdvancePositionAlongPath(unit, advanceTarget, ctx, out float pathProgress);
+                if (!advancePos.HasValue)
+                {
+                    // 兜底：A* 失败（被阻挡/终点不可达）时，选可达格中离最近敌人最近的
+                    advancePos = FindClosestReachableTileToEnemy(unit, ctx);
+                    pathProgress = 0.5f; // 保守估计
+                }
+
+                if (advancePos.HasValue && advancePos.Value != unit.gridPosition)
+                {
+                    float score = BattleValueEvaluator.RepositionValue(unit, advancePos.Value, pathProgress, ctx);
+                    pool.Add(new AIAction
+                    {
+                        Category = AICategory.Reposition,
+                        Score = score,
+                        TargetPos = advancePos.Value
+                    });
+                }
+            }
+
+            // 撤退候选：低血或高威胁时找更安全的落点
+            float hpPercent = GetHPPercent(unit);
+            float currentThreat = ctx.ThreatMap.GetScore(unit.gridPosition);
+            bool shouldRetreat = currentThreat >= Data.Config.AIConfig.dangerThreatThreshold
+                              || hpPercent < Data.Config.AIConfig.lowHPThreshold;
+            if (shouldRetreat)
+            {
+                Vector3Int? safePos = FindSafestReachableTile(unit, ctx, currentThreat);
+                if (safePos.HasValue && safePos.Value != unit.gridPosition)
+                {
+                    float score = BattleValueEvaluator.RepositionValue(unit, safePos.Value, 0f, ctx);
+                    if (score > 0f)
+                    {
+                        pool.Add(new AIAction
+                        {
+                            Category = AICategory.Reposition,
+                            Score = score,
+                            TargetPos = safePos.Value
+                        });
+                    }
+                }
             }
         }
 
         // ==============================================================
-        // 前压辅助方法
+        // 推进辅助
         // ==============================================================
 
         /// <summary>
         /// 综合评分选出最有价值的前压目标
-        /// score = strategicScore×0.4 + 距离因子×0.3 + 血量因子×0.3
+        /// score = 距离因子×distanceWeight + 血量因子×(1−distanceWeight)（越近、越残血越优先）
         /// </summary>
         private MapUnit SelectAdvanceTarget(MapUnit unit, AITaskContext ctx)
         {
             MapUnit best = null;
             float bestScore = float.MinValue;
 
-            List<MapUnit> aliveUnits = UnitManager.Instance.GetAllAliveUnit();
-            foreach (MapUnit enemy in aliveUnits)
+            float distanceWeight = Data.Config.AIConfig.advanceTargetDistanceWeight;
+
+            foreach (MapUnit enemy in ctx.Enemies)
             {
-                if (enemy == null || enemy == unit)
+                if (enemy == null || !enemy.IsAlive)
+                {
                     continue;
-                if (enemy.Faction == unit.Faction)
-                    continue;
-                if (!enemy.IsAlive)
-                    continue;
+                }
 
-                // 战略评分 (SharedTaskBoard 综合了 HP紧迫+威胁+职业+覆盖)
-                float strategic = 0.5f;
-                if (SharedTaskBoard.Instance != null)
-                    strategic = SharedTaskBoard.Instance.GetStrategicScore(enemy);
-
-                // 距离因子：曼哈顿粗排，越近分越高
                 int manhattan = Mathf.Abs(unit.gridPosition.x - enemy.gridPosition.x)
                               + Mathf.Abs(unit.gridPosition.z - enemy.gridPosition.z);
-                float distanceFactor = 1.0f - Mathf.Clamp01((float)manhattan / 20f);
+                float distanceFactor = 1.0f - Mathf.Clamp01((float)manhattan / Data.Config.AIConfig.advanceTargetDistanceNormalize);
+                float hpFactor = 1.0f - GetHPPercent(enemy);
 
-                // 血量因子：残血优先
-                float hpPercent = (float)enemy.Character.statSystem.currentHP
-                                / enemy.Character.statSystem.maxHP.getValue();
-                float hpFactor = 1.0f - hpPercent;
-
-                float score = strategic * 0.4f + distanceFactor * 0.3f + hpFactor * 0.3f;
+                float score = distanceFactor * distanceWeight + hpFactor * (1f - distanceWeight);
                 if (score > bestScore)
                 {
                     bestScore = score;
@@ -318,55 +213,198 @@ namespace GamePlay.AI
 
         /// <summary>
         /// A*寻路到目标（不限行动力），沿路径在移动力内选最佳落点
-        /// score = 路径进度×0.6 + 安全度×0.4
+        /// score = 路径进度×progressWeight + 安全度×(1−progressWeight)
         /// </summary>
-        private Vector3Int? FindAdvancePositionAlongPath(MapUnit unit, MapUnit target, AITaskContext ctx)
+        private Vector3Int? FindAdvancePositionAlongPath(MapUnit unit, MapUnit target, AITaskContext ctx, out float pathProgress)
         {
-            // A*寻路到目标——允许终点被目标占据（FindPathToOccupied 专为此设计）
+            pathProgress = 0f;
+
             List<Vector3Int> path = AStar.FindPathToOccupied(
                 unit.gridPosition, target.gridPosition,
                 MapManager.Instance.logicalGrid, unit.moveStats);
 
             if (path == null || path.Count == 0)
+            {
                 return null;
+            }
 
             Vector3Int? bestPos = null;
             float bestScore = float.MinValue;
             float accumulatedCost = 0f;
             Vector3Int lastPos = unit.gridPosition;
+
+            float progressWeight = Data.Config.AIConfig.advancePathProgressWeight;
+
             for (int i = 0; i < path.Count; i++)
             {
                 Vector3Int tile = path[i];
-
                 float stepCost = Mathf.Abs(tile.x - lastPos.x)
                                + Mathf.Abs(tile.z - lastPos.z)
                                + Mathf.Abs(tile.y - lastPos.y);
                 accumulatedCost += stepCost;
                 if (accumulatedCost > ctx.MoveRange)
+                {
                     break;
+                }
 
                 if (!ctx.ReachableTiles.Contains(tile))
                 {
-                    // 不可达的推进格直接排除（评分视为 0）：
-                    // ReachableTiles 已预计算一步可达集（含占用/高度/移动力约束），
-                    // 保证生成的 MoveTask 目标一定可达，不会在竞价时被 MoveTask.CalculateUtilityFor 的
-                    // ReachableTiles 门槛 SKIPPED，从而保住"前压"任务
                     lastPos = tile;
                     continue;
                 }
 
                 float progress = (float)(i + 1) / path.Count;
                 float threat = ctx.ThreatMap.GetScore(tile);
-                float safety = 1.0f - Mathf.Clamp01(threat / 50f);
+                float safety = 1.0f - Mathf.Clamp01(threat / Data.Config.AIConfig.threatNormalizeBase);
 
-                float score = progress * 0.6f + safety * 0.4f;
+                float score = progress * progressWeight + safety * (1f - progressWeight);
                 if (score > bestScore)
                 {
                     bestScore = score;
                     bestPos = tile;
+                    pathProgress = progress;
                 }
 
                 lastPos = tile;
+            }
+
+            return bestPos;
+        }
+
+        /// <summary>
+        /// 兜底推进落点：A* 失败时，在可达格中选离最近敌人曼哈顿距离更近的（纯走位逼近）。
+        /// 没有比当前位置更近的格子时返回 null。
+        /// </summary>
+        private Vector3Int? FindClosestReachableTileToEnemy(MapUnit unit, AITaskContext ctx)
+        {
+            int distNow = ManhattanToNearestEnemy(unit.gridPosition, ctx);
+            if (distNow == int.MaxValue)
+            {
+                return null;
+            }
+
+            Vector3Int? bestPos = null;
+            int bestDist = distNow;
+
+            foreach (Vector3Int tile in ctx.ReachableTiles)
+            {
+                if (tile == unit.gridPosition)
+                {
+                    continue;
+                }
+
+                MapUnit occupying = UnitManager.Instance.GetUnitAt(tile);
+                if (occupying != null)
+                {
+                    continue;
+                }
+
+                int d = ManhattanToNearestEnemy(tile, ctx);
+                if (d < bestDist)
+                {
+                    bestDist = d;
+                    bestPos = tile;
+                }
+            }
+
+            return bestPos;
+        }
+
+        /// <summary>
+        /// 到最近敌人的曼哈顿距离（无可达敌人时返回 int.MaxValue）
+        /// </summary>
+        private static int ManhattanToNearestEnemy(Vector3Int pos, AITaskContext ctx)
+        {
+            int best = int.MaxValue;
+            foreach (MapUnit e in ctx.Enemies)
+            {
+                if (e == null || !e.IsAlive)
+                {
+                    continue;
+                }
+                int d = Mathf.Abs(pos.x - e.gridPosition.x) + Mathf.Abs(pos.z - e.gridPosition.z);
+                if (d < best)
+                {
+                    best = d;
+                }
+            }
+            return best;
+        }
+
+        /// <summary>
+        /// 在可达格中找威胁最低的落点（安全改善达到阈值才返回）
+        /// </summary>
+        private Vector3Int? FindSafestReachableTile(MapUnit unit, AITaskContext ctx, float currentThreat)
+        {
+            Vector3Int? bestPos = null;
+            float bestThreat = currentThreat;
+
+            foreach (Vector3Int tile in ctx.ReachableTiles)
+            {
+                if (tile == unit.gridPosition)
+                {
+                    continue;
+                }
+
+                MapUnit occupying = UnitManager.Instance.GetUnitAt(tile);
+                if (occupying != null)
+                {
+                    continue;
+                }
+
+                float threat = ctx.ThreatMap.GetScore(tile);
+                if (threat < bestThreat)
+                {
+                    bestThreat = threat;
+                    bestPos = tile;
+                }
+            }
+
+            if (bestPos.HasValue
+                && bestThreat < currentThreat * Data.Config.AIConfig.threatImprovementRatio)
+            {
+                return bestPos;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// 在可达格中找威胁最低的施放位置；已在范围或够不着时返回 null
+        /// </summary>
+        private Vector3Int? FindBestCastPosition(MapUnit unit, SkillDataSO skill, MapUnit target, AITaskContext ctx)
+        {
+            Vector3Int? bestPos = null;
+            float bestThreat = float.MaxValue;
+
+            foreach (Vector3Int tile in ctx.ReachableTiles)
+            {
+                if (tile == unit.gridPosition)
+                {
+                    continue;
+                }
+
+                MapUnit occupying = UnitManager.Instance.GetUnitAt(tile);
+                if (occupying != null)
+                {
+                    continue;
+                }
+
+                if (!AttackRangeSystem.IsWithinCastDistance(tile, target.gridPosition, skill))
+                {
+                    continue;
+                }
+
+                if (!AttackRangeSystem.CanCastTo(tile, target.gridPosition, skill))
+                {
+                    continue;
+                }
+
+                float threat = ctx.ThreatMap.GetScore(tile);
+                if (threat < bestThreat)
+                {
+                    bestThreat = threat;
+                    bestPos = tile;
+                }
             }
 
             return bestPos;
@@ -378,132 +416,44 @@ namespace GamePlay.AI
 
         private float GetHPPercent(MapUnit unit)
         {
+            if (unit == null || unit.Character == null)
+            {
+                return 1f;
+            }
             return (float)unit.Character.statSystem.currentHP
                  / unit.Character.statSystem.maxHP.getValue();
         }
 
-        private List<MapUnit> GetAliveAllies(MapUnit unit)
+        private bool HasHealEffect(SkillDataSO skill)
         {
-            List<MapUnit> allies = new List<MapUnit>();
-            List<MapUnit> aliveUnits = UnitManager.Instance.GetAllAliveUnit();
-
-            foreach (MapUnit other in aliveUnits)
-            {
-                if (other == null || other == unit)
-                {
-                    continue;
-                }
-
-                if (other.Faction == unit.Faction)
-                {
-                    allies.Add(other);
-                }
-            }
-
-            return allies;
-        }
-
-        private bool IsUnitReachable(MapUnit unit, MapUnit target, AITaskContext ctx)
-        {
-            if (ctx.OffensiveSkills.Count == 0)
+            if (skill.Phases == null)
             {
                 return false;
             }
-
-            if (ctx.HasGlobalOffensiveSkill)
+            foreach (SkillPhase phase in skill.Phases)
             {
-                return true;
-            }
-
-            foreach (Vector3Int tile in ctx.ReachableTiles)
-            {
-                if (tile != unit.gridPosition)
+                if (phase.Effects == null)
                 {
-                    MapUnit occupying = UnitManager.Instance.GetUnitAt(tile);
-                    if (occupying != null)
-                    {
-                        continue;
-                    }
+                    continue;
                 }
-
-                // 快滤：对 Diamond/Line 用 Manhattan，对 Square 用 Chebyshev
-                int manhattanDist = Mathf.Abs(tile.x - target.gridPosition.x)
-                                  + Mathf.Abs(tile.z - target.gridPosition.z);
-                if (manhattanDist > ctx.MaxOffensiveCastRange)
+                foreach (SkillEffect effect in phase.Effects)
                 {
-                    int chebDist = Mathf.Max(Mathf.Abs(tile.x - target.gridPosition.x),
-                                             Mathf.Abs(tile.z - target.gridPosition.z));
-                    if (chebDist > ctx.MaxOffensiveSquareRange)
-                    {
-                        continue;
-                    }
-                }
-
-                foreach (SkillDataSO skill in ctx.OffensiveSkills)
-                {
-                    if (AttackRangeSystem.CanCastTo(tile, target.gridPosition, skill))
+                    if (effect.EffectType == EffectType.Heal)
                     {
                         return true;
                     }
                 }
             }
-
             return false;
         }
 
-        private bool IsTargetInSkillRange(MapUnit caster, SkillDataSO skill, MapUnit target, AITaskContext ctx)
-        {
-            // 对自己施法：永远在范围内，无需距离/移动判断
-            if (target == caster && CanTargetSelf(skill))
-            {
-                return true;
-            }
-
-            if (AttackRangeSystem.CanCastTo(caster.gridPosition, target.gridPosition, skill))
-            {
-                return true;
-            }
-
-            foreach (Vector3Int tile in ctx.ReachableTiles)
-            {
-                if (tile != caster.gridPosition)
-                {
-                    MapUnit occupying = UnitManager.Instance.GetUnitAt(tile);
-                    if (occupying != null)
-                    {
-                        continue;
-                    }
-                }
-
-                if (!AttackRangeSystem.IsWithinCastDistance(tile, target.gridPosition, skill))
-                {
-                    continue;
-                }
-
-                if (AttackRangeSystem.CanCastTo(tile, target.gridPosition, skill))
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        private bool IsSupportSkill(SkillDataSO skill)
-        {
-            return skill.IsSupportiveSkill();
-        }
-
-        private bool CanTargetSelf(SkillDataSO skill)
-        {
-            return skill.CanTargetSelf();
-        }
-
+        /// <summary>
+        /// 基于 AIBehavior / TargetType 确定技能的候选目标池
+        /// </summary>
         private List<MapUnit> GetValidTargetsForSkill(MapUnit unit, SkillDataSO skill)
         {
             List<MapUnit> targets = new List<MapUnit>();
 
-            // 基于 AIBehavior 标志确定候选目标池
             bool targetsEnemy = false;
             bool targetsAlly = false;
             bool targetsSelf = false;
@@ -512,36 +462,32 @@ namespace GamePlay.AI
             {
                 targetsEnemy = (skill.AIBehavior & (AISkillBehavior.Harm | AISkillBehavior.Debuff | AISkillBehavior.Control)) != 0;
                 targetsAlly = (skill.AIBehavior & (AISkillBehavior.Heal | AISkillBehavior.Buff)) != 0;
-                targetsSelf = targetsAlly || skill.TargetType == TargetType.Self;
+                targetsSelf = skill.TargetType == TargetType.Self
+                           || (skill.CanTargetSelf()
+                               && skill.TargetType != TargetType.Ally
+                               && skill.TargetType != TargetType.Teammates);
             }
             else
             {
-                // Auto 模式：保留旧版逻辑
                 targetsEnemy = skill.TargetType == TargetType.Enemy
                             || skill.TargetType == TargetType.Player
                             || skill.TargetType == TargetType.ExceptTeammates;
-
                 targetsAlly = skill.TargetType == TargetType.Ally
                            || skill.TargetType == TargetType.Teammates;
-
                 targetsSelf = skill.TargetType == TargetType.Self;
             }
 
             if (targetsSelf)
             {
                 targets.Add(unit);
-                return targets;
             }
 
-            List<MapUnit> aliveUnits = UnitManager.Instance.GetAllAliveUnit();
-
-            foreach (MapUnit other in aliveUnits)
+            foreach (MapUnit other in UnitManager.Instance.GetAllAliveUnit())
             {
-                if (other == null || other == unit)
+                if (other == null || other == unit || !other.IsAlive)
                 {
                     continue;
                 }
-
                 if (targetsEnemy && other.Faction != unit.Faction)
                 {
                     targets.Add(other);
@@ -553,84 +499,6 @@ namespace GamePlay.AI
             }
 
             return targets;
-        }
-
-        /// <summary>
-        /// 评估技能对目标的优先级 (0~1)
-        /// </summary>
-        private float EvaluateSkillPriority(SkillDataSO skill, MapUnit caster, MapUnit target)
-        {
-            float priority = 0.5f;
-
-            if (skill.Phases != null)
-            {
-                foreach (SkillPhase phase in skill.Phases)
-                {
-                    if (phase.AoEPattern != AoEPatternType.SingleTarget && phase.AoERadius > 0)
-                    {
-                        List<Vector3Int> aoeRange = AttackRangeSystem.GetAoERange3D(
-                            caster.gridPosition, target.gridPosition, phase);
-                        int aoeHits = 0;
-                        foreach (Vector3Int pos in aoeRange)
-                        {
-                            MapUnit u = UnitManager.Instance.GetUnitAt(pos);
-                            if (u != null && u.Faction != caster.Faction)
-                            {
-                                aoeHits++;
-                            }
-                        }
-
-                        if (aoeHits > 1)
-                        {
-                            priority += (aoeHits - 1) * Data.Config.AIConfig.aoeExtraHitBonus;
-                        }
-                        break;
-                    }
-                }
-            }
-
-            return Mathf.Clamp01(priority);
-        }
-
-        // ==============================================================
-        // 前压移动辅助方法
-        // ==============================================================
-
-        /// <summary>
-        /// 战场上是否有存活的敌人
-        /// </summary>
-        private bool HasLivingEnemy(MapUnit unit)
-        {
-            List<MapUnit> aliveUnits = UnitManager.Instance.GetAllAliveUnit();
-            foreach (MapUnit other in aliveUnits)
-            {
-                if (other == null || other == unit)
-                {
-                    continue;
-                }
-
-                if (other.Faction != unit.Faction)
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        private bool HasEnoughMPForSkill(MapUnit unit, SkillDataSO skill)
-        {
-            if (skill.Cost <= 0)
-            {
-                return true;
-            }
-
-            if (unit.Character == null)
-            {
-                return false;
-            }
-
-            return unit.Character.HasEnoughMP(skill.Cost);
         }
     }
 }

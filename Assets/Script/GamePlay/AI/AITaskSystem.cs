@@ -1,7 +1,6 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using GamePlay.AI.Tasks;
 using GamePlay.Units;
 using Managers;
 using Grid;
@@ -13,32 +12,35 @@ namespace GamePlay.AI
     /// AI 任务系统 — 主入口，MonoBehaviour 单例
     ///
     /// 回合流程:
-    ///   1. 重建威胁图 (复用现有逻辑)
-    ///   2. AIDirector 生成候选任务池
-    ///   3. TaskBidding 竞价选出最优任务
-    ///   4. 生成执行计划
-    ///   5. AITaskExecutor 执行计划
-    ///   6. 结束回合
+    ///   1. 等待威胁图重建完成
+    ///   2. 构建 AITaskContext（可达格 + 血池 + 前瞻机会预计算）
+    ///   3. AIDirector 生成候选行动池
+    ///   4. AIDecisionSelector 按类别偏好 + 容忍带选出最优行动
+    ///   5. 更新集火承诺
+    ///   6. ActionPlanBuilder 生成执行计划
+    ///   7. AITaskExecutor 执行计划
+    ///   8. 结束回合
     /// </summary>
     public class AITaskSystem : MonoBehaviour
     {
         public static AITaskSystem Instance { get; private set; }
 
         private AIDirector _director;
-        private TaskBidding _bidding;
+        private AIDecisionSelector _selector;
+        private ActionPlanBuilder _planBuilder;
         private AITaskExecutor _executor;
 
         void Awake()
         {
             Instance = this;
             _director = new AIDirector();
-            _bidding = new TaskBidding();
+            _selector = new AIDecisionSelector();
+            _planBuilder = new ActionPlanBuilder();
             _executor = new AITaskExecutor();
         }
 
         /// <summary>
         /// 启动敌方单位的 AI 回合
-        /// 替代原有的 EnemyAIManager.TakeControl()
         /// </summary>
         public void TakeControl(MapUnit unit)
         {
@@ -53,8 +55,7 @@ namespace GamePlay.AI
 
         private IEnumerator ExecuteTurnCoroutine(MapUnit unit)
         {
-            float tStart = Time.realtimeSinceStartup;
-            Debug.Log($"[AITaskSystem] {unit.name} 开始任务驱动 AI 回合");
+            Debug.Log($"[AITaskSystem] {unit.name} 开始 AI 回合");
 
             // ─── 0. 前置检查 ───
             if (unit == null || !unit.IsAlive)
@@ -65,164 +66,102 @@ namespace GamePlay.AI
             }
 
             // ─── 1. 等待威胁图重建完成 ───
-            // TurnManager 的事件已在玩家回合结束时启动后台增量重建（UniTask 分帧）
-            // 此处用 WaitUntil 保证重建完成，若动画窗口足够则 0 帧等待；超时则同步补完
-            float t1 = Time.realtimeSinceStartup;
-            int waitFrames = 0;
-            if (TacticalMapManager.Instance != null)
+            yield return WaitForThreatMapReady();
+
+            // ─── 2. 决策阶段（纯计算，无 yield，可安全 try/catch）───
+            // 防御性包裹：任何未预期异常都不得卡死回合（softlock），记日志后兜底待机。
+            AIAction best = null;
+            AIPlan plan = null;
+            try
             {
-                var tmm = TacticalMapManager.Instance;
+                // 预计算上下文
+                AITaskContext ctx = new AITaskContext(unit);
 
-                // 分支判断三种情况
-                if (tmm.TotalRebuildCount == 0)
+                // 生成候选行动池
+                List<AIAction> candidates = _director.GenerateCandidateActions(unit, ctx);
+
+                // 选择最优行动
+                best = _selector.Select(candidates);
+                if (best != null)
                 {
-                    // 后台从未启动（如战斗开始第一个就是敌人），走同步重建
-                    Debug.Log("[威胁图] 后台从未启动，同步重建");
-                    tmm.RebuildThreatMapSnapshot();
-                }
-                else if (!tmm.IsRebuildComplete)
-                {
-                    // 后台已启动但未完成 → 等待
-                    int entryBgDone = tmm.BackgroundProcessedCount;
-                    int entryTotal = tmm.TotalRebuildCount;
-                    Debug.Log($"[威胁图] 进入等待: 后台已处理 {entryBgDone}/{entryTotal}");
+                    Debug.Log($"[AITaskSystem] {unit.name} 选择: {best.Category} score={best.Score:F4}" +
+                              (best.HasSkill ? $" 技能={best.Skill.SkillName} 目标={best.TargetUnit.name}" : ""));
 
-                    float deadline = Time.realtimeSinceStartup + 0.5f;
-                    float tWaitStart = Time.realtimeSinceStartup;
-
-                    while (!tmm.IsRebuildComplete && Time.realtimeSinceStartup <= deadline)
+                    // 更新集火承诺
+                    if (SharedTaskBoard.Instance != null)
                     {
-                        yield return null;
-                        waitFrames++;
+                        SharedTaskBoard.Instance.UpdateUnitCommitments(unit, ExtractCommitTargets(best));
                     }
 
-                    float tWaitEnd = Time.realtimeSinceStartup;
-                    float tWaitMs = (tWaitEnd - tWaitStart) * 1000f;
-                    int afterBgDone = tmm.BackgroundProcessedCount;
-
-                    Debug.Log($"[威胁图] 等待结束: 等了 {waitFrames} 帧 ({tWaitMs:F1}ms), " +
-                              $"后台 {entryBgDone}→{afterBgDone}/{entryTotal}");
-
-                    // 同步补完剩余（等待结束后可能还差几个）
-                    float tCompleteStart = Time.realtimeSinceStartup;
-                    int beforeComplete = tmm.BackgroundProcessedCount;
-                    tmm.CompleteIncrementalRebuild();
-                    int afterComplete = tmm.BackgroundProcessedCount;
-                    float tCompleteMs = (Time.realtimeSinceStartup - tCompleteStart) * 1000f;
-
-                    if (afterComplete > beforeComplete)
-                    {
-                        Debug.Log($"[威胁图] 同步补完: {beforeComplete}→{afterComplete} ({tCompleteMs:F1}ms)");
-                    }
-                }
-                else
-                {
-                    int bgDone = tmm.BackgroundProcessedCount;
-                    int total = tmm.TotalRebuildCount;
-                    Debug.Log($"[威胁图] 后台已全部完成 ({bgDone}/{total}), 跳过 WaitUntil");
+                    // 生成执行计划
+                    plan = _planBuilder.Build(unit, best, ctx);
                 }
             }
-            float tRebuildThreat = (Time.realtimeSinceStartup - t1) * 1000f;
-
-            // ─── 1.5 预计算上下文（AStar 泛洪 + 威胁图引用，后续全阶段复用）───
-            float t1_5 = Time.realtimeSinceStartup;
-            AITaskContext ctx = new AITaskContext(unit);
-            float tContext = (Time.realtimeSinceStartup - t1_5) * 1000f;
-
-            //--新增  重建可打击版
-            if (SharedTaskBoard.Instance)
+            catch (System.Exception e)
             {
-                SharedTaskBoard.Instance.RoundStart();
-            }
-            else
-            {
-                Debug.LogError("task board is null");
+                Debug.LogError($"[AITaskSystem] {unit.name} AI 决策异常，已兜底待机: {e}");
+                best = null;
             }
 
-            // ─── 2. AIDirector 生成候选任务池 ───
-            float t2 = Time.realtimeSinceStartup;
-            List<AITask> taskPool = _director.GenerateCandidateTasks(unit, ctx);
-            float tGenerateTasks = (Time.realtimeSinceStartup - t2) * 1000f;
-            Debug.Log($"[AITaskSystem] 生成 {taskPool.Count} 个候选任务");
-
-            // ─── 3. 竞价：选择最优任务 ───
-            float t3 = Time.realtimeSinceStartup;
-            AITask bestTask = _bidding.BidForTask(unit, taskPool, ctx);
-            float tBidding = (Time.realtimeSinceStartup - t3) * 1000f;
-            if (bestTask == null)
+            // ─── 3. 执行阶段 ───
+            if (best == null || plan == null)
             {
-                Debug.LogWarning($"[AITaskSystem] {unit.name} 没有可选任务，兜底待机");
+                Debug.Log($"[AITaskSystem] {unit.name} 无可用行动，待机");
                 yield return new WaitForSeconds(Data.Config.AIConfig.planStepWaitSeconds);
-                TurnManager.Instance.EndCurrentUnitTurn();
-                yield break;
-            }
-
-            Debug.Log($"[AITaskSystem] {unit.name} 选择任务: {bestTask.TaskType} (BasePriority:{bestTask.BasePriority:F2})");
-
-            // ─── 4. 生成执行计划 ───
-            float t4 = Time.realtimeSinceStartup;
-            AIPlan plan = bestTask.GeneratePlan(unit, ctx);
-            float tGenPlan = (Time.realtimeSinceStartup - t4) * 1000f;
-            Debug.Log($"[AITaskSystem] 生成计划: {plan.Steps.Count} 步");
-
-            // ─── 4.5 更新承诺：选定任务时整体重建本单位的承诺列表 ───
-            // 只有会真正命中的任务（攻击/技能/支援）才承诺目标；移动/防御/待机不承诺
-            if (SharedTaskBoard.Instance != null)
-            {
-                SharedTaskBoard.Instance.UpdateUnitCommitments(unit, ExtractCommitTargets(bestTask));
             }
             else
             {
-                Debug.LogError("task board is null");
+                yield return _executor.ExecutePlan(unit, plan);
             }
 
-            // ─── 性能汇总 ───
-            float tTotalPreExec = (Time.realtimeSinceStartup - tStart) * 1000f;
-            Debug.Log($"[AITaskSystem·性能] ═══════════════════════════════════");
-            Debug.Log($"[AITaskSystem·性能]  威胁图总耗时: {tRebuildThreat:F1} ms (等待{waitFrames}帧)");
-            Debug.Log($"[AITaskSystem·性能]  预计算上下文: {tContext:F1} ms");
-            Debug.Log($"[AITaskSystem·性能]  生成任务池: {tGenerateTasks:F1} ms ({taskPool.Count}个)");
-            Debug.Log($"[AITaskSystem·性能]  任务竞价:   {tBidding:F1} ms");
-            Debug.Log($"[AITaskSystem·性能]  生成计划:   {tGenPlan:F1} ms");
-            Debug.Log($"[AITaskSystem·性能]  执行前总计: {tTotalPreExec:F1} ms");
-            Debug.Log($"[AITaskSystem·性能] ═══════════════════════════════════");
-
-            // ─── 5. 执行计划 ───
-            float t5 = Time.realtimeSinceStartup;
-            yield return _executor.ExecutePlan(unit, plan);
-            float tExecute = (Time.realtimeSinceStartup - t5) * 1000f;
-            float tTotal = (Time.realtimeSinceStartup - tStart) * 1000f;
-            Debug.Log($"[AITaskSystem·性能]  计划执行:   {tExecute:F1} ms");
-            if (tExecute > 3000f)
-            {
-                Debug.LogError($"[AITaskSystem·异常] {unit.name} 计划执行耗时 {tExecute:F0}ms！超过 3s 阈值。计划共 {plan.Steps.Count} 步");
-            }
-            Debug.Log($"[AITaskSystem·性能]  全部合计:   {tTotal:F1} ms");
-
-            // ─── 6. 结束回合 ───
+            // ─── 4. 结束回合 ───
             TurnManager.Instance.EndCurrentUnitTurn();
         }
 
         /// <summary>
-        /// 从选定的任务提取本单位的承诺目标列表。
-        /// Attack/Skill/Support 承诺其 TargetUnit；Move/Defend/Wait 返回 null（不承诺）。
+        /// 等待后台威胁图重建完成（未启动则同步重建，未完成则带超时等待）
         /// </summary>
-        private static List<MapUnit> ExtractCommitTargets(AITask bestTask)
+        private IEnumerator WaitForThreatMapReady()
         {
-            if (bestTask == null || bestTask.TargetUnit == null)
+            TacticalMapManager tmm = TacticalMapManager.Instance;
+            if (tmm == null)
+            {
+                yield break;
+            }
+
+            if (tmm.TotalRebuildCount == 0)
+            {
+                // 后台从未启动（如战斗开始第一个就是敌人），同步重建
+                Debug.Log("[威胁图] 后台从未启动，同步重建");
+                tmm.RebuildThreatMapSnapshot();
+            }
+            else if (!tmm.IsRebuildComplete)
+            {
+                float deadline = Time.realtimeSinceStartup + 0.5f;
+                while (!tmm.IsRebuildComplete && Time.realtimeSinceStartup <= deadline)
+                {
+                    yield return null;
+                }
+                tmm.CompleteIncrementalRebuild();
+            }
+        }
+
+        /// <summary>
+        /// 从选定行动提取集火承诺目标列表。
+        /// 进攻/斩杀行动承诺其目标；治疗/增益/走位/待机不承诺（避免集火衰减误伤）。
+        /// </summary>
+        private static List<MapUnit> ExtractCommitTargets(AIAction action)
+        {
+            if (action == null || action.TargetUnit == null)
             {
                 return null;
             }
 
-            switch (bestTask.TaskType)
+            if (action.Category == AICategory.Damage || action.Category == AICategory.Execute)
             {
-                case AITaskType.Attack:
-                case AITaskType.Skill:
-                case AITaskType.Support:
-                    return new List<MapUnit> { bestTask.TargetUnit };
-                default:
-                    return null;
+                return new List<MapUnit> { action.TargetUnit };
             }
+            return null;
         }
     }
 }

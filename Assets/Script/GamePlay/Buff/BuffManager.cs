@@ -4,6 +4,7 @@ using System.Reflection;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using GamePlay.Units;
+using Core.Data;
 using Lua;
 using XLua;
 
@@ -13,6 +14,7 @@ namespace GamePlay.Buff
     {
         private static Dictionary<string, BuffBase> _templateCache = new Dictionary<string, BuffBase>();
         private static Dictionary<string, Type> _reflectionCache = new Dictionary<string, Type>();
+        private static Dictionary<string, float> _aiValueCache = new Dictionary<string, float>();
 
         public static BuffBase CreateBuffFromID(string buffID, int stacks = 1)
         {
@@ -233,6 +235,42 @@ namespace GamePlay.Buff
         {
             _templateCache.Clear();
             _reflectionCache.Clear();
+            _aiValueCache.Clear();
+        }
+
+        /// <summary>
+        /// 获取 buff 的 AI 战术价值基准（每层，占血池比例）。
+        /// 按 buffID 缓存，供 AI 打分时只读模板的 AIValue，不实例化应用到单位。
+        /// </summary>
+        public static float GetBuffAIValue(string buffID)
+        {
+            if (string.IsNullOrEmpty(buffID))
+            {
+                return Data.Config.AIConfig.buffValueDefault;
+            }
+
+            string key = buffID.ToLower();
+            if (_aiValueCache.TryGetValue(key, out float cached))
+            {
+                return cached;
+            }
+
+            float value = Data.Config.AIConfig.buffValueDefault;
+            try
+            {
+                BuffBase buff = CreateBuffFromID(buffID, 1);
+                if (buff != null && buff.AIValue > 0f)
+                {
+                    value = buff.AIValue;
+                }
+            }
+            catch (Exception)
+            {
+                // 无法创建 buff（如 Lua 环境未就绪），用配置默认值兜底
+            }
+
+            _aiValueCache[key] = value;
+            return value;
         }
     }
 }
