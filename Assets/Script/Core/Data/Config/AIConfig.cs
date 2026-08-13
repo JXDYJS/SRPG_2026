@@ -60,6 +60,8 @@ namespace Core.Data
 
         // ── 推进目标选择 ──
         public readonly float advanceTargetDistanceNormalize = 20f; // 目标选择时距离因子归一化基准（曼哈顿距离）
+        public readonly float advanceTargetDistanceWeight = 0.5f;   // 前压目标评分：距离因子权重（另一半给残血）
+        public readonly float advancePathProgressWeight = 0.6f;     // 沿路径推进落点评分：路径进度权重（另一半给安全度）
 
         // ── 撤退 / 自保触发 ──
         public readonly float lowHPThreshold = 0.35f;          // HP 低于此比例考虑撤退

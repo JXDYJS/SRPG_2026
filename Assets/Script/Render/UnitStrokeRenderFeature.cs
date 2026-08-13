@@ -34,6 +34,8 @@ public class UnitStrokeRenderFeature : ScriptableRendererFeature
     {
         EnsureRuntimeAssets();
         m_ScriptablePass = new StrokePass(this);
+        // 依赖 GBufferRenderFeature 先执行（同为 BeforeRenderingPostProcessing，
+        // 顺序由渲染器资产 m_RendererFeatures 列表序决定，GBuffer 在前）。调序前先确认。
         m_ScriptablePass.renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing;
         Instance = this;
     }

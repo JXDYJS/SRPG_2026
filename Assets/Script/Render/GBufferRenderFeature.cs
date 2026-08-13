@@ -120,6 +120,8 @@ public class GBufferRenderFeature : ScriptableRendererFeature
     public override void Create()
     {
         m_ScriptablePass = new GBufferPass(settings);
+        // 与 UnitStrokeRenderFeature 同为 BeforeRenderingPostProcessing，执行顺序依赖渲染器资产
+        // m_RendererFeatures 的列表顺序（GBuffer 必须排在 UnitStroke 之前）。调整 feature 顺序前先确认此约束。
         m_ScriptablePass.renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing;
     }
 

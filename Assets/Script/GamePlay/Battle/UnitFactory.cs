@@ -3,6 +3,7 @@ using GamePlay.Units;
 using Character.instance;
 using Status.state;
 using Managers;
+using Utils;
 using Cysharp.Threading.Tasks;
 using UnityEngine.AddressableAssets;
 
@@ -38,7 +39,7 @@ namespace GamePlay.Battle
 
             GameObject unitObj = handle.Result;
             unitObj.SetActive(SetActive);
-            SetLayerRecursively(unitObj, "Unit");
+            Utils.Utils.SetLayerRecursively(unitObj, "Unit");
             MapUnit unit = unitObj.GetComponent<MapUnit>();
             
             if (unit == null)
@@ -84,19 +85,6 @@ namespace GamePlay.Battle
             UnitStrokeRenderFeature.RegisterUnit(unit);
 
             return unit;
-        }
-
-        /// <summary>
-        /// 递归设置整棵层级树的 layer（renderer 所在子物体也需要）
-        /// </summary>
-        private static void SetLayerRecursively(GameObject go, string layerName)
-        {
-            int layer = LayerMask.NameToLayer(layerName);
-            if (layer < 0) return;
-            foreach (Transform t in go.GetComponentsInChildren<Transform>(true))
-            {
-                t.gameObject.layer = layer;
-            }
         }
 
         /// <summary>

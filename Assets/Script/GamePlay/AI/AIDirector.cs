@@ -179,12 +179,14 @@ namespace GamePlay.AI
 
         /// <summary>
         /// 综合评分选出最有价值的前压目标
-        /// score = 距离因子×0.5 + 血量因子×0.5（越近、越残血越优先）
+        /// score = 距离因子×distanceWeight + 血量因子×(1−distanceWeight)（越近、越残血越优先）
         /// </summary>
         private MapUnit SelectAdvanceTarget(MapUnit unit, AITaskContext ctx)
         {
             MapUnit best = null;
             float bestScore = float.MinValue;
+
+            float distanceWeight = Data.Config.AIConfig.advanceTargetDistanceWeight;
 
             foreach (MapUnit enemy in ctx.Enemies)
             {
@@ -198,7 +200,7 @@ namespace GamePlay.AI
                 float distanceFactor = 1.0f - Mathf.Clamp01((float)manhattan / Data.Config.AIConfig.advanceTargetDistanceNormalize);
                 float hpFactor = 1.0f - GetHPPercent(enemy);
 
-                float score = distanceFactor * 0.5f + hpFactor * 0.5f;
+                float score = distanceFactor * distanceWeight + hpFactor * (1f - distanceWeight);
                 if (score > bestScore)
                 {
                     bestScore = score;
@@ -211,7 +213,7 @@ namespace GamePlay.AI
 
         /// <summary>
         /// A*寻路到目标（不限行动力），沿路径在移动力内选最佳落点
-        /// score = 路径进度×0.6 + 安全度×0.4
+        /// score = 路径进度×progressWeight + 安全度×(1−progressWeight)
         /// </summary>
         private Vector3Int? FindAdvancePositionAlongPath(MapUnit unit, MapUnit target, AITaskContext ctx, out float pathProgress)
         {
@@ -230,6 +232,8 @@ namespace GamePlay.AI
             float bestScore = float.MinValue;
             float accumulatedCost = 0f;
             Vector3Int lastPos = unit.gridPosition;
+
+            float progressWeight = Data.Config.AIConfig.advancePathProgressWeight;
 
             for (int i = 0; i < path.Count; i++)
             {
@@ -253,7 +257,7 @@ namespace GamePlay.AI
                 float threat = ctx.ThreatMap.GetScore(tile);
                 float safety = 1.0f - Mathf.Clamp01(threat / Data.Config.AIConfig.threatNormalizeBase);
 
-                float score = progress * 0.6f + safety * 0.4f;
+                float score = progress * progressWeight + safety * (1f - progressWeight);
                 if (score > bestScore)
                 {
                     bestScore = score;

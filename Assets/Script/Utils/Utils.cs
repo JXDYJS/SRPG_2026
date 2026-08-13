@@ -45,6 +45,21 @@ namespace Utils
         }
 
         /// <summary>
+        /// 递归设置整棵层级树的 layer（renderer 所在子物体也需要）。
+        /// layerName 无效时静默返回。
+        /// </summary>
+        public static void SetLayerRecursively(GameObject go, string layerName)
+        {
+            if (go == null) return;
+            int layer = LayerMask.NameToLayer(layerName);
+            if (layer < 0) return;
+            foreach (Transform t in go.GetComponentsInChildren<Transform>(true))
+            {
+                t.gameObject.layer = layer;
+            }
+        }
+
+        /// <summary>
         /// 按类名解析当前程序集内的公开类型（支持短类名与全限定名）
         /// </summary>
         public static Type ResolveType(string className)
