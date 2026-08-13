@@ -30,11 +30,9 @@ namespace GamePlay.Buff
             BuffBase instance = TryFromAddressables(key, buffID, stacks);
             if (instance != null) return instance;
 
-            // 2. Fallback to reflection (new code-only buffs: zombie_skin, precise_shot, etc.)
             instance = TryFromReflection(key, buffID, stacks);
             if (instance != null) return instance;
 
-            // 3. Fallback to Lua (runtime-extensible buffs: battle_cry, fortitude, etc.)
             instance = TryFromLua(buffID, stacks);
             if (instance != null) return instance;
 
@@ -71,7 +69,6 @@ namespace GamePlay.Buff
                 }
                 catch (InvalidKeyException)
                 {
-                    // key 不在 Addressables 中，交给反射/Lua 兜底解析
                     return null;
                 }
             }
@@ -83,26 +80,23 @@ namespace GamePlay.Buff
             return instance;
         }
 
-        // 预检 key 是否注册在 Addressables 中，避免 LoadAssetAsync 对缺失 key
-        // 内部直接 Debug.LogError(InvalidKeyException) 造成控制台噪音。
-        // 只有纯 Lua/反射 Buff（如 precise_shot、fortitude、power 等）会走到这一步。
+        // Pre-check avoids Addressables logging InvalidKeyException noise for missing keys.
         private static bool IsBuffKeyRegistered(string key)
         {
             var locators = Addressables.ResourceLocators;
-            if (locators == null) return true; // 极端情况，保守走原逻辑
+            if (locators == null) return true; // Conservative fallback if locators unavailable
 
             bool hasLocator = false;
             foreach (var locator in locators)
             {
-                hasLocator = true; // 至少一个 locator → Addressables 已初始化
+                hasLocator = true;
                 if (locator.Locate(key, typeof(BuffBase), out var locations))
                 {
                     return locations != null && locations.Count > 0;
                 }
             }
 
-            // locators 为空（Addressables 尚未初始化）时保守返回 true，
-            // 让 LoadAssetAsync 自动初始化并配合 try-catch 兜底。
+            // Addressables uninitialized: return true and let LoadAssetAsync initialize within the try-catch.
             return !hasLocator;
         }
 
@@ -152,7 +146,7 @@ namespace GamePlay.Buff
 
             if (!InheritsFromBuffBase(cls)) return null;
 
-            // 通过 __call 元方法创建实例: cls(stacks)
+            // Create instance via the __call metamethod: cls(stacks)
             object[] ret2;
             try
             {
@@ -238,10 +232,7 @@ namespace GamePlay.Buff
             _aiValueCache.Clear();
         }
 
-        /// <summary>
-        /// 获取 buff 的 AI 战术价值基准（每层，占血池比例）。
-        /// 按 buffID 缓存，供 AI 打分时只读模板的 AIValue，不实例化应用到单位。
-        /// </summary>
+        /// <summary>Per-stack AI tactical value of a buff, cached by buffID.</summary>
         public static float GetBuffAIValue(string buffID)
         {
             if (string.IsNullOrEmpty(buffID))
@@ -266,7 +257,7 @@ namespace GamePlay.Buff
             }
             catch (Exception)
             {
-                // 无法创建 buff（如 Lua 环境未就绪），用配置默认值兜底
+                // Fall back to default when buff creation fails (e.g. Lua not ready).
             }
 
             _aiValueCache[key] = value;

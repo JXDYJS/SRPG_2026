@@ -12,7 +12,7 @@ namespace GamePlay.Units
         public float dampTime = 0.1f; 
 
         private static readonly int SpeedHash = Animator.StringToHash("Speed");
-        private static readonly int AttackHash = Animator.StringToHash("Attack"); // TODO
+        private static readonly int AttackHash = Animator.StringToHash("Attack");
         public float currentSpeed = 0f;
         
         private Vector3 _lastPosition;

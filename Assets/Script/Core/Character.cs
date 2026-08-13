@@ -62,12 +62,7 @@ namespace Character
                 statSystem = new StatSystem(characterData);
                 SkillInventory = new SkillInventory();
             }
-            /// <summary>
-            /// 现在characterData自己拿着skillConfig引用  skillConfig可以直接为null
-            /// </summary>
-            /// <param name="skillConfig"></param>
-            /// <param name="currentLevel"></param>
-            /// <returns></returns>
+            /// <summary>Uses characterData.skillConfig when present, falling back to the passed config.</summary>
             public async UniTask InitializeSkillsAsync(CharacterSkillConfig skillConfig = null, int currentLevel = 0)
             {
                 if(characterData.skillConfig != null) await SkillInventory.InitializeAsync(characterData.skillConfig,currentLevel);

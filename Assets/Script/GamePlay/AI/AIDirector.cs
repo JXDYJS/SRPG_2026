@@ -10,10 +10,7 @@ using Global;
 
 namespace GamePlay.AI
 {
-    /// <summary>
-    /// AI 导演 — 扫描战场态势，为当前行动单位生成候选行动池（统一 AIAction）。
-    /// 生成：直接动作（进攻/治疗/增益，含斩杀判定）+ 走位动作（推进/撤退）+ 待机兜底。
-    /// </summary>
+    /// <summary>Scans the battlefield and generates candidate AI actions for the current unit.</summary>
     public class AIDirector
     {
         public List<AIAction> GenerateCandidateActions(MapUnit unit, AITaskContext ctx)
@@ -28,9 +25,6 @@ namespace GamePlay.AI
             return pool;
         }
 
-        // ==============================================================
-        // 直接动作生成
-        // ==============================================================
         private void GenerateDirectActions(MapUnit unit, AITaskContext ctx, List<AIAction> pool)
         {
             if (unit == null || unit.Character == null)
@@ -58,7 +52,6 @@ namespace GamePlay.AI
 
                 bool offensive = skill.IsOffensiveSkill();
 
-                // 嘲讽约束（仅进攻技能收窄目标池）——提升到目标循环外，避免重复扫描
                 MapUnit forcedTarget = offensive ? TauntSystem.GetForcedTargetForSkill(unit, skill, ctx) : null;
 
                 List<MapUnit> targets = GetValidTargetsForSkill(unit, skill);
@@ -75,7 +68,7 @@ namespace GamePlay.AI
                         continue;
                     }
 
-                    // 治疗阈值（仅非进攻技能）：满血不治疗
+                    // Skip healing when target is above the heal threshold
                     if (!offensive && HasHealEffect(skill))
                     {
                         if (GetHPPercent(target) > Data.Config.AIConfig.healThreshold)
@@ -84,7 +77,6 @@ namespace GamePlay.AI
                         }
                     }
 
-                    // 施放位置
                     bool inRange = AttackRangeSystem.CanCastTo(unit.gridPosition, target.gridPosition, skill);
                     Vector3Int? castPos = null;
                     if (!inRange)
@@ -92,7 +84,7 @@ namespace GamePlay.AI
                         castPos = FindBestCastPosition(unit, skill, target, ctx);
                         if (castPos == null)
                         {
-                            continue; // 移动后仍够不着
+                            continue;
                         }
                     }
 
@@ -120,21 +112,17 @@ namespace GamePlay.AI
             }
         }
 
-        // ==============================================================
-        // 走位动作生成（推进 / 撤退）
-        // ==============================================================
         private void GenerateRepositionActions(MapUnit unit, AITaskContext ctx, List<AIAction> pool)
         {
-            // 推进候选：向最有价值敌人推进
             MapUnit advanceTarget = SelectAdvanceTarget(unit, ctx);
             if (advanceTarget != null)
             {
                 Vector3Int? advancePos = FindAdvancePositionAlongPath(unit, advanceTarget, ctx, out float pathProgress);
                 if (!advancePos.HasValue)
                 {
-                    // 兜底：A* 失败（被阻挡/终点不可达）时，选可达格中离最近敌人最近的
+                    // Fallback: A* blocked; pick the reachable tile closest to the nearest enemy
                     advancePos = FindClosestReachableTileToEnemy(unit, ctx);
-                    pathProgress = 0.5f; // 保守估计
+                    pathProgress = 0.5f;
                 }
 
                 if (advancePos.HasValue && advancePos.Value != unit.gridPosition)
@@ -149,7 +137,7 @@ namespace GamePlay.AI
                 }
             }
 
-            // 撤退候选：低血或高威胁时找更安全的落点
+            // Retreat when low HP or under high threat
             float hpPercent = GetHPPercent(unit);
             float currentThreat = ctx.ThreatMap.GetScore(unit.gridPosition);
             bool shouldRetreat = currentThreat >= Data.Config.AIConfig.dangerThreatThreshold
@@ -173,14 +161,7 @@ namespace GamePlay.AI
             }
         }
 
-        // ==============================================================
-        // 推进辅助
-        // ==============================================================
-
-        /// <summary>
-        /// 综合评分选出最有价值的前压目标
-        /// score = 距离因子×distanceWeight + 血量因子×(1−distanceWeight)（越近、越残血越优先）
-        /// </summary>
+        /// <summary>Picks the best advance target by distance and HP scoring.</summary>
         private MapUnit SelectAdvanceTarget(MapUnit unit, AITaskContext ctx)
         {
             MapUnit best = null;
@@ -211,10 +192,7 @@ namespace GamePlay.AI
             return best;
         }
 
-        /// <summary>
-        /// A*寻路到目标（不限行动力），沿路径在移动力内选最佳落点
-        /// score = 路径进度×progressWeight + 安全度×(1−progressWeight)
-        /// </summary>
+        /// <summary>Paths to the target and picks the best in-move-range position along the way.</summary>
         private Vector3Int? FindAdvancePositionAlongPath(MapUnit unit, MapUnit target, AITaskContext ctx, out float pathProgress)
         {
             pathProgress = 0f;
@@ -271,10 +249,7 @@ namespace GamePlay.AI
             return bestPos;
         }
 
-        /// <summary>
-        /// 兜底推进落点：A* 失败时，在可达格中选离最近敌人曼哈顿距离更近的（纯走位逼近）。
-        /// 没有比当前位置更近的格子时返回 null。
-        /// </summary>
+        /// <summary>Fallback advance tile closest to the nearest enemy when A* fails; null if none closer.</summary>
         private Vector3Int? FindClosestReachableTileToEnemy(MapUnit unit, AITaskContext ctx)
         {
             int distNow = ManhattanToNearestEnemy(unit.gridPosition, ctx);
@@ -310,9 +285,7 @@ namespace GamePlay.AI
             return bestPos;
         }
 
-        /// <summary>
-        /// 到最近敌人的曼哈顿距离（无可达敌人时返回 int.MaxValue）
-        /// </summary>
+        /// <summary>Manhattan distance to the nearest enemy, or int.MaxValue if none.</summary>
         private static int ManhattanToNearestEnemy(Vector3Int pos, AITaskContext ctx)
         {
             int best = int.MaxValue;
@@ -331,9 +304,7 @@ namespace GamePlay.AI
             return best;
         }
 
-        /// <summary>
-        /// 在可达格中找威胁最低的落点（安全改善达到阈值才返回）
-        /// </summary>
+        /// <summary>Finds the lowest-threat reachable tile, requiring a meaningful improvement.</summary>
         private Vector3Int? FindSafestReachableTile(MapUnit unit, AITaskContext ctx, float currentThreat)
         {
             Vector3Int? bestPos = null;
@@ -368,9 +339,7 @@ namespace GamePlay.AI
             return null;
         }
 
-        /// <summary>
-        /// 在可达格中找威胁最低的施放位置；已在范围或够不着时返回 null
-        /// </summary>
+        /// <summary>Lowest-threat cast position in range; null if already in range or unreachable.</summary>
         private Vector3Int? FindBestCastPosition(MapUnit unit, SkillDataSO skill, MapUnit target, AITaskContext ctx)
         {
             Vector3Int? bestPos = null;
@@ -410,10 +379,6 @@ namespace GamePlay.AI
             return bestPos;
         }
 
-        // ==============================================================
-        // 辅助方法
-        // ==============================================================
-
         private float GetHPPercent(MapUnit unit)
         {
             if (unit == null || unit.Character == null)
@@ -447,9 +412,7 @@ namespace GamePlay.AI
             return false;
         }
 
-        /// <summary>
-        /// 基于 AIBehavior / TargetType 确定技能的候选目标池
-        /// </summary>
+        /// <summary>Determines the candidate target pool based on AI behavior and target type.</summary>
         private List<MapUnit> GetValidTargetsForSkill(MapUnit unit, SkillDataSO skill)
         {
             List<MapUnit> targets = new List<MapUnit>();

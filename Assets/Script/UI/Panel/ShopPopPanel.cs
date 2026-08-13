@@ -38,7 +38,7 @@ namespace UI.Panel
             {
                 return;
             }
-            // 统一走 RunManager：扣款→保存→加入遗物收藏（含钱袋特例、失败退款）
+            // Route purchase through RunManager (deduct, save, add relic; refund on failure).
             if (RunManager.Instance.PurchaseItem(selectItem.SlotData.itemId, selectItem.SlotData.price))
             {
                 selectItem.isLock = true;
@@ -47,7 +47,7 @@ namespace UI.Panel
 
         private void OnExitClick()
         {
-            // 关店 → 重开地图 → 锁定商店节点并解锁下一层连接
+            // Close shop, reopen map, lock the shop node and unlock the next layer.
             Utils.Utils.FinishNode<ShopPopPanel>();
         }
 
@@ -66,7 +66,7 @@ namespace UI.Panel
             }
         }
 
-        /// <summary>清空上次打开的商品槽位，避免缓存面板重复累加</summary>
+        /// <summary>Clear slots from the last opening so a cached panel doesn't accumulate.</summary>
         private void ClearItems()
         {
             for(int i = Content.childCount-1;i >= 0; i--)

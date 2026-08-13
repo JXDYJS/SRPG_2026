@@ -3,12 +3,7 @@ using GamePlay.Relics;
 
 namespace UI.Item
 {
-    /// <summary>
-    /// RelicAdapter — 遗物适配器
-    ///
-    /// 遗物展示数据以配表 RelicConfigs 为准，运行时实例只提供 ID 定位配表行。
-    /// 商店等无需运行时实例的场景可直接通过 ItemView.ResolveConfig(itemId) 出描述。
-    /// </summary>
+    /// <summary>Adapts relics to item descriptors using RelicConfigs data.</summary>
     public class RelicAdapter : ItemAdapter<RelicBase>
     {
         public override IItemDescriptor Adapt(RelicBase relic, SlotContext ctx)

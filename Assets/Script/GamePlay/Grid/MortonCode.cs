@@ -2,11 +2,7 @@ using UnityEngine;
 
 namespace GamePlay.Grid
 {
-    /// <summary>
-    /// Z-order 曲线（Morton 编码）三维坐标编码器
-    /// 将 (x,y,z) 坐标交错编码为一个 64-bit 整数，
-    /// 保证空间局部性——相邻点在 Morton 编码上也相近
-    /// </summary>
+    /// <summary>Z-order (Morton) encoder for 3D coordinates, preserving spatial locality.</summary>
     public struct MortonCode
     {
         public readonly int BitsPerDim;
@@ -45,9 +41,6 @@ namespace GamePlay.Grid
             MaxCode = (1L << TotalBits) - 1L;
         }
 
-        /// <summary>
-        /// 检查坐标是否在编码器覆盖范围内
-        /// </summary>
         public bool Contains(int x, int y, int z)
         {
             return x >= _minX && x <= _maxX
@@ -55,9 +48,7 @@ namespace GamePlay.Grid
                 && z >= _minZ && z <= _maxZ;
         }
 
-        /// <summary>
-        /// 将三维坐标编码为 Morton 码（调用前请确保 Contains 返回 true）
-        /// </summary>
+        /// <summary>Encodes 3D coords to Morton code (call Contains first).</summary>
         public long Encode(int x, int y, int z)
         {
             ulong ux = (ulong)(x - _offsetX);
@@ -74,9 +65,6 @@ namespace GamePlay.Grid
             return code;
         }
 
-        /// <summary>
-        /// 将 Morton 码解码回三维坐标
-        /// </summary>
         public void Decode(long code, out int x, out int y, out int z)
         {
             ulong ux = 0, uy = 0, uz = 0;

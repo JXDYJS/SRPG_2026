@@ -84,7 +84,6 @@ namespace UI.Slot
                 }
                 else if (node is ShopNode shopNode)
                 {
-                    // 参照战斗模式：打开商店面板并传入商品数据
                     var shop = UIManager.Instance.OpenPanel<ShopPopPanel>(null, UILayer.Popup);
                     if (shop != null)
                     {
@@ -97,7 +96,6 @@ namespace UI.Slot
                 }
                 node._onEnterNode.Invoke();
 
-                // 进入节点后记录地图进度（玩家位置 + 该节点锁定状态），供续档恢复
                 if (win != null)
                 {
                     win.SaveCurrentProgress();
@@ -131,7 +129,6 @@ namespace UI.Slot
         }
         public void updateMask(bool isLock)
         {
-            //Debug.LogError($"node Layer{node.col} node row{node.row} isLock{node.isLock}");
             if (isLock)
             {
                 button.interactable = false;

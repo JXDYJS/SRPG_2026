@@ -15,12 +15,7 @@ namespace UI.Slot
 
         public event Action<MapNodeLayer> OnRecycle;
 
-        // 本层为节点订阅的 _onEnterNode 处理。
-        // 节点对象是共享/持久化的（Data.Persistent），匿名闭包无法 -=，必须保存引用，
-        // 在重新 Init（覆盖旧订阅）或销毁（OnDestroy）时统一取消，防止闭包在节点上累积。
-        // 注意：不能在 OnDisable 取消 —— ClosePanel 会 SetActive(false) 整个面板，触发各层的
-        // OnDisable，而 MapNodeSlot 是在关面板之后才 Invoke _onEnterNode，若此时取消订阅，
-        // “进入节点锁定同层其他节点” 的闭包会全部失效。
+        // Node handlers are persistent; keep references so closures can be unsubscribed on re-init or destroy.
         private readonly Dictionary<BaseNode, Action> _onEnterSubscriptions = new();
 
         private void OnDisable()
@@ -49,7 +44,6 @@ namespace UI.Slot
                 Debug.LogError("MaxNodeCount != nodes.Length!");
                 return;
             }
-            // 防御：同一层实例未经过 Disable 被再次 Init 时，先清掉旧的订阅
             UnsubscribeOnEnter();
             nodeSlots.Clear();
             for(int i = 0; i < MaxNodeCount; i++)

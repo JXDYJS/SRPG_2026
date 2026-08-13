@@ -9,10 +9,7 @@ using Global;
 
 namespace GamePlay.AI
 {
-    /// <summary>
-    /// AI 回合上下文 — 单次 AI 回合内复用的预计算数据。
-    /// 避免 AStar 泛洪、威胁图查询、TeamHP 统计等重复计算。
-    /// </summary>
+    /// <summary>Precomputed data reused within a single AI turn (reachability, threats, team HP).</summary>
     public class AITaskContext
     {
         public readonly MapUnit Unit;
@@ -21,16 +18,14 @@ namespace GamePlay.AI
         public readonly int MoveRange;
         public readonly UnitMoveStats MoveStats;
 
-        // 血池统计（统一货币的分母）
+        // Team HP pools (denominator of the unified value currency)
         public readonly float EnemyTeamHP;
         public readonly float AllyTeamHP;
         public readonly float AvgUnitHP;
 
-        // 阵营单位列表（构造时缓存）
         public readonly List<MapUnit> Enemies;
         public readonly List<MapUnit> Allies;
 
-        // 进攻技能预计算（快速过滤用）
         public readonly List<SkillDataSO> OffensiveSkills;
         public readonly int MaxOffensiveCastRange;
         public readonly int MaxOffensiveSquareRange;
@@ -59,12 +54,10 @@ namespace GamePlay.AI
                 else Enemies.Add(other);
             }
 
-            // 血池统计
             EnemyTeamHP = ComputeTeamHP(Enemies);
             AllyTeamHP = ComputeTeamHP(Allies);
             AvgUnitHP = ComputeAvgHP(allAlive);
 
-            // 进攻技能预计算
             OffensiveSkills = new List<SkillDataSO>();
             MaxOffensiveCastRange = 0;
             MaxOffensiveSquareRange = 0;
@@ -91,10 +84,7 @@ namespace GamePlay.AI
             OffensiveSkills.Sort((a, b) => b.CastMaxRange.CompareTo(a.CastMaxRange));
         }
 
-        /// <summary>
-        /// 从指定位置出发，下一回合能打出的最大直接伤害价值（前瞻，走位评分用）。
-        /// 结果按落点缓存，避免重复扫描。
-        /// </summary>
+        /// <summary>Max direct damage value castable from a position next turn (cached per position).</summary>
         public float GetOpportunityAt(Vector3Int pos)
         {
             if (_opportunityCache.TryGetValue(pos, out float cached))
@@ -121,7 +111,7 @@ namespace GamePlay.AI
 
         private bool CanCastFrom(Vector3Int pos, MapUnit target, SkillDataSO skill)
         {
-            // 快速距离预滤：曼哈顿与切比雪夫均超出则必然不可达
+            // Early reject when both Manhattan and Chebyshev distances exceed range
             int manhattan = Mathf.Abs(pos.x - target.gridPosition.x)
                           + Mathf.Abs(pos.z - target.gridPosition.z);
             int chebyshev = Mathf.Max(Mathf.Abs(pos.x - target.gridPosition.x),

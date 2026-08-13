@@ -9,19 +9,7 @@ using UI.Item;
 
 namespace UI.Tooltip
 {
-    /// <summary>
-    /// TooltipWindow — 可变弹窗（横向列，列内可变卡片，卡片 = title + desc）
-    ///
-    /// 以 BaseUIPanel 接入 UIManager（UIPanelResource 约定，经 OpenPanel 挂到 Topmost 层）。
-    /// 打开方式：OpenPanel&lt;TooltipWindow&gt;(TooltipData)，TooltipData 支持
-    ///   - 传 id：内部 ItemView.ResolveByID 解析出主描述
-    ///   - 直接传 IItemDescriptor（SimpleSlot 悬停等已有描述的场景）
-    ///
-    /// 列构建规则（BFS 引用扩散）：
-    ///   第 1 列 = 主卡；第 n+1 列 = 第 n 列卡片 desc 中出现的 {引用id}，
-    ///   全局去重（每个 id 只在最早出现的列渲染一次），深度有上限 _maxDepth 兜底防环。
-    /// 生命周期：OnOpen 重建内容 + 订阅各卡 Changed（层数等实时刷新），OnClose 退订 + 清空。
-    /// </summary>
+    /// <summary>Tooltip window: columns of cards built via BFS reference expansion.</summary>
     [UIPanelResource("Assets/UI/Tooltip/TooltipWindow.prefab")]
     public class TooltipWindow : BaseUIPanel
     {
@@ -37,11 +25,10 @@ namespace UI.Tooltip
         private readonly List<Action> _unsubscribers = new List<Action>();
         private Dictionary<string, string> _refNames;
 
-        // 窗口尺寸缓存：内容只在 BuildContent/实时刷新时变化（彼时已 ForceUpdateCanvases），
-        // 鼠标高频移动无需每帧重建 Canvas，直接复用该尺寸即可。
+        // Cached window size, reused on high-frequency mouse moves to avoid Canvas rebuilds.
         private Vector2 _cachedSize;
 
-        /// <summary>打开面板时传入的数据：id 与 desc 二选一，位置必填。</summary>
+        /// <summary>Panel-open payload: either id or desc, plus a screen position.</summary>
         public class TooltipData
         {
             public string id;
@@ -69,12 +56,11 @@ namespace UI.Tooltip
         public override void OnInit()
         {
             base.OnInit();
-            // 提示窗不拦截下方槽位的点击/悬停
+            // Don't block clicks/hovers on slots beneath the tooltip.
             if (_canvasGroup != null)
             {
                 _canvasGroup.blocksRaycasts = false;
             }
-            // 未显式指定 Content 时以自身（HorizontalLayoutGroup 容器）作为列容器
             if (Content == null)
             {
                 Content = transform;
@@ -101,10 +87,6 @@ namespace UI.Tooltip
             }
         }
 
-        /// <summary>
-        /// 异步编排打开流程：先让 Canvas 自然更新一帧使 TMP 文本度量就绪，
-        /// 同步收敛布局后用最终尺寸定位，最后淡入 —— 确保首帧位置正确且零闪烁。
-        /// </summary>
         private async UniTask OpenAsync(IItemDescriptor desc, Vector2 screenPosition)
         {
             await BuildContent(desc);
@@ -118,7 +100,6 @@ namespace UI.Tooltip
             base.OnClose();
         }
 
-        // ==================== 内容构建 ====================
 
         private async UniTask BuildContent(IItemDescriptor main)
         {
@@ -134,16 +115,11 @@ namespace UI.Tooltip
             {
                 CreateColumn(column);
             }
-            // 让出 1 帧：TMP 文本度量在 Canvas 自然更新后才真正就绪，
-            // 同帧内 ForceMeshUpdate 拿到的 preferred 值仍不准确。
+            // Wait a frame so TMP metrics are ready after a canvas update.
             await UniTask.NextFrame();
             RefreshLayout();
         }
 
-        /// <summary>
-        /// BFS 分层构建列：第 n 列的引用 id 全部去重后进入第 n+1 列。
-        /// 同时收集 id→显示名 供 desc 富文本高亮。
-        /// </summary>
         private List<List<IItemDescriptor>> BuildColumns(IItemDescriptor main)
         {
             var columns = new List<List<IItemDescriptor>>();
@@ -162,7 +138,7 @@ namespace UI.Tooltip
                     foreach (DescMarkup.Segment seg in segments)
                     {
                         if (seg.Kind != DescMarkup.SegmentKind.Reference) continue;
-                        if (!seen.Add(seg.Text)) continue; // 全局去重：一个 id 只在最早出现处渲染一次
+                        if (!seen.Add(seg.Text)) continue;
 
                         IItemDescriptor refDesc = ItemView.ResolveByID(seg.Text);
                         if (refDesc == null)
@@ -184,7 +160,6 @@ namespace UI.Tooltip
         {
             GameObject colGo = Instantiate(TooltipColPrefab, Content);
             Transform colTransform = colGo.transform;
-            // 清掉列 prefab 自带的模板卡；运行时新实例用 DestroyImmediate 立即移除，避免空卡闪帧
             for (int i = colTransform.childCount - 1; i >= 0; i--)
             {
                 DestroyImmediate(colTransform.GetChild(i).gameObject);
@@ -194,7 +169,6 @@ namespace UI.Tooltip
             {
                 GameObject cardGo = Instantiate(TooltipPrefab, colTransform);
                 SetCardText(cardGo, desc, _refNames);
-                // 订阅源变化（层数等）实时刷新卡片
                 Action refresh = () =>
                 {
                     SetCardText(cardGo, desc, _refNames);
@@ -205,10 +179,6 @@ namespace UI.Tooltip
             }
         }
 
-        /// <summary>
-        /// 设置单张卡片的 Title/Desc 文本（卡片结构约定：root → TextContent → Title/Desc）。
-        /// 替代已移除的 Tooltip 组件，文本设置与实时刷新统一走这里。
-        /// </summary>
         private static void SetCardText(GameObject cardGo, IItemDescriptor desc, IReadOnlyDictionary<string, string> refNames)
         {
             TextMeshProUGUI title = cardGo.transform.Find("TextContent/Title")?.GetComponent<TextMeshProUGUI>();
@@ -225,10 +195,6 @@ namespace UI.Tooltip
             }
         }
 
-        /// <summary>
-        /// 同步收敛布局：TMP 文本生成默认延后到 canvas 更新周期，首帧同步读取会拿到旧 preferred 值。
-        /// 这里强制立刻生成文本，再跑两轮布局——第 1 轮结算宽度链，第 2 轮用最终宽度算 TMP 换行高度。
-        /// </summary>
         private void RefreshLayout()
         {
             foreach (TextMeshProUGUI tmp in GetComponentsInChildren<TextMeshProUGUI>(true))
@@ -238,17 +204,14 @@ namespace UI.Tooltip
             UnityEngine.UI.LayoutRebuilder.ForceRebuildLayoutImmediate(transform as RectTransform);
             Canvas.ForceUpdateCanvases();
 
-            // 布局收敛后缓存最终尺寸，供 PositionAt 高频移动定位复用
             _cachedSize = _rectTransform.rect.size;
         }
 
-        // ==================== 清理 ====================
 
         private void ClearContent()
         {
             UnsubscribeAll();
             if (Content == null) return;
-            // 运行时动态生成的临时 UI，用 DestroyImmediate 立即移除，避免残留一帧影响布局
             for (int i = Content.childCount - 1; i >= 0; i--)
             {
                 DestroyImmediate(Content.GetChild(i).gameObject);
@@ -264,61 +227,45 @@ namespace UI.Tooltip
             _unsubscribers.Clear();
         }
 
-        // ==================== 定位 ====================
 
-        /// <summary>
-        /// 定位到屏幕坐标（光标跟随）。
-        /// 屏幕坐标 → 父层级本地坐标（ScreenPointToLocalPointInRectangle 内部已除以 lossyScale，
-        /// 自动处理 CanvasScaler 缩放），再转换到以父左上角为原点的 anchoredPosition 空间
-        /// （prefab 锚点取父左上角 (0,1)）。
-        /// 窗口 pivot 在左上角 (0,1)，即整窗从鼠标位置向右(+x)向下(-y)生长，clamp 保证不出父边界。
-        /// </summary>
+        /// <summary>Follows the cursor while staying clamped inside the parent panel.</summary>
         public void PositionAt(Vector2 screenPosition)
         {
             RectTransform parent = _rectTransform.parent as RectTransform;
             if (parent == null) return;
 
-            // 屏幕坐标 → 父层级本地坐标（以父 pivot 为中心，已含 Canvas 缩放）
             if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(
                     parent, screenPosition, null, out Vector2 local))
             {
                 return;
             }
 
-            // 尺寸复用 RefreshLayout 收敛后的缓存值（内容不变则无需每帧重建 Canvas）
             Vector2 size = _cachedSize;
             if (size.x <= 0f || size.y <= 0f)
             {
-                // 防御：首次调用且布局尚未收敛时，实时读一次尺寸并缓存
                 Canvas.ForceUpdateCanvases();
                 size = _rectTransform.rect.size;
                 _cachedSize = size;
             }
             Rect parentRect = parent.rect;
 
-            // 父左上角在本地坐标（父 pivot 居中）为 (-w/2, +h/2)。
-            // 锚点参考点为父左上角，故 anchoredPosition = local - 父左上角。
             Vector2 anchored = new Vector2(
                 local.x + parentRect.width * 0.5f,
                 local.y - parentRect.height * 0.5f);
 
-            // 窗口 pivot 在左上角 (0,1)：向右(+x)向下(-y)生长，
-            // 保证整窗落在父边界内（pivot.x ∈ [0, w-size.x]，pivot.y ∈ [-(h-size.y), 0]）
             anchored.x = Mathf.Clamp(anchored.x, 0f, Mathf.Max(0f, parentRect.width - size.x));
             anchored.y = Mathf.Clamp(anchored.y, Mathf.Min(0f, -(parentRect.height - size.y)), 0f);
 
             _rectTransform.anchoredPosition = anchored;
         }
 
-        /// <summary>供 OnPointerMove 等高频调用重定位的入口，语义与 PositionAt 一致</summary>
+        /// <summary>Repositioning entry for high-frequency calls; same as PositionAt.</summary>
         public void MoveTo(Vector2 screenPosition)
         {
             PositionAt(screenPosition);
         }
 
-        // ==================== 动画 ====================
 
-        /// <summary>淡入：透明度 0→1</summary>
         public void FadeIn()
         {
             if (_canvasGroup == null) return;
@@ -326,7 +273,6 @@ namespace UI.Tooltip
             _canvasGroup.DOFade(1f, _fadeDuration).SetEase(Ease.OutQuad);
         }
 
-        /// <summary>淡出：透明度 1→0</summary>
         public void FadeOut()
         {
             if (_canvasGroup == null) return;
@@ -334,7 +280,6 @@ namespace UI.Tooltip
             _canvasGroup.DOFade(0f, _fadeDuration).SetEase(Ease.OutQuad);
         }
 
-        // ==================== 动画重写（备用：未来走 UIStack 时生效） ====================
 
         public override async UniTask PlayEnterAnimation()
         {
@@ -348,10 +293,9 @@ namespace UI.Tooltip
             await UniTask.DelayFrame(1);
         }
 
-        /// <summary>保持内容自适应尺寸，不做全屏拉伸（tooltip 不适用）</summary>
+        /// <summary>Keeps content auto-sized; no fullscreen stretch for tooltips.</summary>
         public override void ResetRectTransform()
         {
-            // 有意留空：不走基类的全屏拉伸逻辑
         }
     }
 }

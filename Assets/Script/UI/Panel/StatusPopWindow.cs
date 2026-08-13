@@ -67,7 +67,7 @@ namespace UI.Panel
             {
                 var _name = name;
                 if(name == "MaxHP")_name = "HP";
-                if(name == "MaxMP")_name = "MP";//有几个特殊属性不能直接显示
+                if(name == "MaxMP")_name = "MP";// Some stats cannot be shown under their raw names.
                 var slot = Instantiate(StatSlotPerfab, StatsContent.gameObject.transform).GetComponent<UI.Slot.SimpleSlot>();
                 slot.Init(stat, new SlotContext { unit = unit, label = _name });
             }
@@ -108,7 +108,7 @@ namespace UI.Panel
             }
             go = await Utils.Utils.InstantiateAddressableAsync(path, root.transform);
             flag:
-            //因为是直接展示  所以要使用unlit材质
+            // Use unlit material for direct display.
             if(go == null)
             {
                 Debug.LogError($"加载角色立绘失败: {path}");

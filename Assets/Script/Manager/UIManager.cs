@@ -35,11 +35,7 @@ namespace Managers
         public Transform Popup => _uiRoot?.Popup;
         public Transform Topmost => _uiRoot?.Topmost;
 
-        /// <summary>
-        /// 在首个场景加载之前自动初始化 UIManager。
-        /// 创建一个常驻 GameObject 并挂载 UIManager 脚本，通过 Awake 中的 DontDestroyOnLoad
-        /// 确保跨场景存活。无需在任何场景中手动放置，实现了"约定大于配置"的思路。
-        /// </summary>
+        /// <summary>Auto-initializes UIManager before the first scene loads (convention over configuration).</summary>
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void AutoInitialize()
         {
@@ -147,12 +143,7 @@ namespace Managers
             eventSystem.AddComponent<UnityEngine.EventSystems.StandaloneInputModule>();
         }
 
-        /// <summary>
-        /// UIRoot 预制体自带 EventSystem，但场景中可能已存在另一个 EventSystem。
-        /// Unity 同一场景存在多个 EventSystem 会导致输入异常（控制台报错 "Multiple EventSystems"）。
-        /// 此方法在 UIRoot 实例化之后运行，确保有且仅有一个 EventSystem 存活，
-        /// 保留 DontDestroyOnLoad 的那个（通过 FindObjectsByType 的第一个结果）。
-        /// </summary>
+        /// <summary>Ensures only one EventSystem exists (duplicates break input).</summary>
         private void EnsureSingleEventSystem()
         {
             var eventSystems = Object.FindObjectsByType<UnityEngine.EventSystems.EventSystem>(
@@ -287,7 +278,6 @@ namespace Managers
             panel.OnClose();
             panel.IsOpen = false;
 
-            // 需要动画的面板先播"从上往下"退场再隐藏；其余立即隐藏
             if (!panel.AnimateOnOpenClose || !panel.gameObject.activeSelf)
             {
                 panel.gameObject.SetActive(false);
@@ -298,11 +288,7 @@ namespace Managers
             CloseWithAnimation(panel).Forget();
         }
 
-        /// <summary>
-        /// 弹窗层面板打开时统一播放"从上往下"入场动画。
-        /// 弹窗层(Popup)面板自动启用；Window 层的弹窗面板（地图/状态等）通过 AnimateOnOpenClose 自行启用。
-        /// Tooltip 等指示型面板不在此列，保持无动画。
-        /// </summary>
+        /// <summary>Plays drop-in animation for Popup-layer panels; others only if AnimateOnOpenClose.</summary>
         private void PlayOpenAnimation(BaseUIPanel panel, UILayer layer)
         {
             if (layer == UILayer.Popup)
@@ -327,7 +313,7 @@ namespace Managers
         private async UniTask CloseWithAnimation(BaseUIPanel panel)
         {
             await panel.PlayDropOutAnimation();
-            // 若退场动画期间被重新打开（IsOpen 变回 true），则放弃本次隐藏，避免误关刚打开的面板
+            // Abort hiding if the panel was reopened during the exit animation
             if (panel != null && panel.gameObject != null && !panel.IsOpen)
             {
                 panel.gameObject.SetActive(false);
@@ -410,10 +396,7 @@ namespace Managers
             return UI_PREFAB_PATH + panelType.Name;
         }
 
-        /// <summary>
-        /// 经 Addressables 同步加载面板 Prefab（地址 = [UIPanelResource] 配置的 Assets/UI/... 路径）。
-        /// 兼容带扩展名的地址（构建时地址 = Assets/UI/... 全路径，可能带 .prefab 后缀）。
-        /// </summary>
+        /// <summary>Synchronously loads a panel prefab via Addressables; retries with a .prefab suffix.</summary>
         private GameObject LoadPanelPrefab(string address)
         {
             AsyncOperationHandle<GameObject> handle = Addressables.LoadAssetAsync<GameObject>(address);
@@ -445,10 +428,7 @@ namespace Managers
 
         private static readonly Dictionary<string, Type> _panelTypeCache = new();
 
-        /// <summary>
-        /// 按窗口类名解析面板 Type（支持短类名/全限定名，带缓存）。
-        /// 供按字符串分发打开面板的场景使用（如事件配表的 panelName）。
-        /// </summary>
+        /// <summary>Resolves a panel Type by class name (cached; supports short/full names).</summary>
         public static Type ResolvePanelType(string panelName)
         {
             if (_panelTypeCache.TryGetValue(panelName, out Type cached)) return cached;

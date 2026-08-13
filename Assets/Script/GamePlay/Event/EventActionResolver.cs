@@ -5,12 +5,7 @@ using UnityEngine;
 
 namespace GamePlay.Event
 {
-    /// <summary>
-    /// 事件 action 解析 — C# 反射。
-    ///
-    /// 约定：配表 action/condition 列写 "EventActions.方法名"（或任意静态类全名.方法名）。
-    /// 无参调用，所需信息通过全局单例（RunManager/Data.Persistent 等）获取。
-    /// </summary>
+    /// <summary>Resolves event actions via C# reflection using static class names from config tables.</summary>
     public static class EventActionResolver
     {
         private static readonly Dictionary<string, MethodInfo> _csCache = new();
@@ -53,7 +48,7 @@ namespace GamePlay.Event
             }
             else
             {
-                // 未带类名时默认在 EventActions 中查找
+                // No class name: fall back to EventActions
                 method = Utils.Utils.ResolveType("EventActions")?.GetMethod(name, BindingFlags.Public | BindingFlags.Static);
             }
 

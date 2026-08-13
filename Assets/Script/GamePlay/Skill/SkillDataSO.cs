@@ -65,11 +65,8 @@ namespace GamePlay.Skill
         public bool isCustomSkill = false;
         public CustomSkillBehaviorSO CustomBehavior = null;
 
-        // ================ AI 辅助判定方法 ================
 
-        /// <summary>
-        /// 技能是否主要用于对敌（伤害、减益、控制）
-        /// </summary>
+        /// <summary>Whether the skill is primarily offensive (damage, debuff, control).</summary>
         public bool IsOffensiveSkill()
         {
             if (AIBehavior != AISkillBehavior.Auto)
@@ -106,9 +103,7 @@ namespace GamePlay.Skill
             return false;
         }
 
-        /// <summary>
-        /// 技能是否主要用于支援（治疗或增益友军/自身）
-        /// </summary>
+        /// <summary>Whether the skill is primarily supportive (heal or buff allies/self).</summary>
         public bool IsSupportiveSkill()
         {
             if (AIBehavior != AISkillBehavior.Auto)
@@ -153,9 +148,7 @@ namespace GamePlay.Skill
             return false;
         }
 
-        /// <summary>
-        /// 技能是否可以以自身为目标（自愈/自buff）
-        /// </summary>
+        /// <summary>Whether the skill can target self (self-heal/self-buff).</summary>
         public bool CanTargetSelf()
         {
             if (AIBehavior != AISkillBehavior.Auto)
@@ -182,12 +175,10 @@ namespace GamePlay.Skill
             return false;
         }
 
-        // ================ 深度复制 ================
         public SkillDataSO DeepClone()
         {
             SkillDataSO clone = CreateInstance<SkillDataSO>();
             
-            // 复制基础属性
             clone.SkillName = this.SkillName;
             clone.Description = this.Description;
             clone.Icon = this.Icon;
@@ -206,19 +197,16 @@ namespace GamePlay.Skill
             clone.AIBehavior = this.AIBehavior;
             clone.AIPriority = this.AIPriority;
 
-            // 深度复制Phases
             clone.Phases = new List<SkillPhase>();
             foreach (SkillPhase originalPhase in this.Phases)
             {
                 SkillPhase phaseClone = new SkillPhase(originalPhase.PhaseName, originalPhase.TargetType);
                 
-                // 复制phase属性
                 phaseClone.AoEPattern = originalPhase.AoEPattern;
                 phaseClone.AoERadius = originalPhase.AoERadius;
                 phaseClone.AoEVerticalRange = originalPhase.AoEVerticalRange;
                 phaseClone.OriginType = originalPhase.OriginType;
                 
-                // 深度复制Effects
                 phaseClone.Effects = new List<SkillEffect>();
                 foreach (SkillEffect originalEffect in originalPhase.Effects)
                 {
@@ -234,11 +222,9 @@ namespace GamePlay.Skill
                     phaseClone.Effects.Add(effectClone);
                 }
                 
-                // 复制 Script 模式字段
                 phaseClone.ExecuteMode = originalPhase.ExecuteMode;
                 phaseClone.ExecuteFuncName = originalPhase.ExecuteFuncName;
                 
-                // 复制VisualData (都是值类型和引用，不需要深层复制引用对象)
                 if (originalPhase.VisualData != null)
                 {
                     phaseClone.VisualData = new SkillVisualData();

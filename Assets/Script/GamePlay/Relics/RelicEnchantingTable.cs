@@ -4,10 +4,7 @@ using Status.state;
 
 namespace GamePlay.Relics
 {
-    /// <summary>
-    /// Enchanting Table 附魔台 — 被动：我方全体攻击力 +1。
-    /// 遗物为全局共享实例，需按单位分别记录属性修饰器。
-    /// </summary>
+    /// <summary>Passive: +1 ATK for the whole team. Tracks one modifier per unit since relics are shared.</summary>
     public class RelicEnchantingTable : RelicBase
     {
         private readonly Dictionary<MapUnit, StatModifier> _atkMods = new Dictionary<MapUnit, StatModifier>();

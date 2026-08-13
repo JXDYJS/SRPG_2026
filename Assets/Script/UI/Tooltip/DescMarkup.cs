@@ -5,14 +5,8 @@ using System.Text.RegularExpressions;
 namespace UI.Tooltip
 {
     /// <summary>
-    /// DescMarkup — 描述文本中的 {id} 引用标记解析器
-    ///
-    /// 约定：desc 纯文本 + `{引用id}` 标记。例如
-    ///   "At battle start all allied units gain 1 stack of {power}."
-    /// 解析产物为片段列表（文本段 / 引用段），供两层消费：
-    ///   - 渲染：RenderRichText 把引用段替换为高亮富文本（TMP rich text）
-    ///   - 收集：Parse 提取引用 id，供 TooltipWindow 分层构建右侧列
-    /// 数值占位（如 BuffAdapter 已格式化的 {Stacks}）不会出现在本层。
+    /// Parses {id} references in desc text into text/reference segments.
+    /// RenderRichText highlights references; Parse collects their ids.
     /// </summary>
     public static class DescMarkup
     {
@@ -36,7 +30,7 @@ namespace UI.Tooltip
             }
         }
 
-        /// <summary>把 desc 解析为文本/引用片段序列（纯函数，无副作用）</summary>
+        /// <summary>Parses desc into text/reference segments (pure).</summary>
         public static List<Segment> Parse(string desc)
         {
             var segments = new List<Segment>();
@@ -59,10 +53,7 @@ namespace UI.Tooltip
             return segments;
         }
 
-        /// <summary>
-        /// 渲染为 TMP 富文本：文本段原样，引用段替换为高亮名称（未解析到时回退显示 id）。
-        /// refNames：id → 显示名，由 TooltipWindow 在解析引用时收集。
-        /// </summary>
+        /// <summary>Renders desc as TMP rich text, replacing references with highlighted names (falls back to id).</summary>
         public static string RenderRichText(string desc, IReadOnlyDictionary<string, string> refNames)
         {
             List<Segment> segments = Parse(desc);

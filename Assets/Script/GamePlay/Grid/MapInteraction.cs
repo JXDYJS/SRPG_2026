@@ -25,7 +25,6 @@ namespace GamePlay.Grid
 
         void Update()
         {
-            // 切场景后 mainCam 可能已被销毁（本组件随旧场景销毁前最后一帧），防御性空引用检查
             if (mainCam == null) return;
 
             Vector2 mousePos = InputManager.Actions.Gameplay.Point.ReadValue<Vector2>();
@@ -62,19 +61,16 @@ namespace GamePlay.Grid
             }
         }
 
-        // 修改：参数改为 Vector3Int
         void OnTileClicked(Vector3Int pos)
         {
             if (mapManager.logicalGrid == null) return;
 
-            // 新的查询方式
             BlockType type = mapManager.logicalGrid.GetBlock(pos);
             
             if (type != BlockType.Air)
             {
                 Debug.Log($"<color=cyan>选中方块 {pos}</color> | 类型: {type}");
                 
-                // 如果你想获取顶部高度（例如为了放东西）
                 float topHeight = mapManager.logicalGrid.GetBlockHeight(type);
                 Debug.Log($"物理顶部高度 (相对Y): {topHeight}");
             }

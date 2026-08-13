@@ -12,26 +12,13 @@ using Core.Data;
 namespace GamePlay.AI
 {
     /// <summary>
-    /// 统一战斗价值引擎 — 所有 AI 行动折算为同一货币：
-    /// "占敌方/己方有效血池的比例"（TeamHP 归一），保证跨类别可比。
-    ///
-    /// 各类行动的价值构成：
-    ///   伤害   = 总伤害 / 敌TeamHP（AoE 按总伤害自然计价，无需额外加分）
-    ///   治疗   = 治疗量 / 己TeamHP × allyHealWeight
-    ///   buff   = BuffAIValue × 层数 × 目标权重（设计者手工标定基准，机械缩放）
-    ///   斩杀   = 伤害值 + 移除目标未来威胁（自然折算，无平白加分）
-    ///   走位   = 机会增量(前瞻) + 推进价值(A*路径进度) + 安全修正(有界) + 生存价值
-    ///   风险   = 进攻动作 × (1 − threatFactor × counterRiskWeight)
-    ///            （threatFactor = clamp01(威胁 / threatNormalizeBase)，有界，不清零攻击）
+    /// Unified battle value engine: converts all AI actions into comparable value
+    /// as a fraction of effective enemy/ally HP pools (TeamHP-normalized).
     /// </summary>
     public static class BattleValueEvaluator
     {
-        // ==========================================================
-        // 伤害估算（纯数值，含减伤）
-        // ==========================================================
-
         /// <summary>
-        /// 估算技能对单个目标造成的伤害（简化版，不经过完整 modifier pipeline）
+        /// Estimates damage of a skill against a single target (simplified, skips the modifier pipeline)
         /// </summary>
         public static float EstimateDamageValue(MapUnit caster, SkillDataSO skill, MapUnit target)
         {
@@ -56,8 +43,7 @@ namespace GamePlay.AI
         }
 
         /// <summary>
-        /// 简化伤害减免
-        /// Physical: max(0, raw − DEF)；Magic: raw × (1 − RES)；其他无减免
+        /// Simplified mitigation: Physical max(0, raw-DEF), Magic raw*(1-RES), others unchanged
         /// </summary>
         public static float MitigateDamage(float raw, DamageType dtype, MapUnit target)
         {
@@ -81,15 +67,11 @@ namespace GamePlay.AI
             }
         }
 
-        // ==========================================================
-        // 技能行动价值（主入口，含 AoE/治疗/buff/斩杀/风险）
-        // ==========================================================
-
         /// <summary>
-        /// 计算一次技能行动的统一货币价值。
+        /// Unified currency value of a skill action.
         /// </summary>
-        /// <param name="castPos">施放位置（已在范围时传当前格）</param>
-        /// <param name="isLethal">输出：该动作是否构成斩杀</param>
+        /// <param name="castPos">Cast position (current cell if already in range)</param>
+        /// <param name="isLethal">Output: whether the action is a kill</param>
         public static float SkillActionValue(MapUnit caster, SkillDataSO skill, MapUnit primaryTarget,
                                              Vector3Int castPos, AITaskContext ctx, out bool isLethal)
         {
@@ -108,23 +90,21 @@ namespace GamePlay.AI
                 total += EvaluatePhase(caster, primaryTarget, phase, casterATK, castPos, ctx, ref isLethal);
             }
 
-            // 设计者单技能偏好倍率
             total *= Mathf.Max(0f, skill.AIPriority);
 
-            // MP 代价惩罚：按单位实际 MP 池归一（无 MP 属性时用配置参考值）
+            // MP cost penalty, normalized by actual MP pool (config fallback when none)
             if (skill.Cost > 0)
             {
                 float maxMP = caster.MaxMP > 0 ? caster.MaxMP : Data.Config.AIConfig.resourceMaxMP;
                 total *= (1f - Mathf.Clamp01(skill.Cost / maxMP) * Data.Config.AIConfig.resourcePenaltyFactor);
             }
 
-            // 集火衰减：队友已盯上同一目标时，边际价值下降
+            // Focus-fire decay: marginal value drops when allies already target this unit
             if (offensive && total > 0f && SharedTaskBoard.Instance != null)
             {
                 total *= SharedTaskBoard.Instance.GetCommitmentFactor(caster, primaryTarget);
             }
 
-            // 进攻风险：站在 castPos 承担反击
             if (offensive && total > 0f)
             {
                 float risk = CounterRisk(caster, castPos, ctx);
@@ -134,15 +114,11 @@ namespace GamePlay.AI
             return Mathf.Max(0f, total);
         }
 
-        // ==========================================================
-        // 走位价值
-        // ==========================================================
-
         /// <summary>
-        /// 走位（移动到 landingPos）的统一货币价值：
-        /// 机会增量(前瞻) + 推进价值(A*路径进度) + 安全修正(有界) + 生存价值
+        /// Unified value of repositioning to landingPos: opportunity gain + advance
+        /// (A* path progress) + bounded safety correction + survival value.
         /// </summary>
-        /// <param name="pathProgress">A* 寻路到目标的路径进度 (0~1)，推进候选传入，撤退候选传 0</param>
+        /// <param name="pathProgress">A* progress toward the target (0~1); 0 for retreat candidates</param>
         public static float RepositionValue(MapUnit caster, Vector3Int landingPos, float pathProgress, AITaskContext ctx)
         {
             if (caster == null || ctx == null) return 0f;
@@ -150,13 +126,9 @@ namespace GamePlay.AI
             float oppNow = ctx.GetOpportunityAt(caster.gridPosition);
             float oppLand = ctx.GetOpportunityAt(landingPos);
 
-            // 1. 机会增量：落点换取下一回合的攻击机会
             float oppGain = (oppLand - oppNow) * Data.Config.AIConfig.futureDiscount;
 
-            // 2. 推进价值：沿 A* 路径向敌人推进（够不着时前压的主要价值来源）。
-            //    仅当"当前位置打不到且落点也打不到"时才给推进价值——落点已够得着时，
-            //    机会增量(oppGain)已把 oppLand 全额计过一遍，此处不得重复计价。
-            //    两侧都够不着时用保底推进值，保证"该前压就前压"。
+            // Advance value only when both positions cannot attack, avoiding double-counting oppGain
             float advanceValue = 0f;
             if (oppNow <= 0f && oppLand <= 0f)
             {
@@ -166,18 +138,14 @@ namespace GamePlay.AI
 
             float baseValue = Mathf.Max(0f, oppGain + advanceValue);
 
-            // 3. 安全修正（有界）：落点通常更靠近敌人→威胁更高→safety 常为负。
-            //    只允许负面安全最多抵消 safetyCapRatio 比例的推进价值，避免"稍危险就完全不敢动"。
-            //    威胁用归一化因子（threatFactor 0~1），正收益上限 safetyMaxValue，绝不喧宾夺主。
+            // Bounded safety: negative safety can offset at most safetyCapRatio of base value
             float threatFactorNow = ThreatFactor(ctx, caster.gridPosition);
             float threatFactorLand = ThreatFactor(ctx, landingPos);
             float safetyGain = (threatFactorNow - threatFactorLand) * Data.Config.AIConfig.safetyMaxValue;
             float safetyFloor = -baseValue * Data.Config.AIConfig.safetyCapRatio;
             float cappedSafety = Mathf.Clamp(safetyGain, safetyFloor, Data.Config.AIConfig.safetyMaxValue);
 
-            // 4. 生存价值（有界）：死亡风险降低 → 保住自身未来贡献（撤退候选主要靠此项）。
-            //    保住贡献按机会净增量计：本回合能打到(oppNow>0)时，撤退意味着放弃这次攻击，
-            //    只能按 (oppLand − oppNow) 的净增益估值，不许白赚牺牲掉的本回合伤害，避免反复踱步。
+            // Survival: reduced death risk preserves future contribution (net opportunity gain only)
             float survivalGain = 0f;
             float deathRiskNow = Mathf.Clamp01(threatFactorNow * Data.Config.AIConfig.survivalWeight);
             float deathRiskLand = Mathf.Clamp01(threatFactorLand * Data.Config.AIConfig.survivalWeight);
@@ -194,17 +162,12 @@ namespace GamePlay.AI
             return Mathf.Max(0f, baseValue + cappedSafety + survivalGain);
         }
 
-        // ==========================================================
-        // 内部实现
-        // ==========================================================
-
         private static float EvaluatePhase(MapUnit caster, MapUnit primaryTarget, SkillPhase phase,
                                            int casterATK, Vector3Int castPos, AITaskContext ctx,
                                            ref bool isLethal)
         {
             float phaseValue = 0f;
 
-            // Self 阶段：效果作用于施法者自身
             if (phase.TargetType == TargetType.Self)
             {
                 foreach (SkillEffect effect in phase.Effects)
@@ -214,7 +177,6 @@ namespace GamePlay.AI
                 return phaseValue;
             }
 
-            // 以目标/落点为中心的 AoE（单体即 SingleTarget）
             List<Vector3Int> aoeTiles = AttackRangeSystem.GetAoERange3D(castPos, primaryTarget.gridPosition, phase);
             foreach (Vector3Int tile in aoeTiles)
             {
@@ -242,7 +204,7 @@ namespace GamePlay.AI
                     float dmg = MitigateDamage(raw, effect.DamageType, target);
                     float value = dmg / ctx.EnemyTeamHP;
 
-                    // 斩杀自然折算：消灭目标 = 移除其未来威胁
+                    // Kill removes the target's future threat naturally
                     if (dmg >= target.Character.statSystem.currentHP)
                     {
                         isLethal = true;
@@ -255,7 +217,7 @@ namespace GamePlay.AI
                 {
                     float heal = effect.CalculateValue(casterATK);
                     float value = heal / ctx.AllyTeamHP * Data.Config.AIConfig.allyHealWeight;
-                    // 救援自然折算：把濒死队友拉回来 = 保住其未来贡献
+                    // Rescue preserves a dying ally's future contribution
                     value += RescueBonus(target, ctx);
                     return value;
                 }
@@ -278,8 +240,7 @@ namespace GamePlay.AI
         }
 
         /// <summary>
-        /// 斩杀附加价值：目标未来的每回合威胁 × 它本还能活几回合（由我方伤害推算）。
-        /// 未来威胁用目标最强的进攻手段估算（普攻与主动技能取最大伤害）。
+        /// Kill bonus: target's per-turn future threat times the remaining turns it would survive
         /// </summary>
         private static float ExecuteBonus(MapUnit target, float damageDealt, AITaskContext ctx)
         {
@@ -295,7 +256,7 @@ namespace GamePlay.AI
         }
 
         /// <summary>
-        /// 单位对 victim 每回合能打出的最大伤害（普攻 + 主动进攻技能取最大）
+        /// Max per-turn damage the unit can deal to the victim (basic attack + offensive skills)
         /// </summary>
         private static float EstimateBestOffensiveDamage(MapUnit unit, MapUnit victim)
         {
@@ -316,7 +277,7 @@ namespace GamePlay.AI
         }
 
         /// <summary>
-        /// 救援附加价值：目标正承受致命威胁时，治疗/护盾保住其未来贡献
+        /// Rescue bonus: healing/shielding preserves an ally's contribution under lethal threat
         /// </summary>
         private static float RescueBonus(MapUnit ally, AITaskContext ctx)
         {
@@ -324,11 +285,9 @@ namespace GamePlay.AI
             float maxHp = ally.Character.statSystem.maxHP.getValue();
             if (hp >= maxHp) return 0f;
 
-            // 死亡风险由归一化威胁因子估算；低于阈值不额外给分
             float deathRisk = Mathf.Clamp01(ThreatFactor(ctx, ally.gridPosition) * Data.Config.AIConfig.survivalWeight);
             if (deathRisk < Data.Config.AIConfig.rescueThreatThreshold) return 0f;
 
-            // 濒死 → 保住它每回合的贡献（用其最强进攻手段估算）
             float allyValue = 0f;
             if (ctx.Enemies.Count > 0)
             {
@@ -338,7 +297,7 @@ namespace GamePlay.AI
         }
 
         /// <summary>
-        /// 移除减益价值：被移除的减益当前剩余价值（由 BuffAIValue × 层数 定义）
+        /// Value of removing a debuff (AIValue times stacks)
         /// </summary>
         private static float RemoveBuffValue(MapUnit target)
         {
@@ -355,7 +314,7 @@ namespace GamePlay.AI
         }
 
         /// <summary>
-        /// 目标权重：以 maxHP 相对全队均值为基准，强者/坦克更值得 buff/debuff
+        /// Target weight: maxHP relative to team average; tanks/stronger units worth more
         /// </summary>
         private static float TargetWeight(MapUnit unit, AITaskContext ctx)
         {
@@ -367,8 +326,7 @@ namespace GamePlay.AI
         }
 
         /// <summary>
-        /// 反击风险：由 castPos 的归一化威胁因子折算（有界，不会把攻击分清零，
-        /// 极端危险时仍靠走位/撤退的生存项来规避，而不是硬性禁止攻击）
+        /// Counter-risk from normalized threat at the position (bounded, never zeroes out attacks)
         /// </summary>
         private static float CounterRisk(MapUnit caster, Vector3Int pos, AITaskContext ctx)
         {
@@ -376,7 +334,7 @@ namespace GamePlay.AI
         }
 
         /// <summary>
-        /// 归一化威胁因子 (0~1)：威胁图分数是影响力值不是伤害，统一先除以 threatNormalizeBase
+        /// Normalized threat factor (0~1) dividing the map score by threatNormalizeBase
         /// </summary>
         private static float ThreatFactor(AITaskContext ctx, Vector3Int pos)
         {

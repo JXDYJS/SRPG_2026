@@ -10,17 +10,7 @@ using UnityEngine;
 
 namespace EditorTools
 {
-    /// <summary>
-    /// Addressables 一键打包工具。
-    ///
-    /// 设计约定：
-    ///   - 地址 = 资源的完整 Assets/... 路径（天然唯一，配表字符串直接对应）
-    ///   - 分组 = groups.txt 的「路径前缀 → 组名」映射决定（默认按目录分类）
-    ///   - 忽略规则 = ignore.txt（gitignore 风格，后缀 + 路径前缀）
-    ///   - preserve 名单内的既有分组（buffID / AssetReference 寻址）一律不动
-    ///
-    /// 使用：菜单 Tools/Addressables → Setup Groups (by path) / Build Content
-    /// </summary>
+    /// <summary>One-click Addressables packaging: setup groups from config files, then build content.</summary>
     public static class BuildAddressables
     {
         private const string ConfigRoot = "Assets/AddressableBuild";
@@ -40,13 +30,11 @@ namespace EditorTools
             IgnoreRules rules = IgnoreRules.Load(IgnoreFile);
             GroupMapping mapping = GroupMapping.Load(GroupsFile);
 
-            // 1. 清空所有脚本拥有的分组（幂等重建，避免残留）
             foreach (string owned in mapping.OwnedGroups)
             {
                 ClearGroup(settings, settings.FindGroup(owned));
             }
 
-            // 1.5 清理历史污染分组：组名含 " # "（行内注释未剥离时产生的陈旧组），非 preserve 非当前拥有 → 删除
             foreach (AddressableAssetGroup stale in settings.groups.ToArray())
             {
                 if (stale == null) continue;
@@ -59,7 +47,6 @@ namespace EditorTools
                 }
             }
 
-            // 2. 遍历资源，按规则写入地址
             int added = 0;
             string[] allPaths = AssetDatabase.GetAllAssetPaths();
             Array.Sort(allPaths);
@@ -70,13 +57,13 @@ namespace EditorTools
                 if (!IsPackable(path)) continue;
 
                 string groupName = mapping.ResolveGroup(path);
-                if (groupName == null) continue;              // 未映射到任何组 → 不打包
-                if (mapping.IsPreserved(groupName)) continue; // 防呆：规则不应指向 preserve 组
+                if (groupName == null) continue;
+                if (mapping.IsPreserved(groupName)) continue;
 
                 string guid = AssetDatabase.AssetPathToGUID(path);
                 if (string.IsNullOrEmpty(guid)) continue;
 
-                // 已在 preserve 分组内的资产不动（如 Group_Buff 里的 .asset）
+                // Skip assets already in a preserved group
                 AddressableAssetEntry existing = settings.FindAssetEntry(guid);
                 if (existing?.parentGroup != null && mapping.IsPreserved(existing.parentGroup.Name))
                     continue;
@@ -87,7 +74,6 @@ namespace EditorTools
                 added++;
             }
 
-            // 3. 所有分组统一开启 Prevent Updates（可热更）——覆盖 preserve 分组（如 Group_Buff）与既有分组
             int updated = 0;
             foreach (AddressableAssetGroup group in settings.groups)
             {
@@ -118,7 +104,6 @@ namespace EditorTools
             Debug.Log("[BuildAddressables] 构建完成");
         }
 
-        // ==================== 分组工具 ====================
 
         private static AddressableAssetGroup GetOrCreateGroup(AddressableAssetSettings settings, string groupName)
         {
@@ -130,16 +115,11 @@ namespace EditorTools
                 Debug.Log($"[BuildAddressables] 创建分组: {groupName}");
             }
 
-            // 新建/既有分组统一开启 Prevent Updates，保证内容更新能检测到该组变更
             EnsurePreventUpdates(group);
             return group;
         }
 
-        /// <summary>
-        /// 开启分组的 Prevent Updates（ContentUpdateGroupSchema.StaticContent）。
-        /// 注意：Prevent Updates 勾上 = 该组资源在发补丁时会被挪进远程组，是"可热更"的前提；
-        /// 不勾则 GatherModifiedEntries 会跳过该组，补丁永远检测不到变更。
-        /// </summary>
+        /// <summary>Enables Prevent Updates so content patches can detect changes in this group.</summary>
         private static void EnsurePreventUpdates(AddressableAssetGroup group)
         {
             if (group == null) return;
@@ -176,14 +156,13 @@ namespace EditorTools
                 case ".rsp":
                 case ".uxml":
                 case ".uss":
-                case ".mcmeta": // Minecraft 贴图包元数据，Unity 无法识别导入
+                case ".mcmeta": // Minecraft texture metadata, not importable by Unity
                     return false;
                 default:
                     return true;
             }
         }
 
-        // ==================== 忽略规则（gitignore 风格） ====================
 
         private sealed class IgnoreRules
         {
@@ -203,12 +182,11 @@ namespace EditorTools
                     string line = raw.Trim();
                     if (line.Length == 0 || line.StartsWith("#")) continue;
 
-                    // 剥离行内注释（# 之后）
                     int hashIdx = line.IndexOf('#');
                     if (hashIdx >= 0) line = line.Substring(0, hashIdx).TrimEnd();
                     if (line.Length == 0) continue;
 
-                    // 语义：普通行 = 忽略（匹配则排除）；! 开头 = 反选（匹配则放行）
+                    // Plain line = ignore; "!" prefix = allow override
                     bool isAllow = false;
                     if (line.StartsWith("!"))
                     {
@@ -249,7 +227,6 @@ namespace EditorTools
             }
         }
 
-        // ==================== 分组映射 + preserve 名单 ====================
 
         private sealed class GroupMapping
         {
@@ -291,7 +268,6 @@ namespace EditorTools
                     string line = raw.Trim();
                     if (line.Length == 0 || line.StartsWith("#")) continue;
 
-                    // 剥离行内注释（# 之后），避免注释混入组名
                     int hashIdx = line.IndexOf('#');
                     if (hashIdx >= 0) line = line.Substring(0, hashIdx).TrimEnd();
                     if (line.Length == 0) continue;

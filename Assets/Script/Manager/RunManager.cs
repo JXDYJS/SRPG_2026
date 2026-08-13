@@ -44,7 +44,6 @@ namespace Managers
 
             if (!Relics.Contains(relic)) Relics.Add(relic);
 
-            // 持久化遗物 ID
             if (Data.Persistent?.Data != null)
             {
                 if (!Data.Persistent.Data.relics.Contains(relic.ID))
@@ -57,14 +56,11 @@ namespace Managers
             Debug.Log($"[RunManager] 获得遗物: {relic.Name} ({relic.ID})");
         }
 
-        // ==================== 金币（持久化于 PlayerProgressData.gold） ====================
 
-        /// <summary>当前金币余额</summary>
         public int Gold => Data.Persistent?.Data?.progress?.gold?.Value ?? 0;
 
         /// <summary>
-        /// 清空当前 run 的运行时状态（队伍/遗物）。
-        /// RunManager 是 DontDestroyOnLoad，新游戏时必须清掉上一局残留数据。
+        /// Clears run state; RunManager persists across scenes, so a new game must clear old data.
         /// </summary>
         public void ResetRun()
         {
@@ -81,7 +77,6 @@ namespace Managers
             Debug.Log($"[RunManager] 获得 {amount} 金币，当前: {Gold}");
         }
 
-        /// <summary>尝试花费金币，余额不足返回 false</summary>
         public bool TrySpendGold(int amount)
         {
             if (amount <= 0) return true;
@@ -94,8 +89,8 @@ namespace Managers
         }
 
         /// <summary>
-        /// 购买商店物品：先扣款，钱袋类遗物直接加金币，普通遗物进收藏。
-        /// 物品无法创建时自动退款。
+        /// Deducts first; pouch relics add gold directly, other relics go to the collection.
+        /// Refunds automatically if the item cannot be created.
         /// </summary>
         public bool PurchaseItem(string itemId, int price)
         {
@@ -121,9 +116,9 @@ namespace Managers
         }
 
         /// <summary>
-        /// 统一物品授予入口：按类别路由（与显示层 ItemView 共用 ItemCatalog 解析）。
-        /// Currency=加金币（amount 生效），Relic=创建并收藏（amount 忽略）。
-        /// 不复制购买流程的规则（如钱袋转金币），购买语义保留在 PurchaseItem。
+        /// Unified item grant entry, routed by category (shared with ItemView via ItemCatalog).
+        /// Currency adds gold (amount used); Relic is created and kept (amount ignored).
+        /// Purchase rules like pouch conversion stay in PurchaseItem.
         /// </summary>
         public bool GiveItem(string itemId, int amount = 1)
         {
@@ -140,7 +135,6 @@ namespace Managers
                     AddRelic(relic);
                     return true;
                 case ItemKind.Character:
-                    // TODO: 角色表落成后异步创建 CharacterInstance 入 MyTeam（InitializeSkillsAsync 需 Addressables）
                     Debug.LogWarning($"[RunManager] giveitem 暂不支持角色: {itemId}");
                     return false;
             }
@@ -148,8 +142,8 @@ namespace Managers
         }
 
         /// <summary>
-        /// 从存档数据填充 MyTeam（异步，需要加载 Addressables 技能）。
-        /// 存档无队伍（新游戏/无档）时，回退到 BattleConfig.InitialPlayer 作为初始队伍。
+        /// Fills MyTeam from save data (async; loads Addressables skills).
+        /// Falls back to BattleConfig.InitialPlayer when no saved party exists.
         /// </summary>
         public async UniTask PopulateFromSaveData(List<CharacterSaveData> savedCharacters)
         {
@@ -189,7 +183,6 @@ namespace Managers
                 Debug.Log($"[RunManager] Restored character: {cd.CharacterName} Lv.{sd.level}");
             }
 
-            // 恢复遗物
             Relics.Clear();
             if (Data.Persistent?.Data?.relics != null)
             {
@@ -204,8 +197,7 @@ namespace Managers
         }
 
         /// <summary>
-        /// 由 BattleConfig.InitialPlayer 的角色名列表生成初始队伍（Lv.1）。
-        /// 配置按 CharacterName 填写，此处先解析出 CharacterData 再取其规范 ID。
+        /// Builds the Lv.1 starting party from BattleConfig.InitialPlayer (names resolved to IDs).
         /// </summary>
         private List<CharacterSaveData> BuildInitialParty()
         {

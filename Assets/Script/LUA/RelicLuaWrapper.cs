@@ -7,9 +7,8 @@ using XLua;
 namespace Lua
 {
     /// <summary>
-    /// Lua 遗物的 C# 包装器。
-    /// 接口钩子桥接复用 CombatModifierLuaWrapper，本类只负责遗物专属字段绑定。
-    /// Price / Rarity 以配表（RelicConfigs）为准，Lua 中声明时可覆盖。
+    /// C# wrapper for Lua relics: reuses CombatModifierLuaWrapper's hooks and binds relic-only
+    /// fields. Price/Rarity come from the config table but Lua declarations can override them.
     /// </summary>
     public class RelicLuaWrapper : RelicBase
     {

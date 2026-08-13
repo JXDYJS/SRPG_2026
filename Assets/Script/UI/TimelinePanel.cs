@@ -40,7 +40,6 @@ namespace UI
         {
             if (_isDirty)
             {
-                //float duration = _isFirstUpdate ? 0.5f : 0.5f;
                 float duration = 0.5f;
                 UpdateAllIconsPosition(duration);
                 _isFirstUpdate = false;

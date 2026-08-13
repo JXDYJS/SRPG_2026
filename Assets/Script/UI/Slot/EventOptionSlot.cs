@@ -5,10 +5,7 @@ using UnityEngine.UI;
 
 namespace UI.Slot
 {
-    /// <summary>
-    /// 事件选项槽 — 挂在事件窗口的选项 prefab 上。
-    /// 显示 title/desc，条件不可用时按钮禁用，点击回调由事件窗口注入。
-    /// </summary>
+    /// <summary>Event option slot; click callback injected by the event window.</summary>
     public class EventOptionSlot : MonoBehaviour
     {
         public TextMeshProUGUI titleText;

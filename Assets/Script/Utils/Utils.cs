@@ -44,10 +44,7 @@ namespace Utils
             return "error type";
         }
 
-        /// <summary>
-        /// 递归设置整棵层级树的 layer（renderer 所在子物体也需要）。
-        /// layerName 无效时静默返回。
-        /// </summary>
+        /// <summary>Sets layer on all child transforms; silently returns if layerName is invalid.</summary>
         public static void SetLayerRecursively(GameObject go, string layerName)
         {
             if (go == null) return;
@@ -59,9 +56,7 @@ namespace Utils
             }
         }
 
-        /// <summary>
-        /// 按类名解析当前程序集内的公开类型（支持短类名与全限定名）
-        /// </summary>
+        /// <summary>Resolves a type by name (short or fully qualified) in the current assembly.</summary>
         public static Type ResolveType(string className)
         {
             var assembly = typeof(Utils).Assembly;
@@ -78,9 +73,7 @@ namespace Utils
             return null;
         }
 
-        /// <summary>
-        /// 重开地图并解锁下一层（不关窗口）。用于节点弹窗流程中的降级/兜底路径。
-        /// </summary>
+        /// <summary>Reopens the map and unlocks the next level without closing the window.</summary>
         public static void ReturnToMap()
         {
             var mapPopWindow = UIManager.Instance.OpenPanel<MapPopWindow>();
@@ -90,10 +83,7 @@ namespace Utils
             }
         }
 
-        /// <summary>
-        /// 完成节点弹窗流程：关闭指定窗口 + 重开地图 + 解锁下一层。
-        /// 事件/商店/战斗等节点弹窗结束后统一走这里回到地图。
-        /// </summary>
+        /// <summary>Closes the specified panel and returns to the map.</summary>
         public static void FinishNode<T>() where T : BaseUIPanel
         {
             UIManager.Instance.ClosePanel<T>();
@@ -101,9 +91,7 @@ namespace Utils
         }
 
 
-        /// <summary>
-        /// 直接从 Addressables 加载并实例化资源到指定父级下
-        /// </summary>
+        /// <summary>Instantiates an Addressable asset under the given parent.</summary>
         public static async UniTask<GameObject> InstantiateAddressableAsync(string key, Transform parent)
         {
             var handle = Addressables.InstantiateAsync(key, parent);
@@ -117,19 +105,12 @@ namespace Utils
                 return null;
             }
         }
-        /// <summary>
-        /// 用来生成节点的时候组装种子
-        /// </summary>
-        /// <param name="seed"></param>
-        /// <param name="row"></param>
-        /// <param name="col"></param>
-        /// <returns></returns>
+        /// <summary>Combines a seed with row/column to build node seeds.</summary>
         public static int CombineSeed(int seed, int row, int col)
         {
             uint h = (uint)seed;
-            h ^= (uint)row * 0x9E3779B1u;   // 大奇数，mod 2^32 下是置换
-            h ^= (uint)col * 0x85EBCA77u;   // 另一个大奇数
-                                            // 雪崩阶段：让输出每一位都依赖输入的每一位
+            h ^= (uint)row * 0x9E3779B1u;
+            h ^= (uint)col * 0x85EBCA77u;
             h ^= h >> 16;
             h *= 0x7FEB352Du;
             h ^= h >> 15;
@@ -138,12 +119,6 @@ namespace Utils
             return (int)h;
         }
 
-/// <summary>
-/// 洗牌实现
-/// </summary>
-/// <typeparam name="T"></typeparam>
-/// <param name="list"></param>
-/// <exception cref="ArgumentNullException"></exception>
         public static void Shuffle<T>(this IList<T> list)
         {
             if (list == null) throw new ArgumentNullException(nameof(list));
@@ -195,11 +170,10 @@ namespace Utils
 
     public static class GridOcclusionUtils
     {
-        // --- 为了极致性能，缓存射线的倒数方向 ---
         public struct RayData
         {
             public Vector3 Origin;
-            public Vector3 DirInv; // 方向的倒数，避免在循环里做除法
+            public Vector3 DirInv;
         }
 
         public static bool IsVisible3D(Grid.VoxelGrid grid, Vector3 start, Vector3 end)
@@ -209,14 +183,12 @@ namespace Utils
             if (maxDistance <= 0.0001f) return true;
             direction /= maxDistance;
 
-            // 缓存射线倒数数据供 AABB 检测使用
             RayData ray = new RayData
             {
                 Origin = start,
                 DirInv = new Vector3(1f / direction.x, 1f / direction.y, 1f / direction.z)
             };
 
-            // --- 1. DDA 基础初始化 (保持不变) ---
             int currentX = Mathf.FloorToInt(start.x);
             int currentY = Mathf.FloorToInt(start.y);
             int currentZ = Mathf.FloorToInt(start.z);
@@ -240,42 +212,33 @@ namespace Utils
             float currentDistance = 0f;
             int maxIterations = 200;
 
-            // --- 2. 核心步进循环 ---
             for (int i = 0; i < maxIterations; i++)
             {
                 byte blockType = grid.GetBlock(currentX, currentY, currentZ);
 
-                if (blockType != 0) // 0 是空气
+                if (blockType != 0)
                 {
-                    // 情况A：如果是完整的全尺寸方块 (比如 blockType 1)
                     if (blockType == 1)
                     {
-                        return false; // 无脑阻挡
+                        return false;
                     }
 
-                    // 情况B：如果是半砖、自定义高度方块 (比如 blockType 2)
                     if (blockType == 2)
                     {
-                        // 假设你需要去某处查这个方块的真实高度
-                        float blockHeight = 0.5f; // 可以替换成 grid.GetBlockYSize(currentX, currentY, currentZ);
+                        float blockHeight = 0.5f;
 
-                        // 构建这个格子的真实 AABB 边界 (基于你的 0.5, 0, 0.5 锚点设计)
-                        // X 和 Z 是完整的 1，Y 只有 blockHeight 这么高
                         Vector3 min = new Vector3(currentX, currentY, currentZ);
                         Vector3 max = new Vector3(currentX + 1f, currentY + blockHeight, currentZ + 1f);
 
-                        // 精确计算射线是否擦到了这个边界框
                         if (RayIntersectsAABB(ray, min, max))
                         {
-                            return false; // 确实打在半砖上了，阻挡！
+                            return false;
                         }
-                        // 如果没碰到（比如从上方飞过），不做任何事，继续循环！
                     }
                 }
 
                 if (currentX == endX && currentY == endY && currentZ == endZ) return true;
 
-                // DDA 步进逻辑...
                 if (tMaxX < tMaxY)
                 {
                     if (tMaxX < tMaxZ) { currentDistance = tMaxX; currentX += stepX; tMaxX += tDeltaX; }
@@ -292,10 +255,7 @@ namespace Utils
             return true;
         }
 
-        /// <summary>
-        /// LogicalGrid 版本的体素遮挡检测
-        /// 通过 Utils.getBlockTypeVal 将 BlockType 转换为 byte 复用相同的 DDA 逻辑
-        /// </summary>
+        /// <summary>Voxel occlusion check for LogicalGrid, reusing DDA via getBlockTypeVal.</summary>
         public static bool IsVisible3D(LogicalGrid grid, Vector3 start, Vector3 end)
         {
             Vector3 direction = end - start;
@@ -377,10 +337,7 @@ namespace Utils
             return true;
         }
 
-        /// <summary>
-        /// 极速射线与边界框(AABB)相交检测算法 (Slab Method)
-        /// 完全使用乘法和 Min/Max，无任何 GC
-        /// </summary>
+        /// <summary>Slab-method ray/AABB intersection test with no allocations.</summary>
         public static bool RayIntersectsAABB(RayData ray, Vector3 min, Vector3 max)
         {
             float t1 = (min.x - ray.Origin.x) * ray.DirInv.x;
@@ -398,29 +355,23 @@ namespace Utils
             tmin = Mathf.Max(tmin, Mathf.Min(t1, t2));
             tmax = Mathf.Min(tmax, Mathf.Max(t1, t2));
 
-            // tmax >= 0 保证了方块在射线的正前方，而不是在后方
+            // tmax >= 0 ensures the box is in front of the ray origin
             return tmax >= tmin && tmax >= 0f;
         }
     }
 
-    /// <summary>
-    /// 调试可视化工具 - 在 Scene 视图格子上绘制色块
-    /// 配合 DebugGizmosHost (MonoBehaviour) 使用
-    /// </summary>
+    /// <summary>Debug visualizer drawing colored tiles in the Scene view; used with DebugGizmosHost.</summary>
     public static class DebugGizmos
     {
         private struct HighlightInfo
         {
             public Vector3Int pos;
             public Color color;
-            public int lifetime; // 剩余帧数, -1 表示永不过期
+            public int lifetime; // remaining frames; -1 = never expires
         }
 
         private static List<HighlightInfo> _highlights = new List<HighlightInfo>();
 
-        /// <summary>
-        /// 确保宿主 GameObject 存在（Gizmos 渲染需要）
-        /// </summary>
         private static void EnsureHost()
         {
             if (DebugSystem.DebugGizmosHost.Instance != null) return;
@@ -434,12 +385,7 @@ namespace Utils
             go.AddComponent<DebugSystem.DebugGizmosHost>();
         }
 
-        /// <summary>
-        /// 标记一个格子为高亮
-        /// </summary>
-        /// <param name="pos">格子坐标</param>
-        /// <param name="color">颜色+透明度</param>
-        /// <param name="lifetime">持续帧数, -1 永久</param>
+        /// <summary>Highlights a tile for the given lifetime in frames; -1 = permanent.</summary>
         public static void MarkTile(Vector3Int pos, Color? color = null, int lifetime = 300)
         {
             EnsureHost();
@@ -451,12 +397,7 @@ namespace Utils
             });
         }
 
-        /// <summary>
-        /// 批量标记热力图 — 根据分数映射颜色强度
-        /// </summary>
-        /// <param name="scores">格子→分数的映射</param>
-        /// <param name="hotColor">热度颜色（高分偏向此色）</param>
-        /// <param name="maxScore">归一化最大值, 超出此值的都按最高亮度显示</param>
+        /// <summary>Marks a heatmap by mapping score values to color intensity.</summary>
         public static void MarkTiles(IEnumerable<KeyValuePair<Vector3Int, float>> scores, Color hotColor, float maxScore)
         {
             foreach (var kv in scores)
@@ -468,9 +409,7 @@ namespace Utils
             }
         }
 
-        /// <summary>
-        /// 每帧减寿命, 自动清理过期项
-        /// </summary>
+        /// <summary>Decrements highlight lifetimes and removes expired ones.</summary>
         public static void TickLifetime()
         {
             for (int i = _highlights.Count - 1; i >= 0; i--)
@@ -485,9 +424,7 @@ namespace Utils
             }
         }
 
-        /// <summary>
-        /// 由 MonoBehaviour 的 OnDrawGizmos 调用
-        /// </summary>
+        /// <summary>Called from MonoBehaviour.OnDrawGizmos.</summary>
         public static void RenderAll()
         {
             if (MapManager.Instance == null) return;

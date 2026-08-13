@@ -72,7 +72,6 @@ namespace Command
             }
 
             Vector3Int endPos = _path[_path.Count - 1];
-            //_unit.SetGridPositionDirectly(endPos);
 
             _unit.MarkAsMoved();
 
@@ -86,16 +85,13 @@ namespace Command
 
             foreach (var step in _path)
             {
-                // 重要：step已经是脚底方块坐标
-                // MapManager.GetWorldPosition会自动加上方块高度
+                // step is already foot-base coords; GetWorldPosition adds block height
                 Vector3 targetWorldPos = MapManager.Instance.GetWorldPosition(step);
 
-                // 计算移动方向并更新单位朝向
                 Vector3 direction = (targetWorldPos - _unit.transform.position);
                 direction.y = 0;
                 if (direction != Vector3.zero)
                 {
-                    // 移动时使用立即旋转，不需要动画
                     _unit.transform.rotation = Quaternion.LookRotation(direction);
                 }
                 
@@ -118,14 +114,13 @@ namespace Command
                 _unit.transform.position = targetWorldPos;
             }
             
-            // 重要：使用路径中的最后一个位置（已经是脚底方块坐标）
-            // 而不是从transform.position转换（因为transform包含高度偏移）
+            // Use last path position (foot-base) since transform includes height offset
             Vector3Int finalPos = _path[_path.Count - 1];
             _unit.SetGridPosition(finalPos);
             
             _unit.SwitchState(UnitState.Idle);
 
-            // 移动可能触发地形杀（火格子等），在此统一结算死亡动画
+            // Movement may trigger terrain death; settle death animations here
             UnitManager.Instance.FlushDeathAnimations().Forget();
 
             IsFinished = true;

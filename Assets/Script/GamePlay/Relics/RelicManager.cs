@@ -9,14 +9,8 @@ using XLua;
 namespace GamePlay.Relics
 {
     /// <summary>
-    /// 遗物管理器 — 负责从遗物 ID 创建遗物实例。
-    ///
-    /// 解析顺序（与 BuffManager 三层模式一致）：
-    ///   1. C# 反射：GamePlay.Relics.Relic{Name} 类（如 RelicBeacon）
-    ///   2. Lua：Lua/Relic/Relic{Name}.lua 同名表（以 _isRelicBase 判定）
-    ///   3. 均失败时返回 null，调用方记录警告
-    ///
-    /// 运行时数值（Price / Rarity）最终以 Data.Table.RelicConfigs 配表为准。
+    /// Creates relic instances from an ID. Resolution order: C# reflection,
+    /// then Lua; returns null if both fail. Runtime values come from RelicConfigs.
     /// </summary>
     public static class RelicManager
     {
@@ -26,7 +20,6 @@ namespace GamePlay.Relics
         {
             if (string.IsNullOrEmpty(relicId)) return null;
 
-            // 1. 查配表获取展示名（用于解析类名 / 模块名）
             string displayName = relicId;
             TableData.RelicConfig cfg = default;
             if (Data.Table.RelicConfigs.TryGetValue(relicId, out var foundCfg))
@@ -37,11 +30,9 @@ namespace GamePlay.Relics
 
             string className = "Relic" + ToPascalCase(displayName);
 
-            // 2. C# 反射优先
             RelicBase fromCs = TryFromReflection(className, relicId, cfg);
             if (fromCs != null) return fromCs;
 
-            // 3. Lua 兜底
             RelicBase fromLua = TryFromLua(className, relicId, cfg);
             if (fromLua != null) return fromLua;
 

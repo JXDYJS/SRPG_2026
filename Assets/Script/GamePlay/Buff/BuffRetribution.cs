@@ -25,7 +25,6 @@ namespace GamePlay.Buff
         {
             base.OnApply(owner);
             Initialize(owner);
-            //Debug.Log($"{owner.GetUnitName()} 获得惩戒 Buff，当前层数: {Stacks}");
         }
 
         public override void OnBeHurt(DamageInfo damageInfo)
@@ -40,8 +39,6 @@ namespace GamePlay.Buff
             DamageInfo reflectInfo = new DamageInfo(reflectDamage, Owner, damageInfo.sourceUnit, DamageType.True, DamageMethod.Normal);
             damageInfo.sourceUnit.TakeDamage(reflectInfo);
             _isReflecting = false;
-
-            //Debug.Log($"{Owner.name} 的惩戒反弹 {reflectDamage} 点真实伤害给 {damageInfo.sourceUnit.name}");
         }
     }
 }

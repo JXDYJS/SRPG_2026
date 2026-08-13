@@ -5,18 +5,7 @@ using Map;
 namespace Core.Data.Persistent
 {
     /// <summary>
-    /// SaveData — 存档根对象
-    ///
-    /// 存放内容（持久化，使用 Newtonsoft.Json 序列化）：
-    ///   - version：存档兼容性检查
-    ///   - party：玩家队伍角色数据
-    ///   - relics：已收集藏品 ID 列表
-    ///   - progress：玩家进度（金币、已解锁关卡等）
-    ///   - currentStageId：当前关卡 ID
-    ///   - seed：地图随机种子
-    ///   - nodeMapData：节点地图数据
-    ///
-    /// 扩展方式：直接在本类添加字段即可，旧存档自动用默认值
+    /// Root save object, serialized with Newtonsoft.Json. Old saves pick up new fields via defaults.
     /// </summary>
     [Serializable]
     public class SaveData
@@ -35,7 +24,7 @@ namespace Core.Data.Persistent
         public int seed;
         public NodeMapData nodeMapData;
 
-        /// <summary>玩家在地图上的当前位置（层/行），配合 nodeMapData 恢复地图进度</summary>
+        /// <summary>Player position on the map (layer/row), used with nodeMapData to restore progress.</summary>
         public int currentPlayerLayer;
         public int currentPlayerRow;
     }

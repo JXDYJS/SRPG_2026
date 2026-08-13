@@ -3,9 +3,7 @@ using GamePlay.Skill;
 namespace UI.Item
 {
     /// <summary>
-    /// SkillAdapter — SkillDataSO 适配器
-    ///
-    /// 技能为静态数据，无实时刷新需求，不连接变更事件。
+    /// Static skill data needs no live refresh, so it does not hook change events.
     /// </summary>
     public class SkillAdapter : ItemAdapter<SkillDataSO>
     {

@@ -12,27 +12,9 @@ using UnityEngine;
 
 namespace EditorTools
 {
-    /// <summary>
-    /// BuildWindow — 一键打包配置窗口。
-    ///
-    /// 用法：菜单 Tools/Build/Build Window 打开，配置后点「开始构建」。
-    ///
-    /// EditorWindow 三件套：
-    ///   - [MenuItem] 静态方法：打开窗口的入口
-    ///   - OnGUI()：绘制控件（每次 GUI 事件都会调用，不是事件驱动）
-    ///   - OnEnable/OnDisable：配合 EditorPrefs 持久化上次配置
-    ///
-    /// 构建流程（与 BuildPipeline 教学一致）：
-    ///   1. Addressables 内容构建（可选）
-    ///   2. 拷贝 bundle：Library/com.unity.addressables/aa → Assets/StreamingAssets/aa
-    ///   3. 清理输出目录
-    ///   4. BuildPipeline.BuildPlayer
-    ///   5. 构建后清理 StreamingAssets/aa 与 StreamingAssets/update（不该进版本库）
-    ///   注：Lua 已 Addressable 化（Group_Lua），随 bundle 打包，无需单独拷贝
-    /// </summary>
+    /// <summary>One-click build window for Addressables content + player build, with content-patch updates.</summary>
     public class BuildWindow : EditorWindow
     {
-        // ==================== 配置项（EditorPrefs 持久化） ====================
 
         private string _outputDir = "Build";
         private string _buildName = "SRPG_2026";
@@ -121,7 +103,6 @@ namespace EditorTools
         {
             _isBuilding = true;
             _log = "开始构建...";
-            // BuildPlayer 是同步阻塞的，用 delayCall 让按钮点击事件先结束，避免 GUI 卡死
             EditorApplication.delayCall += RunBuild;
         }
         private void StartUpdata()
@@ -135,34 +116,22 @@ namespace EditorTools
         {
             try
             {
-                // 0. 写入 App 版本（影响 PlayerSettings 与远程 catalog 命名，需在构建内容前设置）
                 PlayerSettings.bundleVersion = _appVersion;
 
-                // 1. Addressables 内容构建（本项目运行时大量 LoadAssetAsync，必须先做）
                 if (_buildAddressables)
                 {
-                    // 基线构建也需开启远程目录，content_state.bin 才会记录远程 catalog 信息，
-                    // 否则后续「开始更新」无法基于它产出补丁
                     EnsureRemoteConfig(AddressableAssetSettingsDefaultObject.Settings);
                     BuildAddressables.BuildContent();
                 }
 
-                // 2. 拷贝 bundle 到 StreamingAssets（Local.LoadPath = StreamingAssets/aa/Windows）
-                //    否则玩家运行时 Addressables 一个都加载不到
-                //    Lua 已 Addressable 化（Group_Lua），随 bundle 打包，不再单独拷贝
                 CopyDirectory("Library/com.unity.addressables/aa", "Assets/StreamingAssets/aa");
 
-                // 3. 清理输出目录
                 if (Directory.Exists(_outputDir))
                 {
                     Directory.Delete(_outputDir, true);
                 }
                 Directory.CreateDirectory(_outputDir);
 
-                // 5. 生成 version.json（全量基线：app/minApp = 当前 App 版本）
-                //    远程入口: <发布根>/update/version.json（玩家启动检查用）
-                //    本地基线: Assets/StreamingAssets/update/version.json（打进玩家包，客户端对比自身状态用）
-                //    注意：本地基线必须在 BuildPlayer 之前生成，否则不会打进包
                 AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;
                 string remoteRoot = ResolveRemoteBuildPath(settings);
 
@@ -174,9 +143,6 @@ namespace EditorTools
                         localStreamingPath: "Assets/StreamingAssets/update/version.json");
                 }
 
-                // 6. 玩家构建
-                //    只取 Build Settings 里 enabled 的场景（本项目只有 LaunchScene，
-                //    SampleScene 是 Addressable 场景，走 bundle，不能出现在场景数组里）
                 string[] scenes = EditorBuildSettings.scenes
                     .Where(s => s.enabled)
                     .Select(s => s.path)
@@ -205,7 +171,6 @@ namespace EditorTools
             }
             finally
             {
-                // 6. 清理 StreamingAssets 里打包脚本产生的临时拷贝，保持仓库干净
                 if (Directory.Exists("Assets/StreamingAssets/aa"))
                 {
                     Directory.Delete("Assets/StreamingAssets/aa", true);
@@ -219,19 +184,7 @@ namespace EditorTools
                 Repaint();
             }
         }
-        /// <summary>
-        /// 「开始更新」：基于上一次基线构建的 content_state.bin，产出内容补丁（变更 bundle + 新远程 catalog）到 ServerData/。
-        ///
-        /// 流程：
-        ///   1. 确保远程目录配置（BuildRemoteCatalog + RemoteCatalogBuildPath/LoadPath）
-        ///   2. 从 settings/profile 读取 content_state.bin 路径（不硬编码）
-        ///   3. 找出自基线以来的变更资源
-        ///   4. 挪进 Content Update 组（底层自动设置 Remote.BuildPath/LoadPath）
-        ///   5. BuildContentUpdate 构建补丁 → 落到 Remote.BuildPath（ServerData/[BuildTarget]）
-        ///   6. 生成 version.json manifest（客户端启动检查用）
-        ///
-        /// 注意：发布基线后、发补丁期间，不要重跑「开始构建」，否则会覆盖 content_state.bin 导致补丁失效。
-        /// </summary>
+        /// <summary>Build a content patch from the last baseline build (changed bundles + new remote catalog).</summary>
         private void RunUpdate()
         {
             try
@@ -243,11 +196,9 @@ namespace EditorTools
                     return;
                 }
 
-                // 1. 确保远程目录配置就绪（幂等）
                 EnsureRemoteConfig(settings);
                 AssetDatabase.SaveAssets();
 
-                // 2. content_state.bin 路径从 settings/profile 解析（不硬编码）
                 string binPath = ContentUpdateScript.GetContentStateDataPath(false, settings);
                 if (string.IsNullOrEmpty(binPath) || !File.Exists(binPath))
                 {
@@ -255,7 +206,6 @@ namespace EditorTools
                     return;
                 }
 
-                // 3. 找出自基线以来的变更资源
                 List<AddressableAssetEntry> modified = ContentUpdateScript.GatherModifiedEntries(settings, binPath);
                 if (modified == null || modified.Count == 0)
                 {
@@ -269,10 +219,8 @@ namespace EditorTools
                     Debug.Log($"  - {entry.address}");
                 }
 
-                // 4. 把变更资源挪进 Content Update 组（底层自动设 Remote.BuildPath/LoadPath）
                 ContentUpdateScript.CreateContentUpdateGroup(settings, modified, "Content Update");
 
-                // 5. 构建补丁 → 变更 bundle + 新远程 catalog 落到 Remote.BuildPath
                 var result = ContentUpdateScript.BuildContentUpdate(settings, binPath);
                 if (result == null)
                 {
@@ -286,7 +234,6 @@ namespace EditorTools
                     return;
                 }
 
-                // 6. 生成 version.json manifest（沿用已有 appVersion / minAppVersion，只更新 contentVersion）
                 string remoteRoot = ResolveRemoteBuildPath(settings);
                 string publishRoot = Path.GetDirectoryName(Path.GetFullPath(remoteRoot)) ?? Path.GetFullPath(remoteRoot);
                 ManifestData previous = ReadManifest(Path.Combine(publishRoot, "update", "version.json"));
@@ -310,11 +257,6 @@ namespace EditorTools
             }
         }
 
-        /// <summary>
-        /// 确保 Addressables 远程目录配置就绪：
-        ///   - BuildRemoteCatalog：开启（基线构建也需开启，bin 才记录远程 catalog 信息）
-        ///   - RemoteCatalogBuildPath / RemoteCatalogLoadPath：指向 profile 的 Remote.BuildPath / Remote.LoadPath
-        /// </summary>
         private static void EnsureRemoteConfig(AddressableAssetSettings settings)
         {
             if (settings == null) return;
@@ -324,7 +266,6 @@ namespace EditorTools
             settings.RemoteCatalogLoadPath.SetVariableByName(settings, AddressableAssetSettings.kRemoteLoadPath);
         }
 
-        // ==================== version.json manifest ====================
 
         [Serializable]
         private sealed class ManifestData
@@ -345,13 +286,7 @@ namespace EditorTools
         }
 
         /// <summary>
-        /// 在 <发布根>/update/version.json 生成版本清单：
-        ///   - appVersion：客户端 App 版本（代码/包体版本）
-        ///   - minAppVersion：低于它的客户端必须全量更新
-        ///   - contentVersion：内容版本（资源/Lua），补丁时递增
-        ///   - files：远程内容文件（remoteRoot 下）的 md5 清单
-        /// 若 localStreamingPath 非空，同时把同一份清单写到该路径（全量构建时打进玩家包，
-        /// 作为客户端的本地基线，供启动时与远程对比自身状态）。
+        /// Write the version manifest to the publish root; optionally also to the local streaming path.
         /// </summary>
         private static int GenerateManifest(string remoteRoot, string appVersion, string minAppVersion, string contentVersion, string serverBaseUrl = null, string localStreamingPath = null)
         {
@@ -393,13 +328,11 @@ namespace EditorTools
 
             string json = JsonUtility.ToJson(manifest, true);
 
-            // 稳定入口：<发布根>/update/version.json（与内容目录分开，URL 恒定）
             string publishRoot = Path.GetDirectoryName(dir) ?? dir;
             string updateDir = Path.Combine(publishRoot, "update");
             Directory.CreateDirectory(updateDir);
             File.WriteAllText(Path.Combine(updateDir, "version.json"), json);
 
-            // 本地基线：打进玩家包（StreamingAssets 会原样随包发布）
             if (!string.IsNullOrEmpty(localStreamingPath))
             {
                 string localPath = Path.GetFullPath(localStreamingPath);
@@ -412,9 +345,7 @@ namespace EditorTools
         }
 
         /// <summary>
-        /// 解析 Remote.BuildPath 的实际输出目录（如 ServerData/StandaloneWindows64）。
-        /// 注意：EvaluateString 只处理带 [占位符] 的模板串，直接传变量名会原样返回（如 "Remote.BuildPath"），
-        /// 必须先 GetValueByName 取出变量值，再 EvaluateString 求值 [BuildTarget] 等占位符。
+        /// Resolve the concrete Remote.BuildPath directory; dereference variables before template evaluation.
         /// </summary>
         private static string ResolveRemoteBuildPath(AddressableAssetSettings settings)
         {
@@ -424,11 +355,7 @@ namespace EditorTools
             return settings.profileSettings.EvaluateString(settings.activeProfileId, template);
         }
 
-        /// <summary>
-        /// 计算客户端用的"服务器根"（Remote.LoadPath 去掉 /[BuildTarget] 后的部分）。
-        /// 例：http://192.168.x.x:59306/Windows → http://192.168.x.x:59306
-        /// 客户端用它拼 {serverBaseUrl}/update/version.json 做版本检查。
-        /// </summary>
+        /// <summary>Client-facing server root: Remote.LoadPath without the /[BuildTarget] segment.</summary>
         private static string GetServerBaseUrl(AddressableAssetSettings settings)
         {
             string template = settings.profileSettings.GetValueByName(settings.activeProfileId, AddressableAssetSettings.kRemoteLoadPath);
@@ -439,7 +366,7 @@ namespace EditorTools
             return resolved.TrimEnd('/');
         }
 
-        /// <summary>读取已有 version.json（补丁时用于沿用 appVersion / minAppVersion），不存在或损坏返回 null。</summary>
+        /// <summary>Read an existing version.json; returns null when missing or corrupt.</summary>
         private static ManifestData ReadManifest(string path)
         {
             if (!File.Exists(path)) return null;
@@ -464,14 +391,13 @@ namespace EditorTools
 
         private static string GetPlayerExtension(BuildTarget target)
         {
-            // 触发性注释：仅用于推动编辑器重编译检测
             switch (target)
             {
                 case BuildTarget.StandaloneWindows:
                 case BuildTarget.StandaloneWindows64:
                     return ".exe";
                 default:
-                    return string.Empty; // macOS 是 .app 文件夹，BuildPlayer 会自动处理
+                    return string.Empty; // .app on macOS; BuildPlayer appends it automatically
             }
         }
 

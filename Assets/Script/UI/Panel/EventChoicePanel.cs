@@ -11,15 +11,8 @@ using UnityEngine.UI;
 namespace UI.Panel
 {
     /// <summary>
-    /// 通用事件选择窗口 — 屏幕渲染器状态机。
-    ///
-    /// 渲染当前屏（EventFlow.CurrentScreenId）的选项列表；
-    /// 点选项 → ExecuteAction → 有结果文本则切结果视图，否则直接跳屏；
-    /// 确认 → 按 nextScreen（可被 Action 覆盖）跳屏，空则 Finish 回地图。
-    ///
-    /// 需要的 prefab 节点（由美术/策划搭建）：
-    ///   optionContainer / optionPrefab(挂 EventOptionSlot) / resultView / resultText /
-    ///   confirmButton / titleText
+    /// Generic event choice panel: renders the current screen's options, executes the chosen
+    /// action, then jumps to the next screen (or finishes if none).
     /// </summary>
     [UIPanelResource("Assets/UI/Event/EventChoicePanel.prefab")]
     public class EventChoicePanel : BaseUIPanel, IEventPanel

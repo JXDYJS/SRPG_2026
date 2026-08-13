@@ -234,7 +234,7 @@ namespace GamePlay.Control
                 }
             }
 
-            // 嘲讽过滤：普攻永远单体，范围内存在嘲讽目标 → 只保留嘲讽目标格
+            // Taunt filter: normal attacks are single-target, so keep only taunting tiles.
             if (ApplyTauntFilter())
             {
                 return;
@@ -276,8 +276,7 @@ namespace GamePlay.Control
             _highlightTiles = new HashSet<Vector3Int>(castTiles);
             _validTargetTiles = new HashSet<Vector3Int>(castTiles);
 
-            // 嘲讽过滤：仅"单体进攻型"技能受嘲讽约束（AoE/Global/辅助豁免）。
-            // 注：此处过滤作用于 castTiles 之后——脚本/标准施法范围层保持纯净，嘲讽只是收窄选择窗口。
+            // Taunt only constrains single-target offensive skills; applied after cast-range computation.
             if (TauntSystem.IsSingleTargetOffensiveSkill(_selectedSkill) && ApplyTauntFilter())
             {
                 return;
@@ -286,10 +285,6 @@ namespace GamePlay.Control
             GridVisualManager.Instance.ShowTilesHighlight(_highlightTiles, Color.blue);
         }
 
-        /// <summary>
-        /// 嘲讽过滤：可选格中存在嘲讽目标时，把可点选范围收窄到嘲讽目标所在格，并高亮为橙色。
-        /// 返回 true 表示已施加过滤并完成高亮。
-        /// </summary>
         private bool ApplyTauntFilter()
         {
             List<MapUnit> taunters = TauntSystem.GetTauntingTargetsInTiles(activeUnit, _validTargetTiles);
@@ -363,28 +358,24 @@ namespace GamePlay.Control
                     break;
 
                 case InputState.TargetingSkill:
-                    // 重要：检查点击位置是否在有效施法范围内
                     if (_validTargetTiles.Contains(clickPos))
                     {
-                        // 重要：施法前目标合法性校验（防止空放）
+                        // Validate target before casting to prevent empty casts.
                         bool isValidTarget = AttackRangeSystem.IsValidTargetForCast(clickPos, _selectedSkill, activeUnit.Faction);
                         if (!isValidTarget)
                         {
-                            // 目标无效，拒绝施法
                             Debug.Log("施法被拒绝：目标无效");
                             return;
                         }
                         
-                        // 如果点击位置有单位，确保使用该单位的脚底坐标
+                        // Use the unit's floor tile when one occupies the clicked tile.
                         MapUnit targetUnit = UnitManager.Instance.GetUnitAt(clickPos);
                         if (targetUnit != null)
                         {
-                            // 使用单位的gridPosition（已经是脚底坐标）
                             ExecuteSkillAtPosition(targetUnit.gridPosition);
                         }
                         else
                         {
-                            // 点击的是空地，直接使用点击位置
                             ExecuteSkillAtPosition(clickPos);
                         }
                     }

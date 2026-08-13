@@ -15,12 +15,9 @@ namespace GamePlay.View
         private Renderer[] _renderers;
         private int _hitCount = 0;
         private Color[] _originalColors;
-        /// <summary>
-        /// 由于现在要改成相同职业的角色共享普通攻击模板  所以在view里自带自己的visualData给自己的普通攻击使用
-        /// </summary>
         public List<SkillVisualData> NormalAttackVisualData = null;
         public event Action<string> OnAnimationEventTriggered;
-        public int TimeGapDamage = 300;//调整两个伤害之间的时间间隔
+        public int TimeGapDamage = 300;
         public Vector3 DamagePosOffset = new Vector3(0.0f,2.0f,1.0f);
 
         void Awake()
@@ -67,7 +64,6 @@ namespace GamePlay.View
         {
             if (Managers.DamageUIManager.Instance != null)
             {
-                //Vector3 textPos = transform.position + Vector3.up * 1.5f;
                 Vector3 textPos = transform.position +DamagePosOffset;
                 Managers.DamageUIManager.Instance.ShowDamage(textPos, damage, damageType);
             }
@@ -129,17 +125,13 @@ namespace GamePlay.View
             Debug.Log($"播放 Buff 特效: {buffName}");
         }
 
-        // ================= 嘲讽状态可视 =================
 
         private static readonly int TauntBaseColorId = Shader.PropertyToID("_BaseColor");
         private static readonly int TauntColorId = Shader.PropertyToID("_Color");
         private static readonly Color TauntTintColor = new Color(1f, 0.55f, 0f, 1f);
         private MaterialPropertyBlock _tauntBlock;
 
-        /// <summary>
-        /// 切换嘲讽橙色着色（MaterialPropertyBlock 实现，逐渲染器覆盖，不改共享材质）。
-        /// 同时设置 _BaseColor / _Color 以兼容 URP 与 Standard 系 shader，未知属性被静默忽略。
-        /// </summary>
+        /// <summary>Applies a taunt tint via MaterialPropertyBlock (per renderer, no shared-material edits).</summary>
         public void SetTauntTint(bool active)
         {
             if (_renderers == null || _renderers.Length == 0) return;
@@ -157,7 +149,7 @@ namespace GamePlay.View
             }
             else
             {
-                // 传空 PropertyBlock 清除 per-renderer 覆盖，回落到材质默认颜色
+                // Empty block clears the per-renderer override.
                 MaterialPropertyBlock emptyBlock = new MaterialPropertyBlock();
                 foreach (Renderer r in _renderers)
                 {
@@ -175,7 +167,7 @@ namespace GamePlay.View
         public void ShowModel()
         {
             gameObject.SetActive(true);
-            // 死亡倒下后若被重新显示（如复活），还原倒下前的姿态
+            // Restore pre-death pose if revived after falling.
             if (_preDeathRotationRestorePending)
             {
                 _preDeathRotationRestorePending = false;
@@ -183,29 +175,18 @@ namespace GamePlay.View
             }
         }
 
-        // ================= 死亡动画（我的世界式）与对外钩子 =================
 
         private bool _preDeathRotationRestorePending;
         private Quaternion _preDeathLocalRotation;
 
-        /// <summary>
-        /// 死亡动画播放完成事件（供游戏管理器判断是否可结束游戏）。
-        /// </summary>
+        /// <summary>Fired when the death animation finishes, so the game manager can end the game.</summary>
         public event Action<UnitView> OnDeathAnimationFinished;
 
-        /// <summary>
-        /// 当前是否正在播放死亡动画。
-        /// </summary>
         public bool IsDeathAnimationPlaying { get; private set; }
 
-        /// <summary>
-        /// 死亡动画是否已播放完成。
-        /// </summary>
         public bool IsDeathAnimationDone { get; private set; }
 
-        /// <summary>
-        /// 等待死亡动画播放完成（若已完成则立即返回）。游戏管理器可 await 此方法后再结算/结束游戏。
-        /// </summary>
+        /// <summary>Waits until the death animation finishes; returns immediately if already done.</summary>
         public async UniTask WaitForDeathAnimationFinished()
         {
             if (IsDeathAnimationDone) return;
@@ -224,10 +205,7 @@ namespace GamePlay.View
             OnDeathAnimationFinished -= handler;
         }
 
-        /// <summary>
-        /// 播放死亡动画，播放完毕回调 onComplete 并触发对外钩子。
-        /// 默认走"我的世界式"程序化死亡（后倒+下沉，锚点在脚底）；可在 ViewConfig 关闭。
-        /// </summary>
+        /// <summary>Plays the death animation, then invokes onComplete. Style controlled by ViewConfig.</summary>
         public async UniTask PlayDeathAnimation(Action onComplete = null)
         {
             if (IsDeathAnimationPlaying) return;
@@ -254,33 +232,22 @@ namespace GamePlay.View
             }
         }
 
-        /// <summary>
-        /// 我的世界式死亡：模型锚点在脚底。
-        /// 1. 绕脚底（transform 原点）沿本地 X 轴向后倒下，头部落到地面躺平；
-        /// 2. 整个模型下沉没入地面（下沉距离取模型站立高度）。
-        /// </summary>
         private async UniTask PlayMinecraftStyleDeathAsync()
         {
             ViewConfigData cfg = Data.Config.ViewConfig;
 
-            // 记录倒下前的姿态，便于 ShowModel 复活/重置时还原
             _preDeathLocalRotation = transform.localRotation;
             _preDeathRotationRestorePending = true;
 
-            // 1. 向后倒下
             Vector3 startEuler = transform.localEulerAngles;
             Vector3 targetEuler = new Vector3(startEuler.x - cfg.minecraftDeathFallDegrees, startEuler.y, startEuler.z);
             await TweenLocalRotateAsync(startEuler, targetEuler, cfg.minecraftDeathFallDuration, EaseOutCubic);
 
-            // 2. 下沉没入地面（整个躺倒的身躯被埋入地下）
             float height = GetModelHeight();
             float sinkDistance = Mathf.Max(height * cfg.minecraftDeathSinkFactor, 0.05f);
             await TweenWorldMoveAsync(transform.position, transform.position + Vector3.down * sinkDistance, cfg.minecraftDeathSinkDuration, EaseInSine);
         }
 
-        /// <summary>
-        /// 旧版死亡逻辑：播放动画 clip 并等待其时长（保留用于没有程序化死亡需求的模型）。
-        /// </summary>
         private async UniTask PlayLegacyDeathAnimClipAsync()
         {
             string animName = Data.Config.ViewConfig.deathAnimationName;
@@ -302,14 +269,10 @@ namespace GamePlay.View
             await UniTask.Delay(TimeSpan.FromSeconds(clipLength));
         }
 
-        // ============ 死亡动画辅助：补间与缓动 ============
 
         private static float EaseOutCubic(float t) => 1f - Mathf.Pow(1f - t, 3f);
         private static float EaseInSine(float t) => 1f - Mathf.Cos(t * Mathf.PI * 0.5f);
 
-        /// <summary>
-        /// 本地欧拉角补间（绕脚底锚点旋转用）。
-        /// </summary>
         private async UniTask TweenLocalRotateAsync(Vector3 fromEuler, Vector3 toEuler, float duration, Func<float, float> ease)
         {
             if (duration <= 0f)
@@ -329,9 +292,6 @@ namespace GamePlay.View
             transform.localEulerAngles = toEuler;
         }
 
-        /// <summary>
-        /// 世界坐标补间（下沉入地用）。
-        /// </summary>
         private async UniTask TweenWorldMoveAsync(Vector3 from, Vector3 to, float duration, Func<float, float> ease)
         {
             if (duration <= 0f)
@@ -351,9 +311,6 @@ namespace GamePlay.View
             transform.position = to;
         }
 
-        /// <summary>
-        /// 通过渲染器包围盒估算模型站立高度（锚点在脚底时即脚底到头部的距离）。
-        /// </summary>
         private float GetModelHeight()
         {
             if (_renderers == null || _renderers.Length == 0) return 0f;

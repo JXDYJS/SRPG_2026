@@ -8,22 +8,15 @@ namespace GamePlay.Buff{
     public abstract class BuffBase : CombatModifierLuaWrapper
     {
         [Header("Buff 特有属性")]
-        public int Stacks;       // 当前层数
-        public int MaxStacks;    // 最大层数限制
-        public bool IsDebuff;    // 是增益还是减益（用于净化逻辑）
-        public bool IsHidden;    // 被动技能等隐藏Buff，不在UI显示
+        public int Stacks;
+        public int MaxStacks;
+        public bool IsDebuff;
+        public bool IsHidden;
 
-        /// <summary>
-        /// AI 战术价值基准：每层相当于"打掉敌方/保住己方 血池的比例"（0~N，默认 0.05）。
-        /// 各 buff 效果异构，无法公式化推导，由设计者手工标定一次；
-        /// 实际估值 = AIValue × 层数 × 目标权重（见 BattleValueEvaluator）。
-        /// </summary>
+        /// <summary>AI tactical value per stack, expressed as a fraction of a health pool (designer-tuned).</summary>
         [Tooltip("AI战术价值：每层相当于打掉/保住 血池的比例 (0~N)，设计者手工标定")]
         public float AIValue = 0.05f;
-        /// <summary>
-        /// 语义标记：是否具有"嘲讽"效果（AI 强制索敌依赖此标记）。
-        /// C# 子类可在构造函数中置 true；Lua Buff 通过 BuffLuaWrapper 读取同名字段。
-        /// </summary>
+        /// <summary>Whether this buff has a taunt effect (drives AI forced targeting).</summary>
         public virtual bool IsTaunt => false;
         public MapUnit Owner { get; protected set; }
         public bool isInit = false;
@@ -32,20 +25,17 @@ namespace GamePlay.Buff{
         public virtual void Initialize(MapUnit owner)
         {
             this.Owner = owner;
-            // 保留外部设定的层数，但确保在有效范围内
             Stacks = Mathf.Clamp(Stacks > 0 ? Stacks : 1, 1, MaxStacks);
             isInit = true;
         }
         
-        // 是否在回合开始自动掉层（自己的回合开始时）
         public bool DecayAtTurnStart = true; 
 
         public override void OnTurnStart(MapUnit owner)
         {
-            // 先掉层，再派发给 Lua（保持与原 BuffLuaWrapper 的时序一致）
             if (DecayAtTurnStart)
             {
-                RemoveStacks(1); // 自动掉 1 层
+                RemoveStacks(1);
                 Debug.Log($"{Name} 持续时间减少，剩余: {Stacks}");
             }
 
@@ -54,16 +44,12 @@ namespace GamePlay.Buff{
 
         public bool canAddStacks = true;
         
-        /// <summary>
-        /// 层数变化钩子，当层数发生实质性变化时调用
-        /// 子类可以重写此方法来刷新属性修饰器（StatModifier）的数值
-        /// </summary>
+        /// <summary>Hook invoked when the stack count changes; override to refresh stat modifiers.</summary>
         public virtual void OnStacksChanged()
         {
             _onChange?.Invoke();
         }
 
-        // 供外部调用
         public void AddStacks(int amount)
         {
             if (!canAddStacks) return;
@@ -71,7 +57,6 @@ namespace GamePlay.Buff{
             int oldStacks = Stacks;
             Stacks = Mathf.Min(Stacks + amount, MaxStacks);
             
-            // 如果层数发生变化，调用变化钩子
             if (Stacks != oldStacks)
             {
                 OnStacksChanged();
@@ -87,8 +72,6 @@ namespace GamePlay.Buff{
             }
             if(!canAddStacks) return;
             
-            // 将数值计算和事件触发统一交由 AddStacks 处理
-            // 本方法可保留用于未来触发"重复获得 Buff 时的特效或被动"
             AddStacks(amount);
         }
         
@@ -99,13 +82,10 @@ namespace GamePlay.Buff{
             
             if (Stacks <= 0)
             {
-                // 层数归零，移除 Buff
                 Owner.RemoveBuff(this);
-                // 无需调用 OnStacksChanged，因为 RemoveBuff 会触发完整的 OnRemove 清理逻辑
             }
             else if (Stacks != oldStacks)
             {
-                // 层数减少但未归零，调用变化钩子
                 OnStacksChanged();
             }
         }

@@ -24,16 +24,14 @@ public class FakeSunLight : MonoBehaviour
     public RenderTexture dynamicSkyMap;
 
     private Light dirLight;
-    private Material bakeMaterial; // 专门用于烘焙的虚拟材质
+    private Material bakeMaterial;
 
-    // 缓存 Shader 属性 ID
     private static readonly int RayleighRedId = Shader.PropertyToID("_RayleighRed");
     private static readonly int RayleighGreenId = Shader.PropertyToID("_RayleighGreen");
     private static readonly int RayleighBlueId = Shader.PropertyToID("_RayleighBlue");
     private static readonly int SunIntensityId = Shader.PropertyToID("_SunIntensity");
     private static readonly int SunColorId = Shader.PropertyToID("_SunColor");
     
-    // Tonemap / LMS 属性 ID
     private static readonly int UseCustomTonemapId = Shader.PropertyToID("_UseCustomTonemap");
     private static readonly int ExposureId = Shader.PropertyToID("_Exposure");
     private static readonly int UseLMSId = Shader.PropertyToID("_UseLMS");
@@ -41,7 +39,6 @@ public class FakeSunLight : MonoBehaviour
     private static readonly int LMSRow2Id = Shader.PropertyToID("_LMS_Row2");
     private static readonly int LMSRow3Id = Shader.PropertyToID("_LMS_Row3");
 
-    // 全局动态天空图 ID
     private static readonly int SkyMapId = Shader.PropertyToID("_DynamicSkyMap");
 
     void Start()
@@ -49,12 +46,11 @@ public class FakeSunLight : MonoBehaviour
         dirLight = GetComponent<Light>();
         if (skyboxMaterial == null) skyboxMaterial = RenderSettings.skybox;
 
-        // 初始化烘焙专用的虚拟材质
         if (skyboxMaterial != null)
         {
             bakeMaterial = new Material(skyboxMaterial);
-            bakeMaterial.hideFlags = HideFlags.HideAndDontSave; // 不在 Hierarchy 中显示，不存盘
-            bakeMaterial.EnableKeyword("BAKE_MODE"); // 开启全景图映射模式
+            bakeMaterial.hideFlags = HideFlags.HideAndDontSave;
+            bakeMaterial.EnableKeyword("BAKE_MODE");
         }
     }
 
@@ -62,11 +58,7 @@ public class FakeSunLight : MonoBehaviour
     {
         if (skyboxMaterial == null || dirLight == null) return;
 
-        // ==========================================
-        // 1. 根据控制参数旋转平行光
-        // ==========================================
         float pitch = sunAngle * 360f;
-        // 防止掠射角阴影混叠：太阳至少保持 minSunElevation 度离地平线
         if (pitch < minSunElevation)
             pitch = minSunElevation;
         else if (pitch > 180f - minSunElevation && pitch <= 180f)
@@ -76,16 +68,12 @@ public class FakeSunLight : MonoBehaviour
         Vector3 sunDir = -transform.forward;
         float mu_s = sunDir.y;
 
-        // 【修改点】不能直接 return，否则晚上的天空就不会更新烘焙了
         if (mu_s <= 0.0f) 
         {
             dirLight.intensity = 0;
         }
         else
         {
-            // ==========================================
-            // 2. 读取物理/魔改系数并计算基础透射光
-            // ==========================================
             float rR = skyboxMaterial.GetFloat(RayleighRedId);
             float rG = skyboxMaterial.GetFloat(RayleighGreenId);
             float rB = skyboxMaterial.GetFloat(RayleighBlueId);
@@ -105,9 +93,6 @@ public class FakeSunLight : MonoBehaviour
                 transmittance.z * sunIntensity * sunColorParam.b
             );
 
-            // ==========================================
-            // 3. 应用 LMS 风格化矩阵
-            // ==========================================
             float useLMS = skyboxMaterial.GetFloat(UseLMSId);
             if (useLMS > 0.5f)
             {
@@ -122,16 +107,10 @@ public class FakeSunLight : MonoBehaviour
                 finalLightColor = new Vector3(x, y, z);
             }
 
-            // ==========================================
-            // 4. 防 GI 报错：掐死负数
-            // ==========================================
             finalLightColor.x = Mathf.Max(finalLightColor.x, 0f);
             finalLightColor.y = Mathf.Max(finalLightColor.y, 0f);
             finalLightColor.z = Mathf.Max(finalLightColor.z, 0f);
 
-            // ==========================================
-            // 5. 应用到 Unity 平行光
-            // ==========================================
             float maxLuminance = Mathf.Max(finalLightColor.x, Mathf.Max(finalLightColor.y, finalLightColor.z));
             
             if (maxLuminance > 0.0001f)
@@ -147,14 +126,10 @@ public class FakeSunLight : MonoBehaviour
             {
                 dirLight.intensity = 0;
             }
-        } // 阳光逻辑结束
+        }
 
-        // ==========================================
-        // 6. 动态烘焙天空图 (供场景内模型照明使用)
-        // ==========================================
         if (dynamicSkyMap == null)
         {
-            // 创建一张 256x128，支持 HDR (ARGBHalf) 的贴图
             dynamicSkyMap = new RenderTexture(256, 128, 0, RenderTextureFormat.ARGBHalf, RenderTextureReadWrite.Linear) { useMipMap = true, autoGenerateMips = true };
             dynamicSkyMap.name = "DynamicSkyMap_256x128";
             dynamicSkyMap.wrapMode = TextureWrapMode.Repeat;
@@ -162,28 +137,20 @@ public class FakeSunLight : MonoBehaviour
 
         if (bakeMaterial != null)
         {
-            // 同步材质参数
             bakeMaterial.CopyPropertiesFromMaterial(skyboxMaterial);
-            // CopyProperties 会覆盖 Keyword，所以需要重新启用
+            // CopyProperties resets keywords; re-enable.
             bakeMaterial.EnableKeyword("BAKE_MODE");
 
-            // Unity 在 Keyword 切换后可能重置 float 属性（variant 重新初始化），
-            // 必须显式回写 tonemap / LMS 等关键属性
             bakeMaterial.SetFloat(UseCustomTonemapId, skyboxMaterial.GetFloat(UseCustomTonemapId));
             bakeMaterial.SetFloat(ExposureId, skyboxMaterial.GetFloat(ExposureId));
             bakeMaterial.SetFloat(UseLMSId, skyboxMaterial.GetFloat(UseLMSId));
 
-            // 调用克隆的材质，将天空绘制到 RenderTexture 上
             Graphics.Blit(null, dynamicSkyMap, bakeMaterial, 0);
 
-            // 全局推送！所有接收 _DynamicSkyMap 的 Shader 都能拿到这张图了
             Shader.SetGlobalTexture(SkyMapId, dynamicSkyMap);
         }
     }
 
-    // ==========================================
-    // 释放内存
-    // ==========================================
     void OnDestroy()
     {
         if (bakeMaterial != null) DestroyImmediate(bakeMaterial);

@@ -3,19 +3,13 @@ using Newtonsoft.Json;
 
 namespace Core.Data
 {
-    /// <summary>
-    /// ObservableValue — 可观察值容器
-    ///
-    /// 值变化时触发 OnValueChanged，供 UI 绑定等场景监听数据变更。
-    /// 通过 ObservableValueConverter 在 JSON 中保持扁平结构（只序列化内部值），
-    /// 因此存档文件仍表现为 "gold": 5 而不是 "gold": {"Value": 5}。
-    /// </summary>
+    /// <summary>Observable value container; fires OnValueChanged and serializes flat via the converter.</summary>
     [JsonConverter(typeof(ObservableValueConverter))]
     public class ObservableValue<T>
     {
         private T _value;
 
-        /// <summary>值变化回调（仅在实际值改变时触发）</summary>
+        /// <summary>Fires when the value actually changes.</summary>
         public event Action<T> OnValueChanged;
 
         public ObservableValue()
@@ -42,10 +36,7 @@ namespace Core.Data
         }
     }
 
-    /// <summary>
-    /// ObservableValueConverter — 让 ObservableValue 序列化为内部值（扁平结构）
-    /// 序列化: "gold": 5  反序列化: 5 -> ObservableValue{Value=5}
-    /// </summary>
+    /// <summary>Serializes ObservableValue as its inner value (flat JSON structure).</summary>
     public class ObservableValueConverter : JsonConverter
     {
         public override bool CanConvert(Type objectType)

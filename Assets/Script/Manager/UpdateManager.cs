@@ -11,19 +11,10 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace Managers
 {
-    /// <summary>
-    /// UpdateManager — 启动时版本检查 + 热更新。
-    ///
-    /// 流程：
-    ///   1. 读本地基线 StreamingAssets/update/version.json（打包时随包发布）
-    ///   2. 拉远程 {serverBaseUrl}/update/version.json
-    ///   3. 本地 appVersion < 远程 minAppVersion → 需要全量更新（Phase 3 Launcher）
-    ///   4. 否则走 Addressables 内容热更（CheckForCatalogUpdates / UpdateCatalogs）
-    ///   5. 失败不阻塞：日志后使用本地内容继续进游戏
-    /// </summary>
+    /// <summary>Startup version check and hot-update pipeline (manifest comparison + Addressables catalog update).</summary>
     public static class UpdateManager
     {
-        /// <summary>执行完整更新检查，全程用 window 驱动进度条。</summary>
+        /// <summary>Runs the full update check, driving a progress bar via the window.</summary>
         public static async UniTask CheckAndUpdate(LoadWindow window)
         {
             try
@@ -33,10 +24,9 @@ namespace Managers
 
                 if (local != null && remote != null && IsFullUpdateNeeded(local, remote))
                 {
-                    // 全量更新（App 版本太低）：客户端代码/包体已过期，必须重装
+                    // Full update: client version too old to patch
                     Debug.LogWarning($"[Update] 需要全量更新: local app={local.appVersion} < minApp={remote.minAppVersion}");
                     window.SetProgress(1f);
-                    // TODO Phase 3: 拉起 Launcher 下载新安装包，或弹提示引导玩家更新
                 }
                 else
                 {
@@ -49,7 +39,6 @@ namespace Managers
             }
         }
 
-        // ==================== 版本对比 ====================
 
         private static bool IsFullUpdateNeeded(VersionManifest local, VersionManifest remote)
         {
@@ -58,7 +47,7 @@ namespace Managers
             return CompareVersion(local.appVersion, remote.minAppVersion) < 0;
         }
 
-        /// <summary>语义化版本比较（1.10.0 > 1.9.0），解析失败退化为字符串序。</summary>
+        /// <summary>Semantic version comparison; falls back to string order on parse failure.</summary>
         private static int CompareVersion(string a, string b)
         {
             if (Version.TryParse(a, out Version va) && Version.TryParse(b, out Version vb))
@@ -66,7 +55,6 @@ namespace Managers
             return string.CompareOrdinal(a, b);
         }
 
-        // ==================== 本地基线 ====================
 
         private static VersionManifest ReadLocalManifest()
         {
@@ -87,7 +75,6 @@ namespace Managers
             }
         }
 
-        // ==================== 远程清单 ====================
 
         private static async UniTask<VersionManifest> FetchRemoteManifest(string serverBaseUrl)
         {
@@ -128,11 +115,9 @@ namespace Managers
             }
         }
 
-        // ==================== Addressables 内容热更 ====================
 
         private static async UniTask ApplyCatalogUpdate(LoadWindow window)
         {
-            // 触发性注释：推动编辑器重编译
             window.SetProgress(0f);
             AsyncOperationHandle<List<string>> check = Addressables.CheckForCatalogUpdates();
             await check.ToUniTask();
@@ -144,7 +129,7 @@ namespace Managers
             }
 
             Debug.Log($"[Update] 检测到 {check.Result.Count} 个 catalog 更新，开始下载...");
-            // autoReleaseHandle:false — 新 catalog 的 locator 必须一直持住，否则地址解析失效
+            // autoReleaseHandle:false — keep the locator alive or address resolution breaks
             AsyncOperationHandle<List<IResourceLocator>> update =
                 Addressables.UpdateCatalogs(check.Result, autoReleaseHandle: false);
 
@@ -160,7 +145,6 @@ namespace Managers
         }
     }
 
-    // ==================== version.json 结构（与 BuildWindow.ManifestData 对齐） ====================
 
     [Serializable]
     public class VersionManifest

@@ -65,7 +65,7 @@ namespace GamePlay.Skill
 
             caster.RestoreRecordedFacing();
 
-            // 逻辑/视觉分离：所有技能动画解释完毕后再统一结算死亡动画（判断存活并播放）
+            // Resolve death animations only after all skill visuals finish.
             await UnitManager.Instance.FlushDeathAnimations();
         }
 
@@ -251,34 +251,11 @@ namespace GamePlay.Skill
 
             targetView.PlayHitVisual();
 
-            // 遍历所有伤害记录并显示
             if (tResult.HasDamageRecords)
             {
-                // for (int i = 0; i < tResult.DamageRecords.Count; i++)
-                // {
-                //     var record = tResult.DamageRecords[i];
-                    
-                //     if (record.Value > 0)
-                //     {
-                //         // 伤害
-                //         targetView.ShowDamageFloatingText(record.Value, record.IsCrit, record.DamageType);
-                //     }
-                //     else if (record.Value < 0)
-                //     {
-                //         // 治疗（转为正数显示）
-                //         targetView.ShowDamageFloatingText(-record.Value, false, DamageType.Heal);
-                //     }
-                    
-                //     // 如果有多条伤害记录，添加短暂延迟以实现依次显示效果
-                //     if (i < tResult.DamageRecords.Count - 1)
-                //     {
-                //         await UniTask.Delay(TimeSpan.FromSeconds(0.1), delayType: DelayType.DeltaTime);
-                //     }
-                // }
                 await targetView.ShowDamageList(tResult.DamageRecords);
             }
 
-            // 处理 Buff 结算
             ApplyBuffEffects(tResult);
 
             await UniTask.Yield();
@@ -299,14 +276,10 @@ namespace GamePlay.Skill
                     continue;
                 }
 
-                // 使用 BuffManager 应用 Buff
                 BuffManager.ApplyBuffToUnit(tResult.Target, buffInfo.BuffID, buffInfo.Stacks);
             }
         }
 
-        /// <summary>
-        /// 延迟销毁区域特效
-        /// </summary>
         private static async UniTask DestroyAreaEffectDelayed(GameObject effectObj, float delaySeconds)
         {
             await UniTask.Delay(TimeSpan.FromSeconds(delaySeconds), delayType: DelayType.DeltaTime);

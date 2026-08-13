@@ -27,10 +27,7 @@ namespace UI.Slot
             _blowRect = BlowObs.GetComponent<RectTransform>();
         }
 
-        /// <summary>
-        /// 配置管柱。gap/下管道高度用百分比（相对管柱总高），二者之和 ≤ 1 即可正常分配，
-        /// 超出 1 时自动按比例归一；TopObs 填满剩余空间（编辑器里配 flexibleHeight）。
-        /// </summary>
+        /// <summary>Configures the obstacle; gap/pipe heights are percentages normalized when they sum past 1.</summary>
         public void Init(float width, float gapHeightPercent, float blowObsHeightPercent,
             Action onHitObs, Action onThroughGap)
         {
@@ -63,13 +60,12 @@ namespace UI.Slot
             le.preferredHeight = height;
         }
 
-        /// <summary>鸟与上/下管道任一相交即判定撞击</summary>
         public bool IsHit(RectTransform bird)
         {
             return Overlap(bird, _topRect) || Overlap(bird, _blowRect);
         }
 
-        /// <summary>鸟完全越过洞口后计分，每根只计一次</summary>
+        /// <summary>Scores once when the bird fully passes the gap.</summary>
         public bool TryScore(RectTransform bird)
         {
             if (_scored) return false;
@@ -85,7 +81,6 @@ namespace UI.Slot
             return false;
         }
 
-        /// <summary>管柱完全移出 Mask 左侧（右上角 x &lt; maskLeftWorldX）</summary>
         public bool IsFullyOffScreenLeft(float maskLeftWorldX)
         {
             Vector3[] corners = new Vector3[4];

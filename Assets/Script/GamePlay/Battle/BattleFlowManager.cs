@@ -58,27 +58,10 @@ namespace GamePlay.Battle
 
         async void Start()
         {
-            // Debug.Log("[FLOW] BattleFlowManager.Start() entered");
-            // if (CurrentLevel == null)
-            // {
-            //     Debug.LogError("[FLOW] 未指定关卡数据, aborting");
-            //     return;
-            // }
-
-            // try
-            // {
-            //     await LoadLevelAsync();
-            //     Debug.Log("[FLOW] LoadLevelAsync completed");
-            // }
-            // catch (System.Exception e)
-            // {
-            //     Debug.LogError($"[FLOW] LoadLevelAsync threw: {e.GetType().Name}: {e.Message}\n{e.StackTrace}");
-            // }
             UnitManager.Instance.AllDeathAnimationsFinished += () =>
             {
                 if (isLevelEnd())
                 {
-                    //todo  判断输赢做出不同选择
                     EndLevel();
                 }  
             };
@@ -103,7 +86,6 @@ namespace GamePlay.Battle
                 Debug.Log("开始加载关卡...");
                 SwitchState(BattleFlowState.Loading);
 
-                // 1. 加载地形 & 启动时间轴
                 Debug.Log("[FLOW] LoadLevelAsync: step 1 - loading terrain");
                 if (MapManager.Instance.currentLevelData != null)
                 {
@@ -116,7 +98,6 @@ namespace GamePlay.Battle
                 }
                 UIManager.Instance.OpenPanel<TimelinePanel>(null, UILayer.Background);
 
-                // 2. 从配表生成敌方/中立单位
                 Debug.Log($"[FLOW] LoadLevelAsync: step 2 - spawning initial units from table");
                 _spawnedUnits.Clear();
                 Sequence allSeq = DOTween.Sequence();
@@ -176,7 +157,6 @@ namespace GamePlay.Battle
                     }
                 }
                 await allSeq.AsyncWaitForCompletion();
-                // 3. 进入部署阶段
                 Debug.Log("[FLOW] LoadLevelAsync: step 3 - entering deployment phase");
                 await EnterDeploymentPhaseAsync();
             }
@@ -186,9 +166,6 @@ namespace GamePlay.Battle
             }
         }
 
-        /// <summary>
-        /// 进入部署阶段 — 预加载角色模型，弹出角色选择窗口，激活 DeploymentController
-        /// </summary>
         private async UniTask EnterDeploymentPhaseAsync()
         {
             Debug.Log("进入部署阶段");
@@ -202,7 +179,6 @@ namespace GamePlay.Battle
                 availableData.Add(meta.Data);
             }
 
-            // 预加载所有角色预制体到画面外（用于部署预览）
             _previewUnits.Clear();
             Vector3 hiddenPos = new Vector3(-10000, -10000, -10000);
             for (int i = 0; i < _characterMetas.Count; i++)
@@ -261,9 +237,6 @@ namespace GamePlay.Battle
             );
         }
 
-        /// <summary>
-        /// 部署确认回调 — 根据玩家放置位置生成玩家单位
-        /// </summary>
         private async void OnDeploymentConfirmed(List<DeploymentSlot> slots)
         {
             Debug.Log($"[FLOW] Deployment confirmed with {slots.Count} slots");
@@ -324,9 +297,7 @@ namespace GamePlay.Battle
             ConfirmDeployment();
         }
 
-        /// <summary>
-        /// 填充可选角色列表（优先 RunManager.MyTeam，后备 BattleLevelSO.Fallback）
-        /// </summary>
+        /// <summary>Fills selectable characters (RunManager.MyTeam, falling back to Resources).</summary>
         private void PopulateAvailableCharacters()
         {
             _characterMetas.Clear();
@@ -456,7 +427,7 @@ namespace GamePlay.Battle
         }
         public void EndLevel()
         {
-            // 结算战斗结束钩子（清场前），让遗物/Buff 有机会做收尾（如重置每场战斗状态）
+            // Run battle-end hooks before cleanup so relics/buffs can finalize.
             foreach (var unit in UnitManager.Instance.GetAllAliveUnit())
             {
                 unit.OnBattleEnd();

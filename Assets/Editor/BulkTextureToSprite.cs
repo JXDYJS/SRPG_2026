@@ -4,13 +4,7 @@ using UnityEngine;
 
 namespace EditorTools
 {
-    /// <summary>
-    /// 批量把图片资源的导入类型改为 Sprite。
-    ///
-    /// 用途：Assets/textures/block 等目录混有 .mcmeta 文件（非图片、无 TextureImporter），
-    /// 导致在 Project 窗口全选后 Inspector 不显示贴图导入设置、无法统一改成 Sprite。
-    /// 本工具只遍历图片扩展名，自动跳过 .mcmeta / .meta 等文件。
-    /// </summary>
+    /// <summary>Bulk-converts image import types to Sprite, skipping non-image files (.mcmeta/.meta).</summary>
     public static class BulkTextureToSprite
     {
         private static readonly string[] ImageExtensions =
@@ -18,7 +12,6 @@ namespace EditorTools
             ".png", ".jpg", ".jpeg", ".tga", ".psd", ".bmp", ".gif", ".tif", ".tiff"
         };
 
-        /// <summary>把当前选中的文件夹/图片转换为 Sprite（Project 窗口全选后点击菜单）</summary>
         [MenuItem("Tools/Textures/Bulk Convert Selection To Sprite")]
         public static void ConvertSelectionToSprite()
         {
@@ -37,7 +30,6 @@ namespace EditorTools
             Debug.Log($"[BulkTextureToSprite] 完成：共转换 {count} 张图片为 Sprite");
         }
 
-        /// <summary>整目录转换 Assets/textures/block（含子目录），跳过 mcmeta 等非图片文件</summary>
         [MenuItem("Tools/Textures/Convert Block Folder To Sprite")]
         public static void ConvertBlockFolderToSprite()
         {
@@ -47,7 +39,7 @@ namespace EditorTools
             Debug.Log($"[BulkTextureToSprite] block 文件夹完成：共转换 {count} 张图片为 Sprite");
         }
 
-        /// <summary>只修遗物图标（beacon / cactus / shield），不影响其它 block 贴图</summary>
+        /// <summary>Converts only relic icons (beacon/cactus/shield).</summary>
         [MenuItem("Tools/Textures/Convert Relic Icons To Sprite")]
         public static void ConvertRelicIconsToSprite()
         {

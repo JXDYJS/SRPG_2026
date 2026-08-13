@@ -8,20 +8,13 @@ using Modifier;
 namespace Lua
 {
     /// <summary>
-    /// 通用 CombatModifier → Lua 桥接包装器。
-    ///
-    /// 将 CombatModifier 的全部接口钩子（伤害 / 防御 / 抗性 / 回合 / 战斗 / 挂载 / 战斗事件）
-    /// 暴露给 Lua 侧实现。Buff、遗物以及未来任何 CombatModifier 扩展的 Lua 模块
-    /// 都通过本包装器桥接，C# 侧无需再为每种类型编写桥接代码。
-    ///
-    /// 桥接约定：Lua 模块在对应基类（BuffBase.lua / RelicBase.lua）中声明全部钩子，
-    /// 子类只重写需要的方法；ref 型钩子（OnOutgoingDamage 等）以返回值形式回传。
+    /// Bridges any CombatModifier implementation to a Lua module; derived classes
+    /// declare all hooks in their Lua base and only override the methods they need.
     /// </summary>
     public class CombatModifierLuaWrapper : CombatModifier
     {
         public LuaTable LuaInstance { get; set; }
 
-        // 全部钩子的 Lua 函数缓存
         protected LuaFunction _onApply;
         protected LuaFunction _onRemove;
         protected LuaFunction _onTurnStart;
@@ -52,7 +45,7 @@ namespace Lua
                     if (v != null)
                     {
                         try { return Convert.ToInt32(v); }
-                        catch { /* 忽略非法值 */ }
+                        catch { /* ignore invalid value */ }
                     }
                 }
                 return base.Priority;
@@ -60,8 +53,8 @@ namespace Lua
         }
 
         /// <summary>
-        /// 绑定 Lua 实例并缓存全部钩子函数。
-        /// 派生类（Buff / Relic）override 本方法补充领域字段的绑定。
+        /// Binds the Lua instance and caches all hook functions.
+        /// Derived classes override this to bind their domain fields.
         /// </summary>
         public virtual void Bind(LuaTable instance)
         {
@@ -94,7 +87,7 @@ namespace Lua
         }
 
         /// <summary>
-        /// 逃生口：从 C# 侧调用 Lua 实例上的任意方法（非标准钩子）。
+        /// Escape hatch: calls any non-standard hook method on the Lua instance.
         /// </summary>
         public object CallLua(string method, params object[] args)
         {
@@ -110,7 +103,6 @@ namespace Lua
             return ret != null && ret.Length > 0 ? ret[0] : null;
         }
 
-        // ==================== 生命周期钩子 ====================
 
         public override void OnApply(MapUnit owner)
         {
@@ -127,7 +119,6 @@ namespace Lua
             _onRemove?.Call(LuaInstance, owner);
         }
 
-        // ==================== 回合钩子 ====================
 
         public override void OnTurnStart(MapUnit owner)
         {
@@ -143,7 +134,6 @@ namespace Lua
             _onTurnEnd?.Call(LuaInstance, owner);
         }
 
-        // ==================== 战斗钩子 ====================
 
         public override void OnBattleStart(MapUnit owner)
         {
@@ -159,7 +149,6 @@ namespace Lua
             _onBattleEnd?.Call(LuaInstance, owner);
         }
 
-        // ==================== 数值修正钩子（ref → Lua 返回值） ====================
 
         public override void OnOutgoingDamage(ref float damage, DamageInfo info)
         {
@@ -197,7 +186,6 @@ namespace Lua
             }
         }
 
-        // ==================== 战斗事件钩子 ====================
 
         public override void OnHit(DamageInfo info)
         {

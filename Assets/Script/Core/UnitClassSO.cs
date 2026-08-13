@@ -25,49 +25,45 @@ namespace Character{
 
     public static class ClassIDs
     {
-        // 战士
         public static class Warrior
         {
-            public const ClassInternalID Base = ClassInternalID.Warrior_Common; // "见习战士"或"步兵"
+            public const ClassInternalID Base = ClassInternalID.Warrior_Common;
             
             public static class Sub
             {
-                public const ClassInternalID Champion = ClassInternalID.Warrior_Champion; // 冠军/勇士
-                public const ClassInternalID Berserker = ClassInternalID.Warrior_Berserker; // 狂战士
-                public const ClassInternalID Paladin = ClassInternalID.Warrior_Paladin; // 圣骑士
+                public const ClassInternalID Champion = ClassInternalID.Warrior_Champion;
+                public const ClassInternalID Berserker = ClassInternalID.Warrior_Berserker;
+                public const ClassInternalID Paladin = ClassInternalID.Warrior_Paladin;
             }
         }
 
-        // 射手
         public static class Archer
         {
-            public const ClassInternalID Base = ClassInternalID.Archer_Common; // "短弓手"或"新兵射手"
+            public const ClassInternalID Base = ClassInternalID.Archer_Common;
             
             public static class Sub
             {
-                public const ClassInternalID Sniper = ClassInternalID.Archer_Sniper; // 狙击手/神射手
-                public const ClassInternalID Ranger = ClassInternalID.Archer_Ranger; // 游侠/巡林者
-                public const ClassInternalID Marksman = ClassInternalID.Archer_Marksman; // 强弩手
+                public const ClassInternalID Sniper = ClassInternalID.Archer_Sniper;
+                public const ClassInternalID Ranger = ClassInternalID.Archer_Ranger;
+                public const ClassInternalID Marksman = ClassInternalID.Archer_Marksman;
             }
         }
-        // 医疗
         public static class Medical
         {
-            public const ClassInternalID Base = ClassInternalID.Medical_Common; // "医疗兵"
+            public const ClassInternalID Base = ClassInternalID.Medical_Common;
             
             public static class Sub
             {
-                public const ClassInternalID Doctor = ClassInternalID.Medical_Doctor; // 医生
+                public const ClassInternalID Doctor = ClassInternalID.Medical_Doctor;
             }
         }
-        // 重装
         public static class Tank
         {
-            public const ClassInternalID Base = ClassInternalID.Tank_Common; // "重装"
+            public const ClassInternalID Base = ClassInternalID.Tank_Common;
             
             public static class Sub
             {
-                public const ClassInternalID Champion = ClassInternalID.Tank_Champion; // 冠军/勇士
+                public const ClassInternalID Champion = ClassInternalID.Tank_Champion;
             }
         }
     }
@@ -78,7 +74,7 @@ namespace Character{
         [Header("程序识别 ID")]
         public ClassInternalID InternalID;
         [Header("基本信息")]
-        public string ClassName; // 比如 "狂战士"
+        public string ClassName;
         
         [Tooltip("如果是基础职业就留空，如果是子职业就拖入对应的基础职业")]
         public UnitClassSO ParentClass; 
@@ -87,8 +83,6 @@ namespace Character{
         public int BonusMovementPoints;
         public int BonusHP;
 
-        // [Header("可用技能池")]
-        // public List<SkillDataSO> AvailableSkills;
         [Header("普通攻击")]
         public SkillDataSO NormalAttack;
         [Header("移动距离")]

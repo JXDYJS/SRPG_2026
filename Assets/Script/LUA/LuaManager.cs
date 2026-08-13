@@ -8,16 +8,7 @@ using XLua;
 
 namespace Lua
 {
-    /// <summary>
-    /// LuaManager — Lua 运行时环境。
-    ///
-    /// Lua 脚本已通过 ScriptedImporter 变为 TextAsset 并被 Addressables 管理（Group_Lua），
-    /// 因此加载不再走文件 IO，而是预取 Addressable 资源到内存缓存：
-    ///   - 启动流程（LaunchBootstrap）在 catalog 更新后调用 InitializeAsync()
-    ///   - 枚举所有 Assets/Lua/ 地址 → LoadAssetAsync&lt;TextAsset&gt; → 缓存模块名→字节
-    ///   - XLua 的 Loader 读缓存，缺失即报错（不设文件兜底）
-    /// 这样 Lua 热更完全复用 Addressables 内容更新管线。
-    /// </summary>
+    /// <summary>Lua runtime; scripts are prefetched from Addressables into a memory cache.</summary>
     public class LuaManager
     {
         private static LuaManager _instance;
@@ -28,17 +19,14 @@ namespace Lua
         private const string LuaAddressPrefix = "Assets/Lua/";
         private const string LuaAddressSuffix = ".lua";
 
-        /// <summary>Lua 模块名（如 Buffs.BuffBase）→ 原始字节。</summary>
+        /// <summary>Lua module name -> raw bytes.</summary>
         private readonly Dictionary<string, byte[]> _luaCache = new Dictionary<string, byte[]>();
 
         private LuaManager()
         {
         }
 
-        /// <summary>
-        /// 初始化 Lua 环境（幂等）。必须在 Addressables 初始化且 catalog 更新完成后调用，
-        /// 否则拿到的可能是旧内容。
-        /// </summary>
+        /// <summary>Initialize the Lua env (idempotent); call after Addressables catalog updates.</summary>
         public async UniTask InitializeAsync()
         {
             if (LuaEnv != null) return;
@@ -59,7 +47,7 @@ namespace Lua
             RegisterAllModules();
         }
 
-        /// <summary>枚举 Addressable 中所有 Assets/Lua/ 地址并预取为字节缓存。</summary>
+        /// <summary>Prefetch all Assets/Lua/ Addressable modules into the byte cache.</summary>
         private async UniTask PreloadLuaCache()
         {
             List<string> addresses = new List<string>();

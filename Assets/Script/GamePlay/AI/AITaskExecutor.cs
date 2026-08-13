@@ -11,18 +11,12 @@ using Core.Data;
 
 namespace GamePlay.AI
 {
-    /// <summary>
-    /// 任务执行器 — 逐步执行 AIPlan 中的每个步骤
-    /// 由 AITaskSystem 的协程中调用
-    /// </summary>
+    /// <summary>Executes each step of an AIPlan; driven by AITaskSystem's coroutine.</summary>
     public class AITaskExecutor
     {
         private bool _planAborted;
 
-        /// <summary>
-        /// 执行计划，返回协程
-        /// 逐步执行 plan.Steps，支持中断（单位阵亡/条件评估失败等）
-        /// </summary>
+        /// <summary>Runs plan steps in order; aborts if the unit dies or a condition fails.</summary>
         public IEnumerator ExecutePlan(MapUnit unit, AIPlan plan)
         {
             _planAborted = false;
@@ -39,7 +33,6 @@ namespace GamePlay.AI
                 plan.CurrentStepIndex = i;
                 AIPlanStep step = plan.Steps[i];
 
-                // 执行前检查：单位是否还活着
                 if (unit == null || !unit.IsAlive)
                 {
                     Debug.Log($"[AI] {unit?.name ?? "null"} 在执行计划中阵亡，中断执行");
@@ -64,9 +57,6 @@ namespace GamePlay.AI
             Debug.Log($"[AI] {unit.name} 计划执行完毕");
         }
 
-        // ==============================================================
-        // 步骤分发
-        // ==============================================================
         private IEnumerator ExecuteStep(MapUnit unit, AIPlanStep step)
         {
             switch (step.Type)
@@ -84,7 +74,6 @@ namespace GamePlay.AI
                     break;
 
                 case AIPlanStep.StepType.Evaluate:
-                    // 条件评估步骤：如果条件不满足，中断整个计划
                     if (!EvaluateCondition(unit, step))
                     {
                         _planAborted = true;
@@ -93,9 +82,6 @@ namespace GamePlay.AI
             }
         }
 
-        // ==============================================================
-        // 移动执行
-        // ==============================================================
         private IEnumerator ExecuteMove(MapUnit unit, AIPlanStep step)
         {
             if (!unit.CanMove)
@@ -119,9 +105,6 @@ namespace GamePlay.AI
             yield return new WaitForSeconds(Data.Config.AIConfig.moveExecuteDelaySeconds);
         }
 
-        // ==============================================================
-        // 技能执行
-        // ==============================================================
         private IEnumerator ExecuteSkill(MapUnit unit, AIPlanStep step)
         {
             if (!unit.CanAction)
@@ -146,12 +129,8 @@ namespace GamePlay.AI
             yield return new WaitForSeconds(Data.Config.AIConfig.skillExecuteDelaySeconds);
         }
 
-        // ==============================================================
-        // 条件评估 (Evaluate 步骤)
-        // ==============================================================
         private bool EvaluateCondition(MapUnit unit, AIPlanStep step)
         {
-            // TODO: 后续扩展，当前默认通过
             return true;
         }
     }

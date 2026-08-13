@@ -3,11 +3,7 @@ using UnityEngine;
 
 namespace GamePlay.Event
 {
-    /// <summary>
-    /// 事件 action 静态实现 — 无参 void/bool，信息从全局单例获取。
-    /// 配表 action/condition 列写 "EventActions.方法名"。
-    /// 奖励统一走 RunManager.GiveItem / AddGold / TrySpendGold。
-    /// </summary>
+    /// <summary>Static event actions; config tables reference them as "EventActions.MethodName".</summary>
     public static class EventActions
     {
         public static void GainGold()

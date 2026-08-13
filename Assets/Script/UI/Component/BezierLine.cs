@@ -9,8 +9,7 @@ public class BezierLine : MaskableGraphic
         [SerializeField] private int _segments = 24;
         [SerializeField] private Transform _startTarget;
         [SerializeField] private Transform _endTarget;
-        // 用作坐标系参考：把目标 world position 转到此 rect 的 local 空间
-        // 通常传入 _lineContainer（其 anchor/pivot 与 Content 等价，local 空间即 Content-local）
+        // Reference rect: target world positions are converted to this rect's local space
         [SerializeField] private RectTransform _referenceRect;
 
         public void SetEndpoints(Transform start, Transform end, RectTransform reference)

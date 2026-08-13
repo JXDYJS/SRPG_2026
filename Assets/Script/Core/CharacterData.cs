@@ -56,10 +56,7 @@ namespace Character
             private static Dictionary<string, CharacterData> _idIndex;
             private static bool _indexBuilt;
 
-            /// <summary>
-            /// 扫描 Resources/Data/Character/ 下所有 CharacterData SO，按 ID 建索引
-            /// 文件名不必须匹配 ID，只需放在该目录下即可
-            /// </summary>
+            /// <summary>Builds an ID index from all CharacterData assets in Resources/Data/Character/.</summary>
             private static void BuildIndex()
             {
                 if (_indexBuilt) return;
@@ -83,10 +80,7 @@ namespace Character
                 Debug.Log($"[CharacterData] BuildIndex: 扫描到 {_idIndex.Count} 个角色 ({CHARACTER_RESOURCES_PATH})");
             }
 
-            /// <summary>
-            /// 通过 ID 查找 CharacterData SO
-            /// 首次调用时自动扫描 Resources/Data/Character/ 建索引，后续走缓存
-            /// </summary>
+            /// <summary>Finds a CharacterData by ID, building the index on first call.</summary>
             public static CharacterData LoadByID(string id)
             {
                 if (string.IsNullOrEmpty(id))
@@ -105,10 +99,7 @@ namespace Character
                 return result;
             }
 
-            /// <summary>
-            /// 返回 Resources/Data/Character/ 下所有 CharacterData SO
-            /// 用于自动发现角色列表，不依赖 Inspector 拖拽
-            /// </summary>
+            /// <summary>Returns all CharacterData assets (auto-discovery, no inspector wiring needed).</summary>
             public static List<CharacterData> LoadAll()
             {
                 BuildIndex();

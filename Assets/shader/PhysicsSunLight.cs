@@ -16,7 +16,7 @@ public class PhysicsSunLight : MonoBehaviour
     public Material skyboxMaterial;
     public Texture2D transmittanceLUT; 
 
-    // 绝对遵循 Shader 中的物理常量
+    // These constants must match the shader's physics values.
     private const float Re = 6360.0f;
     private const float Ra = 6420.0f;
     private readonly Vector3 SOLAR_IRRADIANCE = new Vector3(1.68194f, 1.85149f, 1.91198f);
@@ -33,31 +33,21 @@ public class PhysicsSunLight : MonoBehaviour
     {
         if (skyboxMaterial == null || transmittanceLUT == null || dirLight == null) return;
 
-        // ==========================================
-        // 1. 核心：根据太阳角主动更新平行光的旋转方向
-        // ==========================================
-        // sunAngle 映射: 0 -> 0度(日出), 0.25 -> 90度(正午), 0.5 -> 180度(日落)
+        // Map sunAngle: 0=dawn, 0.25=noon, 0.5=sunset.
         float pitch = sunAngle * 360f; 
         
-        // 旋转平行光 (X轴控制白天黑夜的升降，Y轴控制纬度偏移)
         transform.rotation = Quaternion.Euler(pitch, sunDeclination, 0f);
 
-        // ==========================================
-        // 2. 获取真实的物理方向
-        // ==========================================
         Vector3 sunDir = -transform.forward;
         float mu_s = sunDir.y;
 
-        // 如果太阳在地平线以下（夜晚），关闭平行光并跳过后续计算
+        // Disable the light at night (sun below the horizon).
         if (mu_s < -0.05f) 
         {
             dirLight.intensity = 0;
             return;
         }
 
-        // ==========================================
-        // 3. 读取 Shader 参数并采样 LUT 计算颜色
-        // ==========================================
         float camHeight = skyboxMaterial.GetFloat("_CamHeight");
         float sunIntensity = skyboxMaterial.GetFloat("_SunIntensity");
         Color sunColorParam = skyboxMaterial.GetColor("_SunColor");
@@ -66,7 +56,6 @@ public class PhysicsSunLight : MonoBehaviour
         float r = Re + Mathf.Max(camHeight, 0.001f);
         Vector2 uv = GetTransmittanceUV(r, mu_s);
         
-        // 从 LUT 中精准读取预计算的大气透射率
         Color lutColor = transmittanceLUT.GetPixelBilinear(uv.x, uv.y);
         Vector3 transmittance = new Vector3(lutColor.r, lutColor.g, lutColor.b);
 
@@ -87,11 +76,6 @@ public class PhysicsSunLight : MonoBehaviour
                 r3.x * finalColor.x + r3.y * finalColor.y + r3.z * finalColor.z
             );
         }
-        //finalColor = max(finalColor, 0.0f);
-
-        // ==========================================
-        // 4. 将算出的物理颜色赋给 Unity 平行光
-        // ==========================================
         float maxLuminance = Mathf.Max(finalColor.x, Mathf.Max(finalColor.y, finalColor.z));
         if (maxLuminance > 0.0001f)
         {

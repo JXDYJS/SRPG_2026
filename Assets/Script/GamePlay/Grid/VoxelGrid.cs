@@ -9,7 +9,7 @@ namespace Grid
         public readonly int Depth;
 
         private readonly byte[] _voxels; 
-        // 0 = 空气, 1 = 实体墙, 2 = 半砖
+        // 0 = air, 1 = solid, 2 = half block
         public VoxelGrid(int width, int height, int depth)
         {
             Width = width;

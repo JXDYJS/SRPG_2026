@@ -8,14 +8,8 @@ using UnityEngine;
 namespace GamePlay.Event
 {
     /// <summary>
-    /// 事件流程编排 — 静态状态机。
-    ///
-    /// 流程：节点点击 → Start；窗口渲染当前屏选项；
-    /// 选项选中 → ExecuteAction（纯数据变更）→ 结果视图 → 确认 → 切 nextScreen（空则 Finish）。
-    ///
-    /// Action 均为无参静态方法，可覆盖两处纯数据字段：
-    ///   - ResultText：选中后的结果文本（未设置时用配表 option.result 兜底）
-    ///   - NextScreenOverride：下一屏（未设置时用配表 option.nextScreen，空 = 事件结束）
+    /// Static event flow state machine. Start renders the current screen's options; picking one
+    /// executes an action, shows the result, then resolves the next screen (empty = event ends).
     /// </summary>
     public static class EventFlow
     {
@@ -23,13 +17,13 @@ namespace GamePlay.Event
         public static TableData.EventConfig CurrentConfig { get; private set; }
         public static string CurrentScreenId { get; private set; }
 
-        /// <summary>Action 可覆盖的结果文本，每次执行 action 前清空</summary>
+        /// <summary>Result text an action can override; cleared before each action.</summary>
         public static string ResultText { get; set; }
 
-        /// <summary>Action 可覆盖的下一屏，优先级高于配表 nextScreen，读取后清空</summary>
+        /// <summary>Next screen an action can override; higher priority than the config, cleared on read.</summary>
         public static string NextScreenOverride { get; set; }
 
-        /// <summary>事件入口：按 eventId 解析配置并打开对应窗口</summary>
+        /// <summary>Entry point: resolve config by eventId and open the matching panel.</summary>
         public static void Start(EventNode node)
         {
             CurrentNode = node;
@@ -47,7 +41,7 @@ namespace GamePlay.Event
             CurrentConfig = config;
             CurrentScreenId = config.startScreen;
 
-            // panelName 非空 → 短路打开专用窗口（小游戏钩子）
+            // Non-empty panelName short-circuits to a dedicated panel (minigame hook).
             if (!string.IsNullOrEmpty(config.panelName))
             {
                 Type panelType = UIManager.ResolvePanelType(config.panelName);
@@ -64,14 +58,14 @@ namespace GamePlay.Event
             UIManager.Instance.OpenPanel<EventChoicePanel>(node, UILayer.Popup);
         }
 
-        /// <summary>渲染选项时判断可用性；condition 为空 = 恒可用</summary>
+        /// <summary>Whether an option is selectable; empty condition is always available.</summary>
         public static bool IsOptionAvailable(TableData.EventOption option)
         {
             if (string.IsNullOrEmpty(option.condition)) return true;
             return EventActionResolver.InvokeBool(option.condition);
         }
 
-        /// <summary>执行选项 action（纯数据变更），并清理覆盖字段</summary>
+        /// <summary>Execute the option's action (pure data change) and clear override fields.</summary>
         public static void ExecuteAction(TableData.EventOption option)
         {
             ResultText = null;
@@ -80,7 +74,7 @@ namespace GamePlay.Event
             EventActionResolver.Invoke(option.action);
         }
 
-        /// <summary>确认后决定下一屏；返回空表示事件结束</summary>
+        /// <summary>Resolve the next screen after confirmation; empty means the event ends.</summary>
         public static string ResolveNextScreen(TableData.EventOption option)
         {
             if (!string.IsNullOrEmpty(NextScreenOverride))
@@ -92,7 +86,7 @@ namespace GamePlay.Event
             return option.nextScreen;
         }
 
-        /// <summary>选中后要展示的结果文本：Action 覆盖优先，否则配表 result</summary>
+        /// <summary>Result text to display; action override takes priority over the config.</summary>
         public static string ResolveResultText(TableData.EventOption option)
         {
             if (!string.IsNullOrEmpty(ResultText)) return ResultText;

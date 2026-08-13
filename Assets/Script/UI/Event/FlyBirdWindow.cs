@@ -16,9 +16,9 @@ namespace UI.Panel
         public Transform BGContent;
         public RectMask2D Mask;
         public GameObject Obstacle;
-        public RectTransform OBSContent;    // 障碍物父容器(与BG平级的Content子节点)
-        public RectTransform birdRect;      // 鸟碰撞/位移节点(永不旋转)
-        public RectTransform birdSprite;    // 鸟视觉节点(只旋转朝向)
+        public RectTransform OBSContent;
+        public RectTransform birdRect;
+        public RectTransform birdSprite;
         public TextMeshProUGUI ResultText;
         public TextMeshProUGUI ScoreText;
         private HorizontalLayoutGroup BGLayout;
@@ -69,7 +69,7 @@ namespace UI.Panel
             CheckOutOfBounds();
         }
 
-        /// <summary>全屏按钮点击：未开始→开始并起跳；游戏中→扇翅；结束后→结算确认关闭回地图</summary>
+        /// <summary>Fullscreen click: start+flap if not started, flap mid-game, finish when game over.</summary>
         public void OnGameButtonClick()
         {
             if (_gameOver)
@@ -109,7 +109,6 @@ namespace UI.Panel
         }
         public void DeleteMaskObs()
         {
-            //因为保证新出现的在队列的尾端 所以从0开始遍历到第一个在mask内的就可以退出
             for (int i = 0; i < flyBirdObstacles.Count; i++)
             {
                 if (!flyBirdObstacles[i].IsFullyOffScreenLeft(GetMaskLeftWorldX()))
@@ -122,7 +121,6 @@ namespace UI.Panel
         public void CreateObs()
         {
             if (_obstaclePool == null) return;
-            //检查最后一个obs是否有边界 距离 屏幕边缘大于 设定距离
             if (flyBirdObstacles.Count > 0)
             {
                 var last = flyBirdObstacles[flyBirdObstacles.Count - 1];
@@ -130,12 +128,11 @@ namespace UI.Panel
                 if (distanceToRight < Data.Config.eventConfig.flyBirdData.spacing) return;
             }
 
-            //新生成的要设置锚点在content的屏幕外 也就是xmin = 1 xmax = 1 锚点x = 0 这样正好在外面
             GameObject go = _obstaclePool.Get();
             RectTransform rect = go.GetComponent<RectTransform>();
             rect.anchorMin = new Vector2(1f, 0f);
             rect.anchorMax = new Vector2(1f, 1f);
-            rect.pivot = new Vector2(0f, 0.5f);   // 左边缘对齐右边界 → 完全在屏幕外
+            rect.pivot = new Vector2(0f, 0.5f);
             rect.anchoredPosition = new Vector2(0f, 0f);
 
             EventConfigData.FlyBirdData cfg = Data.Config.eventConfig.flyBirdData;
@@ -149,7 +146,7 @@ namespace UI.Panel
             flyBirdObstacles.Add(obs);
         }
 
-        /// <summary>计算下一根管柱的洞中心Y。随机游走 + 反射边界(到达边界弹回，不粘底/顶)</summary>
+        /// <summary>Next pipe gap center Y; random walk with reflecting bounds.</summary>
         private float NextGapCenter(EventConfigData.FlyBirdData cfg)
         {
             if (flyBirdObstacles.Count == 0)
@@ -195,7 +192,6 @@ namespace UI.Panel
             RefreshScoreText();
         }
 
-        // ==================== 碰撞与结算 ====================
 
         private void CheckCollision()
         {
@@ -252,9 +248,7 @@ namespace UI.Panel
             }
         }
 
-        /// <summary>
-        /// 实测单张BG的周期宽度（含spacing），需在布局排版完成后调用
-        /// </summary>
+        /// <summary>Measured period width of one BG tile (incl. spacing); call after layout rebuild.</summary>
         private void MeasurePeriod()
         {
             if (BGContent == null || BGContent.childCount == 0) return;
@@ -264,12 +258,8 @@ namespace UI.Panel
             _period = first.rect.width + spacing;
         }
 
-        // ==================== 鸟物理(半隐式欧拉) ====================
 
-        /// <summary>
-        /// 每帧：先速度后位置。点击(鼠标/空格)累加上升速度，带连点间隔与上限，
-        /// 重力每帧累加，终端下落限速。birdSprite 按 vy 平滑旋转，birdRect 永不旋转。
-        /// </summary>
+        /// <summary>Per-frame bird update: integrate velocity, then rotate sprite.</summary>
         private void UpdateBird()
         {
             if (birdRect == null) return;
@@ -279,7 +269,7 @@ namespace UI.Panel
             RotateBird(cfg);
         }
 
-        /// <summary>点击(按钮)直接设定上升速度，经典Flappy手感：连点不会叠加，节奏可预测</summary>
+        /// <summary>Flap: sets upward velocity directly (classic Flappy feel, no stacking on rapid clicks).</summary>
         private void TryFlap()
         {
             EventConfigData.FlyBirdData cfg = Data.Config.eventConfig.flyBirdData;

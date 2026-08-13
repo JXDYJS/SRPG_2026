@@ -51,13 +51,11 @@ namespace UI.Panel
                 return;
             }
 
-            // 获取普通攻击技能，用于排除
             SkillDataSO normalAttackSkill = _currentUnit.NormalAttackSkill;
 
             for (int i = 0; i < _currentSkills.Count && i < _maxButtons; i++)
             {
                 SkillDataSO skill = _currentSkills[i];
-                // 排除普通攻击技能
                 if (skill != normalAttackSkill)
                 {
                     CreateSkillButton(skill, i);
@@ -119,7 +117,6 @@ namespace UI.Panel
                 _backButton = buttonObj.AddComponent<Button>();
             }
 
-            // 尝试获取TextMeshPro组件
             TMPro.TMP_Text buttonText = buttonObj.GetComponentInChildren<TMPro.TMP_Text>();
             if (buttonText != null)
             {
@@ -127,7 +124,6 @@ namespace UI.Panel
             }
             else
             {
-                // 兼容旧版Text组件
                 Text oldText = buttonObj.GetComponentInChildren<Text>();
                 if (oldText != null)
                 {

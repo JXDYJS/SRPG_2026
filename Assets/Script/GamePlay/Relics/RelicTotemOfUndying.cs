@@ -4,10 +4,7 @@ using Status.damage;
 
 namespace GamePlay.Relics
 {
-    /// <summary>
-    /// Totem of Undying 不死图腾 — 每场战斗抵挡一次致命伤害，保留 1 点生命。
-    /// 遗物为全局共享实例，故每场战斗全队共可抵挡一次（OnBattleStart 重置）。
-    /// </summary>
+    /// <summary>Negates one lethal hit per battle, leaving 1 HP (shared relic, resets each battle).</summary>
     public class RelicTotemOfUndying : RelicBase
     {
         private bool _usedThisBattle;

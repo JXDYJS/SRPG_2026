@@ -30,18 +30,15 @@ namespace UI.BootsTrap
             await RestoreRunAsync();
         }
 
-        // 提前初始化 Lua 虚拟机，将首次 require 全部 Lua 模块的耗时从
-        // 运行时第一次查询 Buff/遗物的那一帧转移到进入场景的启动阶段，避免卡顿。
+        // Pre-init the Lua VM so the first require of all Lua modules happens here, not on the runtime frame
         private void WarmUpLua()
         {
             _ = LuaManager.Instance;
         }
 
         /// <summary>
-        /// 读档恢复流程：
-        /// 1. 恢复队伍/遗物（PopulateFromSaveData，需等待 Addressables 技能加载）
-        /// 2. 有存档地图则用存档 nodeMapData，否则生成新地图并落盘
-        /// 3. 打开地图窗口并恢复玩家位置；新地图才解锁第一层（续档的锁定状态已持久化）
+        /// Restores the run: party/relics from save, map (saved or freshly generated),
+        /// then opens the map window and restores the player position.
         /// </summary>
         private async UniTask RestoreRunAsync()
         {

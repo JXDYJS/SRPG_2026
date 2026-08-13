@@ -14,9 +14,8 @@ using UnityEngine.InputSystem;
 namespace GamePlay.Battle
 {
     /// <summary>
-    /// DeploymentController — 部署阶段输入控制器
-    /// 管理"弹窗选人 → 点击格子放置"的完整交互流程
-    /// 由 BattleFlowManager 在 Deploying 状态激活
+    /// Deployment-phase input controller: character popup selection then grid placement.
+    /// Activated by BattleFlowManager in the Deploying state.
     /// </summary>
     public class DeploymentController : MonoBehaviour
     {
@@ -87,7 +86,7 @@ namespace GamePlay.Battle
             _selectedCharacterIndex = -1;
             IsActive = true;
 
-            // 屏蔽战斗输入控制器，避免硬编码互相感知
+            // Block combat input controller to avoid hard-coded coupling
             InputLock.PushLock("Deployment");
 
             GridVisualManager.Instance.ShowTilesHighlight(_validDeployZones, Color.cyan);
@@ -112,14 +111,12 @@ namespace GamePlay.Battle
 
             if (InputUtil.IsPointerOverUI)
             {
-                //Debug.Log("[Cursor] Hide: over UI");
                 GridVisualManager.Instance.HideCursor();
                 return;
             }
 
             if (!GridPositionTool.TryGetMouseGridPosition(mainCam, out Vector3Int hoverPos))
             {
-                //Debug.Log("[Cursor] Hide: raycast miss");
                 GridVisualManager.Instance.HideCursor();
                 return;
             }
@@ -130,12 +127,10 @@ namespace GamePlay.Battle
 
             if (IsValidDeployPosition(hoverPos))
             {
-                //Debug.Log($"[Cursor] Show at {hoverPos}");
                 GridVisualManager.Instance.ShowCursorAt(hoverPos);
             }
             else
             {
-                //Debug.Log($"[Cursor] Hide: pos {hoverPos} invalid (deployZones={_validDeployZones.Contains(hoverPos)}, canPut={GridVisualManager.CanPutOnGrid(hoverPos)}, unit={UnitManager.Instance.GetUnitAt(hoverPos) != null})");
                 GridVisualManager.Instance.HideCursor();
             }
         }
@@ -341,7 +336,7 @@ namespace GamePlay.Battle
 
         void OnDestroy()
         {
-            // 保护性弹出：异常退出时防止输入锁残留
+            // Guard: release the input lock if destroyed mid-deployment
             if (IsActive) InputLock.PopLock("Deployment");
             CleanupAllPreviews();
             if (Instance == this)

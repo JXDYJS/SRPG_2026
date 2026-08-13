@@ -14,7 +14,6 @@ namespace GamePlay.Skill
     {
         public static SkillSequenceResult ExecuteSequence(MapUnit caster, SkillTargetContext context, SkillDataSO skillData)
         {
-            //自定义技能用自定义逻辑
             if (skillData.isCustomSkill)
             {
                 if(skillData.CustomBehavior == null)
@@ -33,40 +32,12 @@ namespace GamePlay.Skill
                 return sequenceResult;
             }
 
-            // 检查条件：直线技能且碰到第一个目标时停止
-            // [旧实现 - 用 GetLinePath + 仅判断 != Air，无法处理半砖/楼梯的精确穿透]
-            // if (skillData.CastPattern == CastPatternType.Line && skillData.StopsAtFirstHit)
-            // {
-            //     List<Vector3Int> trajectory = Grid.AttackRangeSystem.GetLinePath(caster.gridPosition, context.TargetPosition);
-            //     foreach (Vector3Int pos in trajectory)
-            //     {
-            //         if (MapManager.Instance.logicalGrid.GetBlock(pos + Vector3Int.up) != BlockType.Air)
-            //         {
-            //             context.TargetPosition = pos;
-            //             Debug.Log($"弹道被地形阻挡，目标位置修正为：{pos}");
-            //             break;
-            //         }
-            //         MapUnit blockingUnit = UnitManager.Instance.GetUnitAt(pos);
-            //         if (blockingUnit != null)
-            //         {
-            //             context.TargetPosition = pos;
-            //             Debug.Log($"弹道被单位阻挡，目标位置修正为：{pos}");
-            //             break;
-            //         }
-            //     }
-            //     bool isValidTarget = Grid.AttackRangeSystem.IsValidTargetForCast(context.TargetPosition, skillData, caster.Faction);
-            //     if (!isValidTarget)
-            //     {
-            //         Debug.LogWarning("弹道拦截后目标无效，拒绝施法");
-            //         return sequenceResult;
-            //     }
-            // }
             bool hasScriptCastRange = skillData.CastRangeMode == SkillPhaseCastRangeMode.Script
                 && !string.IsNullOrEmpty(skillData.CastRangeFuncName);
 
             if (!hasScriptCastRange && skillData.CastPattern == CastPatternType.Line && skillData.StopsAtFirstHit)
             {
-                // DDA 体素遍历 + AABB 精确检测
+                // DDA voxel traversal + AABB exact hit detection
                 List<Vector3Int> trajectory = Grid.AttackRangeSystem.GetLinePath(caster.gridPosition, context.TargetPosition);
 
                 Vector3 eyeStart = caster.GetProjectileOrigin(skillData);
@@ -80,7 +51,6 @@ namespace GamePlay.Skill
 
                 foreach (Vector3Int pos in trajectory)
                 {
-                    // 地形阻挡检测（完整方块直接阻挡，半砖/楼梯用 AABB 精确检测）
                     Vector3Int checkPos = pos + Vector3Int.up;
                     BlockType block = MapManager.Instance.logicalGrid.GetBlock(checkPos);
 
@@ -106,7 +76,6 @@ namespace GamePlay.Skill
                         }
                     }
 
-                    // 单位阻挡检测
                     MapUnit blockingUnit = UnitManager.Instance.GetUnitAt(pos);
                     if (blockingUnit != null)
                     {
@@ -193,12 +162,10 @@ namespace GamePlay.Skill
             List<Vector3Int> aoeRange;
             if (skillData.Trajectory == TrajectoryType.SkyDrop)
             {
-                // 使用“垂直下落”扫描逻辑，确保每个 (x,z) 只打到最高层的人
                 aoeRange = Grid.AttackRangeSystem.GetSkyDropAoERange(context.TargetPosition, phase);
             }
             else
             {
-                // 使用原有的 3D 柱状/球形判定
                 aoeRange = Grid.AttackRangeSystem.GetAoERange3D(caster.gridPosition, context.TargetPosition, phase);
             }
 
@@ -231,15 +198,12 @@ namespace GamePlay.Skill
                     break;
 
                 case EffectType.RemoveBuff:
-                    // 根据移除模式处理 Buff 移除
                     if (effect.RemoveMode == BuffRemoveMode.RemoveSpecificStacks && effect.BuffStacks > 0)
                     {
-                        // 移除指定层数
                         targetResult.AppliedBuffs.Add(new BuffApplyInfo(effect.BuffID, -effect.BuffStacks));
                     }
                     else
                     {
-                        // 移除全部
                         targetResult.AppliedBuffs.RemoveAll(info => info.BuffID == effect.BuffID);
                     }
                     break;
@@ -265,8 +229,6 @@ namespace GamePlay.Skill
 
             target.TakeDamage(info);
 
-            // 创建伤害记录并添加到列表
-            //其实项目中暂时还没有引入暴击计算  所以这一个先为False
             DamageRecord damageRecord = new DamageRecord(
                 (int)info.damage,
                 effect.DamageType,
@@ -292,11 +254,10 @@ namespace GamePlay.Skill
 
             target.TakeHeal(healInfo);
             
-            // 创建治疗记录并添加到列表（使用负值表示治疗）
             DamageRecord healRecord = new DamageRecord(
-                -(int)healInfo.damage,  // 负值表示治疗
+                -(int)healInfo.damage,
                 DamageType.Heal,
-                false  // 治疗不会暴击
+                false
             );
             targetResult.DamageRecords.Add(healRecord);
         }

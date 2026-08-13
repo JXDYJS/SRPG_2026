@@ -23,9 +23,6 @@ namespace UI
             }
         }
         
-        /// <summary>
-        /// 初始化头像
-        /// </summary>
         public void Initialize(MapUnit unit)
         {
             _targetUnit = unit;
@@ -40,7 +37,6 @@ namespace UI
                 }
             }
             
-            // 确保动态获取Image组件
             if (iconImage == null)
             {
                 iconImage = GetComponent<Image>();
@@ -58,21 +54,15 @@ namespace UI
                 Debug.LogWarning($"TimelineIconUI: 单位 {unit?.name} 缺少Icon数据");
             }
             
-            // 强制设置长宽为20x20
             if (_rectTransform != null)
                 _rectTransform.sizeDelta = new Vector2(20f, 20f);
         }
         
-        /// <summary>
-        /// 更新头像位置
-        /// </summary>
-        /// <param name="trackWidth">跑道总宽度</param>
-        /// <param name="duration">移动持续时间</param>
         public void UpdatePosition(float trackWidth, float duration = 0.3f)
         {
             if (_targetUnit == null) return;
             
-            // 动态计算最大AV作为归一化除数（兼容任意Speed范围）
+            // Normalize by max AV in the queue to support any Speed range.
             float divisor = 100f;
             var tm = TurnManager.Instance;
             if (tm != null && tm.ActionQueue != null && tm.ActionQueue.Count > 0)
@@ -84,38 +74,24 @@ namespace UI
             }
             float progress = Mathf.Clamp01(_targetUnit.CurrentActionValue / divisor);
             
-            // 计算目标X坐标：从右向左移动
-            // 最右端 (X = trackWidth) 代表 AV = 100
-            // 最左端 (X = 0) 代表 AV = 0
+            // Right edge (X = trackWidth) maps to max AV; left edge (X = 0) to zero.
             float targetX = progress * trackWidth;
             
             MoveToTargetX(targetX, duration);
         }
         
-        /// <summary>
-        /// 移动到目标X坐标
-        /// </summary>
-        /// <param name="targetX">目标X坐标</param>
-        /// <param name="duration">移动持续时间</param>
         public void MoveToTargetX(float targetX, float duration = 0.3f)
         {
-            // 使用DOTween平滑移动
             _rectTransform.DOKill();
             _rectTransform.DOAnchorPosX(targetX, duration)
                 .SetEase(Ease.OutCubic);
         }
         
-        /// <summary>
-        /// 获取目标单位
-        /// </summary>
         public MapUnit GetTargetUnit()
         {
             return _targetUnit;
         }
         
-        /// <summary>
-        /// 淡出并销毁
-        /// </summary>
         public void FadeOutAndDestroy(float duration = 0.3f)
         {
             _rectTransform.DOKill();

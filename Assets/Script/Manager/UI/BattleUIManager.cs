@@ -1,4 +1,3 @@
-//CREATE BY GEMINI
 using UnityEngine;
 using GamePlay.Units;
 using GamePlay.Skill;
@@ -70,18 +69,6 @@ namespace Managers
             await _uiStack.Pop();
         }
 
-        // ====== 旧 AttributePanel（已废弃） ======
-        // public void ShowAttributePanel(MapUnit unit)
-        // {
-        //     var panel = UIManager.Instance.OpenPanel<AttributePanel>();
-        //     if (panel != null)
-        //         panel.Show(unit);
-        // }
-        // public void HideAttributePanel()
-        // {
-        //     UIManager.Instance.ClosePanel<AttributePanel>();
-        // }
-        // ====== 新 StatusPopWindow ======
         public void ShowAttributePanel(MapUnit unit)
         {
             var panel = UIManager.Instance.OpenPanel<StatusPopWindow>();

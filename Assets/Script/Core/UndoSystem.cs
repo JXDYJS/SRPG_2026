@@ -3,11 +3,11 @@ using UnityEngine;
 
 namespace Command
 {
-    // 所有能被撤销的对象（Unit, 地格, 全局变量）都要实现这个接口
+    // Implemented by every undoable object (units, tiles, globals)
     public interface ITrackable
     {
-        object CaptureState();       // 拍快照
-        void RestoreState(object state); // 读档
+        object CaptureState();
+        void RestoreState(object state);
     }
 
     public class UndoSystem : MonoBehaviour

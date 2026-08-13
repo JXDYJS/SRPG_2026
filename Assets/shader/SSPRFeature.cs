@@ -34,7 +34,6 @@ public class SSPRFeature : ScriptableRendererFeature
 
         public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData) {
             var cameraData = renderingData.cameraData;
-            // 1. 严格过滤非游戏相机
             if (cameraData.isSceneViewCamera || cameraData.isPreviewCamera) return;
             if (settings.ssprCompute == null) return;
 
@@ -43,7 +42,6 @@ public class SSPRFeature : ScriptableRendererFeature
             int w = camera.pixelWidth;
             int h = camera.pixelHeight;
 
-            // 缓存管理
             if (hashBuffer == null || hashBuffer.count != w * h) {
                 if (hashBuffer != null) hashBuffer.Release();
                 hashBuffer = new ComputeBuffer(w * h, sizeof(uint));
@@ -57,19 +55,16 @@ public class SSPRFeature : ScriptableRendererFeature
             int kernelRender = cs.FindKernel("SSPR_Render");
             int kernelResolve = cs.FindKernel("SSPR_Resolve");
 
-            // 2. 获取当前相机的 GPU 矩阵 (这是最稳妥的办法)
             Matrix4x4 gpuProj = GL.GetGPUProjectionMatrix(camera.projectionMatrix, true);
             Matrix4x4 viewMat = camera.worldToCameraMatrix;
             Matrix4x4 vpMatrix = gpuProj * viewMat;
 
-            // 3. 显式绑定：只使用当前相机的资源
             cmd.SetComputeTextureParam(cs, kernelRender, "_CameraColorTexture", cameraData.renderer.cameraColorTargetHandle);
             cmd.SetComputeTextureParam(cs, kernelRender, "_CameraDepthTexture", cameraData.renderer.cameraDepthTargetHandle);
             
             cmd.SetComputeMatrixParam(cs, "UNITY_MATRIX_VP", vpMatrix);
             cmd.SetComputeMatrixParam(cs, "UNITY_MATRIX_I_VP", vpMatrix.inverse);
 
-            // 4. 传递参数
             cmd.SetComputeVectorParam(cs, "_SSPR_RT_Size", new Vector4(w, h, 1f / w, 1f / h));
             cmd.SetComputeFloatParam(cs, "_ReflectPlaneHeight", settings.waterHeight);
             cmd.SetComputeFloatParam(cs, "_StretchIntensity", settings.stretchIntensity);
@@ -78,7 +73,6 @@ public class SSPRFeature : ScriptableRendererFeature
             cmd.SetComputeVectorParam(cs, "_CameraDirectionY", camera.transform.forward);
             cmd.SetComputeVectorParam(cs, "_ProjectionParams", new Vector4(SystemInfo.usesReversedZBuffer ? -1 : 1, camera.nearClipPlane, camera.farClipPlane, 1 / camera.farClipPlane));
 
-            // 5. 绑定 Buffer 与 Dispatch
             cmd.SetComputeBufferParam(cs, kernelClear, "_HashBuffer", hashBuffer);
             cmd.SetComputeBufferParam(cs, kernelRender, "_HashBuffer", hashBuffer);
             cmd.SetComputeBufferParam(cs, kernelResolve, "_HashBuffer", hashBuffer);
@@ -88,13 +82,10 @@ public class SSPRFeature : ScriptableRendererFeature
             int groupsX = Mathf.CeilToInt(w / 8.0f);
             int groupsY = Mathf.CeilToInt(h / 8.0f);
 
-            // Debug.Log($"Camera: {w}x{h}, DepthTexture: {cameraData.cameraTargetDescriptor.width}x{cameraData.cameraTargetDescriptor.height}");
-
             cmd.DispatchCompute(cs, kernelClear, groupsX, groupsY, 1);
             cmd.DispatchCompute(cs, kernelRender, groupsX, groupsY, 1);
             cmd.DispatchCompute(cs, kernelResolve, groupsX, groupsY, 1);
 
-            // 6. 发布全局纹理供 Water Shader 使用
             cmd.SetGlobalTexture("_SSPR_ReflectionTexture", reflectionRT);
             
             context.ExecuteCommandBuffer(cmd);

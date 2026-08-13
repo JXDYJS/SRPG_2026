@@ -3,12 +3,7 @@ using Status.state;
 
 namespace UI.Item
 {
-    /// <summary>
-    /// StatAdapter — Stat 适配器
-    ///
-    /// Stat 需要外部上下文（所属单位 + 标签名）才能显示 HP/MP 等完整文本，
-    /// 由 SlotContext 传入。数值变化（OnValueChanged）时桥接到描述 Changed。
-    /// </summary>
+    /// <summary>Bridges a Stat to an IItemDescriptor using the unit context and label from SlotContext.</summary>
     public class StatAdapter : ItemAdapter<Stat>
     {
         public override IItemDescriptor Adapt(Stat stat, SlotContext ctx)

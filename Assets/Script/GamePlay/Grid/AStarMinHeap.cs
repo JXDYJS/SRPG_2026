@@ -2,11 +2,7 @@ using System.Collections.Generic;
 
 namespace GamePlay.Grid
 {
-    /// <summary>
-    /// 二叉小顶堆 — 用于 A* 算法的 openSet，
-    /// ExtractMin O(log n)，Insert O(log n)，
-    /// 替代 LINQ OrderBy 和手动 O(n) 扫最小
-    /// </summary>
+    /// <summary>Binary min-heap for the A* open set: O(log n) extract/insert.</summary>
     public class AStarMinHeap
     {
         private List<Node> _heap = new List<Node>();
@@ -24,9 +20,6 @@ namespace GamePlay.Grid
             HeapifyUp(_heap.Count - 1);
         }
 
-        /// <summary>
-        /// 移除并返回 gCost 最小的节点
-        /// </summary>
         public Node ExtractMin()
         {
             Node min = _heap[0];

@@ -8,10 +8,8 @@ namespace Grid{
     {
         private Dictionary<Vector3Int, float> _gridScores = new Dictionary<Vector3Int, float>();
 
-        // 清空整张图
         public void Clear() => _gridScores.Clear();
 
-        // 叠加分数 (比如多个玩家都能打到这个格子，威胁值累加)
         public void AddScore(Vector3Int position, float score)
         {
             if (_gridScores.ContainsKey(position))
@@ -20,7 +18,7 @@ namespace Grid{
                 _gridScores.Add(position, score);
         }
 
-        // 获取分数（含方块本身的威胁值）
+        // Includes the block's own threat score.
         public float GetScore(Vector3Int position)
         {
             float score = _gridScores.TryGetValue(position, out float s) ? s : 0f;
@@ -32,7 +30,7 @@ namespace Grid{
             return score;
         }
 
-        // 枚举所有有分数的格子（用于调试可视化）
+        // For debug visualization.
         public IEnumerable<KeyValuePair<Vector3Int, float>> GetAllScores()
         {
             return _gridScores;

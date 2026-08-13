@@ -11,9 +11,7 @@ namespace GamePlay.Units
     {
         private bool _forcedKillContext;
 
-        /// <summary>
-        /// 假死中(undying_will > 0)仍视为存活，等待治疗复活；对外系统以此为准，不会被误判死亡
-        /// </summary>
+        /// <summary>Feigning death (undying_will > 0) still counts as alive to avoid misjudged deaths.</summary>
         public override bool IsAlive
         {
             get

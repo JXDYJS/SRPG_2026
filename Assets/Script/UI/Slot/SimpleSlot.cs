@@ -26,7 +26,7 @@ namespace UI.Slot
             }
         }
 
-        /// <summary>通过 Addressables 地址加载 Sprite，未配置或加载失败返回 null（由调用方决定兜底）</summary>
+        /// <summary>Loads a Sprite by Addressables address; returns null when unset or load fails.</summary>
         private static Sprite LoadAddressableSprite(string address)
         {
             if (string.IsNullOrEmpty(address)) return null;
@@ -35,7 +35,7 @@ namespace UI.Slot
 
         private List<Action> _unsubscribeActions = new List<Action>();
 
-        /// <summary>以运行时对象初始化，内部经 ItemView 解析为统一描述</summary>
+        /// <summary>Initializes from a runtime object, resolved via ItemView to a unified descriptor.</summary>
         public void Init(object item, SlotContext ctx = default)
         {
             Clear();
@@ -48,7 +48,7 @@ namespace UI.Slot
             Init(desc);
         }
 
-        /// <summary>以统一描述初始化（商店等场景可先由 ItemView.ResolveConfig 出描述）</summary>
+        /// <summary>Initializes from a unified descriptor (e.g. shop resolves config first).</summary>
         public void Init(IItemDescriptor desc)
         {
             Clear();
@@ -119,7 +119,6 @@ namespace UI.Slot
             TooltipHost.Hide();
         }
 
-        // ==================== 悬停提示 ====================
 
         public void OnPointerEnter(PointerEventData eventData)
         {

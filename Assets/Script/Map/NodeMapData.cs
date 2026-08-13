@@ -31,9 +31,7 @@ namespace Map
     [Serializable]
     public abstract class BaseNode : IMapNode
     {
-        // id 的 setter 是 private，Newtonsoft 默认不会反序列化私有 setter 的属性，
-        // 必须显式 [JsonProperty]，否则读档后节点 id 仍是构造器生成的随机 GUID，
-        // 导致 connections 里的引用（如 "n_002"）在 _nodeIdLookup 中匹配不到，连线消失。
+        // [JsonProperty] is required to deserialize the private id setter; otherwise saved connections break.
         [JsonProperty]
         public string id { get; private set; }
         public MapType type { get; protected set; }
@@ -84,7 +82,7 @@ namespace Map
     public struct ShopSlotData
     {
         public int price;
-        public string itemId;//一般情况下 就是 价格->一个商品 暂时不考虑特殊情况
+        public string itemId;
     }
 
     [Serializable]
@@ -131,7 +129,6 @@ namespace Map
             }
             if (sumCount < shopItemCount)
             {
-                // 差值不超过实际存在的稀有度数量，这里只对配表中已出现的稀有度分配
                 var types = new Global.RarityType[relicMap.Keys.Count];
                 relicMap.Keys.CopyTo(types, 0);
                 for (int i = 0; i < shopItemCount - sumCount; i++)
@@ -229,12 +226,10 @@ namespace Map
             BattleNode node2 = new("n_002") { level = "lv_002", row = 1, col = 1 };
             BattleNode node3 = new("n_003") { level = "lv_001", row = 0, col = 2 };
 
-            // 第一层并入商店节点（自动生成商品槽位）
             ShopNode shop = ShopNode.genShopNode();
             shop.row = 1;
             shop.col = 0;
 
-            // 第一层并入事件节点（FlyBird小游戏）
             EventNode eventNode = new("n_ev_flappy") { eventId = "ev_flappy", row = 2, col = 0 };
 
             node1.connections.Add(node2.id);

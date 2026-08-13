@@ -45,7 +45,6 @@ namespace UI.Panel
             Application.Quit();
         }
 
-        /// <summary>拉起加载页并启动场景加载流程</summary>
         private void StartLoad()
         {
             UIManager.Instance.ClosePanel<LaunchWindow>();
@@ -59,15 +58,9 @@ namespace UI.Panel
             RenderSettings.skybox = saveMat;
         }
 
-        /// <summary>
-        /// 异步加载 SampleScene 并驱动 LoadWindow 进度条。
-        /// SampleScene 是 Addressable 场景（Scenes 分组），必须用 Addressables.LoadSceneAsync，
-        /// 不能走 SceneManager（打包后 Build Settings 场景列表里没有它）。
-        /// 注意：加载完成后 LaunchScene 会卸载，因此这里只依赖 window（挂在 UIRoot/DontDestroyOnLoad 上）。
-        /// </summary>
+        /// <summary>Asynchronously loads SampleScene and drives the LoadWindow progress bar.</summary>
         public async UniTask LoadSamPleScene(LoadWindow window)
         {
-            // [临时测试] 改走 SceneManager 直接加载，验证是否 Addressable 场景依赖问题
             AsyncOperation op = SceneManager.LoadSceneAsync("SampleScene", LoadSceneMode.Single);
             op.allowSceneActivation = false;
 

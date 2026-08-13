@@ -5,7 +5,6 @@ namespace Managers
 {
     public class ShaderManager : MonoBehaviour
     {
-        // 单例模式，方便其他系统（如时间/回合管理器）调用
         public static ShaderManager Instance { get; private set; }
 
         [Header("水面设置")]
@@ -29,8 +28,6 @@ namespace Managers
             if (Instance == null)
             {
                 Instance = this;
-                // 如果需要跨场景保持这个管理器，可以取消下面这行的注释
-                // DontDestroyOnLoad(gameObject);
             }
             else
             {
@@ -54,26 +51,18 @@ namespace Managers
             Shader.SetGlobalInt(Shader.PropertyToID("_POM_FrameCount"), _pomFrameCount);
         }
 
-        /// <summary>
-        /// 定时刷新环境光协程
-        /// </summary>
         private IEnumerator UpdateEnvironmentGIRoutine()
         {
-            // 缓存 WaitForSeconds 以避免每次循环产生垃圾回收 (GC)
             WaitForSeconds wait = new WaitForSeconds(_refreshInterval);
 
             while (true)
             {
                 yield return wait;
                 
-                // 核心：强制 Unity 根据当前天空盒重新计算环境光
                 DynamicGI.UpdateEnvironment();
             }
         }
 
-        /// <summary>
-        /// 预留接口：用于外部控制天空盒参数（例如昼夜交替时改变天空颜色）
-        /// </summary>
         public void UpdateSkyboxParameters(Color skyTint, float exposure)
         {
             if (_skyboxMaterial != null)
@@ -83,7 +72,6 @@ namespace Managers
             }
         }
         
-        // 记得在脚本销毁时停止协程，养成好习惯
         private void OnDisable()
         {
             StopAllCoroutines();

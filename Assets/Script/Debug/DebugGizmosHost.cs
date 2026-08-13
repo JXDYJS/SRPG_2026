@@ -3,9 +3,7 @@ using Utils;
 
 namespace DebugSystem
 {
-    /// <summary>
-    /// DebugGizmos 渲染宿主 — 懒加载，由 DebugGizmos.EnsureHost() 自动创建
-    /// </summary>
+    /// <summary>Renders debug gizmos; lazily created via DebugGizmos.EnsureHost().</summary>
     public class DebugGizmosHost : MonoBehaviour
     {
         public static DebugGizmosHost Instance { get; private set; }

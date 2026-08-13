@@ -4,7 +4,7 @@ using GamePlay.Units;
 namespace GamePlay.Relics
 {
     /// <summary>
-    /// Beacon 信标 — 战斗开始，我方全体获得 1 层『力量』（攻击力 +1，不衰减）。
+    /// Beacon: at battle start, all allies gain 1 stack of 'Power' (ATK +1, no decay)
     /// </summary>
     public class RelicBeacon : RelicBase
     {

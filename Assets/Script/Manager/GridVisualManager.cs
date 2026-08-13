@@ -1,4 +1,3 @@
-//CREATE BY GEMINI
 using UnityEngine;
 using System.Collections.Generic;
 using Managers;
@@ -11,11 +10,10 @@ namespace GamePlay.Visual
         public static GridVisualManager Instance;
 
         [Header("高亮预制体")]
-        public GameObject selectHighlightPrefab; // 鼠标当前悬停的光圈
-        public GameObject rangeHighlightPrefab;  // 范围光圈 (蓝/红)
-        public GameObject lowlightPrefab; // 低亮光圈 (不可点击)
+        public GameObject selectHighlightPrefab;
+        public GameObject rangeHighlightPrefab;
+        public GameObject lowlightPrefab;
 
-        // 运行时实例
         private GameObject _cursorHighlightObj;
         private List<GameObject> _highlightPool = new List<GameObject>();
         private List<GameObject> _lowlightPool = new List<GameObject>();
@@ -26,7 +24,6 @@ namespace GamePlay.Visual
         {
             Instance = this;
             
-            // 初始化鼠标光圈
             if (selectHighlightPrefab != null)
             {
                 _cursorHighlightObj = Instantiate(selectHighlightPrefab, transform);
@@ -34,13 +31,12 @@ namespace GamePlay.Visual
             }
         }
 
-        // ================= 光标高亮 =================
 
         public void ShowCursorAt(Vector3Int gridPos)
         {
             if (_cursorHighlightObj == null) return;
 
-            // 悬停格上方是实体(如墙壁侧面)时不可站立，隐藏光圈避免残影停在上一格
+            // Hide when the tile above is solid; prevents a ghost cursor on the previous tile.
             var upPos = gridPos + new Vector3Int(0, 1, 0);
             if (MapManager.Instance.logicalGrid.GetBlock(upPos) != BlockType.Air)
             {
@@ -61,11 +57,10 @@ namespace GamePlay.Visual
             }
         }
 
-        // ================= 范围高亮 (使用对象池) =================
 
         public void ShowTilesHighlight(IEnumerable<Vector3Int> tiles, Color color)
         {
-            ClearHighlights(); // 先清理旧的
+            ClearHighlights();
 
             foreach (var pos in tiles)
             {
@@ -80,7 +75,7 @@ namespace GamePlay.Visual
         {
             foreach (var obj in _activeHighlights)
             {
-                obj.SetActive(false); // 放回池子
+                obj.SetActive(false);
             }
             _activeHighlights.Clear();
 
@@ -137,7 +132,6 @@ namespace GamePlay.Visual
                     return obj;
                 }
             }
-            // 没找到空闲的，就新建一个并归自己管
             GameObject newObj = Instantiate(rangeHighlightPrefab, transform);
             _highlightPool.Add(newObj);
             return newObj;
@@ -149,7 +143,7 @@ namespace GamePlay.Visual
             List<Vector3Int> valid = new List<Vector3Int>();
             foreach (var pos in positions)
             {
-                // 下方是实体方块，当前格是空气
+                // Tile is air with a solid block below.
                 if (MapManager.Instance.logicalGrid.GetBlock(pos) == BlockType.Air &&
                     MapManager.Instance.logicalGrid.GetBlock(pos + Vector3Int.down) != BlockType.Air)
                 {

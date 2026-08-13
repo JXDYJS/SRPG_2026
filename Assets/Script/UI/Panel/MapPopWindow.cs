@@ -138,9 +138,7 @@ namespace UI.Panel
                 .GetComponent<RectTransform>();
             _lineContainer.SetParent(Content, false);
             _lineContainer.SetAsFirstSibling();
-            // 完全复用 Content 的 anchor 结构：水平 stretch + 竖直单点锚 + pivot=(0.5,0)
-            // 这样 lc 矩形与 Content 矩形完全重合，lc-local 坐标系等价于 Content-local。
-            // 必须 sizeDelta.y > 0，否则 rect 退化被 RectMask2D cull，曲线不渲染。
+            // Mirror Content anchors so line-local coords equal Content-local; sizeDelta.y must stay > 0 or RectMask2D culls the curves.
             _lineContainer.anchorMin = new Vector2(0, 0);
             _lineContainer.anchorMax = new Vector2(1, 0);
             _lineContainer.pivot = new Vector2(0.5f, 0f);
@@ -153,9 +151,6 @@ namespace UI.Panel
             lineTemplate.AddComponent<BezierLine>();
             var lt = lineTemplate.GetComponent<RectTransform>();
             lt.SetParent(_lineContainer, false);
-            // 填满 _lineContainer：anchorMin/Max 完全 stretch，pivot 与 lc 一致 (0.5,0)，
-            // 使 line-local (0,0) 与 lc-local (0,0) (= Content-local (0,0)) 重合。
-            // sizeDelta 为 0 即直接继承 lc 的矩形，足够大不会触发 RectMask2D cull。
             lt.anchorMin = Vector2.zero;
             lt.anchorMax = Vector2.one;
             lt.pivot = new Vector2(0.5f, 0f);
@@ -180,7 +175,6 @@ namespace UI.Panel
             }
         }
 
-        // 找到某 (layerIdx, row) 对应的 Icon Transform，找不到返回 null
         private Transform GetNodeIconTransform(int layerIdx, int row)
         {
             for (int i = 0; i < _activeLayers.Count; i++)
@@ -234,8 +228,7 @@ namespace UI.Panel
 
                 Transform srcIcon = GetNodeIconTransform(conn.Item1, conn.Item2);
                 Transform tgtIcon = GetNodeIconTransform(conn.Item3, conn.Item4);
-                // 若起点或终点不在可见层的已激活 slot 中，跳过这条线，
-                // 等用户滚动到对应层、该 Icon 实例激活后再建立连接
+                // Skip until both icons are active; lines are established lazily on scroll.
                 if (srcIcon == null || tgtIcon == null) continue;
 
                 var go = _linePool.Get();
@@ -297,7 +290,7 @@ namespace UI.Panel
             }
             Refresh();
 
-            // 解锁下一层后立即持久化，保证续档恢复的是最新锁定状态
+            // Persist immediately so a reloaded save reflects the latest unlock state.
             SaveCurrentProgress();
         }
         public void unLockFirstLayer()
@@ -309,23 +302,19 @@ namespace UI.Panel
             }
         }
 
-        /// <summary>恢复玩家位置（读档时由 Bootstrap 在 Init 后调用）</summary>
+        /// <summary>Restores player position (called by Bootstrap after Init on load).</summary>
         public void SetPlayerPosition(int layer, int row)
         {
             playerLayer = layer;
             playerRow = row;
         }
 
-        /// <summary>把当前地图进度（nodeMapData + 玩家位置）写入存档并落盘</summary>
         public void SaveCurrentProgress()
         {
             MapPersistence.SaveMap(nodeMapData, playerLayer, playerRow);
         }
 
-        /// <summary>
-        /// 保存进度并返回主菜单（仅地图界面提供此入口，节点/战斗内不可退出）。
-        /// 先落盘再清面板缓存，最后切回 LaunchScene。
-        /// </summary>
+        /// <summary>Saves and returns to the main menu (map screen only).</summary>
         public void QuitToMainMenu()
         {
             SaveCurrentProgress();
@@ -341,9 +330,7 @@ namespace UI.Panel
         }
         private async UniTask BackToLaunchWindow()
         {
-            // 先落盘进度，再销毁全部面板（地图窗口随之释放），最后切回主菜单。
-            // 面板挂在 DontDestroyOnLoad 的 UIRoot 下，切场景不会自动销毁，必须在此提前清理，
-            // 否则地图窗口会一直压在 LaunchScene 之上且池化对象不释放。
+            // Panels live on a DontDestroyOnLoad UIRoot, so destroy them before switching scenes.
             SaveCurrentProgress();
             if (UIManager.Instance != null)
             {

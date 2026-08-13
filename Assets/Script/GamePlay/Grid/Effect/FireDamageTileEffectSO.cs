@@ -14,10 +14,9 @@ public class FireDamageTileEffectSO : TileEffectSO
     {
         if (unit == null || !unit.IsAlive) return;
 
-        // 生成伤害信息并扣血
         DamageInfo info = new DamageInfo(
             damageAmount,
-            null, // 地形伤害没有来源单位
+            null, // No source unit for environmental damage.
             unit,
             damageType,
             DamageMethod.Environment

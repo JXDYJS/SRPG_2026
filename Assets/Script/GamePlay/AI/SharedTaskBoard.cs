@@ -5,22 +5,12 @@ using Core.Data;
 
 namespace GamePlay.AI
 {
-    /// <summary>
-    /// 共享任务板 — 跨单位协调，目前只保留"集火计数"一项职责。
-    ///
-    /// 集火衰减：多个队友盯上同一目标时，该目标对单个单位的边际攻击价值下降，
-    /// 引导 AI 分散火力而非过度集火（在 BattleValueEvaluator 中应用）。
-    ///
-    /// 覆盖率/战略分子系统已随统一价值引擎废弃删除。
-    /// </summary>
+    /// <summary>Cross-unit coordination; currently only tracks focus-fire commitments.</summary>
     public class SharedTaskBoard : MonoBehaviour
     {
         public static SharedTaskBoard Instance { get; private set; }
 
-        /// <summary>
-        /// 按单位承诺：unit -> 它当前计划要攻击的目标列表。
-        /// 由 AI 选定行动时整体重建（UpdateUnitCommitments），因此承诺自带时效。
-        /// </summary>
+        /// <summary>unit -> its current planned attack targets; rebuilt each AI turn.</summary>
         private Dictionary<MapUnit, List<MapUnit>> _unitCommitments = new();
 
         public void Awake()
@@ -29,10 +19,7 @@ namespace GamePlay.AI
             Instance = this;
         }
 
-        /// <summary>
-        /// 重建某个单位的承诺目标列表（整体替换实现自过期）。
-        /// targets 为 null/空 表示该单位当前没有承诺任何目标。
-        /// </summary>
+        /// <summary>Replace a unit's commitment targets; an empty list clears the entry.</summary>
         public void UpdateUnitCommitments(MapUnit unit, List<MapUnit> targets)
         {
             if (unit == null) return;
@@ -46,10 +33,7 @@ namespace GamePlay.AI
             }
         }
 
-        /// <summary>
-        /// 集火衰减因子 (0~1)：除 actingUnit 外还有多少存活单位承诺同一目标。
-        /// 每多一个队友 → 衰减 focusFirePenaltyPerUnit，下限 commitmentPenaltyFloor。
-        /// </summary>
+        /// <summary>Focus-fire decay (0~1) based on how many other units share the same target.</summary>
         public float GetCommitmentFactor(MapUnit actingUnit, MapUnit target)
         {
             if (target == null)
@@ -64,7 +48,6 @@ namespace GamePlay.AI
                 MapUnit unit = kv.Key;
                 if (unit == null || !unit.IsAlive)
                 {
-                    // 惰性清理已阵亡单位的承诺记录，避免字典随死亡无限增长
                     (deadUnits ??= new List<MapUnit>()).Add(unit);
                     continue;
                 }

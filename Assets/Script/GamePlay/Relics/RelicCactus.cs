@@ -5,7 +5,7 @@ using Status.damage;
 namespace GamePlay.Relics
 {
     /// <summary>
-    /// Cactus 仙人掌 — 被敌人攻击命中时，反弹 2 点伤害给攻击者。
+    /// Cactus: reflects 2 damage to the attacker when hit.
     /// </summary>
     public class RelicCactus : RelicBase
     {

@@ -4,10 +4,8 @@ using UnityEngine;
 namespace UI.Item
 {
     /// <summary>
-    /// IItemDescriptor — 槽位内容统一描述接口
-    ///
-    /// SimpleSlot 等 UI 只依赖本接口渲染，不关心具体是 buff/stat/skill/relic。
-    /// 各类型的差异由 ItemView 注册的适配器在 Adapt 时抹平，UI 侧不再写 if 判别。
+    /// Unified descriptor for slot contents; UI renders only through this interface.
+    /// Type differences are handled by ItemView adapters.
     /// </summary>
     public interface IItemDescriptor
     {

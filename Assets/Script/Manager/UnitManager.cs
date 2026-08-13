@@ -11,29 +11,24 @@ namespace Managers
     {
         public static UnitManager Instance { get; private set; }
 
-        // 存储所有活跃单位的列表
         private List<MapUnit> allUnits = new List<MapUnit>();
         
-        // 坐标 -> 单位 的快速查找字典 (用于碰撞检测：我想去的格子上有没有人？)
         private Dictionary<Vector3Int, MapUnit> unitPositions = new Dictionary<Vector3Int, MapUnit>();
         public Action onUnitDead;
 
-        // 逻辑/视觉分离：逻辑层死亡时只登记，由视觉层统一播放死亡动画
+        // Logic/view split: logic only registers death; the view layer plays the animation
         private readonly HashSet<MapUnit> _pendingDeathAnims = new HashSet<MapUnit>();
 
         /// <summary>
-        /// 尚未播放死亡动画的单位数量（供游戏管理器判断是否可结束游戏）。
+        /// Count of units with pending death animations (used by the game manager to decide game over).
         /// </summary>
         public int PendingDeathAnimCount => _pendingDeathAnims.Count;
 
         /// <summary>
-        /// 所有待播放的死亡动画已播放完成（游戏管理器可在此重新判断是否结束游戏）。
+        /// Fired when all pending death animations have finished.
         /// </summary>
         public event Action AllDeathAnimationsFinished;
 
-        /// <summary>
-        /// 登记死亡（逻辑层 Die() 调用，只登记不播放）。
-        /// </summary>
         public void RegisterDeath(MapUnit unit)
         {
             if (unit != null && unit.View != null)
@@ -43,8 +38,7 @@ namespace Managers
         }
 
         /// <summary>
-        /// 播放所有待播放的死亡动画（视觉层在所有技能动画解释完后调用）。
-        /// 播放完毕触发 AllDeathAnimationsFinished。
+        /// Plays all pending death animations, then fires AllDeathAnimationsFinished.
         /// </summary>
         public async UniTask FlushDeathAnimations()
         {
@@ -90,7 +84,6 @@ namespace Managers
             }
         }
 
-        // 注册单位
         public void RegisterUnit(MapUnit unit)
         {
             if (!allUnits.Contains(unit))
@@ -100,7 +93,6 @@ namespace Managers
             }
         }
 
-        // 注销单位 (死亡时)
         public void UnregisterUnit(MapUnit unit)
         {
             if (allUnits.Contains(unit))
@@ -113,22 +105,18 @@ namespace Managers
             }
         }
 
-        // 更新单位坐标记录
         public void UpdateUnitPosition(MapUnit unit, in Vector3Int oldPos)
         {
-            // 移除旧位置记录
             if (unitPositions.ContainsKey(oldPos) && unitPositions[oldPos] == unit)
             {
                 unitPositions.Remove(oldPos);
             }
             
-            // 记录新位置
-            // 注意：这里简单的覆盖了，实际游戏中如果格子上已经有人，可能需要处理重叠逻辑
+            // NOTE: position is overwritten; overlap handling may be needed later
             if (!unitPositions.ContainsKey(unit.gridPosition))
             {
                 unitPositions[unit.gridPosition] = unit;
             }
-            //触发格子效果
             MapManager mapManager = MapManager.Instance;
             if(mapManager != null)
             {
@@ -157,7 +145,6 @@ namespace Managers
             }
         }
 
-        // 获取某格子的单位 (用于 A* 判断是否被敌方阻挡)
         public MapUnit GetUnitAt(in Vector3Int pos)
         {
             if (unitPositions.TryGetValue(pos, out MapUnit unit))
@@ -180,14 +167,10 @@ namespace Managers
             return units;
         }
 
-        // 获取所有注册的单位
         public List<MapUnit> GetAllUnits()
         {
             return new List<MapUnit>(allUnits);
         }
-       /// <summary>
-        /// 触发所有 unit 所在方块的 OnStay 逻辑
-        /// </summary> 
         public void AllUnitOnStay()
         {
             if(allUnits != null)
@@ -206,9 +189,6 @@ namespace Managers
                 }
             }
         }
-        /// <summary>
-        /// 触发 unit 所在方块的 OnStay 逻辑
-        /// </summary>
         public void unitOnStay(MapUnit unit)
         {
             if (allUnits.Contains(unit))

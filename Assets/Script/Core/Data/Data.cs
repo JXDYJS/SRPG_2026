@@ -5,7 +5,7 @@ using System;
 
 namespace Core.Data
 {
-    /// <summary>启动存档模式：Continue=读旧档（无档则新建），NewGame=删除旧档建新档</summary>
+    /// <summary>Start mode: Continue loads the old save (creates if none), NewGame deletes and starts fresh</summary>
     public enum StartMode
     {
         Continue,
@@ -13,16 +13,7 @@ namespace Core.Data
     }
 
     /// <summary>
-    /// Data — 全局数据根节点（静态单例）
-    ///
-    /// 访问约定：
-    ///   Data.Config.AIConfig.categoryBand           // 配置
-    ///   Data.Runtime.Battle.CurrentRound            // 运行时
-    ///   Data.Persistent.Save()                      // 持久化
-    ///
-    /// 启动流程：
-    ///   launch 菜单在切场景前设置 Data.PendingStartMode，
-    ///   战斗场景 Bootstrap 启动时调用 CreatePersistent(PendingStartMode) 并复位标志。
+    /// Global data root (static singleton): Config, Runtime, Persistent.
     /// </summary>
     public static class Data
     {
@@ -43,12 +34,11 @@ namespace Core.Data
         }
 
         /// <summary>
-        /// 待消费的启动模式：由 launch 菜单在切场景前设置，Bootstrap 读取后应复位。
-        /// 默认 Continue 保证无 launch 菜单的开发流程行为不变。
+        /// Start mode set by the launch menu before switching scenes; Bootstrap reads and resets it
         /// </summary>
         public static StartMode PendingStartMode = StartMode.Continue;
 
-        /// <summary>初始化持久化存档（按启动模式读档或开新档）</summary>
+        /// <summary>Initializes persistent save data (loads or starts fresh per mode)</summary>
         public static void CreatePersistent(StartMode mode = StartMode.Continue)
         {
             if (mode == StartMode.NewGame)
@@ -72,7 +62,6 @@ namespace Core.Data
         }
     }
 
-    // ======================== 容器类 ========================
 
     public class ConfigData
     {
@@ -89,7 +78,7 @@ namespace Core.Data
         public readonly BattleRuntimeData Battle = new BattleRuntimeData();
     }
 
-    /// <summary>存档摘要，供 launch 界面展示（不持有完整存档）</summary>
+    /// <summary>Save summary for the launch UI (does not hold the full save)</summary>
     public class SaveSummary
     {
         public bool Exists;
@@ -111,15 +100,14 @@ namespace Core.Data
         private static readonly Newtonsoft.Json.JsonSerializerSettings _jsonSettings =
             new() { TypeNameHandling = Newtonsoft.Json.TypeNameHandling.Auto };
 
-        /// <summary>是否存在存档文件</summary>
+        /// <summary>Whether a save file exists</summary>
         public static bool HasSaveFile()
         {
             return global::System.IO.File.Exists(SavePath);
         }
 
         /// <summary>
-        /// 读取存档摘要（launch 界面展示用）。
-        /// 无档返回 Exists=false 的摘要，文件损坏/反序列化异常时返回 Exists=false 并告警。
+        /// Reads the save summary for the launch UI; Exists=false if missing or corrupt
         /// </summary>
         public static SaveSummary LoadSummary()
         {
@@ -153,7 +141,7 @@ namespace Core.Data
             }
         }
 
-        /// <summary>持久化存档到磁盘</summary>
+        /// <summary>Persists save data to disk</summary>
         public void Save()
         {
             Data.saveTime = global::System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
@@ -162,7 +150,7 @@ namespace Core.Data
             Debug.Log($"[PersistentData] Saved to {SavePath}");
         }
 
-        /// <summary>从磁盘加载存档，若文件不存在或损坏则返回 null</summary>
+        /// <summary>Loads the save from disk; null if missing or corrupt</summary>
         public static PersistentData Load()
         {
             if (!global::System.IO.File.Exists(SavePath))
@@ -184,7 +172,7 @@ namespace Core.Data
             }
         }
 
-        /// <summary>重置存档（新游戏）</summary>
+        /// <summary>Deletes save data (new game)</summary>
         public static void Reset()
         {
             if (global::System.IO.File.Exists(SavePath))

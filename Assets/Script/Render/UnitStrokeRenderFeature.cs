@@ -9,12 +9,11 @@ public class UnitStrokeRenderFeature : ScriptableRendererFeature
 {
     static readonly int k_ObjColorTextureId = Shader.PropertyToID("_ObjColorTexture");
 
-    /// <summary>供游戏逻辑直接调用：UnitStrokeRenderFeature.SetUnitColor(objID, color)</summary>
     public static UnitStrokeRenderFeature Instance { get; private set; }
 
-    // objID(0..255) -> 单位。objID 同时写入 GBuffer G 通道（单位 renderer 的 _ObjectID MPB）
+    // objID (0..255) -> unit; objID also written into the GBuffer G channel via _ObjectID MPB.
     static readonly Dictionary<int, MapUnit> s_UnitById = new Dictionary<int, MapUnit>();
-    static int s_NextId = 1; // 0 保留给非单位（方块等）
+    static int s_NextId = 1; // 0 reserved for non-units
 
     [System.Serializable]
     public class Settings
@@ -34,16 +33,11 @@ public class UnitStrokeRenderFeature : ScriptableRendererFeature
     {
         EnsureRuntimeAssets();
         m_ScriptablePass = new StrokePass(this);
-        // 依赖 GBufferRenderFeature 先执行（同为 BeforeRenderingPostProcessing，
-        // 顺序由渲染器资产 m_RendererFeatures 列表序决定，GBuffer 在前）。调序前先确认。
+        // Depends on GBufferRenderFeature running first (same pass event; order set by renderer feature list).
         m_ScriptablePass.renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing;
         Instance = this;
     }
 
-    /// <summary>
-    /// 自动创建运行时材质（Custom/UnitStroke）与 256x1 单位颜色查色表。
-    /// settings.Mat 可留空；若已指定，会拷贝一份实例使用，避免污染原始材质资产。
-    /// </summary>
     void EnsureRuntimeAssets()
     {
         if (m_ObjColors == null)
@@ -77,7 +71,7 @@ public class UnitStrokeRenderFeature : ScriptableRendererFeature
         m_RuntimeMat.SetTexture(k_ObjColorTextureId, m_ObjColors);
     }
 
-    /// <summary>设置某个 objID（GBuffer G 通道 1..255）对应的描边颜色</summary>
+    /// <summary>Sets the outline color for an objID (GBuffer G channel 1..255).</summary>
     public static void SetUnitColor(int objID, Color color)
     {
         Instance?.SetUnitColorInternal(objID, color);
@@ -91,12 +85,8 @@ public class UnitStrokeRenderFeature : ScriptableRendererFeature
         m_ObjColors.Apply(false);
     }
 
-    // ==================== 单位 objID 注册 ====================
 
-    /// <summary>
-    /// 单位生成时调用：分配稳定 objID，并把 _ObjectID 写入所有 renderer 的 MaterialPropertyBlock，
-    /// 使 GBuffer 的 G 通道记录该单位 id。返回分配的 objID（-1 表示失败）。
-    /// </summary>
+    /// <summary>Registers a unit, assigning a stable objID written to its renderers' MPBs. Returns the objID (-1 on failure).</summary>
     public static int RegisterUnit(MapUnit unit)
     {
         if (unit == null) return -1;
@@ -115,7 +105,7 @@ public class UnitStrokeRenderFeature : ScriptableRendererFeature
         return id;
     }
 
-    /// <summary>单位销毁/移除时调用，释放 objID 槽位</summary>
+    /// <summary>Releases a unit's objID slot.</summary>
     public static void RemoveUnit(MapUnit unit)
     {
         if (unit == null || Instance == null) return;
@@ -136,11 +126,7 @@ public class UnitStrokeRenderFeature : ScriptableRendererFeature
         if (key >= 0) s_UnitById.Remove(key);
     }
 
-    /// <summary>
-    /// 按当前规则刷新整张颜色表：
-    ///   非行动单位=白色；行动中 Player=绿 / Enemy=红 / 其他阵营(Neutral/Guard)=橙；死亡=透明(不描边)。
-    /// 在 TurnManager.ActiveUnit 变化时调用。
-    /// </summary>
+    /// <summary>Refreshes the color table for the current active unit (white otherwise; transparent when dead).</summary>
     public static void RefreshColors()
     {
         Instance?.RefreshColorsInternal();
@@ -158,7 +144,7 @@ public class UnitStrokeRenderFeature : ScriptableRendererFeature
             Color c;
             if (unit == null || !unit.IsAlive)
             {
-                c = new Color(0, 0, 0, 0); // 死亡：透明
+                c = new Color(0, 0, 0, 0); // Dead: transparent
             }
             else if (unit == active)
             {
@@ -179,7 +165,7 @@ public class UnitStrokeRenderFeature : ScriptableRendererFeature
         {
             case FactionType.Player: return Color.green;
             case FactionType.Enemy:  return Color.red;
-            default:                 return new Color(1f, 0.55f, 0f); // Neutral/Guard 橙色
+            default:                 return new Color(1f, 0.55f, 0f); // Neutral/Guard orange
         }
     }
 
@@ -211,11 +197,8 @@ public class UnitStrokeRenderFeature : ScriptableRendererFeature
             {
                 var source = renderingData.cameraData.renderer.cameraColorTargetHandle;
 
-                // 1. 用描边材质把当前画面颜色处理后写入临时 RT
-                //    Blitter 会把 source 绑定为 _BlitTexture（与项目 ApplyExposure 相同的已验证写法）
                 Blitter.BlitCameraTexture(cmd, source, m_SceneColor, mat, 0);
 
-                // 2. 拷回相机目标
                 cmd.Blit(m_SceneColor, source);
             }
             context.ExecuteCommandBuffer(cmd);
