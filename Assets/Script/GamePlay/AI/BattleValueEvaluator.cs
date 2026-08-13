@@ -154,13 +154,14 @@ namespace GamePlay.AI
             float oppGain = (oppLand - oppNow) * Data.Config.AIConfig.futureDiscount;
 
             // 2. 推进价值：沿 A* 路径向敌人推进（够不着时前压的主要价值来源）。
-            //    仅当"当前位置打不到"时才给推进价值——本回合能打到时应直接攻击，
-            //    避免推进分压过真实攻击分。两侧都够不着时用保底推进值，保证"该前压就前压"。
+            //    仅当"当前位置打不到且落点也打不到"时才给推进价值——落点已够得着时，
+            //    机会增量(oppGain)已把 oppLand 全额计过一遍，此处不得重复计价。
+            //    两侧都够不着时用保底推进值，保证"该前压就前压"。
             float advanceValue = 0f;
-            if (oppNow <= 0f)
+            if (oppNow <= 0f && oppLand <= 0f)
             {
-                float refValue = Mathf.Max(oppLand, Data.Config.AIConfig.advanceBaseValue);
-                advanceValue = refValue * Mathf.Clamp01(pathProgress) * Data.Config.AIConfig.futureDiscount;
+                advanceValue = Data.Config.AIConfig.advanceBaseValue
+                             * Mathf.Clamp01(pathProgress) * Data.Config.AIConfig.futureDiscount;
             }
 
             float baseValue = Mathf.Max(0f, oppGain + advanceValue);
@@ -174,13 +175,17 @@ namespace GamePlay.AI
             float safetyFloor = -baseValue * Data.Config.AIConfig.safetyCapRatio;
             float cappedSafety = Mathf.Clamp(safetyGain, safetyFloor, Data.Config.AIConfig.safetyMaxValue);
 
-            // 4. 生存价值（有界）：死亡风险降低 → 保住自身未来贡献（撤退候选主要靠此项）
+            // 4. 生存价值（有界）：死亡风险降低 → 保住自身未来贡献（撤退候选主要靠此项）。
+            //    保住贡献按机会净增量计：本回合能打到(oppNow>0)时，撤退意味着放弃这次攻击，
+            //    只能按 (oppLand − oppNow) 的净增益估值，不许白赚牺牲掉的本回合伤害，避免反复踱步。
             float survivalGain = 0f;
             float deathRiskNow = Mathf.Clamp01(threatFactorNow * Data.Config.AIConfig.survivalWeight);
             float deathRiskLand = Mathf.Clamp01(threatFactorLand * Data.Config.AIConfig.survivalWeight);
             if (deathRiskLand < deathRiskNow)
             {
-                float contribution = Mathf.Max(oppNow, oppLand, Data.Config.AIConfig.advanceBaseValue);
+                float contribution = oppNow <= 0f
+                    ? Mathf.Max(oppLand, Data.Config.AIConfig.advanceBaseValue)
+                    : Mathf.Max(0f, oppLand - oppNow);
                 survivalGain = Mathf.Clamp(
                     (deathRiskNow - deathRiskLand) * contribution,
                     0f, Data.Config.AIConfig.survivalMaxValue);
