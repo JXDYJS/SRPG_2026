@@ -61,6 +61,7 @@ namespace UI.Panel
         private readonly List<RewardSlot> _slots = new List<RewardSlot>();
         private bool _animating;
         private Action _externalOnAllClaimed;
+        private float _spacingX = 10f;
 
         protected override void Awake()
         {
@@ -106,6 +107,7 @@ namespace UI.Panel
                 return;
             }
 
+            AutoComputeSpacing();
             ClearContent();
             _slots.Clear();
             _animating = false;
@@ -116,6 +118,30 @@ namespace UI.Panel
                 SetSlotPosition(slot, i);
                 _slots.Add(slot);
             }
+        }
+
+        /// <summary>
+        /// Spreads one row evenly across the content width (same idea as
+        /// ItemWindow's auto spacing): space = (width - SlotSize*RowCount) / (RowCount-1).
+        /// </summary>
+        private void AutoComputeSpacing()
+        {
+            if (RowCount <= 1)
+            {
+                _spacingX = Spacing.x;
+                return;
+            }
+
+            float neededWidth = SlotSize * RowCount;
+            float contentWidth = Content.rect.width;
+            if (contentWidth < neededWidth)
+            {
+                Debug.LogWarning($"RewardWindow: Content 宽度 {contentWidth} 小于所需 {neededWidth}，使用配置间距 {Spacing.x}");
+                _spacingX = Spacing.x;
+                return;
+            }
+
+            _spacingX = (contentWidth - neededWidth) / (RowCount - 1);
         }
 
         private RewardSlot CreateSlot(RewardData data)
@@ -157,7 +183,7 @@ namespace UI.Panel
         {
             int col = index % RowCount;
             int row = index / RowCount;
-            return new Vector2(col * (SlotSize + Spacing.x), -row * (SlotSize + Spacing.y));
+            return new Vector2(col * (SlotSize + _spacingX), -row * (SlotSize + Spacing.y));
         }
 
         // ================ Claim flow ================
@@ -245,7 +271,7 @@ namespace UI.Panel
                 .AsyncWaitForCompletion();
 
             // Spawn the replacement outside the right edge of the target row.
-            Vector2 entryPos = new Vector2(RowCount * (SlotSize + Spacing.x), target.y);
+            Vector2 entryPos = new Vector2(RowCount * (SlotSize + _spacingX), target.y);
             RewardSlot newSlot = CreateSlot(data);
             if (newSlot == null)
             {
