@@ -58,6 +58,7 @@ namespace GamePlay.Battle
         private List<CharacterMeta> _characterMetas = new List<CharacterMeta>();
         private List<MapUnit> _previewUnits = new List<MapUnit>();
         private List<AsyncOperationHandle<GameObject>> _previewAssetHandles = new List<AsyncOperationHandle<GameObject>>();
+        private bool _levelEnded;
 
         void Awake()
         {
@@ -69,7 +70,7 @@ namespace GamePlay.Battle
             }
         }
 
-        async void Start()
+        void Start()
         {
             UnitManager.Instance.AllDeathAnimationsFinished += () =>
             {
@@ -440,6 +441,12 @@ namespace GamePlay.Battle
         }
         public void EndLevel()
         {
+            if (_levelEnded)
+            {
+                return;
+            }
+            _levelEnded = true;
+
             // Run battle-end hooks before cleanup so relics/buffs can finalize.
             foreach (var unit in UnitManager.Instance.GetAllAliveUnit())
             {

@@ -20,6 +20,14 @@ namespace Managers
         private readonly HashSet<MapUnit> _pendingDeathAnims = new HashSet<MapUnit>();
 
         /// <summary>
+        /// True while a skill/movement sequence is playing: death animations are
+        /// deferred and flushed by the sequence itself when it ends.
+        /// </summary>
+        private bool _actionBusy;
+
+        private bool _isFlushing;
+
+        /// <summary>
         /// Count of units with pending death animations (used by the game manager to decide game over).
         /// </summary>
         public int PendingDeathAnimCount => _pendingDeathAnims.Count;
@@ -29,25 +37,44 @@ namespace Managers
         /// </summary>
         public event Action AllDeathAnimationsFinished;
 
+        /// <summary>Marks that an action sequence (skill/move) is playing; auto-flush is suppressed meanwhile.</summary>
+        public void SetActionBusy(bool busy)
+        {
+            _actionBusy = busy;
+        }
+
         public void RegisterDeath(MapUnit unit)
         {
             if (unit != null && unit.View != null)
             {
                 _pendingDeathAnims.Add(unit);
+
+                // Outside an action sequence, settle death animations immediately so
+                // AllDeathAnimationsFinished can fire (e.g. debug kills, terrain deaths).
+                if (!_actionBusy)
+                {
+                    FlushDeathAnimations().Forget();
+                }
             }
         }
 
         /// <summary>
         /// Plays all pending death animations, then fires AllDeathAnimationsFinished.
+        /// Re-entrant safe; deaths arriving mid-flush are settled by a follow-up pass.
         /// </summary>
         public async UniTask FlushDeathAnimations()
         {
+            if (_isFlushing)
+            {
+                return;
+            }
             if (_pendingDeathAnims.Count == 0)
             {
                 AllDeathAnimationsFinished?.Invoke();
                 return;
             }
 
+            _isFlushing = true;
             List<MapUnit> batch = new List<MapUnit>(_pendingDeathAnims);
             _pendingDeathAnims.Clear();
 
@@ -71,6 +98,15 @@ namespace Managers
             }
 
             await UniTask.WhenAll(tasks);
+
+            _isFlushing = false;
+
+            // New deaths that arrived while flushing are settled on the next pass.
+            if (_pendingDeathAnims.Count > 0)
+            {
+                await FlushDeathAnimations();
+                return;
+            }
 
             AllDeathAnimationsFinished?.Invoke();
         }

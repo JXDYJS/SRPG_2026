@@ -82,6 +82,7 @@ namespace Command
         private IEnumerator MoveRoutine()
         {
             _unit.SwitchState(UnitState.Moving);
+            UnitManager.Instance.SetActionBusy(true);
 
             foreach (var step in _path)
             {
@@ -121,6 +122,7 @@ namespace Command
             _unit.SwitchState(UnitState.Idle);
 
             // Movement may trigger terrain death; settle death animations here
+            UnitManager.Instance.SetActionBusy(false);
             UnitManager.Instance.FlushDeathAnimations().Forget();
 
             IsFinished = true;

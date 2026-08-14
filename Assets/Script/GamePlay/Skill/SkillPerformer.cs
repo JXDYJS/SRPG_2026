@@ -30,40 +30,48 @@ namespace GamePlay.Skill
 
             caster.RecordCurrentFacing();
 
-            if (sequenceResult.Context != null && sequenceResult.Context.TargetPosition != caster.gridPosition)
+            // Suppress auto death-flush while the sequence plays; flush on exit.
+            UnitManager.Instance.SetActionBusy(true);
+            try
             {
-                Vector3 targetWorldPos = MapUnit.GetGridHitPoint(sequenceResult.Context.TargetPosition);
-
-                await UniTask.Create(() =>
+                if (sequenceResult.Context != null && sequenceResult.Context.TargetPosition != caster.gridPosition)
                 {
-                    var tcs = new UniTaskCompletionSource();
+                    Vector3 targetWorldPos = MapUnit.GetGridHitPoint(sequenceResult.Context.TargetPosition);
 
-                    caster.RotateTowardsTargetSmoothly(targetWorldPos, () =>
+                    await UniTask.Create(() =>
                     {
-                        tcs.TrySetResult();
+                        var tcs = new UniTaskCompletionSource();
+
+                        caster.RotateTowardsTargetSmoothly(targetWorldPos, () =>
+                        {
+                            tcs.TrySetResult();
+                        });
+
+                        return tcs.Task;
                     });
-
-                    return tcs.Task;
-                });
-            }
-
-            for (int i = 0; i < sequenceResult.PhaseResults.Count; i++)
-            {
-                PhaseResult phaseResult = sequenceResult.PhaseResults[i];
-                SkillPhase phaseData = GetPhaseData(skillData, i);
-
-                if (phaseData == null)
-                {
-                    continue;
                 }
 
-                await PerformSinglePhase(caster, phaseResult, phaseData, skillData);
+                for (int i = 0; i < sequenceResult.PhaseResults.Count; i++)
+                {
+                    PhaseResult phaseResult = sequenceResult.PhaseResults[i];
+                    SkillPhase phaseData = GetPhaseData(skillData, i);
+
+                    if (phaseData == null)
+                    {
+                        continue;
+                    }
+
+                    await PerformSinglePhase(caster, phaseResult, phaseData, skillData);
+                }
             }
+            finally
+            {
+                caster.RestoreRecordedFacing();
+                UnitManager.Instance.SetActionBusy(false);
 
-            caster.RestoreRecordedFacing();
-
-            // Resolve death animations only after all skill visuals finish.
-            await UnitManager.Instance.FlushDeathAnimations();
+                // Resolve death animations only after all skill visuals finish.
+                await UnitManager.Instance.FlushDeathAnimations();
+            }
         }
 
         private static SkillPhase GetPhaseData(SkillDataSO skillData, int phaseIndex)
