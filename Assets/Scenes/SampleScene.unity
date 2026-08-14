@@ -5409,6 +5409,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 871549bde3b5c7942a1be368d9ecd18b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ChestPrefab:
+    m_AssetGUID: 5e24b48bd811474499f5b41eed3b925c
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  VictoryGoldMin: 100
+  VictoryGoldMax: 200
+  VictoryRelicCount: 1
+  VictoryItemCount: 1
   currentState: 0
 --- !u!1 &1157633741
 GameObject:
@@ -6910,7 +6919,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 22400762, guid: 67117722a812a2e46ab8cb8eafbf5f5e, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.000022888184
+      value: 0.0000038146973
       objectReference: {fileID: 0}
     - target: {fileID: 22426080, guid: 67117722a812a2e46ab8cb8eafbf5f5e, type: 3}
       propertyPath: m_AnchorMax.x

@@ -17,6 +17,11 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: f98965fa04444ca45ae9c9174dbcebc1
   m_SerializeEntries:
+  - m_GUID: 06e09af6f51f2ff468c4f9af6faaff9f
+    m_Address: Assets/UI/Battle/ItemWindow.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 121455ccbdbc7c81eb825ee1458d5bfc
     m_Address: Assets/Animation/zombie/zombie.controller
     m_ReadOnly: 0
@@ -24,6 +29,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4f2f2d43fc7d2fe4ea7a00cf22e95ca2
     m_Address: Assets/Mob/arrow.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5e24b48bd811474499f5b41eed3b925c
+    m_Address: Assets/UI/Battle/Slot/ChestSlot.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -39,6 +49,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a4c2d593add6b1b43a126c05ef3969a8
     m_Address: Assets/Mob/arrowRight.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b2d90b6129351a44197962a72e65cc50
+    m_Address: Assets/UI/Battle/RewardWindow.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
