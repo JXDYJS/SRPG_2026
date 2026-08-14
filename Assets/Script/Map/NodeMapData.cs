@@ -49,7 +49,6 @@ namespace Map
             }
         }
         [JsonIgnore] public Action<bool> _onLockChange;
-        [JsonIgnore] public Action _onEnterNode;
         protected BaseNode() : this(null)
         {
         }
@@ -57,10 +56,6 @@ namespace Map
         {
             this.id = id ?? Guid.NewGuid().ToString("N");
             isLock = true;
-            _onEnterNode += () =>
-            {
-                this.isLock = true;
-            };
         }
     }
 

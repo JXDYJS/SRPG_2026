@@ -94,12 +94,9 @@ namespace UI.Slot
                 {
                     EventFlow.Start(eventNode);
                 }
-                node._onEnterNode.Invoke();
-
-                if (win != null)
-                {
-                    win.SaveCurrentProgress();
-                }
+                // No lock/save here: the node must stay playable until it completes,
+                // otherwise quitting mid-node persists a dead-locked map. Lock + next
+                // layer unlock happen atomically in MapPopWindow.NextLevel().
             });
 
             this.node._onLockChange += updateMask;

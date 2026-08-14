@@ -279,7 +279,13 @@ namespace UI.Panel
             var node = nodes.Find(n => n.col == playerLayer && n.row == playerRow);
             if (node == null) return;
 
-            node.isLock = true;
+            // Lock the whole layer (one node per layer), then unlock the node's
+            // connections. This is the single persisted lock transition; entering a
+            // node no longer locks/saves, so quitting mid-node stays recoverable.
+            foreach (var n in nodes)
+            {
+                n.isLock = true;
+            }
             foreach (var conn in node.connections)
             {
                 if (!_nodeIdLookup.TryGetValue(conn, out var nextNodeLayerRow)) continue;

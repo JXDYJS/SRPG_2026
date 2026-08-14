@@ -70,6 +70,9 @@ namespace UI.BootsTrap
             if (freshMap)
             {
                 MapPopWindow.unLockFirstLayer();
+                // Persist the unlocked first layer immediately; otherwise quitting
+                // before the first NextLevel leaves a save with every node locked.
+                MapPopWindow.SaveCurrentProgress();
             }
         }
     }
