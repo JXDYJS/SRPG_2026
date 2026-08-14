@@ -10,12 +10,12 @@ using UnityEngine.UI;
 
 namespace UI.Panel
 {
-    /// <summary>One grantable battle reward; itemId follows ItemCatalog ("gold" / "r_*" / item id).</summary>
+    /// <summary>One grantable battle reward; ItemId follows ItemCatalog ("gold" / "r_*" / item id).</summary>
     [System.Serializable]
     public class RewardData
     {
-        public string itemId;
-        public int amount = 1;
+        public string ItemId;
+        public int Amount = 1;
 
         public RewardData()
         {
@@ -23,16 +23,16 @@ namespace UI.Panel
 
         public RewardData(string itemId, int amount = 1)
         {
-            this.itemId = itemId;
-            this.amount = amount;
+            ItemId = itemId;
+            Amount = amount;
         }
     }
 
     /// <summary>Open payload carrying rewards plus a callback fired when all are claimed.</summary>
     public class RewardOpenContext
     {
-        public List<RewardData> rewards;
-        public Action onAllClaimed;
+        public List<RewardData> Rewards;
+        public Action OnAllClaimed;
     }
 
     /// <summary>
@@ -84,8 +84,8 @@ namespace UI.Panel
 
             if (data is RewardOpenContext ctx)
             {
-                _externalOnAllClaimed = ctx.onAllClaimed;
-                SetRewards(ctx.rewards);
+                _externalOnAllClaimed = ctx.OnAllClaimed;
+                SetRewards(ctx.Rewards);
             }
             else if (data is List<RewardData> rewards)
             {
@@ -160,12 +160,12 @@ namespace UI.Panel
                 return null;
             }
 
-            IItemDescriptor desc = ItemView.ResolveByID(data.itemId);
+            IItemDescriptor desc = ItemView.ResolveByID(data.ItemId);
             if (desc == null)
             {
-                Debug.LogWarning($"RewardWindow: unknown reward id '{data.itemId}'");
+                Debug.LogWarning($"RewardWindow: unknown reward id '{data.ItemId}'");
             }
-            slot.Init(desc, data.amount, OnSlotClaimed);
+            slot.Init(desc, data.Amount, OnSlotClaimed);
             return slot;
         }
 
@@ -213,7 +213,7 @@ namespace UI.Panel
             RewardData data = _rewards[index];
             if (RunManager.Instance != null)
             {
-                RunManager.Instance.GiveItem(data.itemId, data.amount);
+                RunManager.Instance.GiveItem(data.ItemId, data.Amount);
             }
 
             // Claimed slot shrinks and disappears.

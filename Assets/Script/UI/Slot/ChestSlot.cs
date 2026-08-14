@@ -9,14 +9,14 @@ namespace UI.Slot
 {
     /// <summary>
     /// Victory chest spawned in the battle scene. Clicking it opens the reward
-    /// window with the configured rewards; onAllClaimed is invoked when every
+    /// window with the configured rewards; OnAllClaimed is invoked when every
     /// reward has been claimed (set by the battle flow).
     /// </summary>
     public class ChestSlot : MonoBehaviour
     {
         public Button btn;
         public List<RewardData> rewards = new List<RewardData>();
-        public Action onAllClaimed;
+        public Action OnAllClaimed;
 
         public void OnEnable()
         {
@@ -30,8 +30,8 @@ namespace UI.Slot
         {
             var ctx = new RewardOpenContext
             {
-                rewards = rewards,
-                onAllClaimed = onAllClaimed,
+                Rewards = rewards,
+                OnAllClaimed = OnAllClaimed,
             };
             UIManager.Instance.OpenPanel<RewardWindow>(ctx);
             gameObject.SetActive(false);

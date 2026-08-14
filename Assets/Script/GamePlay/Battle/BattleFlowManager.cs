@@ -552,7 +552,7 @@ namespace GamePlay.Battle
             }
 
             chest.rewards = BuildVictoryRewards();
-            chest.onAllClaimed = ReturnToMapAfterRewards;
+            chest.OnAllClaimed = ReturnToMapAfterRewards;
             Debug.Log($"[FLOW] 胜利宝箱已生成，奖励 {chest.rewards.Count} 项");
         }
 

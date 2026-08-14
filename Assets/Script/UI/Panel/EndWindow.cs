@@ -21,7 +21,7 @@ namespace UI.Panel
         {
             if (exitBtn != null)
             {
-                exitBtn.onClick.AddListener(backToLaunch);
+                exitBtn.onClick.AddListener(BackToLaunch);
             }
         }
 
@@ -29,7 +29,7 @@ namespace UI.Panel
         {
             if (exitBtn != null)
             {
-                exitBtn.onClick.RemoveListener(backToLaunch);
+                exitBtn.onClick.RemoveListener(BackToLaunch);
             }
         }
 
@@ -51,16 +51,16 @@ namespace UI.Panel
             }
         }
 
-        public void backToLaunch()
+        public void BackToLaunch()
         {
-            _backToLaunch().Forget();
+            BackToLaunchAsync().Forget();
         }
 
         /// <summary>
         /// Destroys all UI panels (they live on a DontDestroyOnLoad UIRoot),
         /// then asynchronously loads the launch scene.
         /// </summary>
-        public async UniTask _backToLaunch()
+        public async UniTask BackToLaunchAsync()
         {
             if (UIManager.Instance != null)
             {
