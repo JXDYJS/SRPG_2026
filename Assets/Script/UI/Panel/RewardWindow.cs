@@ -50,8 +50,13 @@ namespace UI.Panel
         public RectTransform Content;
         public GameObject RewardSlotPrefab;
         public Button BgBtn;
-        public int RowCount = 4;
-        public float SlotSize = 100f;
+
+        // Default grid config: 180px-wide content fits 3 slots of 50 with 15px auto spacing.
+        private const int DEFAULT_ROW_COUNT = 3;
+        private const float DEFAULT_SLOT_SIZE = 50f;
+
+        public int RowCount = DEFAULT_ROW_COUNT;
+        public float SlotSize = DEFAULT_SLOT_SIZE;
         public Vector2 Spacing = new Vector2(10f, 10f);
 
         /// <summary>Fired when every reward has been claimed (caller can return to the map).</summary>

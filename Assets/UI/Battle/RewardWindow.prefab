@@ -345,10 +345,11 @@ MonoBehaviour:
   _enterDirection: 0
   _exitDirection: 1
   Content: {fileID: 6583976087065384788}
-  RewardSlotPrefab: {fileID: 3087692342465678124, guid: db51bf08d653a9447804f679ec65abb7, type: 3}
+  RewardSlotPrefab: {fileID: 3087692342465678124, guid: db51bf08d653a9447804f679ec65abb7,
+    type: 3}
   BgBtn: {fileID: 0}
-  RowCount: 4
-  SlotSize: 100
+  RowCount: 3
+  SlotSize: 50
   Spacing: {x: 10, y: 10}
 --- !u!1 &4375625356986724716
 GameObject:
@@ -626,7 +627,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1aa08ab6e0800fa44ae55d278d1423e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Content: {fileID: 0}
+  m_Content: {fileID: 6583976087065384788}
   m_Horizontal: 0
   m_Vertical: 1
   m_MovementType: 1
