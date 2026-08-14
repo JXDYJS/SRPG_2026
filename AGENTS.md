@@ -114,11 +114,13 @@ using Character.instance;
 - **No exception swallowing**: Let exceptions bubble up unless handling specifically
 
 ### Commenting Guidelines
-- **Chinese comments** for complex logic explanation (primary language)
-- **English comments** for public APIs and technical details
+- **English, concise comments** (primary language): short single-line `/// <summary>...` for public APIs; keep them minimal and factual
+- **No AI-style decoration**: no section-divider banners, no "history/fix" explanations, no multi-line prose where one line suffices
+- **Inline comments**: sparingly, in English, explaining *why* (not *what*); delete redundant `// 注释` noise
+- **Log messages**: use English (same style as comments)
 - **Section headers**: Use `// ================` separators for large methods
 - **TODO markers**: `// TODO: Refactor this method`
-- **Inspector documentation**: Use `[Tooltip("description")]` and `[Header("section")]`
+- **Inspector documentation**: Use `[Tooltip("description")]` and `[Header("section")]` (Chinese OK for editor-facing labels)
 
 ### Function Design
 - **Method size**: Keep methods focused (aim for < 50 lines)
@@ -166,7 +168,7 @@ When working on this project:
 2. **Follow existing patterns** in similar files
 3. **Test changes in Unity Editor** before committing
 4. **Update CONCERNS.md** when addressing technical debt
-5. **Use Chinese comments** for gameplay logic, English for technical details
+5. **Follow Commenting Guidelines above**: concise English comments, no AI-style decoration, English log messages
 6. **Check .planning/STATE.md** for project status and blockers
 
 ## Quick Reference

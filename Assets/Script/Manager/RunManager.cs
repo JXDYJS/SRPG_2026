@@ -25,6 +25,9 @@ namespace Managers
         public List<RelicBase> Relics = new List<RelicBase>();
         public List<CharacterInstance> MyTeam = new List<CharacterInstance>();
 
+        /// <summary>Party-shared consumable stock: itemId -&gt; remaining uses.</summary>
+        private readonly Dictionary<string, int> _itemStock = new Dictionary<string, int>();
+
         void Awake()
         {
             if (Instance == null)
@@ -66,6 +69,7 @@ namespace Managers
         {
             MyTeam.Clear();
             Relics.Clear();
+            _itemStock.Clear();
             Debug.Log("[RunManager] Run 运行时状态已重置");
         }
 
@@ -117,7 +121,8 @@ namespace Managers
 
         /// <summary>
         /// Unified item grant entry, routed by category (shared with ItemView via ItemCatalog).
-        /// Currency adds gold (amount used); Relic is created and kept (amount ignored).
+        /// Currency adds gold (amount used); Relic is created and kept (amount ignored);
+        /// Item adds to the shared stock (clamped to maxStock).
         /// Purchase rules like pouch conversion stay in PurchaseItem.
         /// </summary>
         public bool GiveItem(string itemId, int amount = 1)
@@ -137,8 +142,71 @@ namespace Managers
                 case ItemKind.Character:
                     Debug.LogWarning($"[RunManager] giveitem 暂不支持角色: {itemId}");
                     return false;
+                case ItemKind.Item:
+                    return AddItemStock(itemId, amount);
             }
             return false;
+        }
+
+        /// <summary>Remaining uses of an item; 0 when not held.</summary>
+        public int GetItemStock(string itemId)
+        {
+            return _itemStock.TryGetValue(itemId, out int stock) ? stock : 0;
+        }
+
+        /// <summary>Whether the item is held (stock &gt; 0).</summary>
+        public bool HasItem(string itemId)
+        {
+            return GetItemStock(itemId) > 0;
+        }
+
+        /// <summary>Consumes 1 use; false when out of stock. Persists to save.</summary>
+        public bool TryConsumeItem(string itemId)
+        {
+            if (!_itemStock.TryGetValue(itemId, out int stock) || stock <= 0)
+            {
+                Debug.LogWarning($"[RunManager] Consume failed, out of stock: {itemId}");
+                return false;
+            }
+
+            _itemStock[itemId] = stock - 1;
+            SaveItems();
+            Debug.Log($"[RunManager] Consumed {itemId} x1, remaining: {_itemStock[itemId]}");
+            return true;
+        }
+
+        /// <summary>Adds amount to stock, clamped to maxStock; persists to save.</summary>
+        private bool AddItemStock(string itemId, int amount)
+        {
+            if (amount <= 0) return false;
+            if (!Data.Table.ItemConfigs.TryGetValue(itemId, out TableData.ItemConfig cfg))
+            {
+                Debug.LogWarning($"[RunManager] giveitem unknown item: {itemId}");
+                return false;
+            }
+
+            int current = GetItemStock(itemId);
+            int maxStock = cfg.maxStock > 0 ? cfg.maxStock : int.MaxValue;
+            _itemStock[itemId] = Mathf.Min(current + amount, maxStock);
+            SaveItems();
+            Debug.Log($"[RunManager] Gained {itemId} x{amount}, current: {_itemStock[itemId]} (max {maxStock})");
+            return true;
+        }
+
+        /// <summary>Writes runtime stock back to the save dictionary and persists.</summary>
+        private void SaveItems()
+        {
+            if (Data.Persistent?.Data == null) return;
+
+            Data.Persistent.Data.items.Clear();
+            foreach (var kvp in _itemStock)
+            {
+                if (kvp.Value > 0)
+                {
+                    Data.Persistent.Data.items[kvp.Key] = kvp.Value;
+                }
+            }
+            Data.Persistent.Save();
         }
 
         /// <summary>
@@ -193,6 +261,20 @@ namespace Managers
                     else Debug.LogWarning($"[RunManager] 无法恢复遗物: {relicId}");
                 }
                 Debug.Log($"[RunManager] 恢复了 {Relics.Count} 个遗物");
+            }
+
+            // Restore party-shared item stock (itemId -> count)
+            _itemStock.Clear();
+            if (Data.Persistent?.Data?.items != null)
+            {
+                foreach (var kvp in Data.Persistent.Data.items)
+                {
+                    if (!string.IsNullOrEmpty(kvp.Key) && kvp.Value > 0)
+                    {
+                        _itemStock[kvp.Key] = kvp.Value;
+                    }
+                }
+                Debug.Log($"[RunManager] Restored {_itemStock.Count} item types");
             }
         }
 

@@ -17,6 +17,9 @@ namespace Core.Data.Persistent
         public List<CharacterSaveData> party = new List<CharacterSaveData>();
         public List<string> relics = new List<string>();
 
+        /// <summary>Party-shared consumable stock: itemId -&gt; remaining uses.</summary>
+        public Dictionary<string, int> items = new Dictionary<string, int>();
+
         public PlayerProgressData progress = new PlayerProgressData();
 
         public int highestClearedStage;

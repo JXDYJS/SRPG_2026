@@ -49,7 +49,7 @@ namespace UI.Slot
         }
 
         /// <summary>Initializes from a unified descriptor (e.g. shop resolves config first).</summary>
-        public void Init(IItemDescriptor desc)
+        public virtual void Init(IItemDescriptor desc)
         {
             Clear();
             _desc = desc;
@@ -109,11 +109,11 @@ namespace UI.Slot
             _unsubscribeActions.Clear();
             _desc = null;
         }
-        public void OnDestroy()
+        public virtual void OnDestroy()
         {
             Clear();
         }
-        public void OnDisable()
+        public virtual void OnDisable()
         {
             Clear();
             TooltipHost.Hide();

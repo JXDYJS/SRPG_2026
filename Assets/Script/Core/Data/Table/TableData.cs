@@ -97,6 +97,17 @@ namespace Core.Data
             public float resBonusPercent;
         }
 
+        public struct ItemConfig
+        {
+            public string id;
+            public string name;
+            public string desc;
+            public string iconPath;
+            public int maxStock;
+            public Global.RarityType rarity;
+            public string skillPath;
+        }
+
         public struct RelicConfig
         {
             public string id;
@@ -141,6 +152,14 @@ namespace Core.Data
         {
             { "n_003", new() { id = "n_003", eventId = "ev_chest" } },
             { "n_004", new() { id = "n_004", eventId = "ev_gamble" } }
+        };
+
+        public readonly Dictionary<string, ItemConfig> ItemConfigs = new()
+        {
+            { "it_potion_hp", new() { id = "it_potion_hp", name = "Health Potion", desc = "Restore HP to allied units within 1 tile (scales with caster ATK).", iconPath = "Assets/textures/item/splash_potion.png", maxStock = 3, rarity = Global.RarityType.Common, skillPath = "Data/Skill/HealSkill - Copy" } },
+            { "it_potion_atk", new() { id = "it_potion_atk", name = "Strength Potion", desc = "Grant an attack buff to a selected allied unit.", iconPath = "Assets/textures/item/potion.png", maxStock = 3, rarity = Global.RarityType.Common, skillPath = "Data/Skill/Strength" } },
+            { "it_potion_atk_aoe", new() { id = "it_potion_atk_aoe", name = "Greater Strength Potion", desc = "Grant an attack buff to all allied units within 1 tile.", iconPath = "Assets/textures/item/lingering_potion.png", maxStock = 2, rarity = Global.RarityType.Uncommon, skillPath = "Data/Skill/Strength" } },
+            { "it_fire_potion", new() { id = "it_fire_potion", name = "Fire Potion", desc = "Hurl a burning flask at the target to deal fire damage to enemies.", iconPath = "Assets/textures/item/experience_bottle.png", maxStock = 2, rarity = Global.RarityType.Uncommon, skillPath = "Data/Skill/Fireball" } }
         };
 
         public readonly Dictionary<string, LevelConfig> LevelConfigs = new()

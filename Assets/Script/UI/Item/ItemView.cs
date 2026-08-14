@@ -59,6 +59,8 @@ namespace UI.Item
                     };
                 case ItemKind.Relic:
                     return Data.Table.RelicConfigs.TryGetValue(itemId, out var cfg) ? RelicAdapter.FromConfig(cfg) : null;
+                case ItemKind.Item:
+                    return Data.Table.ItemConfigs.TryGetValue(itemId, out var itemCfg) ? ItemConfigAdapter.FromConfig(itemCfg) : null;
             }
             return null;
         }

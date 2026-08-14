@@ -142,6 +142,10 @@ namespace GamePlay.Control
                 currentState == InputState.TargetingSkill)
             {
                 _selectedSkill = null;
+                if (BattleUIManager.Instance != null)
+                {
+                    BattleUIManager.Instance.ClearPendingItem();
+                }
                 ChangeState(InputState.MenuOpen);
                 BattleUIManager.Instance.ShowActionMenu(activeUnit);
             }
@@ -415,7 +419,13 @@ namespace GamePlay.Control
                 targets
             );
 
-            SkillCommand cmd = new SkillCommand(activeUnit, _selectedSkill, context);
+            // Item cast: grab the pending item id (stock is consumed after the cast) and clear it
+            string pendingItemId = BattleUIManager.Instance != null ? BattleUIManager.Instance.PendingItemId : null;
+            if (BattleUIManager.Instance != null)
+            {
+                BattleUIManager.Instance.ClearPendingItem();
+            }
+            SkillCommand cmd = new SkillCommand(activeUnit, _selectedSkill, context, pendingItemId);
 
             StartCoroutine(Tool.ExecuteCommandWithCallback(
                 cmd,

@@ -23,6 +23,12 @@ namespace Core.Data
                 return true;
             }
 
+            if (Data.Table.ItemConfigs.ContainsKey(itemId))
+            {
+                kind = ItemKind.Item;
+                return true;
+            }
+
             return false;
         }
     }

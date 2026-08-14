@@ -1,0 +1,6 @@
+_className,_tableName,_isDic,*id,name,desc,iconPath,maxStock,rarity,skillPath
+ItemConfig,ItemConfigs,true,string,string,string,string,int,Global.RarityType,string
+,,,it_potion_hp,Health Potion,Restore HP to allied units within 1 tile (scales with caster ATK).,Assets/textures/item/splash_potion.png,3,Common,Data/Skill/HealSkill - Copy
+,,,it_potion_atk,Strength Potion,Grant an attack buff to a selected allied unit.,Assets/textures/item/potion.png,3,Common,Data/Skill/Strength
+,,,it_potion_atk_aoe,Greater Strength Potion,Grant an attack buff to all allied units within 1 tile.,Assets/textures/item/lingering_potion.png,2,Uncommon,Data/Skill/Strength
+,,,it_fire_potion,Fire Potion,Hurl a burning flask at the target to deal fire damage to enemies.,Assets/textures/item/experience_bottle.png,2,Uncommon,Data/Skill/Fireball

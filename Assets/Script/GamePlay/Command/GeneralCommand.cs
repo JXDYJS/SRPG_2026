@@ -132,27 +132,33 @@ namespace Command
         private MapUnit _caster;
         private SkillDataSO _skillData;
         private SkillTargetContext _targetContext;
+        private readonly string _itemId;   // non-null = item cast (no MP cost; consumes 1 stock after cast)
 
-        public SkillCommand(MapUnit caster, SkillDataSO skillData, SkillTargetContext targetContext)
+        public SkillCommand(MapUnit caster, SkillDataSO skillData, SkillTargetContext targetContext, string itemId = null)
         {
             _caster = caster;
             _skillData = skillData;
             _targetContext = targetContext;
+            _itemId = itemId;
         }
 
         protected override void OnExecute()
         {
-            if (_skillData.Cost > 0 && !_caster.Character.HasEnoughMP(_skillData.Cost))
+            // Item casts skip MP (items are shared consumables; uses are the cost)
+            if (string.IsNullOrEmpty(_itemId))
             {
-                Debug.LogWarning($"技能 {_skillData.SkillName} 能量不足！需要: {_skillData.Cost}, 当前: {_caster.Character.MP}");
-                IsFinished = true;
-                return;
-            }
+                if (_skillData.Cost > 0 && !_caster.Character.HasEnoughMP(_skillData.Cost))
+                {
+                    Debug.LogWarning($"技能 {_skillData.SkillName} 能量不足！需要: {_skillData.Cost}, 当前: {_caster.Character.MP}");
+                    IsFinished = true;
+                    return;
+                }
 
-            if (_skillData.Cost > 0)
-            {
-                _caster.Character.statSystem.currentMP -= _skillData.Cost;
-                Debug.Log($"{_caster.GetUnitName()} 消耗 {_skillData.Cost} MP 释放 {_skillData.SkillName}，剩余MP: {_caster.Character.MP}");
+                if (_skillData.Cost > 0)
+                {
+                    _caster.Character.statSystem.currentMP -= _skillData.Cost;
+                    Debug.Log($"{_caster.GetUnitName()} 消耗 {_skillData.Cost} MP 释放 {_skillData.SkillName}，剩余MP: {_caster.Character.MP}");
+                }
             }
 
             _caster.MarkAsActionDone();
@@ -182,6 +188,12 @@ namespace Command
             SkillSequenceResult result = SkillExecutor.ExecuteSequence(_caster, _targetContext, _skillData);
 
             await SkillPerformer.PerformSkillSequence(_skillData, result);
+
+            // Item cast: consume 1 stock after the cast finishes
+            if (!string.IsNullOrEmpty(_itemId) && RunManager.Instance != null)
+            {
+                RunManager.Instance.TryConsumeItem(_itemId);
+            }
 
             IsFinished = true;
             _caster.SetState(UnitState.Idle);
