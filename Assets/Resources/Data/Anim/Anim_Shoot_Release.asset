@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e7ea60f72fa378c44a646180f711085a, type: 3}
-  m_Name: Anim_Shoot_RightArm
+  m_Name: Anim_Shoot_Release
   m_EditorClassIdentifier: 
-  Note: 右手举弓/瞄准姿势（远程攻击）
+  Note: 射击结束后右手放下回自然姿态
   Part: 4
-  TargetRotation: {x: -270, y: 0, z: 0}
+  TargetRotation: {x: -180, y: 0, z: 0}
   Duration: 0.25
   EaseType: 6
-  ReturnToRest: 1
-  ReturnDuration: 0.35
+  ReturnToRest: 0
+  ReturnDuration: 0.25
   ReturnEaseType: 6
   Effect:
     m_AssetGUID: 

@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe202a631b15d92408ac5c92665ab130, type: 3}
-  m_Name: RemoteAttack
+  m_Name: RemoteAttackWithOutRightArm
   m_EditorClassIdentifier: 
   SkillName: 
   Description: 
@@ -20,6 +20,8 @@ MonoBehaviour:
   CastMaxRange: 5
   CastMinRange: 1
   CastVerticalRange: 5
+  CastRangeMode: 0
+  CastRangeFuncName: 
   Trajectory: 0
   StopsAtFirstHit: 1
   Cost: 0
@@ -37,11 +39,15 @@ MonoBehaviour:
       Constant: 0
       DamageType: 0
       BuffID: 
+      BuffStacks: 1
+      RemoveMode: 0
     VisualData:
       Actions:
-      - Action: {fileID: 11400000, guid: d982578113304334b3a0bacdb7068d05, type: 2}
-        DurationOverride: -1
       - Action: {fileID: 11400000, guid: 78bd4958a15949e6a158125924a8412c, type: 2}
         DurationOverride: -1
-      - Action: {fileID: 11400000, guid: 852d6421d6684147b27e6c3a9a8cdcd2, type: 2}
-        DurationOverride: -1
+    ExecuteMode: 0
+    ExecuteFuncName: 
+  AIBehavior: 0
+  AIPriority: 1
+  isCustomSkill: 0
+  CustomBehavior: {fileID: 0}

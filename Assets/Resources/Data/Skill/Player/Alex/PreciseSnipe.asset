@@ -62,9 +62,11 @@ MonoBehaviour:
       RemoveMode: 0
     VisualData:
       Actions:
-      - Action: {fileID: 11400000, guid: 24343b9a4a7f42ecaf6a11c08ce5f0ca, type: 2}
+      - Action: {fileID: 11400000, guid: d982578113304334b3a0bacdb7068d05, type: 2}
         DurationOverride: -1
       - Action: {fileID: 11400000, guid: 6cf63f07aa154e38a23bf937abf65451, type: 2}
+        DurationOverride: -1
+      - Action: {fileID: 11400000, guid: 852d6421d6684147b27e6c3a9a8cdcd2, type: 2}
         DurationOverride: -1
     ExecuteMode: 1
     ExecuteFuncName: Skills.Alex.PreciseSnipe_Phase2
