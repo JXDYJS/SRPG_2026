@@ -26,7 +26,7 @@ namespace GamePlay.AI
                 yield break;
             }
 
-            Debug.Log($"[AI] {unit.name} 开始执行计划，共 {plan.Steps.Count} 步");
+            Debug.Log($"[AI] {UnitName(unit)} 开始执行计划，共 {plan.Steps.Count} 步");
 
             for (int i = 0; i < plan.Steps.Count; i++)
             {
@@ -35,26 +35,41 @@ namespace GamePlay.AI
 
                 if (unit == null || !unit.IsAlive)
                 {
-                    Debug.Log($"[AI] {unit?.name ?? "null"} 在执行计划中阵亡，中断执行");
+                    Debug.Log($"[AI] {UnitName(unit)} 在执行计划中阵亡，中断执行");
                     yield break;
                 }
 
                 float stepStart = Time.realtimeSinceStartup;
                 yield return ExecuteStep(unit, step);
+
+                // Unit may be destroyed while a step is suspended (battle teardown,
+                // CleanupLevel); Unity's == catches it, so re-check before touching it.
+                if (unit == null || !unit.IsAlive)
+                {
+                    Debug.Log($"[AI] {UnitName(unit)} 步骤执行期间失效，中断计划");
+                    yield break;
+                }
+
                 float stepElapsed = (Time.realtimeSinceStartup - stepStart) * 1000f;
                 if (stepElapsed > 3000f)
                 {
-                    Debug.LogError($"[AI·异常] {unit.name} 步骤[{i}]{step.Type} 执行耗时 {stepElapsed:F0}ms，超过 3s 阈值！");
+                    Debug.LogError($"[AI·异常] {UnitName(unit)} 步骤[{i}]{step.Type} 执行耗时 {stepElapsed:F0}ms，超过 3s 阈值！");
                 }
 
                 if (_planAborted)
                 {
-                    Debug.Log($"[AI] {unit.name} 条件评估失败，中止计划");
+                    Debug.Log($"[AI] {UnitName(unit)} 条件评估失败，中止计划");
                     yield break;
                 }
             }
 
-            Debug.Log($"[AI] {unit.name} 计划执行完毕");
+            Debug.Log($"[AI] {UnitName(unit)} 计划执行完毕");
+        }
+
+        /// <summary>Safe name for logs; destroyed Unity objects throw on .name directly.</summary>
+        private static string UnitName(MapUnit unit)
+        {
+            return unit == null ? "null" : unit.name;
         }
 
         private IEnumerator ExecuteStep(MapUnit unit, AIPlanStep step)
@@ -86,7 +101,7 @@ namespace GamePlay.AI
         {
             if (!unit.CanMove)
             {
-                Debug.Log($"[AI] {unit.name} 无法移动（已移动或无行动点），跳过");
+                Debug.Log($"[AI] {UnitName(unit)} 无法移动（已移动或无行动点），跳过");
                 yield break;
             }
 
@@ -96,7 +111,7 @@ namespace GamePlay.AI
 
             if (path == null || path.Count == 0)
             {
-                Debug.LogWarning($"[AI] {unit.name} 找不到路径到 {step.MoveTarget}");
+                Debug.LogWarning($"[AI] {UnitName(unit)} 找不到路径到 {step.MoveTarget}");
                 yield break;
             }
 
@@ -109,13 +124,13 @@ namespace GamePlay.AI
         {
             if (!unit.CanAction)
             {
-                Debug.Log($"[AI] {unit.name} 无行动点，跳过技能");
+                Debug.Log($"[AI] {UnitName(unit)} 无行动点，跳过技能");
                 yield break;
             }
 
             if (step.SkillData.Cost > 0 && !unit.Character.HasEnoughMP(step.SkillData.Cost))
             {
-                Debug.LogWarning($"[AI] {unit.name} MP不足无法释放 {step.SkillData.SkillName}，需要 {step.SkillData.Cost}，当前 {unit.Character.MP}");
+                Debug.LogWarning($"[AI] {UnitName(unit)} MP不足无法释放 {step.SkillData.SkillName}，需要 {step.SkillData.Cost}，当前 {unit.Character.MP}");
                 yield break;
             }
 

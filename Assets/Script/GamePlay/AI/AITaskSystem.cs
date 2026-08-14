@@ -38,18 +38,31 @@ namespace GamePlay.AI
             StartCoroutine(ExecuteTurnCoroutine(unit));
         }
 
+        /// <summary>Stops any running AI turn (battle teardown / exit to menu).</summary>
+        public void StopAI()
+        {
+            StopAllCoroutines();
+        }
+
         private IEnumerator ExecuteTurnCoroutine(MapUnit unit)
         {
-            Debug.Log($"[AITaskSystem] {unit.name} 开始 AI 回合");
+            Debug.Log($"[AITaskSystem] {UnitName(unit)} 开始 AI 回合");
 
             if (unit == null || !unit.IsAlive)
             {
-                Debug.LogWarning($"[AITaskSystem] {unit?.name ?? "null"} 已阵亡，跳过 AI 回合");
+                Debug.LogWarning($"[AITaskSystem] {UnitName(unit)} 已阵亡，跳过 AI 回合");
                 TurnManager.Instance.EndCurrentUnitTurn();
                 yield break;
             }
 
             yield return WaitForThreatMapReady();
+
+            if (unit == null || !unit.IsAlive)
+            {
+                Debug.LogWarning($"[AITaskSystem] {UnitName(unit)} 等待威胁图期间失效，跳过 AI 回合");
+                TurnManager.Instance.EndCurrentUnitTurn();
+                yield break;
+            }
 
             // Guard against unexpected exceptions that could softlock the turn.
             AIAction best = null;
@@ -63,7 +76,7 @@ namespace GamePlay.AI
                 best = _selector.Select(candidates);
                 if (best != null)
                 {
-                    Debug.Log($"[AITaskSystem] {unit.name} 选择: {best.Category} score={best.Score:F4}" +
+                    Debug.Log($"[AITaskSystem] {UnitName(unit)} 选择: {best.Category} score={best.Score:F4}" +
                               (best.HasSkill ? $" 技能={best.Skill.SkillName} 目标={best.TargetUnit.name}" : ""));
 
                     if (SharedTaskBoard.Instance != null)
@@ -76,13 +89,13 @@ namespace GamePlay.AI
             }
             catch (System.Exception e)
             {
-                Debug.LogError($"[AITaskSystem] {unit.name} AI 决策异常，已兜底待机: {e}");
+                Debug.LogError($"[AITaskSystem] {UnitName(unit)} AI 决策异常，已兜底待机: {e}");
                 best = null;
             }
 
             if (best == null || plan == null)
             {
-                Debug.Log($"[AITaskSystem] {unit.name} 无可用行动，待机");
+                Debug.Log($"[AITaskSystem] {UnitName(unit)} 无可用行动，待机");
                 yield return new WaitForSeconds(Data.Config.AIConfig.planStepWaitSeconds);
             }
             else
@@ -131,6 +144,12 @@ namespace GamePlay.AI
                 return new List<MapUnit> { action.TargetUnit };
             }
             return null;
+        }
+
+        /// <summary>Safe name for logs; destroyed Unity objects throw on .name directly.</summary>
+        private static string UnitName(MapUnit unit)
+        {
+            return unit == null ? "null" : unit.name;
         }
     }
 }

@@ -423,6 +423,13 @@ namespace GamePlay.Battle
         {
             Debug.Log("清理关卡资源");
 
+            // Stop the AI turn first: its coroutine would otherwise resume against
+            // destroyed units after they are cleaned up below (MissingReferenceException).
+            if (GamePlay.AI.AITaskSystem.Instance != null)
+            {
+                GamePlay.AI.AITaskSystem.Instance.StopAI();
+            }
+
             CleanupPreviews();
 
             foreach (var unit in _spawnedUnits)
