@@ -328,7 +328,7 @@ namespace UI.Panel
         {
             BackToLaunchWindow();
         }
-        private async UniTask BackToLaunchWindow()
+        public async UniTask BackToLaunchWindow()
         {
             // Panels live on a DontDestroyOnLoad UIRoot, so destroy them before switching scenes.
             SaveCurrentProgress();
