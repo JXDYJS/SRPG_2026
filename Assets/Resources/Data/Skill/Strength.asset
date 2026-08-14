@@ -40,22 +40,4 @@ MonoBehaviour:
       BuffStacks: 3
       RemoveMode: 0
     VisualData:
-      CastAnimTrigger: 
-      CastEffect:
-        m_AssetGUID: 
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_EditorAssetChanged: 0
-      Transit: 0
-      ProjectilePrefab:
-        m_AssetGUID: 
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_EditorAssetChanged: 0
-      ProjectileSpeed: 0
-      HitTimingMode: 0
-      HitEventName: 
-      HitDelayTime: 0
-      EndTimingMode: 0
-      EndEventName: 
-      EndDelayTime: 0
+      Actions: []

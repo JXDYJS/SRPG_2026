@@ -42,33 +42,11 @@ MonoBehaviour:
       BuffStacks: 0
       RemoveMode: 0
     VisualData:
-      CastAnimTrigger: 
-      CastEffect:
-        m_AssetGUID: 
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_EditorAssetChanged: 0
-      Transit: 1
-      ProjectilePrefab:
-        m_AssetGUID: a4c2d593add6b1b43a126c05ef3969a8
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_EditorAssetChanged: 0
-      ProjectileSpeed: 20
-      HitTimingMode: 0
-      HitEventName: 
-      HitDelayTime: 0
-      EndTimingMode: 0
-      EndEventName: 
-      EndDelayTime: 0
-      TargetAreaEffect:
-        m_AssetGUID: 
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_EditorAssetChanged: 0
-      TargetAreaOffset: {x: 0, y: 0, z: 0}
-      TargetAreaRotation: {x: 0, y: 0, z: 0}
-      TargetAreaDuration: 0
+      Actions:
+      - Action: {fileID: 11400000, guid: 24343b9a4a7f42ecaf6a11c08ce5f0ca, type: 2}
+        DurationOverride: -1
+      - Action: {fileID: 11400000, guid: 6cf63f07aa154e38a23bf937abf65451, type: 2}
+        DurationOverride: -1
     ExecuteMode: 0
     ExecuteFuncName: 
   - PhaseName: DEF
@@ -87,33 +65,7 @@ MonoBehaviour:
       BuffStacks: 2
       RemoveMode: 0
     VisualData:
-      CastAnimTrigger: 
-      CastEffect:
-        m_AssetGUID: 
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_EditorAssetChanged: 0
-      Transit: 1
-      ProjectilePrefab:
-        m_AssetGUID: 
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_EditorAssetChanged: 0
-      ProjectileSpeed: 0
-      HitTimingMode: 0
-      HitEventName: 
-      HitDelayTime: 0
-      EndTimingMode: 0
-      EndEventName: 
-      EndDelayTime: 0
-      TargetAreaEffect:
-        m_AssetGUID: 
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_EditorAssetChanged: 0
-      TargetAreaOffset: {x: 0, y: 0, z: 0}
-      TargetAreaRotation: {x: 0, y: 0, z: 0}
-      TargetAreaDuration: 0
+      Actions: []
     ExecuteMode: 0
     ExecuteFuncName: 
   AIBehavior: 0

@@ -40,33 +40,9 @@ MonoBehaviour:
       BuffStacks: 1
       RemoveMode: 0
     VisualData:
-      CastAnimTrigger: Attack
-      CastEffect:
-        m_AssetGUID: 
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_EditorAssetChanged: 0
-      Transit: 0
-      ProjectilePrefab:
-        m_AssetGUID: 
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_EditorAssetChanged: 0
-      ProjectileSpeed: 0
-      HitTimingMode: 1
-      HitEventName: Hit
-      HitDelayTime: 0.3
-      EndTimingMode: 1
-      EndEventName: End
-      EndDelayTime: 0.3
-      TargetAreaEffect:
-        m_AssetGUID: 
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_EditorAssetChanged: 0
-      TargetAreaOffset: {x: 0, y: 8, z: 0}
-      TargetAreaRotation: {x: 90, y: 0, z: 0}
-      TargetAreaDuration: -1
+      Actions:
+      - Action: {fileID: 11400000, guid: e0283cd28d6c4b6f8048ad06b891064a, type: 2}
+        DurationOverride: -1
   AIBehavior: 0
   AIPriority: 1
   isCustomSkill: 0

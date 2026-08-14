@@ -38,21 +38,7 @@ MonoBehaviour:
       DamageType: 6
       BuffID: 
     VisualData:
-      CastAnimTrigger: 
-      CastEffect:
-        m_AssetGUID: 
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_EditorAssetChanged: 0
-      Transit: 0
-      ProjectilePrefab:
-        m_AssetGUID: 
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_EditorAssetChanged: 0
-      ProjectileSpeed: 0
-      HitEventName: 
-      EndEventName: 
+      Actions: []
   - PhaseName: 2
     TargetType: 2
     AoEPattern: 0
@@ -67,18 +53,4 @@ MonoBehaviour:
       DamageType: 6
       BuffID: 
     VisualData:
-      CastAnimTrigger: 
-      CastEffect:
-        m_AssetGUID: 
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_EditorAssetChanged: 0
-      Transit: 0
-      ProjectilePrefab:
-        m_AssetGUID: 
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_EditorAssetChanged: 0
-      ProjectileSpeed: 0
-      HitEventName: 
-      EndEventName: 
+      Actions: []

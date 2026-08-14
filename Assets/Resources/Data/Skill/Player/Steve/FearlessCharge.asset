@@ -42,33 +42,9 @@ MonoBehaviour:
       BuffStacks: 0
       RemoveMode: 0
     VisualData:
-      CastAnimTrigger: 
-      CastEffect:
-        m_AssetGUID: 
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_EditorAssetChanged: 0
-      Transit: 0
-      ProjectilePrefab:
-        m_AssetGUID: 
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_EditorAssetChanged: 0
-      ProjectileSpeed: 0
-      HitTimingMode: 0
-      HitEventName: 
-      HitDelayTime: 0
-      EndTimingMode: 0
-      EndEventName: 
-      EndDelayTime: 0
-      TargetAreaEffect:
-        m_AssetGUID: 
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_EditorAssetChanged: 0
-      TargetAreaOffset: {x: 0, y: 0, z: 0}
-      TargetAreaRotation: {x: 0, y: 0, z: 0}
-      TargetAreaDuration: 0
+      Actions:
+      - Action: {fileID: 11400000, guid: 0c5c4b61c4364b5e87059be84c1591da, type: 2}
+        DurationOverride: -1
     ExecuteMode: 0
     ExecuteFuncName: 
   - PhaseName: Atk
@@ -87,33 +63,9 @@ MonoBehaviour:
       BuffStacks: 0
       RemoveMode: 0
     VisualData:
-      CastAnimTrigger: 
-      CastEffect:
-        m_AssetGUID: 
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_EditorAssetChanged: 0
-      Transit: 0
-      ProjectilePrefab:
-        m_AssetGUID: 
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_EditorAssetChanged: 0
-      ProjectileSpeed: 0
-      HitTimingMode: 0
-      HitEventName: 
-      HitDelayTime: 0
-      EndTimingMode: 0
-      EndEventName: 
-      EndDelayTime: 0
-      TargetAreaEffect:
-        m_AssetGUID: 
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_EditorAssetChanged: 0
-      TargetAreaOffset: {x: 0, y: 0, z: 0}
-      TargetAreaRotation: {x: 0, y: 0, z: 0}
-      TargetAreaDuration: 0
+      Actions:
+      - Action: {fileID: 11400000, guid: e0283cd28d6c4b6f8048ad06b891064a, type: 2}
+        DurationOverride: -1
     ExecuteMode: 1
     ExecuteFuncName: Skills.Steve.FearlessCharge_Phase2
   AIBehavior: 0

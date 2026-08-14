@@ -37,18 +37,6 @@ MonoBehaviour:
       DamageType: 0
       BuffID: 
     VisualData:
-      CastAnimTrigger: Attack
-      CastEffect:
-        m_AssetGUID: 
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_EditorAssetChanged: 0
-      Transit: 0
-      ProjectilePrefab:
-        m_AssetGUID: 
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_EditorAssetChanged: 0
-      ProjectileSpeed: 0
-      HitEventName: 
-      EndEventName: 
+      Actions:
+      - Action: {fileID: 11400000, guid: e0283cd28d6c4b6f8048ad06b891064a, type: 2}
+        DurationOverride: -1
