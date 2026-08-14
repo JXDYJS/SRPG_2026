@@ -28,6 +28,13 @@ namespace UI.Panel
         }
     }
 
+    /// <summary>Open payload carrying rewards plus a callback fired when all are claimed.</summary>
+    public class RewardOpenContext
+    {
+        public List<RewardData> rewards;
+        public Action onAllClaimed;
+    }
+
     /// <summary>
     /// Battle victory reward claim window. Slots are laid out manually (no LayoutGroup)
     /// so claiming can run reflow animations:
@@ -53,6 +60,7 @@ namespace UI.Panel
         private readonly List<RewardData> _rewards = new List<RewardData>();
         private readonly List<RewardSlot> _slots = new List<RewardSlot>();
         private bool _animating;
+        private Action _externalOnAllClaimed;
 
         protected override void Awake()
         {
@@ -66,7 +74,14 @@ namespace UI.Panel
         public override void OnOpen(object data = null)
         {
             base.OnOpen(data);
-            if (data is List<RewardData> rewards)
+            _externalOnAllClaimed = null;
+
+            if (data is RewardOpenContext ctx)
+            {
+                _externalOnAllClaimed = ctx.onAllClaimed;
+                SetRewards(ctx.rewards);
+            }
+            else if (data is List<RewardData> rewards)
             {
                 SetRewards(rewards);
             }
@@ -200,10 +215,13 @@ namespace UI.Panel
             if (_slots.Count == 0)
             {
                 OnAllRewardsClaimed?.Invoke();
+                Action external = _externalOnAllClaimed;
+                _externalOnAllClaimed = null;
                 if (BattleUIManager.Instance != null)
                 {
                     BattleUIManager.Instance.PopPanel();
                 }
+                external?.Invoke();
             }
         }
 

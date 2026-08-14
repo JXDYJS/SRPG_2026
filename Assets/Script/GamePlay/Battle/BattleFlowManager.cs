@@ -18,6 +18,7 @@ using System;
 using Core.Data;
 using DG.Tweening;
 using UI.Panel;
+using UI.Slot;
 
 namespace GamePlay.Battle
 {
@@ -35,6 +36,18 @@ namespace GamePlay.Battle
 
         [Header("关卡配置（配表驱动）")]
         private TableData.LevelConfig _currentLevelConfig;
+
+        [Header("胜利奖励")]
+        [Tooltip("胜利宝箱预制体（Assets/UI/Battle/Slot/ChestSlot.prefab，拖入后自动加入 Addressables）")]
+        public AssetReferenceGameObject ChestPrefab;
+        [Tooltip("胜利金币随机区间下限")]
+        public int VictoryGoldMin = 100;
+        [Tooltip("胜利金币随机区间上限（含）")]
+        public int VictoryGoldMax = 200;
+        [Tooltip("胜利随机遗物数量（从未拥有的遗物池抽取，不重复）")]
+        public int VictoryRelicCount = 1;
+        [Tooltip("胜利随机道具数量（从 ItemConfigs 抽取，不重复）")]
+        public int VictoryItemCount = 1;
 
         [Header("运行时状态")]
         [SerializeField]
@@ -433,8 +446,152 @@ namespace GamePlay.Battle
                 unit.OnBattleEnd();
             }
 
+            if (isPlayWin())
+            {
+                HandleVictory();
+                return;
+            }
+
+            // Defeat: return to map (game-over flow not implemented yet).
             CleanupLevel();
             Utils.Utils.FinishNode<TimelinePanel>();
+        }
+
+        /// <summary>Victory: spawns the reward chest in the scene; map return happens after all rewards are claimed.</summary>
+        private void HandleVictory()
+        {
+            if (currentState == BattleFlowState.BattleEnd)
+            {
+                return;
+            }
+            SwitchState(BattleFlowState.BattleEnd);
+            Debug.Log("[FLOW] Victory! spawning reward chest.");
+
+            if (ChestPrefab == null || !ChestPrefab.RuntimeKeyIsValid())
+            {
+                Debug.LogError("[FLOW] ChestPrefab 未配置，无法生成胜利宝箱，直接返回地图");
+                CleanupLevel();
+                Utils.Utils.FinishNode<TimelinePanel>();
+                return;
+            }
+
+            SpawnVictoryChestAsync().Forget();
+        }
+
+        private async UniTaskVoid SpawnVictoryChestAsync()
+        {
+            Transform parent = UIManager.Instance != null ? UIManager.Instance.Window : null;
+            var handle = Addressables.InstantiateAsync(ChestPrefab, parent);
+            GameObject chestObj = await handle.Task;
+
+            if (chestObj == null)
+            {
+                Debug.LogError("[FLOW] 胜利宝箱实例化失败，直接返回地图");
+                CleanupLevel();
+                Utils.Utils.FinishNode<TimelinePanel>();
+                return;
+            }
+
+            ChestSlot chest = chestObj.GetComponent<ChestSlot>();
+            if (chest == null)
+            {
+                Debug.LogError("[FLOW] ChestPrefab 缺少 ChestSlot 组件，直接返回地图");
+                Addressables.ReleaseInstance(chestObj);
+                CleanupLevel();
+                Utils.Utils.FinishNode<TimelinePanel>();
+                return;
+            }
+
+            // Random position within a range around the screen center.
+            RectTransform rt = chestObj.GetComponent<RectTransform>();
+            if (rt != null)
+            {
+                rt.anchorMin = new Vector2(0.5f, 0.5f);
+                rt.anchorMax = new Vector2(0.5f, 0.5f);
+                rt.pivot = new Vector2(0.5f, 0.5f);
+                float rangeX = Screen.width * 0.3f;
+                float rangeY = Screen.height * 0.25f;
+                rt.anchoredPosition = new Vector2(
+                    UnityEngine.Random.Range(-rangeX, rangeX),
+                    UnityEngine.Random.Range(-rangeY, rangeY));
+            }
+
+            chest.rewards = BuildVictoryRewards();
+            chest.onAllClaimed = ReturnToMapAfterRewards;
+            Debug.Log($"[FLOW] 胜利宝箱已生成，奖励 {chest.rewards.Count} 项");
+        }
+
+        /// <summary>Called by RewardWindow once every reward has been claimed.</summary>
+        private void ReturnToMapAfterRewards()
+        {
+            CleanupLevel();
+            Utils.Utils.FinishNode<TimelinePanel>();
+        }
+
+        /// <summary>
+        /// Configurable victory rewards: random gold in [VictoryGoldMin, VictoryGoldMax],
+        /// unowned relics (shortfall converts to items), then random items.
+        /// </summary>
+        private List<RewardData> BuildVictoryRewards()
+        {
+            List<RewardData> rewards = new List<RewardData>();
+
+            int gold = UnityEngine.Random.Range(VictoryGoldMin, VictoryGoldMax + 1);
+            rewards.Add(new RewardData(Data.Config.shopConfig.goldID, gold));
+
+            // Relics: pick from unowned config ids; a shortfall converts to item slots.
+            List<string> relicPool = new List<string>();
+            foreach (var kv in Data.Table.RelicConfigs)
+            {
+                if (!OwnsRelic(kv.Key))
+                {
+                    relicPool.Add(kv.Key);
+                }
+            }
+
+            int relicCount = Mathf.Min(VictoryRelicCount, relicPool.Count);
+            if (relicCount < VictoryRelicCount)
+            {
+                Debug.Log($"[FLOW] relic 池不足（{relicPool.Count}/{VictoryRelicCount}），差额转为道具奖励");
+            }
+
+            for (int i = 0; i < relicCount; i++)
+            {
+                int pick = UnityEngine.Random.Range(0, relicPool.Count);
+                rewards.Add(new RewardData(relicPool[pick], 1));
+                relicPool.RemoveAt(pick);
+            }
+
+            int itemCount = VictoryItemCount + (VictoryRelicCount - relicCount);
+            if (itemCount > 0 && Data.Table.ItemConfigs.Count > 0)
+            {
+                List<string> itemPool = new List<string>(Data.Table.ItemConfigs.Keys);
+                itemCount = Mathf.Min(itemCount, itemPool.Count);
+                for (int i = 0; i < itemCount; i++)
+                {
+                    int pick = UnityEngine.Random.Range(0, itemPool.Count);
+                    rewards.Add(new RewardData(itemPool[pick], 1));
+                    itemPool.RemoveAt(pick);
+                }
+            }
+
+            return rewards;
+        }
+
+        private bool OwnsRelic(string relicId)
+        {
+            if (RunManager.Instance == null)
+            {
+                return false;
+            }
+            foreach (var relic in RunManager.Instance.Relics)
+            {
+                if (relic != null && relic.relicId == relicId)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
         public bool isLevelEnd()
         {
