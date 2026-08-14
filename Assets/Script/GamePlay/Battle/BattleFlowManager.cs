@@ -459,9 +459,13 @@ namespace GamePlay.Battle
                 return;
             }
 
-            // Defeat: return to map (game-over flow not implemented yet).
+            // Defeat: show the fail end window.
             CleanupLevel();
-            Utils.Utils.FinishNode<TimelinePanel>();
+            if (UIManager.Instance != null)
+            {
+                UIManager.Instance.ClosePanel<TimelinePanel>();
+                UIManager.Instance.OpenPanel<EndWindow>("fail");
+            }
         }
 
         /// <summary>Victory: spawns the reward chest in the scene; map return happens after all rewards are claimed.</summary>
@@ -549,7 +553,32 @@ namespace GamePlay.Battle
         private void ReturnToMapAfterRewards()
         {
             CleanupLevel();
-            Utils.Utils.FinishNode<TimelinePanel>();
+            if (UIManager.Instance == null)
+            {
+                return;
+            }
+
+            UIManager.Instance.ClosePanel<TimelinePanel>();
+
+            if (IsFinalNodePassed())
+            {
+                // The last map node was cleared: the run is won.
+                UIManager.Instance.OpenPanel<EndWindow>("win");
+                return;
+            }
+
+            Utils.Utils.ReturnToMap();
+        }
+
+        /// <summary>True when the battle just won was fought on the last map layer.</summary>
+        private bool IsFinalNodePassed()
+        {
+            var map = UIManager.Instance != null ? UIManager.Instance.GetPanel<MapPopWindow>() : null;
+            if (map == null || map.nodeMapData == null || map.nodeMapData.layers == null)
+            {
+                return false;
+            }
+            return map.playerLayer >= map.nodeMapData.layers.Count - 1;
         }
 
         /// <summary>
