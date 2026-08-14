@@ -488,6 +488,20 @@ namespace GamePlay.Battle
         private async UniTaskVoid SpawnVictoryChestAsync()
         {
             Transform parent = UIManager.Instance != null ? UIManager.Instance.Window : null;
+            if (parent == null)
+            {
+                Canvas canvas = UnityEngine.Object.FindObjectOfType<Canvas>();
+                parent = canvas != null ? canvas.transform : null;
+            }
+
+            if (parent == null)
+            {
+                Debug.LogError("[FLOW] 未找到 UI 根节点（UIRoot/Canvas），无法生成胜利宝箱");
+                CleanupLevel();
+                Utils.Utils.FinishNode<TimelinePanel>();
+                return;
+            }
+
             var handle = Addressables.InstantiateAsync(ChestPrefab, parent);
             GameObject chestObj = await handle.Task;
 
@@ -510,17 +524,20 @@ namespace GamePlay.Battle
             }
 
             // Random position within a range around the screen center.
+            // Use the parent rect (CanvasScaler-scaled UI coordinates), not raw screen pixels.
             RectTransform rt = chestObj.GetComponent<RectTransform>();
             if (rt != null)
             {
                 rt.anchorMin = new Vector2(0.5f, 0.5f);
                 rt.anchorMax = new Vector2(0.5f, 0.5f);
                 rt.pivot = new Vector2(0.5f, 0.5f);
-                float rangeX = Screen.width * 0.3f;
-                float rangeY = Screen.height * 0.25f;
+
+                RectTransform parentRt = parent as RectTransform;
+                float halfW = parentRt != null ? parentRt.rect.width * 0.5f : Screen.width * 0.5f;
+                float halfH = parentRt != null ? parentRt.rect.height * 0.5f : Screen.height * 0.5f;
                 rt.anchoredPosition = new Vector2(
-                    UnityEngine.Random.Range(-rangeX, rangeX),
-                    UnityEngine.Random.Range(-rangeY, rangeY));
+                    UnityEngine.Random.Range(-halfW * 0.6f, halfW * 0.6f),
+                    UnityEngine.Random.Range(-halfH * 0.5f, halfH * 0.5f));
             }
 
             chest.rewards = BuildVictoryRewards();

@@ -43,7 +43,7 @@ namespace UI.Panel
     ///  3. a slot that crosses a row wrap slides out left (clipped by the content mask),
     ///     while a fresh copy enters from the right edge of the upper row.
     /// </summary>
-    [UIPanelResource("todo")]
+    [UIPanelResource("Assets/UI/Battle/RewardWindow.prefab")]
     public class RewardWindow : BaseUIPanel
     {
         [Tooltip("奖励格子容器，需要挂 RectMask2D 用于裁剪滑出动画")]
@@ -100,6 +100,12 @@ namespace UI.Panel
 
         private void Rebuild()
         {
+            if (Content == null || RewardSlotPrefab == null)
+            {
+                Debug.LogError("RewardWindow: 缺少 Content 或 RewardSlotPrefab 引用（请在 Inspector 中拖入）");
+                return;
+            }
+
             ClearContent();
             _slots.Clear();
             _animating = false;
