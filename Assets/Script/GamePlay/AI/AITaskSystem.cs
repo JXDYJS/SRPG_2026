@@ -71,9 +71,19 @@ namespace GamePlay.AI
             {
                 AITaskContext ctx = new AITaskContext(unit);
 
-                List<AIAction> candidates = _director.GenerateCandidateActions(unit, ctx);
+                // Scripted boss rules override the scoring pipeline when one fires.
+                BossAIController bossCtrl = unit.GetComponent<BossAIController>();
+                if (bossCtrl != null)
+                {
+                    best = bossCtrl.TryGetScriptedAction(unit, ctx);
+                }
 
-                best = _selector.Select(candidates);
+                if (best == null)
+                {
+                    List<AIAction> candidates = _director.GenerateCandidateActions(unit, ctx);
+
+                    best = _selector.Select(candidates);
+                }
                 if (best != null)
                 {
                     Debug.Log($"[AITaskSystem] {UnitName(unit)} 选择: {best.Category} score={best.Score:F4}" +
