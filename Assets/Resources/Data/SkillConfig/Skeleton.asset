@@ -18,7 +18,7 @@ MonoBehaviour:
     SlotDisplayName: Attack
     EvolutionChain:
     - RequiredLevel: 0
-      SkillData: {fileID: 11400000, guid: 88ce9ef18dd3bfc4ba922b718235a47f, type: 2}
+      SkillData: {fileID: 11400000, guid: 0539d01009617dc42b8d343df0f98159, type: 2}
   - SlotType: 5
     SlotDisplayName: PreciseShot
     EvolutionChain:
