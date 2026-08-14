@@ -5,51 +5,79 @@ using Core.Data;
 using Cysharp.Threading.Tasks;
 using GamePlay.Skill;
 using System.Collections.Generic;
-using Unity.VisualScripting;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace GamePlay.View
 {
+    /// <summary>Transform anchors for code-driven animations, resolved per model.</summary>
+    [System.Serializable]
+    public class ModelParts
+    {
+        public Transform Head;
+        public Transform Body;
+        public Transform Chest;
+        public Transform RightArm;
+        public Transform LeftArm;
+        public Transform RightLeg;
+        public Transform LeftLeg;
+
+        public Transform Get(BodyPart part)
+        {
+            switch (part)
+            {
+                case BodyPart.Head: return Head;
+                case BodyPart.Body: return Body;
+                case BodyPart.Chest: return Chest;
+                case BodyPart.RightArm: return RightArm;
+                case BodyPart.LeftArm: return LeftArm;
+                case BodyPart.RightLeg: return RightLeg;
+                case BodyPart.LeftLeg: return LeftLeg;
+                default: return null;
+            }
+        }
+
+        public bool IsEmpty
+        {
+            get
+            {
+                return Head == null && Body == null && Chest == null
+                    && RightArm == null && LeftArm == null
+                    && RightLeg == null && LeftLeg == null;
+            }
+        }
+    }
+
     public class UnitView : MonoBehaviour
     {
         private Animator _animator;
+        private AudioSource _audioSource;
+        private bool _animatorTakenOver;
         private Renderer[] _renderers;
         private int _hitCount = 0;
         private Color[] _originalColors;
-        public List<SkillVisualData> NormalAttackVisualData = null;
-        public event Action<string> OnAnimationEventTriggered;
         public int TimeGapDamage = 300;
         public Vector3 DamagePosOffset = new Vector3(0.0f,2.0f,1.0f);
+
+        [Header("Code-Driven Animation Parts")]
+        [Tooltip("模型部位引用。留空时 Awake 会按名称关键词自动查找；查找不到可手动拖拽")]
+        public ModelParts Parts = new ModelParts();
 
         void Awake()
         {
             _animator = GetComponent<Animator>();
-            _renderers = GetComponentsInChildren<Renderer>();
-        }
-
-        public void TriggerAnimationEvent(string eventName)
-        {
-            OnAnimationEventTriggered?.Invoke(eventName);
-        }
-
-        public async UniTask WaitForAnimationEvent(string targetEventName, float timeoutSeconds = 5f)
-        {
-            var tcs = new UniTaskCompletionSource();
-            Action<string> onEventReceived = null;
-
-            onEventReceived = (eventName) =>
+            _audioSource = GetComponent<AudioSource>();
+            if (_audioSource == null)
             {
-                if (eventName == targetEventName)
-                {
-                    OnAnimationEventTriggered -= onEventReceived;
-                    tcs.TrySetResult();
-                }
-            };
+                _audioSource = gameObject.AddComponent<AudioSource>();
+                _audioSource.playOnAwake = false;
+            }
+            _renderers = GetComponentsInChildren<Renderer>();
 
-            OnAnimationEventTriggered += onEventReceived;
-
-            await UniTask.WhenAny(tcs.Task, UniTask.Delay(TimeSpan.FromSeconds(timeoutSeconds)));
-
-            OnAnimationEventTriggered -= onEventReceived;
+            if (Parts.IsEmpty)
+            {
+                AutoFindParts();
+            }
         }
 
         public void PlayAnim(string animName)
@@ -57,6 +85,174 @@ namespace GamePlay.View
             if (_animator != null && !string.IsNullOrEmpty(animName))
             {
                 _animator.SetTrigger(animName);
+            }
+        }
+
+        // ================ Code-driven animation support ================
+
+        /// <summary>Gets a body part anchor, or null if the model has no such part.</summary>
+        public Transform GetPart(BodyPart part)
+        {
+            return Parts.Get(part);
+        }
+
+        /// <summary>World position of a body part, or the unit position as fallback.</summary>
+        public Vector3 GetPartWorldPosition(BodyPart part)
+        {
+            Transform anchor = Parts.Get(part);
+            return anchor != null ? anchor.position : transform.position;
+        }
+
+        /// <summary>Disables the Animator so code tweening owns the model.</summary>
+        public void TakeOverAnimator()
+        {
+            if (_animator == null || _animatorTakenOver)
+            {
+                return;
+            }
+            _animator.enabled = false;
+            _animatorTakenOver = true;
+        }
+
+        /// <summary>Re-enables the Animator after a code-driven performance.</summary>
+        public void ReleaseAnimator()
+        {
+            if (_animator == null || !_animatorTakenOver)
+            {
+                return;
+            }
+            _animator.enabled = true;
+            _animatorTakenOver = false;
+        }
+
+        public async UniTask ExecuteAction(SkillActionSO action, ActionContext ctx)
+        {
+            if (action == null)
+            {
+                return;
+            }
+            await action.ExecuteAsync(this, ctx);
+        }
+
+        /// <summary>Spawns an effect, optionally parented to a body part so it follows motion.</summary>
+        public async UniTask<GameObject> SpawnEffect(AssetReferenceGameObject effectRef, BodyPart socket, Vector3 offset, bool follow)
+        {
+            if (effectRef == null || !effectRef.RuntimeKeyIsValid())
+            {
+                return null;
+            }
+
+            Transform anchor = Parts.Get(socket);
+            if (follow && anchor != null)
+            {
+                var handle = Addressables.InstantiateAsync(effectRef, anchor, false);
+                GameObject effectObj = await handle.Task;
+                if (effectObj != null)
+                {
+                    effectObj.transform.localPosition = offset;
+                    effectObj.transform.localRotation = Quaternion.identity;
+                }
+                return effectObj;
+            }
+
+            Vector3 worldPos = anchor != null ? anchor.position : transform.position;
+            var worldHandle = Addressables.InstantiateAsync(effectRef, worldPos + offset, Quaternion.identity);
+            return await worldHandle.Task;
+        }
+
+        public async UniTaskVoid DestroyEffectDelayed(GameObject effectObj, float delaySeconds)
+        {
+            await UniTask.Delay(TimeSpan.FromSeconds(delaySeconds), delayType: DelayType.DeltaTime);
+
+            if (effectObj != null)
+            {
+                Addressables.ReleaseInstance(effectObj);
+            }
+        }
+
+        public void PlayOneShot(AudioClip clip, float volume, BodyPart socket)
+        {
+            if (_audioSource == null || clip == null)
+            {
+                return;
+            }
+            _audioSource.PlayOneShot(clip, volume);
+        }
+
+        /// <summary>Auto-resolves model parts by name keywords; unmatched parts stay null.</summary>
+        private void AutoFindParts()
+        {
+            Transform[] allTransforms = GetComponentsInChildren<Transform>(true);
+
+            foreach (Transform t in allTransforms)
+            {
+                string n = t.name.ToLowerInvariant();
+
+                if (Parts.Head == null && n.Contains("head") && !n.Contains("arrow"))
+                {
+                    Parts.Head = t;
+                }
+                if (Parts.Chest == null && n.Contains("chest"))
+                {
+                    Parts.Chest = t;
+                }
+                if (Parts.Body == null && n.Contains("body"))
+                {
+                    Parts.Body = t;
+                }
+            }
+
+            AssignSymmetricParts(allTransforms, "arm", ref Parts.RightArm, ref Parts.LeftArm);
+            AssignSymmetricParts(allTransforms, "leg", ref Parts.RightLeg, ref Parts.LeftLeg);
+        }
+
+        private void AssignSymmetricParts(Transform[] allTransforms, string keyword, ref Transform right, ref Transform left)
+        {
+            List<Transform> candidates = new List<Transform>();
+
+            foreach (Transform t in allTransforms)
+            {
+                string n = t.name.ToLowerInvariant();
+                if (!n.Contains(keyword))
+                {
+                    continue;
+                }
+
+                if (n.Contains("right") || n.Contains(":r") || n.Contains(".r"))
+                {
+                    if (right == null)
+                    {
+                        right = t;
+                        continue;
+                    }
+                }
+                else if (n.Contains("left") || n.Contains(":l") || n.Contains(".l"))
+                {
+                    if (left == null)
+                    {
+                        left = t;
+                        continue;
+                    }
+                }
+
+                candidates.Add(t);
+            }
+
+            if (candidates.Count == 0)
+            {
+                return;
+            }
+
+            // Unmatched candidates: higher local X is treated as the right side.
+            candidates.Sort((a, b) => b.localPosition.x.CompareTo(a.localPosition.x));
+            if (right == null)
+            {
+                right = candidates[0];
+                candidates.RemoveAt(0);
+            }
+            if (left == null && candidates.Count > 0)
+            {
+                left = candidates[0];
             }
         }
 

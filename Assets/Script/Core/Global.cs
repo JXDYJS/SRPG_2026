@@ -119,8 +119,6 @@ namespace Global
             Environment,
             ForceKill,
         }
-        public enum TransitType { None, Projectile, Teleport }
-
         public enum UnitFacing
         {
             North,

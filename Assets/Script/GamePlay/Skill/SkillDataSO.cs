@@ -228,21 +228,7 @@ namespace GamePlay.Skill
                 if (originalPhase.VisualData != null)
                 {
                     phaseClone.VisualData = new SkillVisualData();
-                    phaseClone.VisualData.CastAnimTrigger = originalPhase.VisualData.CastAnimTrigger;
-                    phaseClone.VisualData.CastEffect = originalPhase.VisualData.CastEffect;
-                    phaseClone.VisualData.Transit = originalPhase.VisualData.Transit;
-                    phaseClone.VisualData.ProjectilePrefab = originalPhase.VisualData.ProjectilePrefab;
-                    phaseClone.VisualData.ProjectileSpeed = originalPhase.VisualData.ProjectileSpeed;
-                    phaseClone.VisualData.HitTimingMode = originalPhase.VisualData.HitTimingMode;
-                    phaseClone.VisualData.HitEventName = originalPhase.VisualData.HitEventName;
-                    phaseClone.VisualData.HitDelayTime = originalPhase.VisualData.HitDelayTime;
-                    phaseClone.VisualData.EndTimingMode = originalPhase.VisualData.EndTimingMode;
-                    phaseClone.VisualData.EndEventName = originalPhase.VisualData.EndEventName;
-                    phaseClone.VisualData.EndDelayTime = originalPhase.VisualData.EndDelayTime;
-                    phaseClone.VisualData.TargetAreaEffect = originalPhase.VisualData.TargetAreaEffect;
-                    phaseClone.VisualData.TargetAreaOffset = originalPhase.VisualData.TargetAreaOffset;
-                    phaseClone.VisualData.TargetAreaRotation = originalPhase.VisualData.TargetAreaRotation;
-                    phaseClone.VisualData.TargetAreaDuration = originalPhase.VisualData.TargetAreaDuration;
+                    phaseClone.VisualData.Actions = new List<ActionStep>(originalPhase.VisualData.Actions);
                 }
                 
                 clone.Phases.Add(phaseClone);

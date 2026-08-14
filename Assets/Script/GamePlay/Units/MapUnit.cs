@@ -109,28 +109,10 @@ namespace GamePlay.Units
                         Debug.LogError(name + "没有配置普通攻击技能");
                         return null;
                     }
-                    
-                    if(View != null)
-                    {
-                        var normalAttackViews = View.NormalAttackVisualData;
-                        int viewSize = normalAttackViews.Count;
-                        int skillSize = originalSkill.Phases.Count;
-                        if(viewSize != skillSize)
-                        {
-                            Debug.LogError(name+"的普通攻击视觉效果数量和技能阶段长度不等");
-                            return null;
-                        }
-                        
-                        SkillDataSO clonedSkill = originalSkill.DeepClone();
-                        for(int i = 0;i < skillSize; i++)
-                        {
-                            clonedSkill.Phases[i].VisualData = normalAttackViews[i];
-                        }
-                        return clonedSkill;
-                    }
+                    return originalSkill;
                 }
             }
-            Debug.LogError(name+"获取普攻失败");
+            Debug.LogError(name + "获取普攻失败");
             return null;
         }
         public bool CanMove => !hasMoved && actionPoints > 0;

@@ -6,16 +6,11 @@ using GamePlay.Buff;
 using Managers;
 using Global;
 using Cysharp.Threading.Tasks;
-using UnityEngine.AddressableAssets;
-using UnityEngine.ResourceManagement.AsyncOperations;
-using System;
 
 namespace GamePlay.Skill
 {
     public static class SkillPerformer
     {
-        private const float TIMEOUT_PROTECTION_SECONDS = 10f;
-
         public static async UniTask PerformSkillSequence(SkillDataSO skillData, SkillSequenceResult sequenceResult)
         {
             if (sequenceResult == null || skillData == null)
@@ -38,14 +33,16 @@ namespace GamePlay.Skill
             if (sequenceResult.Context != null && sequenceResult.Context.TargetPosition != caster.gridPosition)
             {
                 Vector3 targetWorldPos = MapUnit.GetGridHitPoint(sequenceResult.Context.TargetPosition);
-                
-                await UniTask.Create(() => {
+
+                await UniTask.Create(() =>
+                {
                     var tcs = new UniTaskCompletionSource();
-                    
-                    caster.RotateTowardsTargetSmoothly(targetWorldPos, () => {
+
+                    caster.RotateTowardsTargetSmoothly(targetWorldPos, () =>
+                    {
                         tcs.TrySetResult();
                     });
-                    
+
                     return tcs.Task;
                 });
             }
@@ -60,7 +57,7 @@ namespace GamePlay.Skill
                     continue;
                 }
 
-                await PerformSinglePhase(caster, phaseResult, phaseData);
+                await PerformSinglePhase(caster, phaseResult, phaseData, skillData);
             }
 
             caster.RestoreRecordedFacing();
@@ -79,38 +76,7 @@ namespace GamePlay.Skill
             return skillData.Phases[phaseIndex];
         }
 
-        private static async UniTask WaitWithTimingMode(MapUnit unit, TimingMode mode, string eventName, float delayTime)
-        {
-            if (mode == TimingMode.Instant)
-            {
-                await UniTask.Yield();
-                return;
-            }
-
-            if (mode == TimingMode.AnimationEvent)
-            {
-                if (unit.View != null && !string.IsNullOrEmpty(eventName))
-                {
-                    int winner = await UniTask.WhenAny(
-                        unit.View.WaitForAnimationEvent(eventName, TIMEOUT_PROTECTION_SECONDS),
-                        UniTask.Delay(TimeSpan.FromSeconds(TIMEOUT_PROTECTION_SECONDS))
-                    );
-                    if (winner == 1)
-                    {
-                        Debug.LogError($"[SkillPerformer] {unit.name} 等待动画事件 '{eventName}' 超时({TIMEOUT_PROTECTION_SECONDS}s)！可能事件名不匹配或动画未触发");
-                    }
-                }
-                return;
-            }
-
-            if (mode == TimingMode.FixedTime)
-            {
-                await UniTask.Delay(TimeSpan.FromSeconds(delayTime), delayTiming: PlayerLoopTiming.Update, ignoreTimeScale: false);
-                return;
-            }
-        }
-
-        private static async UniTask PerformSinglePhase(MapUnit caster, PhaseResult phaseResult, SkillPhase phaseData)
+        private static async UniTask PerformSinglePhase(MapUnit caster, PhaseResult phaseResult, SkillPhase phaseData, SkillDataSO skillData)
         {
             var casterView = caster.View;
             var visual = phaseData.VisualData;
@@ -120,36 +86,31 @@ namespace GamePlay.Skill
                 return;
             }
 
-            if (!string.IsNullOrEmpty(visual.CastAnimTrigger))
+            var ctx = new ActionContext
             {
-                casterView.PlayAnim(visual.CastAnimTrigger);
-            }
+                SkillData = skillData,
+                PhaseData = phaseData,
+                PhaseResult = phaseResult,
+            };
 
-            if (visual.CastEffect != null && visual.CastEffect.RuntimeKeyIsValid())
+            // Code tweening owns the model for the whole phase, then hands back to the Animator.
+            casterView.TakeOverAnimator();
+            try
             {
-                await Addressables.InstantiateAsync(visual.CastEffect, caster.transform.position, Quaternion.identity);
-            }
-
-            if (visual.TargetAreaEffect != null && visual.TargetAreaEffect.RuntimeKeyIsValid())
-            {
-                Vector3 targetWorldPos = MapManager.Instance.GetWorldPosition(phaseResult.TargetPosition) + visual.TargetAreaOffset;
-                Quaternion targetRotation = Quaternion.Euler(visual.TargetAreaRotation);
-                var handle = Addressables.InstantiateAsync(visual.TargetAreaEffect, targetWorldPos, targetRotation);
-                GameObject effectObj = await handle.Task;
-                
-                if (visual.TargetAreaDuration > 0 && effectObj != null)
+                foreach (ActionStep step in visual.Actions)
                 {
-                    _ = DestroyAreaEffectDelayed(effectObj, visual.TargetAreaDuration);
+                    if (step.Action == null)
+                    {
+                        continue;
+                    }
+
+                    ctx.DurationOverride = step.DurationOverride;
+                    await casterView.ExecuteAction(step.Action, ctx);
                 }
             }
-
-            if (visual.Transit == TransitType.Projectile && visual.ProjectilePrefab != null && visual.ProjectilePrefab.RuntimeKeyIsValid())
+            finally
             {
-                await PerformProjectileTransit(caster, phaseResult.TargetPosition, visual);
-            }
-            else
-            {
-                await WaitWithTimingMode(caster, visual.HitTimingMode, visual.HitEventName, visual.HitDelayTime);
+                casterView.ReleaseAnimator();
             }
 
             if (phaseResult.CasterMoved)
@@ -170,8 +131,6 @@ namespace GamePlay.Skill
             {
                 await UniTask.WhenAll(hitTasks);
             }
-
-            await WaitWithTimingMode(caster, visual.EndTimingMode, visual.EndEventName, visual.EndDelayTime);
         }
 
         private static async UniTask PerformCasterMovement(MapUnit caster, Vector3Int endPosition)
@@ -198,46 +157,6 @@ namespace GamePlay.Skill
             }
 
             caster.transform.position = targetWorldPos;
-        }
-
-        private static async UniTask PerformProjectileTransit(MapUnit caster, Vector3Int targetPosition, SkillVisualData visual)
-        {
-            Vector3 targetWorldPos = MapUnit.GetGridHitPoint(targetPosition);
-
-            Vector3 launchDirection = targetWorldPos - caster.GetProjectileOrigin();
-            launchDirection.Normalize();
-
-            Quaternion launchRotation = Quaternion.LookRotation(launchDirection);
-
-            var handle = Addressables.InstantiateAsync(visual.ProjectilePrefab, caster.GetProjectileOrigin(), launchRotation);
-            await handle.Task;
-            
-            if (handle.Status != AsyncOperationStatus.Succeeded)
-            {
-                Debug.LogError("Failed to instantiate projectile prefab");
-                return;
-            }
-            
-            GameObject bullet = handle.Result;
-            bullet.transform.rotation = launchRotation;
-
-            if (visual.ProjectileSpeed <= 0f)
-            {
-                Debug.LogError($"[SkillPerformer] {caster.name} ProjectileSpeed={visual.ProjectileSpeed} 导致弹道卡死！直接完成");
-                if (bullet != null) Addressables.ReleaseInstance(bullet);
-                return;
-            }
-
-            while (bullet != null && Vector3.Distance(bullet.transform.position, targetWorldPos) > 0.1f)
-            {
-                bullet.transform.position = Vector3.MoveTowards(bullet.transform.position, targetWorldPos, visual.ProjectileSpeed * Time.deltaTime);
-                await UniTask.Yield();
-            }
-
-            if (bullet != null)
-            {
-                Addressables.ReleaseInstance(bullet);
-            }
         }
 
         private static async UniTask PerformSingleTargetHit(TargetResult tResult)
@@ -277,16 +196,6 @@ namespace GamePlay.Skill
                 }
 
                 BuffManager.ApplyBuffToUnit(tResult.Target, buffInfo.BuffID, buffInfo.Stacks);
-            }
-        }
-
-        private static async UniTask DestroyAreaEffectDelayed(GameObject effectObj, float delaySeconds)
-        {
-            await UniTask.Delay(TimeSpan.FromSeconds(delaySeconds), delayType: DelayType.DeltaTime);
-            
-            if (effectObj != null)
-            {
-                Addressables.ReleaseInstance(effectObj);
             }
         }
     }
