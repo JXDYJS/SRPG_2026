@@ -254,9 +254,9 @@ namespace UI.Panel
                 OnAllRewardsClaimed?.Invoke();
                 Action external = _externalOnAllClaimed;
                 _externalOnAllClaimed = null;
-                if (BattleUIManager.Instance != null)
+                if (UIManager.Instance != null)
                 {
-                    BattleUIManager.Instance.PopPanel();
+                    UIManager.Instance.ClosePanel<RewardWindow>();
                 }
                 external?.Invoke();
             }
@@ -344,7 +344,13 @@ namespace UI.Panel
             if (BgBtn != null)
             {
                 BgBtn.onClick.RemoveAllListeners();
-                BgBtn.onClick.AddListener(() => BattleUIManager.Instance.PopPanel());
+                BgBtn.onClick.AddListener(() =>
+                {
+                    if (UIManager.Instance != null)
+                    {
+                        UIManager.Instance.ClosePanel<RewardWindow>();
+                    }
+                });
             }
         }
     }
