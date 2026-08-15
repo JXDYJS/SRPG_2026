@@ -196,5 +196,26 @@ namespace DebugSystem
         {
             Test_MapGen.RunAll();
         }
+
+        [ConsoleMethod("events", "List all event configs with screen/option counts")]
+        public static void ListEvents()
+        {
+            var configs = Core.Data.Data.Table.EventConfigs;
+            Debug.Log($"[Debug] events: 共 {configs.Count} 个事件配置");
+            foreach (var kv in configs)
+            {
+                int screenCount = kv.Value.screens?.Count ?? 0;
+                int optionCount = 0;
+                if (kv.Value.screens != null)
+                {
+                    foreach (var screen in kv.Value.screens)
+                    {
+                        optionCount += screen.options?.Count ?? 0;
+                    }
+                }
+                string title = string.IsNullOrEmpty(kv.Value.title) ? "(无标题)" : kv.Value.title;
+                Debug.Log($"[Debug] {kv.Key} title='{title}' startScreen='{kv.Value.startScreen}' screens={screenCount} options={optionCount}");
+            }
+        }
     }
 }

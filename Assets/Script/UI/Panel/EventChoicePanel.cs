@@ -63,7 +63,8 @@ namespace UI.Panel
         {
             if (titleText != null)
             {
-                titleText.text = string.IsNullOrEmpty(EventFlow.CurrentConfig.id) ? "" : $"Event: {EventFlow.CurrentConfig.id}";
+                TableData.EventConfig cfg = EventFlow.CurrentConfig;
+                titleText.text = !string.IsNullOrEmpty(cfg.title) ? cfg.title : $"Event: {cfg.id}";
             }
             EventFlow.SwitchScreen(EventFlow.CurrentConfig.startScreen);
             RenderCurrentScreen();
@@ -88,6 +89,12 @@ namespace UI.Panel
                 return;
             }
             TableData.EventScreen screen = found.Value;
+
+            if (screen.options == null || screen.options.Count == 0)
+            {
+                Debug.LogError($"[EventChoicePanel] 事件 '{EventFlow.CurrentConfig.id}' 屏幕 '{screen.id}' 没有任何选项，请检查 EventConfigs 配置");
+                return;
+            }
 
             foreach (var option in screen.options)
             {
