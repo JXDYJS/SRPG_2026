@@ -294,6 +294,105 @@ namespace Map
             return mapData;
         }
 
+        /// <summary>
+        /// Real random map generation (config-driven). Guarantees:
+        /// - layer count from MapGenConfig (default 8-10)
+        /// - node types rolled by configured probabilities (Event/Battle/Shop)
+        /// - centered slot layout within [0, mapNodeMaxPerLayer)
+        /// - the last layer is always a single battle node (no boss levels yet)
+        /// - every node connects forward to the next layer, so all paths are traversable
+        /// - battle levels picked with replacement from BattleNodeConfigs (small pool)
+        /// Fake generators (GenerateFakeData/GenerateFakeDeepMap) are kept for testing.
+        /// </summary>
+        public static NodeMapData GenerateMap()
+        {
+            MapGenConfigData cfg = Data.Config.mapGenConfig;
+            int layerCount = Random.Range(cfg.minLayerCount, cfg.maxLayerCount + 1);
+            int maxPerLayer = Data.Config.ViewConfig.mapNodeMaxPerLayer;
+
+            NodeMapData mapData = new(layerCount);
+
+            for (int i = 0; i < layerCount; i++)
+            {
+                bool isLast = i == layerCount - 1;
+                int nodeCount = isLast ? 1 : Random.Range(cfg.minNodePerLayer, maxPerLayer + 1);
+                int startSlot = Mathf.Max(0, (maxPerLayer - nodeCount) / 2);
+
+                for (int j = 0; j < nodeCount; j++)
+                {
+                    MapType type = isLast ? MapType.Battle : RollMapType(cfg);
+                    BaseNode node = CreateNode(type);
+                    node.row = startSlot + j;
+                    node.col = i;
+                    mapData.layers[i].Add(node);
+                }
+            }
+
+            ConnectLayers(mapData);
+            return mapData;
+        }
+
+        /// <summary>Rolls a node type by configured probabilities (normalized).</summary>
+        private static MapType RollMapType(MapGenConfigData cfg)
+        {
+            float sum = cfg.battleProbability + cfg.shopProbability + cfg.eventProbability;
+            float roll = Random.value * sum;
+            if (roll < cfg.battleProbability) return MapType.Battle;
+            if (roll < cfg.battleProbability + cfg.shopProbability) return MapType.Shop;
+            return MapType.Event;
+        }
+
+        private static BaseNode CreateNode(MapType type)
+        {
+            return type switch
+            {
+                MapType.Shop => ShopNode.genShopNode(),
+                MapType.Event => new EventNode { eventId = GetRandomEventId() },
+                _ => new BattleNode { level = PickBattleLevel() },
+            };
+        }
+
+        /// <summary>Random valid level id from BattleNodeConfigs (with replacement), falling back to LevelConfigs keys.</summary>
+        private static string PickBattleLevel()
+        {
+            List<string> levels = new();
+            foreach (var battleCfg in Data.Table.BattleNodeConfigs.Values)
+            {
+                if (!string.IsNullOrEmpty(battleCfg.levelId))
+                {
+                    levels.Add(battleCfg.levelId);
+                }
+            }
+            if (levels.Count == 0)
+            {
+                levels.AddRange(Data.Table.LevelConfigs.Keys);
+            }
+            return levels.Count > 0 ? levels[Random.Range(0, levels.Count)] : null;
+        }
+
+        /// <summary>
+        /// Connects every node to one node in the next layer (prefers adjacent
+        /// slots so the map reads left-to-right; falls back to any node).
+        /// </summary>
+        private static void ConnectLayers(NodeMapData mapData)
+        {
+            for (int i = 0; i < mapData.layerCount - 1; i++)
+            {
+                List<BaseNode> nextLayer = mapData.layers[i + 1];
+                if (nextLayer.Count == 0) continue;
+
+                foreach (var src in mapData.layers[i])
+                {
+                    List<BaseNode> near = nextLayer
+                        .Where(t => Mathf.Abs(t.row - src.row) <= 1)
+                        .ToList();
+                    if (near.Count == 0) near = nextLayer;
+                    var tgt = near[Random.Range(0, near.Count)];
+                    src.connections.Add(tgt.id);
+                }
+            }
+        }
+
         private static string GetRandomEventId()
         {
             var keys = new string[Data.Table.EventConfigs.Count];

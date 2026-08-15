@@ -190,5 +190,11 @@ namespace DebugSystem
         {
             Test_Relic.RunAll();
         }
+
+        [ConsoleMethod("testMapGen", "Run the map generation test harness (prints PASS/FAIL summary)")]
+        public static void TestMapGen()
+        {
+            Test_MapGen.RunAll();
+        }
     }
 }

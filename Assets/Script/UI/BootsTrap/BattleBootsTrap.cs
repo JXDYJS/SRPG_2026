@@ -48,7 +48,7 @@ namespace UI.BootsTrap
             }
 
             bool freshMap = Data.Persistent?.Data?.nodeMapData == null;
-            NodeMapData map = freshMap ? NodeMapData.GenerateFakeData() : Data.Persistent.Data.nodeMapData;
+            NodeMapData map = freshMap ? NodeMapData.GenerateMap() : Data.Persistent.Data.nodeMapData;
             if (freshMap && Data.Persistent?.Data != null)
             {
                 Data.Persistent.Data.nodeMapData = map;
