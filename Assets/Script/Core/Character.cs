@@ -122,11 +122,22 @@ namespace Character
 
             public virtual void LevelUp()
             {
-                if(level < maxLevel)
-                {
-                    LevelUp(characterData.GrowthTable[level - 1].Rewards);
+                if (level >= maxLevel) return;
 
+                if (characterData.GrowthTable == null || characterData.GrowthTable.Count == 0)
+                {
+                    Debug.LogWarning($"[CharacterInstance] {characterData.CharacterName} has no GrowthTable, skip level up");
+                    return;
                 }
+
+                int index = level - 1;
+                if (index < 0 || index >= characterData.GrowthTable.Count)
+                {
+                    Debug.LogWarning($"[CharacterInstance] {characterData.CharacterName} GrowthTable missing entry for level {level}, skip level up");
+                    return;
+                }
+
+                LevelUp(characterData.GrowthTable[index].Rewards);
             }
         }
     }
