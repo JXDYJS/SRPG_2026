@@ -171,5 +171,24 @@ namespace DebugSystem
             bool ok = RunManager.Instance.GiveItem(itemId, amount);
             Debug.Log(ok ? $"[Debug] giveitem: 获得 {itemId} x{amount}" : $"[Debug] giveitem: 失败，未知物品 '{itemId}'");
         }
+
+        [ConsoleMethod("relics", "List all relic configs with C#/Lua resolution status")]
+        public static void ListRelics()
+        {
+            var configs = Core.Data.Data.Table.RelicConfigs;
+            Debug.Log($"[Debug] relics: 共 {configs.Count} 个藏品配置");
+            foreach (var kv in configs)
+            {
+                var relic = GamePlay.Relics.RelicManager.CreateRelicFromID(kv.Key);
+                string status = relic != null ? $"OK [{relic.GetType().Name}]" : "FAIL";
+                Debug.Log($"[Debug] {kv.Key} '{kv.Value.name}' rarity={kv.Value.rarity} price={kv.Value.minPrice}-{kv.Value.maxPrice} => {status}");
+            }
+        }
+
+        [ConsoleMethod("testRelics", "Run the relic test harness (prints PASS/FAIL summary)")]
+        public static void TestRelics()
+        {
+            Test_Relic.RunAll();
+        }
     }
 }
