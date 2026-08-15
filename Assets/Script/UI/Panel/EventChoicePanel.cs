@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Core.Data;
 using DG.Tweening;
@@ -75,6 +76,9 @@ namespace UI.Panel
             ClearOptions();
             resultView?.SetActive(false);
 
+            Debug.Log($"[EventPanel] 渲染屏幕 '{EventFlow.CurrentScreenId}' 事件='{EventFlow.CurrentConfig.id}' " +
+                      $"container={(optionContainer != null)} prefab={(optionPrefab != null)}");
+
             if (optionContainer == null || optionPrefab == null)
             {
                 Debug.LogError("[EventChoicePanel] optionContainer/optionPrefab 未赋值");
@@ -96,16 +100,25 @@ namespace UI.Panel
                 return;
             }
 
+            Debug.Log($"[EventPanel] 找到屏幕 '{screen.id}' 选项数={screen.options.Count}");
             foreach (var option in screen.options)
             {
-                GameObject go = Instantiate(optionPrefab, optionContainer);
-                var slot = go.GetComponent<EventOptionSlot>();
-                if (slot != null)
+                try
                 {
-                    bool available = EventFlow.IsOptionAvailable(option);
-                    slot.Setup(option, available, OnOptionClicked);
+                    GameObject go = Instantiate(optionPrefab, optionContainer);
+                    var slot = go.GetComponent<EventOptionSlot>();
+                    Debug.Log($"[EventPanel] 实例化选项 '{option.title}' slot={(slot != null ? "OK" : "NULL")}");
+                    if (slot != null)
+                    {
+                        bool available = EventFlow.IsOptionAvailable(option);
+                        slot.Setup(option, available, OnOptionClicked);
+                    }
+                    _optionInstances.Add(go);
                 }
-                _optionInstances.Add(go);
+                catch (Exception e)
+                {
+                    Debug.LogError($"[EventChoicePanel] 实例化选项 '{option.title}' 失败: {e}");
+                }
             }
 
             AnimateIn(_optionCanvasGroup);
