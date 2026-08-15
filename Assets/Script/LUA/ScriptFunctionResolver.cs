@@ -8,17 +8,25 @@ namespace Lua
 {
     public static class ScriptFunctionResolver
     {
-        private static readonly Dictionary<int, LuaFunction> _luaCache = new();
+        private static readonly Dictionary<string, LuaFunction> _luaCache = new();
         private static readonly Dictionary<string, MethodInfo> _csCache = new();
 
         public static T Invoke<T>(string funcName, SkillEvalContext ctx) where T : class
         {
-            var func = ResolveLua(funcName);
-            if (func != null)
+            try
             {
-                var ret = func.Call(ctx);
-                if (ret != null && ret.Length > 0 && ret[0] is T result)
-                    return result;
+                var func = ResolveLua(funcName);
+                if (func != null)
+                {
+                    var ret = func.Call(ctx);
+                    if (ret != null && ret.Length > 0 && ret[0] is T result)
+                        return result;
+                    return null;
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"[ScriptFunctionResolver] Lua 函数 '{funcName}' 调用异常: {e.Message}");
                 return null;
             }
 
@@ -34,28 +42,34 @@ namespace Lua
 
         private static LuaFunction ResolveLua(string funcName)
         {
-            var hash = funcName.GetHashCode();
-            if (_luaCache.TryGetValue(hash, out var cached))
+            if (_luaCache.TryGetValue(funcName, out var cached))
                 return cached;
 
-            var luaEnv = LuaManager.Instance.LuaEnv;
-            var parts = funcName.Split('.');
-            object current = luaEnv.Global;
-            foreach (var part in parts)
+            try
             {
-                if (current is LuaTable table)
+                var luaEnv = LuaManager.Instance.LuaEnv;
+                var parts = funcName.Split('.');
+                object current = luaEnv.Global;
+                foreach (var part in parts)
                 {
-                    var next = table.Get<object>(part);
-                    if (next == null) return null;
-                    current = next;
+                    if (current is LuaTable table)
+                    {
+                        var next = table.Get<object>(part);
+                        if (next == null) return null;
+                        current = next;
+                    }
+                    else return null;
                 }
-                else return null;
-            }
 
-            if (current is LuaFunction lf)
+                if (current is LuaFunction lf)
+                {
+                    _luaCache[funcName] = lf;
+                    return lf;
+                }
+            }
+            catch (Exception e)
             {
-                _luaCache[hash] = lf;
-                return lf;
+                Debug.LogError($"[ScriptFunctionResolver] 解析 Lua 函数 '{funcName}' 失败: {e.Message}");
             }
             return null;
         }

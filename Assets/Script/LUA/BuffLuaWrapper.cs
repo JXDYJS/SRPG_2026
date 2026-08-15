@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using GamePlay.Buff;
 using GamePlay.Units;
@@ -18,21 +19,28 @@ namespace Lua
         {
             base.Bind(instance);
 
-            _onStacksChanged = instance.Get<LuaFunction>("OnStacksChanged");
-            _isTaunt = ReadOptionalBool("IsTaunt");
+            try
+            {
+                _onStacksChanged = instance.Get<LuaFunction>("OnStacksChanged");
+                _isTaunt = ReadOptionalBool("IsTaunt");
 
-            Stacks = LuaInstance.Get<int>("Stacks");
-            MaxStacks = LuaInstance.Get<int>("MaxStacks");
-            IsDebuff = LuaInstance.Get<bool>("IsDebuff");
-            DecayAtTurnStart = LuaInstance.Get<bool>("DecayAtTurnStart");
+                Stacks = LuaInstance.Get<int>("Stacks");
+                MaxStacks = LuaInstance.Get<int>("MaxStacks");
+                IsDebuff = LuaInstance.Get<bool>("IsDebuff");
+                DecayAtTurnStart = LuaInstance.Get<bool>("DecayAtTurnStart");
 
-            // Lua may declare AIValue to override the C# default
-            AIValue = ReadOptionalFloat("AIValue");
+                // Lua may declare AIValue to override the C# default
+                AIValue = ReadOptionalFloat("AIValue");
+
+                Description = LuaInstance.Get<string>("Description");
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"[LuaBuff '{ID}'] Bind 失败，字段将使用默认值: {e.Message}");
+            }
 
             // Prefer the Lua-configured display name, falling back to the BuffID
             if (string.IsNullOrEmpty(Name)) Name = ID;
-
-            Description = LuaInstance.Get<string>("Description");
         }
 
         /// <summary>Safely reads an optional Lua bool; nil defaults to false.</summary>
@@ -59,7 +67,15 @@ namespace Lua
 
         public override void OnStacksChanged()
         {
-            _onStacksChanged?.Call(LuaInstance);
+            if (_onStacksChanged == null) return;
+            try
+            {
+                _onStacksChanged.Call(LuaInstance);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"[LuaBuff '{ID}'] OnStacksChanged 执行异常: {e.Message}");
+            }
         }
     }
 }

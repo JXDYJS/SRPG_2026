@@ -67,9 +67,9 @@ namespace Lua
 
             foreach (string address in addresses)
             {
+                var handle = Addressables.LoadAssetAsync<TextAsset>(address);
                 try
                 {
-                    var handle = Addressables.LoadAssetAsync<TextAsset>(address);
                     TextAsset asset = await handle.ToUniTask();
                     if (asset == null)
                     {
@@ -84,6 +84,12 @@ namespace Lua
                 catch (Exception e)
                 {
                     Debug.LogWarning($"[LuaManager] 加载 Lua 失败: {address} → {e.Message}");
+                }
+                finally
+                {
+                    // Bytes are copied into the cache; drop the handle so each script
+                    // is not held in memory twice for the whole session.
+                    Addressables.Release(handle);
                 }
             }
 
@@ -131,7 +137,20 @@ namespace Lua
             LuaEnv?.Dispose();
             LuaEnv = null;
             _luaCache.Clear();
+            ScriptFunctionResolver.ClearCache();
             _instance = null;
+        }
+
+        /// <summary>
+        /// Fully reloads the Lua runtime: disposes the env and re-prefetches modules.
+        /// Call after a mid-session Addressables catalog update. LuaFunction references
+        /// captured before the reload are invalidated, so buffs/relics/skills built on
+        /// them must be recreated (e.g. after returning to the main menu).
+        /// </summary>
+        public async UniTask ReloadAsync()
+        {
+            Dispose();
+            await InitializeAsync();
         }
     }
 }
