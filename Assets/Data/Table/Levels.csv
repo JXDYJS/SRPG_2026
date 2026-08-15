@@ -1,4 +1,5 @@
 _className,_tableName,_isDic,*id,mapAddress,playerDeployZones,maxDeployCount,unitIds,fallbackUnitIds
 LevelConfig,LevelConfigs,true,string,string,List<string>,int,List<string>,List<string>
-,,,lv_001,Assets/Map/test2.asset,"[""(0,0,0)"", ""(1,0,0)"", ""(2,0,0)"", ""(3,0,0)"", ""(4,0,0)"", ""(5,0,0)""]",4,"[""u_enemy_zombie_01"", ""u_enemy_skeleton_01"", ""u_enemy_zombie_02""]","[""u_fallback_01""]"
-,,,lv_002,Assets/Map/tallMap.asset,"[""(0,0,0)"", ""(1,0,0)"", ""(2,0,0)"", ""(3,0,0)"", ""(4,0,0)"", ""(5,0,0)""]",4,"[""u_enemy_zombie_01"", ""u_enemy_skeleton_01"", ""u_enemy_zombie_02""]","[""u_fallback_01""]"
+,,,lv_001,Assets/Map/test2.asset,"[""(0,0,0)"", ""(1,0,0)"", ""(2,0,0)"", ""(3,0,0)"", ""(4,0,0)"", ""(5,0,0)""]",4,"[""u_enemy_zombie_01"", ""u_enemy_zombie_02"", ""u_enemy_skeleton_01"", ""u_enemy_skeleton_02""]","[""u_fallback_01""]"
+,,,lv_002,Assets/Map/tallMap.asset,"[""(0,0,0)"", ""(1,0,0)"", ""(2,0,0)"", ""(3,0,0)"", ""(4,0,0)"", ""(5,0,0)""]",4,"[""u_enemy_zombie_lv2_01"", ""u_enemy_zombie_lv2_02"", ""u_enemy_skeleton_lv2_01"", ""u_enemy_skeleton_lv2_02""]","[""u_fallback_01""]"
+,,,lv_003,Assets/Map/level3.asset,"[""(0,0,0)"", ""(1,0,0)"", ""(2,0,0)"", ""(5,0,0)"", ""(6,0,0)"", ""(7,0,0)""]",4,"[""u_enemy_zombie_lv3_01"", ""u_enemy_zombie_lv3_02"", ""u_enemy_skeleton_lv3_01"", ""u_enemy_skeleton_lv3_02""]","[""u_fallback_01""]"
