@@ -213,6 +213,14 @@ namespace DebugSystem
                 RelicBase relic = RelicManager.CreateRelicFromID(kv.Key);
                 Check($"解析 {kv.Key} ({kv.Value.name})", relic != null && relic.ID == kv.Key,
                     relic == null ? "创建失败" : "ID 回读错误");
+                if (relic != null)
+                {
+                    // Price/Rarity are owned by the config table; Lua relics must not override them.
+                    Check($"配置表字段 {kv.Key} 价格", relic.Price == kv.Value.minPrice,
+                        $"期望 {kv.Value.minPrice} 实际 {relic.Price}");
+                    Check($"配置表字段 {kv.Key} 稀有度", relic.Rarity == kv.Value.rarity,
+                        $"期望 {kv.Value.rarity} 实际 {relic.Rarity}");
+                }
             }
         }
 

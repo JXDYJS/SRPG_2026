@@ -11,12 +11,6 @@ RelicBase.ID = ""
 ---@type string
 RelicBase.Name = ""
 
----@type number
-RelicBase.Price = 0
-
----@type string
-RelicBase.Rarity = ""
-
 function RelicBase:ctor() end
 
 function RelicBase:OnApply(owner) end
