@@ -53,7 +53,6 @@ namespace UI.BootsTrap
             {
                 Data.Persistent.Data.nodeMapData = map;
                 Data.Persistent.Data.seed = Random.Range(int.MinValue, int.MaxValue);
-                Data.Persistent.Save();
             }
 
             if (UIManager.Instance?.Background == null)
@@ -70,6 +69,8 @@ namespace UI.BootsTrap
             if (freshMap)
             {
                 MapPopWindow.unLockFirstLayer();
+                // Persist after unlocking so a fresh map is never saved all-locked.
+                Data.Persistent?.Save();
             }
         }
     }

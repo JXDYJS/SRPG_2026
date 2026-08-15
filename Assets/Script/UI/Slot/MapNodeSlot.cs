@@ -94,11 +94,13 @@ namespace UI.Slot
                 {
                     EventFlow.Start(eventNode);
                 }
-                node._onEnterNode.Invoke();
+                node._onEnterNode?.Invoke();
 
                 if (win != null)
                 {
-                    win.SaveCurrentProgress();
+                    // Unlock the next layer right away (and persist) so a mid-level
+                    // exit + continue never leaves the whole map locked.
+                    win.UnlockNextFromCurrent();
                 }
             });
 

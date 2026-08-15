@@ -280,6 +280,31 @@ namespace UI.Panel
             if (node == null) return;
 
             node.isLock = true;
+            UnlockConnectionsOf(playerLayer, playerRow);
+            Refresh();
+
+            // Persist immediately so a reloaded save reflects the latest unlock state.
+            SaveCurrentProgress();
+        }
+
+        /// <summary>
+        /// Unlocks the next-layer connections of the current position without locking
+        /// the node itself. Called on node entry so a mid-level exit + continue never
+        /// leaves the whole map locked (NextLevel() only runs after a win).
+        /// </summary>
+        public void UnlockNextFromCurrent()
+        {
+            if (nodeMapData == null || playerLayer >= nodeMapData.layers.Count) return;
+            UnlockConnectionsOf(playerLayer, playerRow);
+            SaveCurrentProgress();
+        }
+
+        private void UnlockConnectionsOf(int layer, int row)
+        {
+            var nodes = nodeMapData.layers[layer];
+            var node = nodes.Find(n => n.col == layer && n.row == row);
+            if (node == null) return;
+
             foreach (var conn in node.connections)
             {
                 if (!_nodeIdLookup.TryGetValue(conn, out var nextNodeLayerRow)) continue;
@@ -288,15 +313,12 @@ namespace UI.Panel
                 if (nextNode == null) continue;
                 nextNode.isLock = false;
             }
-            Refresh();
-
-            // Persist immediately so a reloaded save reflects the latest unlock state.
-            SaveCurrentProgress();
         }
+
         public void unLockFirstLayer()
         {
-            if (_activeLayers.Count == 0) return;
-            foreach(var node in _activeLayers[0].layer.ActivateNodes)
+            if (nodeMapData == null || nodeMapData.layers.Count == 0) return;
+            foreach (var node in nodeMapData.layers[0])
             {
                 node.isLock = false;
             }

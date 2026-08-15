@@ -57,10 +57,8 @@ namespace Map
         {
             this.id = id ?? Guid.NewGuid().ToString("N");
             isLock = true;
-            _onEnterNode += () =>
-            {
-                this.isLock = true;
-            };
+            // NOTE: no self-lock on enter. The current node must stay unlocked so
+            // a mid-level exit + continue can retry it; NextLevel() locks it on win.
         }
     }
 
