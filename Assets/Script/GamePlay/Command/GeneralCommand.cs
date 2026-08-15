@@ -187,9 +187,21 @@ namespace Command
 
             _caster.SetState(UnitState.Attacking);
 
-            SkillSequenceResult result = SkillExecutor.ExecuteSequence(_caster, _targetContext, _skillData);
+            // Keep the busy window open through the logic phase: ExecuteSequence
+            // applies damage synchronously, so kills must be deferred to the
+            // skill's visual flush or death animations would play first.
+            UnitManager.Instance.SetActionBusy(true);
+            try
+            {
+                SkillSequenceResult result = SkillExecutor.ExecuteSequence(_caster, _targetContext, _skillData);
 
-            await SkillPerformer.PerformSkillSequence(_skillData, result);
+                await SkillPerformer.PerformSkillSequence(_skillData, result);
+            }
+            finally
+            {
+                UnitManager.Instance.SetActionBusy(false);
+                await UnitManager.Instance.FlushDeathAnimations();
+            }
 
             // Item cast: consume 1 stock after the cast finishes
             if (!string.IsNullOrEmpty(_itemId) && RunManager.Instance != null)
