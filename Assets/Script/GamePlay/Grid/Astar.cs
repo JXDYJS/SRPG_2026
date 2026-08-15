@@ -17,15 +17,55 @@ namespace GamePlay.Grid
     }
     public class AStar
     {
+        /// <summary>Stand height of the block a unit stands on (grid Y + block thickness).</summary>
+        public static float GetStandHeight(Vector3Int pos, LogicalGrid grid)
+        {
+            return pos.y + grid.GetBlockYSize(pos);
+        }
+
+        /// <summary>
+        /// Heuristic for the stand-height cost model: Manhattan flat distance plus
+        /// stand-height difference. Each step costs flat 1 plus the stand-height delta,
+        /// so the true remaining cost is always >= flat Manhattan distance (sum of step
+        /// flat costs) and >= the total stand-height difference (triangle inequality).
+        /// Hence h never overestimates: admissible and consistent, A* stays optimal
+        /// and the first pop of a tile is final.
+        /// </summary>
+        public static float GetStandHeightDistance(Vector3Int a, Vector3Int b, LogicalGrid grid)
+        {
+            return Mathf.Abs(a.x - b.x)
+                 + Mathf.Abs(a.z - b.z)
+                 + Mathf.Abs(GetStandHeight(a, grid) - GetStandHeight(b, grid));
+        }
+
         public static List<Vector3Int> FindPath(Vector3Int start, Vector3Int end, LogicalGrid grid, UnitMoveStats stats)
         {
+            return FindPathCore(start, end, grid, stats, allowOccupiedEnd: false);
+        }
+
+        /// <summary>Allows the end tile to be occupied (used for AI pathing to enemies).</summary>
+        public static List<Vector3Int> FindPathToOccupied(Vector3Int start, Vector3Int end, LogicalGrid grid, UnitMoveStats stats)
+        {
+            return FindPathCore(start, end, grid, stats, allowOccupiedEnd: true);
+        }
+
+        /// <summary>
+        /// A* over the stand-height cost model with a min-heap open set. The heap has no
+        /// decrease-key, so a tile improved after insertion leaves stale entries behind;
+        /// they are skipped on pop via the costSoFar table. h is admissible and
+        /// consistent (see GetStandHeightDistance), so the closed set never reopens.
+        /// </summary>
+        private static List<Vector3Int> FindPathCore(Vector3Int start, Vector3Int end, LogicalGrid grid, UnitMoveStats stats, bool allowOccupiedEnd)
+        {
             float pathStartTime = Time.realtimeSinceStartup;
-            
-            List<Node> openSet = new List<Node>();
+
+            AStarMinHeap openSet = new AStarMinHeap();
+            Dictionary<Vector3Int, float> costSoFar = new Dictionary<Vector3Int, float>();
             HashSet<Vector3Int> closedSet = new HashSet<Vector3Int>();
 
-            Node startNode = new Node(start);
-            openSet.Add(startNode);
+            Node startNode = new Node(start) { gCost = 0, hCost = GetStandHeightDistance(start, end, grid) };
+            openSet.Insert(startNode);
+            costSoFar[start] = 0;
 
             while (openSet.Count > 0)
             {
@@ -34,117 +74,43 @@ namespace GamePlay.Grid
                     Debug.LogError($"[AStar] FindPath 从 {start} 到 {end} 耗时过长(>{Time.realtimeSinceStartup - pathStartTime:F1}s)，可能死循环！openSet={openSet.Count}");
                     return null;
                 }
-                Node currentNode = openSet[0];
-                int bestIdx = 0;
-                for (int j = 1; j < openSet.Count; j++)
-                {
-                    Node n = openSet[j];
-                    if (n.FCost < currentNode.FCost ||
-                        (n.FCost == currentNode.FCost && n.hCost < currentNode.hCost))
-                    {
-                        currentNode = n;
-                        bestIdx = j;
-                    }
-                }
-                openSet.RemoveAt(bestIdx);
-                closedSet.Add(currentNode.position);
+
+                Node currentNode = openSet.ExtractMin();
+
+                // Skip stale heap entries: the tile was re-inserted with a better cost later.
+                if (currentNode.gCost > costSoFar[currentNode.position]) continue;
+                if (!closedSet.Add(currentNode.position)) continue;
 
                 if (currentNode.position == end)
                 {
                     return RetracePath(startNode, currentNode);
                 }
 
-                foreach (Vector3Int neighborPos in GetValidNeighbors(currentNode, grid, stats))
+                foreach (Vector3Int neighborPos in GetValidNeighbors(currentNode, grid, stats, allowOccupiedEnd ? (Vector3Int?)end : null))
                 {
                     if (closedSet.Contains(neighborPos)) continue;
 
                     float distCost = GetFlatDistance(currentNode.position, neighborPos);
-                    
+
                     // Uses world stand height (not Grid Y), so half-bricks cost 0.5
-                    float currentStandY = currentNode.position.y + grid.GetBlockYSize(currentNode.position);
-                    float targetStandY = neighborPos.y + grid.GetBlockYSize(neighborPos);
+                    float currentStandY = GetStandHeight(currentNode.position, grid);
+                    float targetStandY = GetStandHeight(neighborPos, grid);
                     float heightCost = Mathf.Abs(targetStandY - currentStandY);
 
                     float newCost = currentNode.gCost + distCost + heightCost;
 
-                    Node neighborNode = openSet.Find(n => n.position == neighborPos);
-                    if (neighborNode == null || newCost < neighborNode.gCost)
+                    if (costSoFar.TryGetValue(neighborPos, out float existingCost) && newCost >= existingCost)
                     {
-                        if (neighborNode == null)
-                        {
-                            neighborNode = new Node(neighborPos);
-                            openSet.Add(neighborNode);
-                        }
-                        neighborNode.gCost = newCost;
-                        neighborNode.hCost = Get3DDistance(neighborPos, end);
-                        neighborNode.parent = currentNode;
+                        continue;
                     }
-                }
-            }
 
-            return null;
-        }
-
-        /// <summary>Allows the end tile to be occupied (used for AI pathing to enemies).</summary>
-        public static List<Vector3Int> FindPathToOccupied(Vector3Int start, Vector3Int end, LogicalGrid grid, UnitMoveStats stats)
-        {
-            float pathStartTime = Time.realtimeSinceStartup;
-
-            List<Node> openSet = new List<Node>();
-            HashSet<Vector3Int> closedSet = new HashSet<Vector3Int>();
-
-            Node startNode = new Node(start);
-            openSet.Add(startNode);
-
-            while (openSet.Count > 0)
-            {
-                if (Time.realtimeSinceStartup - pathStartTime > 1.0f)
-                {
-                    Debug.LogError($"[AStar] FindPathToOccupied 从 {start} 到 {end} 耗时过长(>{Time.realtimeSinceStartup - pathStartTime:F1}s)，可能死循环！openSet={openSet.Count}");
-                    return null;
-                }
-                Node currentNode = openSet[0];
-                int bestIdx = 0;
-                for (int j = 1; j < openSet.Count; j++)
-                {
-                    Node n = openSet[j];
-                    if (n.FCost < currentNode.FCost ||
-                        (n.FCost == currentNode.FCost && n.hCost < currentNode.hCost))
+                    costSoFar[neighborPos] = newCost;
+                    openSet.Insert(new Node(neighborPos)
                     {
-                        currentNode = n;
-                        bestIdx = j;
-                    }
-                }
-                openSet.RemoveAt(bestIdx);
-                closedSet.Add(currentNode.position);
-
-                if (currentNode.position == end)
-                {
-                    return RetracePath(startNode, currentNode);
-                }
-
-                foreach (Vector3Int neighborPos in GetValidNeighbors(currentNode, grid, stats, end))
-                {
-                    if (closedSet.Contains(neighborPos)) continue;
-
-                    float distCost = GetFlatDistance(currentNode.position, neighborPos);
-                    float currentStandY = currentNode.position.y + grid.GetBlockYSize(currentNode.position);
-                    float targetStandY = neighborPos.y + grid.GetBlockYSize(neighborPos);
-                    float heightCost = Mathf.Abs(targetStandY - currentStandY);
-                    float newCost = currentNode.gCost + distCost + heightCost;
-
-                    Node neighborNode = openSet.Find(n => n.position == neighborPos);
-                    if (neighborNode == null || newCost < neighborNode.gCost)
-                    {
-                        if (neighborNode == null)
-                        {
-                            neighborNode = new Node(neighborPos);
-                            openSet.Add(neighborNode);
-                        }
-                        neighborNode.gCost = newCost;
-                        neighborNode.hCost = Get3DDistance(neighborPos, end);
-                        neighborNode.parent = currentNode;
-                    }
+                        gCost = newCost,
+                        hCost = GetStandHeightDistance(neighborPos, end, grid),
+                        parent = currentNode
+                    });
                 }
             }
 
@@ -165,21 +131,24 @@ namespace GamePlay.Grid
             {
                 Node currentNode = openSet.ExtractMin();
 
+                // Skip stale heap entries: the tile was re-inserted with a better cost later.
+                if (currentNode.gCost > costSoFar[currentNode.position]) continue;
+
                 reachable.Add(currentNode.position);
 
                 foreach (Vector3Int neighborPos in GetValidNeighbors(currentNode, grid, stats))
                 {
-                    float distCost = 1.0f; 
-                    
-                    float currentStandY = currentNode.position.y + grid.GetBlockYSize(currentNode.position);
-                    float targetStandY = neighborPos.y + grid.GetBlockYSize(neighborPos);
-                    float heightCost = Mathf.Abs(targetStandY - currentStandY); 
-                    
+                    float distCost = 1.0f;
+
+                    float currentStandY = GetStandHeight(currentNode.position, grid);
+                    float targetStandY = GetStandHeight(neighborPos, grid);
+                    float heightCost = Mathf.Abs(targetStandY - currentStandY);
+
                     float newCost = currentNode.gCost + distCost + heightCost;
 
                     if (newCost > moveRange) continue;
 
-                    if (!costSoFar.ContainsKey(neighborPos) || newCost < costSoFar[neighborPos])
+                    if (!costSoFar.TryGetValue(neighborPos, out float existingCost) || newCost < existingCost)
                     {
                         costSoFar[neighborPos] = newCost;
                         openSet.Insert(new Node(neighborPos) { gCost = newCost });
@@ -191,9 +160,9 @@ namespace GamePlay.Grid
         }
 
         /// <summary>Reachable tiles mapped to their movement cost.</summary>
-        public static Dictionary<Vector3Int,float> GetReachableTilesWithDistance(Vector3Int start, int moveRange, LogicalGrid grid, UnitMoveStats stats)
+        public static Dictionary<Vector3Int, float> GetReachableTilesWithDistance(Vector3Int start, int moveRange, LogicalGrid grid, UnitMoveStats stats)
         {
-            Dictionary<Vector3Int,float> reachableMap = new Dictionary<Vector3Int, float>();
+            Dictionary<Vector3Int, float> reachableMap = new Dictionary<Vector3Int, float>();
             Dictionary<Vector3Int, float> costSoFar = new Dictionary<Vector3Int, float>();
             AStarMinHeap openSet = new AStarMinHeap();
 
@@ -204,21 +173,24 @@ namespace GamePlay.Grid
             while (openSet.Count > 0)
             {
                 Node currentNode = openSet.ExtractMin();
-                reachableMap.Add(currentNode.position,currentNode.gCost);
+
+                // Skip stale heap entries: the tile was re-inserted with a better cost later.
+                if (currentNode.gCost > costSoFar[currentNode.position]) continue;
+
+                reachableMap[currentNode.position] = currentNode.gCost;
 
                 foreach (Vector3Int neighborPos in GetValidNeighbors(currentNode, grid, stats))
                 {
-                    float distCost = 1.0f; 
-                    
-                    float currentStandY = currentNode.position.y + grid.GetBlockYSize(currentNode.position);
-                    float targetStandY = neighborPos.y + grid.GetBlockYSize(neighborPos);
-                    float heightCost = Mathf.Abs(targetStandY - currentStandY); 
-                    
+                    float distCost = 1.0f;
+
+                    float currentStandY = GetStandHeight(currentNode.position, grid);
+                    float targetStandY = GetStandHeight(neighborPos, grid);
+                    float heightCost = Mathf.Abs(targetStandY - currentStandY);
+
                     float newCost = currentNode.gCost + distCost + heightCost;
 
                     if (newCost > moveRange) continue;
-
-                    if (!costSoFar.ContainsKey(neighborPos) || newCost < costSoFar[neighborPos])
+                    if (!costSoFar.TryGetValue(neighborPos, out float existingCost) || newCost < existingCost)
                     {
                         costSoFar[neighborPos] = newCost;
                         openSet.Insert(new Node(neighborPos) { gCost = newCost });
@@ -226,7 +198,7 @@ namespace GamePlay.Grid
                 }
             }
             return reachableMap;
-        } 
+        }
 
         public static List<Vector3Int> GetValidNeighbors(Node currentNode, LogicalGrid grid, UnitMoveStats stats, Vector3Int? endPosition = null)
         {
