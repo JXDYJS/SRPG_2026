@@ -195,4 +195,16 @@ Multiple different top-level namespaces create fragmentation:
 
 ---
 
+## Hardening Pass 2026-08-15
+
+Resolved during interview-driven code review:
+
+- **A* open set**: `FindPath`/`FindPathToOccupied` share a min-heap core (was O(n) linear scan + `openSet.Find`); heap has no decrease-key, so stale entries are skipped on pop via `costSoFar`. `GetReachableTilesWithDistance` could throw `ArgumentException` (duplicate `Dictionary.Add`) when stale entries popped — fixed with stale-skip.
+- **A* heuristic**: `Get3DDistance` (grid-y based) could overestimate with slab/half-brick stand heights, breaking admissibility. Replaced with `GetStandHeightDistance` (Manhattan flat + stand-height diff): admissible and consistent, so A* stays optimal and the closed set never reopens. TODO: randomized A*-vs-Dijkstra differential test.
+- **Stat**: `baseValue` public field (direct writes silently kept stale cache) is now a private-set `BaseValue` property that marks dirty. `calValue()` caches the priority-sorted zone list instead of LINQ `OrderBy` per recalculation.
+- **Lua hardening**: `CombatModifierLuaWrapper`/`BuffLuaWrapper` hooks and `ScriptFunctionResolver` calls are error-contained (log + degrade instead of throwing into combat). `LuaManager` releases Addressables handles after byte copy and adds `ReloadAsync()` for post-catalog-update refresh.
+- Remaining: legacy `modifiers` list vs zone system (legacy hard-codes after all zones regardless of priority) — design decision pending; Lua mid-session reload API not wired to any flow; no automated tests.
+
+---
+
 *Concerns audit: 2026-03-18*
