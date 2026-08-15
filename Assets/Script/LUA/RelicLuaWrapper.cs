@@ -16,13 +16,27 @@ namespace Lua
         {
             base.Bind(instance);
 
-            int price = LuaInstance.Get<int>("Price");
-            if (price > 0) Price = price;
-
-            string rarity = LuaInstance.Get<string>("Rarity");
-            if (!string.IsNullOrEmpty(rarity) && Enum.TryParse(rarity, out RarityType rt))
+            // Optional Lua fields: Get<int>/Get<string> on nil raises "can not assign nil",
+            // so read as object and fall back to the config-table values.
+            object priceVal = LuaInstance.Get<object>("Price");
+            if (priceVal != null)
             {
-                Rarity = rt;
+                try
+                {
+                    int p = Convert.ToInt32(priceVal);
+                    if (p > 0) Price = p;
+                }
+                catch (Exception) { /* keep config price */ }
+            }
+
+            object rarityVal = LuaInstance.Get<object>("Rarity");
+            if (rarityVal != null)
+            {
+                string rarityStr = rarityVal as string ?? rarityVal.ToString();
+                if (!string.IsNullOrEmpty(rarityStr) && Enum.TryParse(rarityStr, out RarityType rt))
+                {
+                    Rarity = rt;
+                }
             }
         }
     }

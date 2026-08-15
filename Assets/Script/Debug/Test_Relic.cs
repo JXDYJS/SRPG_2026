@@ -278,7 +278,8 @@ namespace DebugSystem
                 _player.Character.statSystem.currentHP = (int)(max * 0.5f);
                 int before = _player.Character.statSystem.currentHP;
                 symbol.OnBattleStart(_player);
-                int expected = Mathf.Min(max, before + Mathf.Max(1, Mathf.RoundToInt(max * 0.1f)));
+                // Mirror the relic's own truncation ((int)(max * 0.1f)) instead of rounding.
+                int expected = Mathf.Min(max, before + Mathf.Max(1, (int)(max * 0.1f)));
                 Check("圣徽开局回血", _player.Character.statSystem.currentHP == expected,
                     $"期望 {expected} 实际 {_player.Character.statSystem.currentHP}");
             }
