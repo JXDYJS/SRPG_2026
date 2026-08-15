@@ -31,8 +31,19 @@ namespace Status
         }
         public class Stat
         {
-            public float baseValue = 0;
+            private float _baseValue = 0;
             private readonly List<StatModifier> modifiers = new List<StatModifier>();
+
+            /// <summary>Base value; writes mark the cache dirty so getValue() recomputes.</summary>
+            public float BaseValue
+            {
+                get => _baseValue;
+                private set
+                {
+                    _baseValue = value;
+                    isDirty = true;
+                }
+            }
 
             private class ModifierZone
             {
@@ -42,6 +53,10 @@ namespace Status
             private Dictionary<string, ModifierZone> _zones = new Dictionary<string, ModifierZone>();
             private const int DEFAULT_ZONE_PRIORITY = 0;
 
+            // Sorted zone cache: rebuilt only when the zone set or its priorities change.
+            private List<ModifierZone> _sortedZones = new List<ModifierZone>();
+            private bool _zonesDirty = true;
+
             public bool isDirty = true;
             public float cachedValue = 0;
 
@@ -49,14 +64,20 @@ namespace Status
 
             public Stat(float baseValue)
             {
-                this.baseValue = baseValue;
+                this.BaseValue = baseValue;
             }
 
             public virtual float calValue()
             {
-                float value = baseValue;
+                float value = BaseValue;
 
-                foreach (var zone in _zones.Values.OrderBy(z => z.priority))
+                if (_zonesDirty)
+                {
+                    _sortedZones = _zones.Values.OrderBy(z => z.priority).ToList();
+                    _zonesDirty = false;
+                }
+
+                foreach (var zone in _sortedZones)
                 {
                     float flatSum = 0;
                     float percentSum = 0;
@@ -115,6 +136,7 @@ namespace Status
                     _zones[zoneName] = zone;
                 }
                 zone.priority = priority;
+                _zonesDirty = true;
             }
 
             /// <summary>Adds a modifier to a zone, auto-creating it with default priority.</summary>
@@ -124,6 +146,7 @@ namespace Status
                 {
                     zone = new ModifierZone { priority = DEFAULT_ZONE_PRIORITY };
                     _zones[zoneName] = zone;
+                    _zonesDirty = true;
                 }
                 zone.modifiers.Add(mod);
                 isDirty = true;
@@ -140,7 +163,7 @@ namespace Status
 
             public void SetBaseValue(float newValue)
             {
-                baseValue = newValue;
+                BaseValue = newValue;
                 isDirty = true;
                 OnValueChanged?.Invoke();
             }
