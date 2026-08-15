@@ -329,6 +329,7 @@ namespace Map
             }
 
             ConnectLayers(mapData);
+            RemoveUnreachableNodes(mapData);
             return mapData;
         }
 
@@ -371,24 +372,84 @@ namespace Map
         }
 
         /// <summary>
-        /// Connects every node to one node in the next layer (prefers adjacent
-        /// slots so the map reads left-to-right; falls back to any node).
+        /// Connects layers so the map is fully traversable:
+        /// 1) every next-layer node gets at least one incoming edge (incoming guarantee),
+        /// 2) every node keeps at least one outgoing edge (outgoing guarantee).
+        /// Adjacent slots are preferred so the map reads left-to-right; any slot is the fallback.
         /// </summary>
         private static void ConnectLayers(NodeMapData mapData)
         {
             for (int i = 0; i < mapData.layerCount - 1; i++)
             {
-                List<BaseNode> nextLayer = mapData.layers[i + 1];
-                if (nextLayer.Count == 0) continue;
+                List<BaseNode> layer = mapData.layers[i];
+                List<BaseNode> next = mapData.layers[i + 1];
+                if (layer.Count == 0 || next.Count == 0) continue;
 
-                foreach (var src in mapData.layers[i])
+                // Incoming guarantee: every node of the next layer is reachable from this layer.
+                foreach (BaseNode tgt in next)
                 {
-                    List<BaseNode> near = nextLayer
-                        .Where(t => Mathf.Abs(t.row - src.row) <= 1)
-                        .ToList();
-                    if (near.Count == 0) near = nextLayer;
-                    var tgt = near[Random.Range(0, near.Count)];
-                    src.connections.Add(tgt.id);
+                    List<BaseNode> candidates = layer.Where(s => Mathf.Abs(s.row - tgt.row) <= 1).ToList();
+                    if (candidates.Count == 0) candidates = layer;
+                    BaseNode src = candidates[Random.Range(0, candidates.Count)];
+                    if (!src.connections.Contains(tgt.id)) src.connections.Add(tgt.id);
+                }
+
+                // Outgoing guarantee: every node can move forward at least once.
+                foreach (BaseNode src in layer)
+                {
+                    if (src.connections.Count > 0) continue;
+                    List<BaseNode> near = next.Where(t => Mathf.Abs(t.row - src.row) <= 1).ToList();
+                    if (near.Count == 0) near = next;
+                    BaseNode tgt = near[Random.Range(0, near.Count)];
+                    if (!src.connections.Contains(tgt.id)) src.connections.Add(tgt.id);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Removes nodes that can never be entered (non-first-layer nodes with zero
+        /// incoming edges) together with their outgoing connections, and drops
+        /// dangling references to them. Loops until stable because a removal can
+        /// starve the next layer. The first and last layers are never removed.
+        /// </summary>
+        private static void RemoveUnreachableNodes(NodeMapData mapData)
+        {
+            bool changed = true;
+            while (changed)
+            {
+                changed = false;
+                var inDegree = new Dictionary<string, int>();
+                foreach (BaseNode node in mapData.layers.SelectMany(l => l))
+                {
+                    inDegree[node.id] = 0;
+                }
+                foreach (BaseNode src in mapData.layers.SelectMany(l => l))
+                {
+                    foreach (string conn in src.connections)
+                    {
+                        if (inDegree.ContainsKey(conn)) inDegree[conn]++;
+                    }
+                }
+
+                var removed = new HashSet<string>();
+                for (int i = 1; i < mapData.layerCount - 1; i++)
+                {
+                    List<BaseNode> layer = mapData.layers[i];
+                    for (int j = layer.Count - 1; j >= 0; j--)
+                    {
+                        if (inDegree[layer[j].id] == 0)
+                        {
+                            removed.Add(layer[j].id);
+                            layer.RemoveAt(j);
+                            changed = true;
+                        }
+                    }
+                }
+                if (removed.Count == 0) break;
+
+                foreach (BaseNode src in mapData.layers.SelectMany(l => l))
+                {
+                    src.connections.RemoveAll(removed.Contains);
                 }
             }
         }

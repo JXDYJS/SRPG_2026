@@ -50,16 +50,43 @@ namespace DebugSystem
                 {
                     List<BaseNode> layer = map.layers[li];
                     bool isLast = li == map.layerCount - 1;
-                    int minNodes = isLast ? 1 : cfg.minNodePerLayer;
+                    // Unreachable-node cleanup may shrink middle layers below minNodePerLayer.
+                    int minNodes = li == 0 ? cfg.minNodePerLayer : 1;
                     Check($"#{i} 层{li}节点数", layer.Count >= minNodes && layer.Count <= maxPerLayer,
                         $"期望 [{minNodes}, {maxPerLayer}] 实际 {layer.Count}");
 
                     var rows = new HashSet<int>();
+                    var allIds = new HashSet<string>();
+                    foreach (List<BaseNode> anyLayer in map.layers)
+                    {
+                        foreach (BaseNode n in anyLayer) allIds.Add(n.id);
+                    }
+                    var inDegree = new Dictionary<string, int>();
+                    foreach (string id in allIds) inDegree[id] = 0;
+                    foreach (List<BaseNode> anyLayer in map.layers)
+                    {
+                        foreach (BaseNode n in anyLayer)
+                        {
+                            foreach (string conn in n.connections)
+                            {
+                                if (inDegree.ContainsKey(conn)) inDegree[conn]++;
+                            }
+                        }
+                    }
+
                     foreach (BaseNode node in layer)
                     {
                         Check($"#{i} 层{li}槽位越界", node.row >= 0 && node.row < maxPerLayer,
                             $"row={node.row}");
                         Check($"#{i} 层{li}槽位重复", rows.Add(node.row), $"row={node.row}");
+                        Check($"#{i} 层{li}无悬空连线", node.connections.All(c => allIds.Contains(c)),
+                            $"id={node.id} 指向不存在的节点");
+
+                        if (li > 0)
+                        {
+                            Check($"#{i} 层{li}入度可达", inDegree[node.id] >= 1,
+                                $"id={node.id} 入度为 0 无法到达");
+                        }
 
                         if (node is BattleNode bn)
                         {
