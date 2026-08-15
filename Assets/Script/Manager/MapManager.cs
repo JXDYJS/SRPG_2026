@@ -76,9 +76,18 @@ namespace Managers
 
         public GameObject GetFirstPrefab()
         {
+            EnsurePrefabCache();
             foreach (var kvp in _prefabCache)
                 return kvp.Value;
             return null;
+        }
+
+        // Lazy init: Awake() never runs in edit mode, so ContextMenu/editor callers
+        // would otherwise hit a null _prefabCache.
+        private void EnsurePrefabCache()
+        {
+            if (_prefabCache == null)
+                InitPrefabCache();
         }
 
         string ResolveConfigId(MapBlockData block)
@@ -161,6 +170,7 @@ namespace Managers
         public void LoadMap()
         {
             if (!File.Exists(SavePath)) return;
+            EnsurePrefabCache();
 
             for (int i = mapRoot.childCount - 1; i >= 0; i--)
             {
@@ -264,23 +274,28 @@ namespace Managers
                 return;
             }
 
-            if (mapRoot != null)
+            if (mapRoot == null)
             {
-                // Children must be deleted in reverse order
-                for (int i = mapRoot.childCount - 1; i >= 0; i--)
-                {
-                    GameObject child = mapRoot.GetChild(i).gameObject;
+                Debug.LogError("未指定 mapRoot！");
+                return;
+            }
+
+            // Children must be deleted in reverse order
+            for (int i = mapRoot.childCount - 1; i >= 0; i--)
+            {
+                GameObject child = mapRoot.GetChild(i).gameObject;
 
 #if UNITY_EDITOR
-                    if (Application.isPlaying)
-                        Destroy(child);
-                    else
-                        Undo.DestroyObjectImmediate(child); // Undo keeps the delete revertible
+                if (Application.isPlaying)
+                    Destroy(child);
+                else
+                    Undo.DestroyObjectImmediate(child); // Undo keeps the delete revertible
 #else
                 Destroy(child);
 #endif
-                }
             }
+
+            EnsurePrefabCache();
 
             List<MapObject> allObjects = new List<MapObject>();
             Dictionary<Vector3Int, MapObject> blocks = new Dictionary<Vector3Int, MapObject>();
@@ -442,7 +457,11 @@ namespace Managers
                     maxHeight = block.Key.z;
                 }
             }
-            if (maxDepth <= 0 || maxDepth > 16 || maxHeight <= 0 || maxHeight > 16 || maxWidth <= 0 || maxWidth > 16)
+            // Convert max coordinates to grid sizes (VoxelGrid dims are counts)
+            int gridWidth = maxWidth + 1;
+            int gridHeight = maxHeight + 1;
+            int gridDepth = maxDepth + 1;
+            if (gridWidth < 1 || gridWidth > 16 || gridHeight < 1 || gridHeight > 16 || gridDepth < 1 || gridDepth > 16)
             {
                 Debug.Log("Depth" + maxDepth);
                 Debug.Log("Width" + maxWidth);
@@ -450,11 +469,11 @@ namespace Managers
                 Debug.LogError("The map is too high or empty");
                 return;
             }
-            if (maxHeight != maxWidth)
+            if (gridHeight != gridWidth)
             {
                 Debug.LogWarning("The map width ~= height");
             }
-            voxelGrid = new VoxelGrid(maxWidth, maxHeight, maxDepth);
+            voxelGrid = new VoxelGrid(gridWidth, gridHeight, gridDepth);
             foreach (var block in blocks)
             {
                 var type = block.Value.type;

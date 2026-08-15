@@ -37,6 +37,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dafdcbaac24401040ae16e9fe51c45a4
+    m_Address: Assets/Map/level3.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e37ea322b3ab18246be30723cb7ae678
     m_Address: Assets/Map/Test1.asset
     m_ReadOnly: 0

@@ -37,6 +37,7 @@ MonoBehaviour:
 # YAML block template
 YAML_BLOCK_TEMPLATE = """  - position: {{x: {x}, y: {y}, z: {z}}}
     prefabId: {prefab_id}
+    blockConfigId: 
     rotationIndex: 0
     XRound: {x_round}
     ZRound: 0
