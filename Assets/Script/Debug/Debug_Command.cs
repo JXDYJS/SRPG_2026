@@ -197,6 +197,36 @@ namespace DebugSystem
             Test_MapGen.RunAll();
         }
 
+        [ConsoleMethod("runAllTests", "Run all debug test suites (pathfind/stat/relic); prints PASS/FAIL summary")]
+        public static void RunAllTests()
+        {
+            int pass = 0, fail = 0, skip = 0;
+
+            Test_Pathfind.RunAll();
+            pass += Test_Pathfind.PassCount;
+            fail += Test_Pathfind.FailCount;
+            skip += Test_Pathfind.SkipCount;
+
+            Test_Stat.RunAll();
+            pass += Test_Stat.PassCount;
+            fail += Test_Stat.FailCount;
+            skip += Test_Stat.SkipCount;
+
+            Test_Relic.RunAll();
+            pass += Test_Relic.PassCount;
+            fail += Test_Relic.FailCount;
+            skip += Test_Relic.SkipCount;
+
+            if (fail == 0)
+            {
+                Debug.Log($"[runAllTests] 全部通过: {pass} 项 (跳过 {skip})");
+            }
+            else
+            {
+                Debug.LogError($"[runAllTests] 失败 {fail} 项 / 通过 {pass} 项 (跳过 {skip})");
+            }
+        }
+
         [ConsoleMethod("events", "List all event configs with screen/option counts")]
         public static void ListEvents()
         {
