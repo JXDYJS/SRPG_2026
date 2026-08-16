@@ -197,7 +197,7 @@ namespace DebugSystem
             Test_MapGen.RunAll();
         }
 
-        [ConsoleMethod("runAllTests", "Run all debug test suites (pathfind/stat/relic); prints PASS/FAIL summary")]
+        [ConsoleMethod("runAllTests", "Run all debug test suites (pathfind/stat/skill/relic); prints PASS/FAIL summary")]
         public static void RunAllTests()
         {
             int pass = 0, fail = 0, skip = 0;
@@ -211,6 +211,16 @@ namespace DebugSystem
             pass += Test_Stat.PassCount;
             fail += Test_Stat.FailCount;
             skip += Test_Stat.SkipCount;
+
+            Test_SkillConfig.RunAll();
+            pass += Test_SkillConfig.PassCount;
+            fail += Test_SkillConfig.FailCount;
+            skip += Test_SkillConfig.SkipCount;
+
+            Test_SkillExecution.RunAll();
+            pass += Test_SkillExecution.PassCount;
+            fail += Test_SkillExecution.FailCount;
+            skip += Test_SkillExecution.SkipCount;
 
             Test_Relic.RunAll();
             pass += Test_Relic.PassCount;
