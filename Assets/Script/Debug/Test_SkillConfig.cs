@@ -94,10 +94,16 @@ namespace DebugSystem
                 return;
             }
 
-            Check($"射程合法 {id}",
-                skill.CastMaxRange >= 1 && skill.CastMinRange >= 0 && skill.CastMinRange <= skill.CastMaxRange,
-                $"min={skill.CastMinRange} max={skill.CastMaxRange}");
-            Check($"垂直射程 {id}", skill.CastVerticalRange >= 1, $"={skill.CastVerticalRange}");
+            // Self-cast skills (TargetType.Self) legitimately leave range fields at 0:
+            // AttackRangeSystem bypasses range checks when casting on self.
+            bool isSelfCast = skill.TargetType == TargetType.Self;
+            if (!isSelfCast)
+            {
+                Check($"射程合法 {id}",
+                    skill.CastMaxRange >= 1 && skill.CastMinRange >= 0 && skill.CastMinRange <= skill.CastMaxRange,
+                    $"min={skill.CastMinRange} max={skill.CastMaxRange}");
+                Check($"垂直射程 {id}", skill.CastVerticalRange >= 1, $"={skill.CastVerticalRange}");
+            }
             Check($"消耗非负 {id}", skill.Cost >= 0, $"={skill.Cost}");
             Check($"AI 优先级 {id}", skill.AIPriority >= 0f && skill.AIPriority <= 5f, $"={skill.AIPriority}");
 
