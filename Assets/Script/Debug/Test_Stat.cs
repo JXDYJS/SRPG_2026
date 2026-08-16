@@ -72,8 +72,8 @@ namespace DebugSystem
             Stat s = new Stat(10f);
             Check("初始值", NearlyEqual(s.getValue(), 10f), $"实际 {s.getValue()}");
 
-            s.BaseValue = 25f;
-            Check("BaseValue 写入后重算", NearlyEqual(s.getValue(), 25f), $"实际 {s.getValue()}");
+            s.SetBaseValue(25f);
+            Check("SetBaseValue 后重算", NearlyEqual(s.getValue(), 25f), $"实际 {s.getValue()}");
         }
 
         private static void TestFlatAndPercent()
@@ -126,13 +126,14 @@ namespace DebugSystem
             Check("加修饰器后重算", NearlyEqual(s.getValue(), 15f) && events == 2,
                 $"值 {s.getValue()} 事件 {events}");
 
-            s.BaseValue = 30f;
-            Check("BaseValue 后重算", NearlyEqual(s.getValue(), 35f) && events == 3,
+            s.SetBaseValue(30f);
+            Check("SetBaseValue 立即触发事件", events == 3, $"事件 {events}");
+            Check("SetBaseValue 后重算", NearlyEqual(s.getValue(), 35f) && events == 4,
                 $"值 {s.getValue()} 事件 {events}");
 
             s.SetBaseValue(40f);
-            Check("SetBaseValue 立即触发事件", events == 4, $"事件 {events}");
-            Check("SetBaseValue 后重算", NearlyEqual(s.getValue(), 45f) && events == 5,
+            Check("SetBaseValue 再次立即触发事件", events == 5, $"事件 {events}");
+            Check("SetBaseValue 后重算", NearlyEqual(s.getValue(), 45f) && events == 6,
                 $"值 {s.getValue()} 事件 {events}");
         }
 
