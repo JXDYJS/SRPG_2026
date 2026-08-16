@@ -198,6 +198,10 @@ namespace DebugSystem
             _failures.Add($"{name}: {detail}");
         }
 
+        public static int PassCount => _pass;
+        public static int FailCount => _fail;
+        public static int SkipCount => _skip;
+
         // ==================== test groups ====================
 
         private static void TestResolution(bool luaReady)

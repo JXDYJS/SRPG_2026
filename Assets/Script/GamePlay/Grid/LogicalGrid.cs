@@ -88,6 +88,51 @@ namespace GamePlay.Grid
             _blockDataCache = null;
         }
 
+        /// <summary>
+        /// Builds the grid from plain block data (pos -> type + ySize). Test seam:
+        /// lets pathfinding tests construct grids without scene GameObjects.
+        /// </summary>
+        public void BuildFromData(Dictionary<Vector3Int, (BlockType type, float ySize)> blocks)
+        {
+            if (blocks == null || blocks.Count == 0)
+            {
+                Clear();
+                return;
+            }
+
+            int minX = int.MaxValue, maxX = int.MinValue;
+            int minY = int.MaxValue, maxY = int.MinValue;
+            int minZ = int.MaxValue, maxZ = int.MinValue;
+
+            foreach (Vector3Int pos in blocks.Keys)
+            {
+                if (pos.x < minX) minX = pos.x;
+                if (pos.x > maxX) maxX = pos.x;
+                if (pos.y < minY) minY = pos.y;
+                if (pos.y > maxY) maxY = pos.y;
+                if (pos.z < minZ) minZ = pos.z;
+                if (pos.z > maxZ) maxZ = pos.z;
+            }
+
+            _mortonCode = new MortonCode(maxX, maxY, maxZ, minX, minY, minZ);
+            int arraySize = (int)_mortonCode.MaxCode + 1;
+            _blocks = new BlockType[arraySize];
+            _blockYSizes = new float[arraySize];
+
+            _blockCount = 0;
+            foreach (KeyValuePair<Vector3Int, (BlockType type, float ySize)> kv in blocks)
+            {
+                long code = _mortonCode.Encode(kv.Key.x, kv.Key.y, kv.Key.z);
+                if (code < 0 || code >= arraySize) continue;
+
+                _blocks[code] = kv.Value.type;
+                _blockYSizes[code] = kv.Value.ySize;
+                _blockCount++;
+            }
+
+            _blockDataCache = null;
+        }
+
         public void Clear()
         {
             _blocks = null;
