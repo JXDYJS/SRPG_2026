@@ -137,6 +137,7 @@ namespace Status
                 }
                 zone.priority = priority;
                 _zonesDirty = true;
+                isDirty = true;
             }
 
             /// <summary>Adds a modifier to a zone, auto-creating it with default priority.</summary>

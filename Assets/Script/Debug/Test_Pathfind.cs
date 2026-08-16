@@ -92,11 +92,15 @@ namespace DebugSystem
             return 1f + Mathf.Abs(Stand(b, grid) - Stand(a, grid));
         }
 
-        private static float PathCost(List<Vector3Int> path, LogicalGrid grid)
+        /// <summary>
+        /// Cost of a retraced path. RetracePath excludes the start tile, so the
+        /// start -> path[0] step must be counted explicitly.
+        /// </summary>
+        private static float PathCost(List<Vector3Int> path, Vector3Int start, LogicalGrid grid)
         {
             float total = 0f;
-            Vector3Int prev = path[0];
-            for (int i = 1; i < path.Count; i++)
+            Vector3Int prev = start;
+            for (int i = 0; i < path.Count; i++)
             {
                 total += StepCost(prev, path[i], grid);
                 prev = path[i];
@@ -150,12 +154,15 @@ namespace DebugSystem
             return false;
         }
 
-        /// <summary>Verifies the path is legal under the movement rules and connects start to end.</summary>
+        /// <summary>
+        /// Verifies the path is legal under the movement rules and connects start to end.
+        /// The path excludes start, so each step is validated from start onward.
+        /// </summary>
         private static bool IsLegalPath(List<Vector3Int> path, Vector3Int start, Vector3Int end, LogicalGrid grid, UnitMoveStats stats)
         {
             if (path == null) return false;
             if (path.Count == 0) return start == end;
-            if (path[0] != start || path[path.Count - 1] != end) return false;
+            if (path[path.Count - 1] != end) return false;
 
             Vector3Int prev = start;
             for (int i = 0; i < path.Count; i++)
@@ -219,13 +226,13 @@ namespace DebugSystem
             if (path == null) return;
 
             Check($"路径合法 {label}", IsLegalPath(path, start, end, grid, Stats), "路径违反移动规则");
-            float pathCost = PathCost(path, grid);
+            float pathCost = PathCost(path, start, grid);
             Check($"路径最优 {label}", NearlyEqual(pathCost, refCost),
                 $"A*={pathCost:F3} Dijkstra={refCost:F3}");
 
             List<Vector3Int> path2 = AStar.FindPathToOccupied(start, end, grid, Stats);
-            Check($"占用终点变体 {label}", path2 != null && NearlyEqual(PathCost(path2, grid), refCost),
-                path2 == null ? "返回 null" : $"代价 {PathCost(path2, grid):F3} != {refCost:F3}");
+            Check($"占用终点变体 {label}", path2 != null && NearlyEqual(PathCost(path2, start, grid), refCost),
+                path2 == null ? "返回 null" : $"代价 {PathCost(path2, start, grid):F3} != {refCost:F3}");
         }
 
         private static Vector3Int PickStandableTile(System.Random rng, int[,] heights, Dictionary<Vector3Int, int> towers)
