@@ -26,6 +26,13 @@ namespace Lua
         /// </summary>
         private LuaFunction luaSafeCall;
 
+        /// <summary>
+        /// Cached LuaUtil.SpawnClass entry point fetched at init. Used by
+        /// BuffManager/RelicManager to safely load and instantiate Lua class
+        /// modules through the SafeCall (xpcall) bridge.
+        /// </summary>
+        private LuaFunction luaSpawnClass;
+
         /// <summary>Lua module name -> raw bytes.</summary>
         private readonly Dictionary<string, byte[]> _luaCache = new Dictionary<string, byte[]>();
 
@@ -45,15 +52,10 @@ namespace Lua
             LuaEnv.DoString(@"
                 require('Class')
                 require('LuaUtil')
-                function _isBuffBase(cls)
-                    return cls.__isBuffBase == true
-                end
-                function _isRelicBase(cls)
-                    return cls.__isRelicBase == true
-                end
             ");
             RegisterAllModules();
             luaSafeCall = LuaEnv.Global.GetInPath<LuaFunction>("LuaUtil.SafeCall");
+            luaSpawnClass = LuaEnv.Global.GetInPath<LuaFunction>("LuaUtil.SpawnClass");
         }
 
         /// <summary>Prefetch all Assets/Lua/ Addressable modules into the byte cache.</summary>
@@ -145,6 +147,34 @@ namespace Lua
                 Debug.LogError($"[LuaManager] SafeCall 执行异常: {e.Message}\n{e.StackTrace}");
                 return false;
             }
+        }
+
+        /// <summary>
+        /// Loads a Lua class module through LuaUtil.SpawnClass and instantiates it
+        /// via its __call metamethod. Marker (e.g. "__isBuffBase") is verified in
+        /// Lua before construction; any failure is contained by the SafeCall
+        /// xpcall and reported as a single Debug.LogError.
+        /// </summary>
+        public bool SpawnClass(string module, string marker, out LuaTable instance, params object[] args)
+        {
+            instance = null;
+            if (string.IsNullOrEmpty(module) || LuaEnv == null || luaSpawnClass == null)
+            {
+                return false;
+            }
+
+            if (SafeCall(luaSpawnClass, null, out object result, module, marker, args)
+                && result is LuaTable tbl)
+            {
+                instance = tbl;
+                return true;
+            }
+
+            if (result != null)
+            {
+                Debug.LogError($"[LuaManager] SpawnClass '{module}' (marker '{marker}') 失败: {result}");
+            }
+            return false;
         }
 
         private byte[] Loader(ref string filepath)

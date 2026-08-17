@@ -126,57 +126,17 @@ namespace GamePlay.Buff
 
         private static BuffBase TryFromLua(string buffID, int stacks)
         {
-            string className = "Buff" + ToPascalCase(buffID);
-            string module = "Buffs." + className;
+            string module = "Buffs." + ToPascalCase(buffID);
 
-            LuaTable cls;
-            try
+            if (!LuaManager.Instance.SpawnClass(module, "__isBuffBase", out LuaTable instance, stacks))
             {
-                object[] ret = LuaManager.Instance.LuaEnv.DoString(
-                    "return require('" + module + "')");
-                if (ret == null || ret.Length == 0) return null;
-                cls = ret[0] as LuaTable;
-                if (cls == null) return null;
-            }
-            catch (Exception e)
-            {
-                Debug.LogWarning($"[BuffManager] Lua require '{buffID}' 失败: {e.Message}");
                 return null;
             }
-
-            if (!InheritsFromBuffBase(cls)) return null;
-
-            // Create instance via the __call metamethod: cls(stacks)
-            object[] ret2;
-            try
-            {
-                var env = LuaManager.Instance.LuaEnv;
-                env.Global.SetInPath("__tmp_stacks", stacks);
-                ret2 = env.DoString(
-                    "return require('" + module + "')(__tmp_stacks)");
-                env.Global.Set<object, object>("__tmp_stacks", null);
-                if (ret2 == null || ret2.Length == 0) return null;
-            }
-            catch (Exception e)
-            {
-                Debug.LogWarning($"[BuffManager] Lua 实例化 '{module}' 失败: {e.Message}");
-                return null;
-            }
-
-            LuaTable instance = ret2[0] as LuaTable;
-            if (instance == null) return null;
 
             BuffLuaWrapper wrapper = ScriptableObject.CreateInstance<BuffLuaWrapper>();
             wrapper.ID = buffID;
             wrapper.Bind(instance);
             return wrapper;
-        }
-
-        private static bool InheritsFromBuffBase(LuaTable cls)
-        {
-            LuaFunction check = LuaManager.Instance.LuaEnv.Global.Get<LuaFunction>("_isBuffBase");
-            if (check == null) return false;
-            return LuaManager.Instance.SafeCall(check, null, out object ret, cls) && ret is bool isBuff && isBuff;
         }
 
         private static string ToPascalCase(string snakeCase)
