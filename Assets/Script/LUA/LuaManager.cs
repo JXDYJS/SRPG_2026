@@ -20,16 +20,11 @@ namespace Lua
         private const string LuaAddressSuffix = ".lua";
 
         /// <summary>
-        /// Bridges LuaUtil.SafeCall (xpcall) so a Lua hook error is contained and
-        /// reported instead of throwing a LuaException into the C# pipeline.
-        /// targetFunc is the Lua function to invoke; selfObj is passed as its first
-        /// argument when non-null; args are spread after it. Returns true and the
-        /// first Lua return value (null when the hook returns nothing) on success,
-        /// or false and the traceback on script error.
+        /// Cached LuaUtil.SafeCall entry point fetched at init. Kept as a plain
+        /// LuaFunction (not a [CSharpCallLua] delegate) so the safe-call bridge needs
+        /// no xLua code generation and works in standalone player builds as-is.
         /// </summary>
-        [CSharpCallLua]
-        public delegate bool LuaSafeCallDelegate(LuaFunction targetFunc, LuaTable selfObj, out object result, params object[] args);
-        private LuaSafeCallDelegate luaSafeCallDelegate;
+        private LuaFunction luaSafeCall;
 
         /// <summary>Lua module name -> raw bytes.</summary>
         private readonly Dictionary<string, byte[]> _luaCache = new Dictionary<string, byte[]>();
@@ -58,7 +53,7 @@ namespace Lua
                 end
             ");
             RegisterAllModules();
-            luaSafeCallDelegate = LuaEnv.Global.GetInPath<LuaSafeCallDelegate>("LuaUtil.SafeCall");
+            luaSafeCall = LuaEnv.Global.GetInPath<LuaFunction>("LuaUtil.SafeCall");
         }
 
         /// <summary>Prefetch all Assets/Lua/ Addressable modules into the byte cache.</summary>
@@ -121,14 +116,29 @@ namespace Lua
         public bool SafeCall(LuaFunction func, LuaTable selfObj, out object result, params object[] args)
         {
             result = null;
-            if (func == null || LuaEnv == null || luaSafeCallDelegate == null)
+            if (func == null || LuaEnv == null || luaSafeCall == null)
             {
                 return false;
             }
 
             try
             {
-                return luaSafeCallDelegate(func, selfObj, out result, args);
+                object[] callArgs = new object[args.Length + 2];
+                callArgs[0] = func;
+                callArgs[1] = selfObj;
+                Array.Copy(args, 0, callArgs, 2, args.Length);
+
+                object[] ret = luaSafeCall.Call(callArgs);
+
+                // LuaUtil.SafeCall returns [true, ...results] or [false, errorMessage]
+                if (ret != null && ret.Length > 0 && ret[0] is bool ok && ok)
+                {
+                    result = ret.Length > 1 ? ret[1] : null;
+                    return true;
+                }
+
+                result = ret != null && ret.Length > 1 ? ret[1] : null;
+                return false;
             }
             catch (Exception e)
             {
