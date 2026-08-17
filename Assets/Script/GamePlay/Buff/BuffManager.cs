@@ -126,7 +126,7 @@ namespace GamePlay.Buff
 
         private static BuffBase TryFromLua(string buffID, int stacks)
         {
-            string module = "Buffs." + ToPascalCase(buffID);
+            string module = "Buffs.Buff" + ToPascalCase(buffID);
 
             if (!LuaManager.Instance.SpawnClass(module, "__isBuffBase", out LuaTable instance, stacks))
             {
