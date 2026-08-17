@@ -120,35 +120,30 @@ namespace Lua
             }
             if (fn == null) return null;
 
-            object[] callArgs = new object[args.Length + 1];
-            callArgs[0] = LuaInstance;
-            Array.Copy(args, 0, callArgs, 1, args.Length);
-
-            if (SafeLuaCall(method, () => fn.Call(callArgs), out object[] ret))
-            {
-                return ret != null && ret.Length > 0 ? ret[0] : null;
-            }
-            return null;
+            return TryCallLua(method, fn, out object ret, args) ? ret : null;
         }
 
         /// <summary>
-        /// Runs a Lua call inside a guard. Script errors are logged and reported as
-        /// failure; callers decide the degraded value (e.g. keep the damage unchanged).
+        /// Runs a hook through LuaUtil.SafeCall (xpcall) so a script error degrades
+        /// to a logged failure instead of throwing into the combat pipeline. On
+        /// success result carries the first Lua return value; on failure the error
+        /// message. Returns false when the hook did not run or errored.
         /// </summary>
-        protected bool SafeLuaCall(string hook, Func<object[]> invoke, out object[] result)
+        protected bool TryCallLua(string hookName, LuaFunction hook, out object result, params object[] args)
         {
             result = null;
-            if (LuaInstance == null) return false;
-            try
+            if (hook == null || LuaInstance == null) return false;
+
+            bool ok = LuaManager.Instance.SafeCall(hook, LuaInstance, out object ret, args);
+            if (ok)
             {
-                result = invoke();
-                return true;
+                result = ret;
             }
-            catch (Exception e)
+            else
             {
-                Debug.LogError($"[LuaModifier '{ID}'] hook '{hook}' 执行异常: {e.Message}\n{e.StackTrace}");
-                return false;
+                Debug.LogError($"[LuaModifier '{ID}'] hook '{hookName}' 执行异常: {ret ?? "unknown error"}");
             }
+            return ok;
         }
 
 
@@ -156,18 +151,15 @@ namespace Lua
         {
             base.OnApply(owner);
             if (_onApply == null) return;
-            SafeLuaCall(nameof(OnApply), () =>
-            {
-                LuaInstance.Set("_Owner", owner);
-                return _onApply.Call(LuaInstance, owner);
-            }, out _);
+            LuaInstance.Set("_Owner", owner);
+            TryCallLua(nameof(OnApply), _onApply, out _, owner);
         }
 
         public override void OnRemove(MapUnit owner)
         {
             base.OnRemove(owner);
             if (_onRemove == null) return;
-            SafeLuaCall(nameof(OnRemove), () => _onRemove.Call(LuaInstance, owner), out _);
+            TryCallLua(nameof(OnRemove), _onRemove, out _, owner);
         }
 
 
@@ -175,14 +167,14 @@ namespace Lua
         {
             base.OnTurnStart(owner);
             if (_onTurnStart == null) return;
-            SafeLuaCall(nameof(OnTurnStart), () => _onTurnStart.Call(LuaInstance, owner), out _);
+            TryCallLua(nameof(OnTurnStart), _onTurnStart, out _, owner);
         }
 
         public override void OnTurnEnd(MapUnit owner)
         {
             base.OnTurnEnd(owner);
             if (_onTurnEnd == null) return;
-            SafeLuaCall(nameof(OnTurnEnd), () => _onTurnEnd.Call(LuaInstance, owner), out _);
+            TryCallLua(nameof(OnTurnEnd), _onTurnEnd, out _, owner);
         }
 
 
@@ -190,58 +182,50 @@ namespace Lua
         {
             base.OnBattleStart(owner);
             if (_onBattleStart == null) return;
-            SafeLuaCall(nameof(OnBattleStart), () => _onBattleStart.Call(LuaInstance, owner), out _);
+            TryCallLua(nameof(OnBattleStart), _onBattleStart, out _, owner);
         }
 
         public override void OnBattleEnd(MapUnit owner)
         {
             base.OnBattleEnd(owner);
             if (_onBattleEnd == null) return;
-            SafeLuaCall(nameof(OnBattleEnd), () => _onBattleEnd.Call(LuaInstance, owner), out _);
+            TryCallLua(nameof(OnBattleEnd), _onBattleEnd, out _, owner);
         }
 
 
         public override void OnOutgoingDamage(ref float damage, DamageInfo info)
         {
             if (_onOutgoingDamage == null) return;
-            float current = damage;
-            if (SafeLuaCall(nameof(OnOutgoingDamage), () => _onOutgoingDamage.Call(LuaInstance, current, info), out object[] ret)
-                && ret != null && ret.Length > 0)
+            if (TryCallLua(nameof(OnOutgoingDamage), _onOutgoingDamage, out object ret, damage, info) && ret != null)
             {
-                damage = Convert.ToSingle(ret[0]);
+                damage = Convert.ToSingle(ret);
             }
         }
 
         public override void OnIncomingDamage(ref float damage, DamageInfo info)
         {
             if (_onIncomingDamage == null) return;
-            float current = damage;
-            if (SafeLuaCall(nameof(OnIncomingDamage), () => _onIncomingDamage.Call(LuaInstance, current, info), out object[] ret)
-                && ret != null && ret.Length > 0)
+            if (TryCallLua(nameof(OnIncomingDamage), _onIncomingDamage, out object ret, damage, info) && ret != null)
             {
-                damage = Convert.ToSingle(ret[0]);
+                damage = Convert.ToSingle(ret);
             }
         }
 
         public override void OnDefense(ref float value, DamageInfo info)
         {
             if (_onDefense == null) return;
-            float current = value;
-            if (SafeLuaCall(nameof(OnDefense), () => _onDefense.Call(LuaInstance, current, info), out object[] ret)
-                && ret != null && ret.Length > 0)
+            if (TryCallLua(nameof(OnDefense), _onDefense, out object ret, value, info) && ret != null)
             {
-                value = Convert.ToSingle(ret[0]);
+                value = Convert.ToSingle(ret);
             }
         }
 
         public override void OnResistance(ref float value, DamageInfo info)
         {
             if (_onResistance == null) return;
-            float current = value;
-            if (SafeLuaCall(nameof(OnResistance), () => _onResistance.Call(LuaInstance, current, info), out object[] ret)
-                && ret != null && ret.Length > 0)
+            if (TryCallLua(nameof(OnResistance), _onResistance, out object ret, value, info) && ret != null)
             {
-                value = Convert.ToSingle(ret[0]);
+                value = Convert.ToSingle(ret);
             }
         }
 
@@ -249,55 +233,55 @@ namespace Lua
         public override void OnHit(DamageInfo info)
         {
             if (_onHit == null) return;
-            SafeLuaCall(nameof(OnHit), () => _onHit.Call(LuaInstance, info), out _);
+            TryCallLua(nameof(OnHit), _onHit, out _, info);
         }
 
         public override void OnBeHurt(DamageInfo info)
         {
             if (_onBeHurt == null) return;
-            SafeLuaCall(nameof(OnBeHurt), () => _onBeHurt.Call(LuaInstance, info), out _);
+            TryCallLua(nameof(OnBeHurt), _onBeHurt, out _, info);
         }
 
         public override void OnKill(DamageInfo info)
         {
             if (_onKill == null) return;
-            SafeLuaCall(nameof(OnKill), () => _onKill.Call(LuaInstance, info), out _);
+            TryCallLua(nameof(OnKill), _onKill, out _, info);
         }
 
         public override void OnDie(DamageInfo info)
         {
             if (_onDie == null) return;
-            SafeLuaCall(nameof(OnDie), () => _onDie.Call(LuaInstance, info), out _);
+            TryCallLua(nameof(OnDie), _onDie, out _, info);
         }
 
         public override void OnActionStart(MapUnit owner)
         {
             if (_onActionStart == null) return;
-            SafeLuaCall(nameof(OnActionStart), () => _onActionStart.Call(LuaInstance, owner), out _);
+            TryCallLua(nameof(OnActionStart), _onActionStart, out _, owner);
         }
 
         public override void OnActionEnd(MapUnit owner)
         {
             if (_onActionEnd == null) return;
-            SafeLuaCall(nameof(OnActionEnd), () => _onActionEnd.Call(LuaInstance, owner), out _);
+            TryCallLua(nameof(OnActionEnd), _onActionEnd, out _, owner);
         }
 
         public override void OnWait(MapUnit owner)
         {
             if (_onWait == null) return;
-            SafeLuaCall(nameof(OnWait), () => _onWait.Call(LuaInstance, owner), out _);
+            TryCallLua(nameof(OnWait), _onWait, out _, owner);
         }
 
         public override void OnHeal(DamageInfo healInfo)
         {
             if (_onHeal == null) return;
-            SafeLuaCall(nameof(OnHeal), () => _onHeal.Call(LuaInstance, healInfo), out _);
+            TryCallLua(nameof(OnHeal), _onHeal, out _, healInfo);
         }
 
         public override void OnBeHealed(DamageInfo healInfo)
         {
             if (_onBeHealed == null) return;
-            SafeLuaCall(nameof(OnBeHealed), () => _onBeHealed.Call(LuaInstance, healInfo), out _);
+            TryCallLua(nameof(OnBeHealed), _onBeHealed, out _, healInfo);
         }
     }
 }

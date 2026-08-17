@@ -68,13 +68,9 @@ namespace Lua
         public override void OnStacksChanged()
         {
             if (_onStacksChanged == null) return;
-            try
+            if (!LuaManager.Instance.SafeCall(_onStacksChanged, LuaInstance, out object ret) && ret != null)
             {
-                _onStacksChanged.Call(LuaInstance);
-            }
-            catch (Exception e)
-            {
-                Debug.LogError($"[LuaBuff '{ID}'] OnStacksChanged 执行异常: {e.Message}");
+                Debug.LogError($"[LuaBuff '{ID}'] OnStacksChanged 执行异常: {ret}");
             }
         }
     }

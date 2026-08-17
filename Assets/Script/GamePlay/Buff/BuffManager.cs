@@ -176,8 +176,7 @@ namespace GamePlay.Buff
         {
             LuaFunction check = LuaManager.Instance.LuaEnv.Global.Get<LuaFunction>("_isBuffBase");
             if (check == null) return false;
-            object[] ret = check.Call(cls);
-            return ret != null && ret.Length > 0 && (bool)ret[0];
+            return LuaManager.Instance.SafeCall(check, null, out object ret, cls) && ret is bool isBuff && isBuff;
         }
 
         private static string ToPascalCase(string snakeCase)

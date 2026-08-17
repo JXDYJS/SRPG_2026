@@ -19,6 +19,18 @@ namespace Lua
         private const string LuaAddressPrefix = "Assets/Lua/";
         private const string LuaAddressSuffix = ".lua";
 
+        /// <summary>
+        /// Bridges LuaUtil.SafeCall (xpcall) so a Lua hook error is contained and
+        /// reported instead of throwing a LuaException into the C# pipeline.
+        /// targetFunc is the Lua function to invoke; selfObj is passed as its first
+        /// argument when non-null; args are spread after it. Returns true and the
+        /// first Lua return value (null when the hook returns nothing) on success,
+        /// or false and the traceback on script error.
+        /// </summary>
+        [CSharpCallLua]
+        public delegate bool LuaSafeCallDelegate(LuaFunction targetFunc, LuaTable selfObj, out object result, params object[] args);
+        private LuaSafeCallDelegate luaSafeCallDelegate;
+
         /// <summary>Lua module name -> raw bytes.</summary>
         private readonly Dictionary<string, byte[]> _luaCache = new Dictionary<string, byte[]>();
 
@@ -37,6 +49,7 @@ namespace Lua
             LuaEnv.AddLoader(Loader);
             LuaEnv.DoString(@"
                 require('Class')
+                require('LuaUtil')
                 function _isBuffBase(cls)
                     return cls.__isBuffBase == true
                 end
@@ -45,6 +58,7 @@ namespace Lua
                 end
             ");
             RegisterAllModules();
+            luaSafeCallDelegate = LuaEnv.Global.GetInPath<LuaSafeCallDelegate>("LuaUtil.SafeCall");
         }
 
         /// <summary>Prefetch all Assets/Lua/ Addressable modules into the byte cache.</summary>
@@ -94,6 +108,33 @@ namespace Lua
             }
 
             Debug.Log($"[LuaManager] 预取 {_luaCache.Count} 个 Lua 模块");
+        }
+
+        /// <summary>
+        /// Invokes a Lua function through LuaUtil.SafeCall (xpcall) so script errors
+        /// degrade to a logged failure instead of throwing into the C# pipeline.
+        /// Returns true on success with the first Lua return value in result (null
+        /// when the hook returns nothing); false on script error with the traceback
+        /// in result. Returns false without logging when the env or bridge is not
+        /// available.
+        /// </summary>
+        public bool SafeCall(LuaFunction func, LuaTable selfObj, out object result, params object[] args)
+        {
+            result = null;
+            if (func == null || LuaEnv == null || luaSafeCallDelegate == null)
+            {
+                return false;
+            }
+
+            try
+            {
+                return luaSafeCallDelegate(func, selfObj, out result, args);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"[LuaManager] SafeCall 执行异常: {e.Message}\n{e.StackTrace}");
+                return false;
+            }
         }
 
         private byte[] Loader(ref string filepath)

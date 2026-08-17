@@ -18,9 +18,15 @@ namespace Lua
                 var func = ResolveLua(funcName);
                 if (func != null)
                 {
-                    var ret = func.Call(ctx);
-                    if (ret != null && ret.Length > 0 && ret[0] is T result)
-                        return result;
+                    bool ok = LuaManager.Instance.SafeCall(func, null, out object result, ctx);
+                    if (ok)
+                    {
+                        return result as T;
+                    }
+                    if (result != null)
+                    {
+                        Debug.LogError($"[ScriptFunctionResolver] Lua 函数 '{funcName}' 调用异常: {result}");
+                    }
                     return null;
                 }
             }
