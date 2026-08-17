@@ -51,7 +51,7 @@ namespace Lua
             LuaEnv.AddLoader(Loader);
             LuaEnv.DoString(@"
                 require('Class')
-                require('LuaUtil')
+                require('LuaUtils')
             ");
             RegisterAllModules();
             luaSafeCall = LuaEnv.Global.GetInPath<LuaFunction>("LuaUtil.SafeCall");
@@ -117,6 +117,18 @@ namespace Lua
         /// </summary>
         public bool SafeCall(LuaFunction func, LuaTable selfObj, out object result, params object[] args)
         {
+            return SafeCallCore(func, selfObj, out result, args);
+        }
+
+        /// <summary>
+        /// Inner SafeCall that takes an explicit arg array (no params). Use this
+        /// from call sites that need to forward a pre-built array — calling
+        /// SafeCall's params overload with such an array would re-wrap it (C#
+        /// params semantics) and nest the arguments on the Lua side, turning
+        /// ints into userdata arrays.
+        /// </summary>
+        private bool SafeCallCore(LuaFunction func, LuaTable selfObj, out object result, object[] args)
+        {
             result = null;
             if (func == null || LuaEnv == null || luaSafeCall == null)
             {
@@ -125,10 +137,14 @@ namespace Lua
 
             try
             {
-                object[] callArgs = new object[args.Length + 2];
+                int n = args != null ? args.Length : 0;
+                object[] callArgs = new object[n + 2];
                 callArgs[0] = func;
                 callArgs[1] = selfObj;
-                Array.Copy(args, 0, callArgs, 2, args.Length);
+                if (n > 0)
+                {
+                    Array.Copy(args, 0, callArgs, 2, n);
+                }
 
                 object[] ret = luaSafeCall.Call(callArgs);
 
@@ -163,7 +179,20 @@ namespace Lua
                 return false;
             }
 
-            if (SafeCall(luaSpawnClass, null, out object result, module, marker, args)
+            // Build a single flat array for SafeCallCore. Calling SafeCall's params
+            // overload with `module, marker, args` would re-wrap args into
+            // [module, marker, [args...]], nesting the ctor arguments on the Lua
+            // side and turning ints into userdata arrays.
+            int extra = args != null ? args.Length : 0;
+            object[] forwarded = new object[2 + extra];
+            forwarded[0] = module;
+            forwarded[1] = marker;
+            if (extra > 0)
+            {
+                Array.Copy(args, 0, forwarded, 2, extra);
+            }
+
+            if (SafeCallCore(luaSpawnClass, null, out object result, forwarded)
                 && result is LuaTable tbl)
             {
                 instance = tbl;
