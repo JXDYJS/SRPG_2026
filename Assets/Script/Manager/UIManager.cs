@@ -29,6 +29,7 @@ namespace Managers
 
         private UIRoot _uiRoot;
         private readonly Dictionary<Type, BaseUIPanel> _panelCache = new();
+        private readonly Dictionary<Type, UILayer> _panelLayer = new();
 
         public Transform Background => _uiRoot?.Background;
         public Transform Window => _uiRoot?.Window;
@@ -227,6 +228,7 @@ namespace Managers
                     if (!cachedPanel.gameObject.activeSelf)
                         cachedPanel.gameObject.SetActive(true);
                     cachedPanel.IsOpen = true;
+                    _panelLayer[type] = layer;
                     cachedPanel.OnOpen(data);
                     PlayOpenAnimation(cachedPanel, layer);
                     return cachedPanel as T;
@@ -267,52 +269,62 @@ namespace Managers
             PlayOpenAnimation(panel, layer);
 
             _panelCache[type] = panel;
+            _panelLayer[type] = layer;
             return panel;
         }
 
         public void ClosePanel<T>() where T : BaseUIPanel
         {
-            Type type = typeof(T);
+            ClosePanel(typeof(T));
+        }
+
+        /// <summary>Type-driven close, used by callers that only have a System.Type
+        /// (e.g. navigation stacks that store panels by type).</summary>
+        public void ClosePanel(Type type)
+        {
+            if (type == null || !typeof(BaseUIPanel).IsAssignableFrom(type)) return;
             if (!_panelCache.TryGetValue(type, out BaseUIPanel panel) || panel == null) return;
 
             panel.OnClose();
             panel.IsOpen = false;
 
-            if (!panel.AnimateOnOpenClose || !panel.gameObject.activeSelf)
+            if (!panel.gameObject.activeSelf)
             {
-                panel.gameObject.SetActive(false);
+                _panelLayer.Remove(type);
                 return;
             }
 
             panel.SetInteractable(false);
-            CloseWithAnimation(panel).Forget();
+            UILayer layer = _panelLayer.TryGetValue(type, out var l) ? l : UILayer.Window;
+            CloseWithAnimation(panel, layer).Forget();
         }
 
-        /// <summary>Plays drop-in animation for Popup-layer panels; others only if AnimateOnOpenClose.</summary>
+        /// <summary>Plays slide animation on Window/Background/Topmost and drop animation on Popup.</summary>
         private void PlayOpenAnimation(BaseUIPanel panel, UILayer layer)
         {
-            if (layer == UILayer.Popup)
-            {
-                panel.AnimateOnOpenClose = true;
-            }
-            if (!panel.AnimateOnOpenClose) return;
-
             panel.SetInteractable(false);
-            OpenWithAnimation(panel);
+            OpenWithAnimation(panel, layer).Forget();
         }
 
-        private async UniTask OpenWithAnimation(BaseUIPanel panel)
+        private async UniTask OpenWithAnimation(BaseUIPanel panel, UILayer layer)
         {
-            await panel.PlayDropInAnimation();
+            if (layer == UILayer.Popup)
+                await panel.PlayDropInAnimation();
+            else
+                await panel.PlayEnterAnimation();
+
             if (panel != null && panel.gameObject != null && panel.IsOpen)
             {
                 panel.SetInteractable(true);
             }
         }
 
-        private async UniTask CloseWithAnimation(BaseUIPanel panel)
+        private async UniTask CloseWithAnimation(BaseUIPanel panel, UILayer layer)
         {
-            await panel.PlayDropOutAnimation();
+            if (layer == UILayer.Popup)
+                await panel.PlayDropOutAnimation();
+            else
+                await panel.PlayExitAnimation();
             // Abort hiding if the panel was reopened during the exit animation
             if (panel != null && panel.gameObject != null && !panel.IsOpen)
             {
@@ -322,13 +334,18 @@ namespace Managers
 
         public void DestroyPanel<T>() where T : BaseUIPanel
         {
-            Type type = typeof(T);
+            DestroyPanel(typeof(T));
+        }
 
+        public void DestroyPanel(Type type)
+        {
+            if (type == null || !typeof(BaseUIPanel).IsAssignableFrom(type)) return;
             if (_panelCache.TryGetValue(type, out BaseUIPanel panel))
             {
                 panel.IsOpen = false;
                 panel.OnClose();
                 _panelCache.Remove(type);
+                _panelLayer.Remove(type);
                 Destroy(panel.gameObject);
             }
         }
@@ -359,6 +376,7 @@ namespace Managers
                     kvp.Value.gameObject.SetActive(false);
                 }
             }
+            _panelLayer.Clear();
         }
 
         public void DestroyAllPanels()
@@ -373,6 +391,7 @@ namespace Managers
                 }
             }
             _panelCache.Clear();
+            _panelLayer.Clear();
         }
 
         private Transform GetLayerTransform(UILayer layer)

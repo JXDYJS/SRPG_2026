@@ -13,7 +13,8 @@ namespace UI.Panel
 {
     /// <summary>
     /// Item window: lists party-shared consumables (item = skill).
-    /// Right-edge panel with slide/fade animations driven by UIStack;
+    /// Right-edge panel; slide/fade animations driven by BaseUIPanel
+    /// PlayEnterAnimation/PlayExitAnimation, invoked by UIManager.Open/ClosePanel.
     /// GridLayoutGroup spacing is auto-computed like StatusPopWindow.initBuffStatus.
     /// </summary>
     [UIPanelResource("Assets/UI/Battle/ItemWindow.prefab")]
@@ -31,7 +32,7 @@ namespace UI.Panel
         protected override void Awake()
         {
             base.Awake();
-            // Animations are driven by UIStack (same as SkillMenuPanel), not UIManager's drop animation
+            // Animations are driven by UIManager.Open/ClosePanel (Window layer plays slide).
         }
 
         /// <summary>Refreshes the window: shows only items with stock &gt; 0, auto-computes spacing, fills slots.</summary>
@@ -124,9 +125,9 @@ namespace UI.Panel
             }
         }
 
-        // ============ Slide/fade animations (right-edge panel, driven by UIStack.Push/Pop) ============
+        // ============ Slide/fade animations (right-edge panel, driven by UIManager) ============
 
-        /// <summary>Slides in from the right with fade (played on UIStack.Push).</summary>
+        /// <summary>Slides in from the right with fade (invoked by UIManager.OpenPanel, Window layer).</summary>
         public override async UniTask PlayEnterAnimation()
         {
             if (_rectTransform == null) return;
@@ -145,7 +146,7 @@ namespace UI.Panel
             await seq.AsyncWaitForCompletion();
         }
 
-        /// <summary>Slides out to the right with fade (played on UIStack.Pop).</summary>
+        /// <summary>Slides out to the right with fade (invoked by UIManager.ClosePanel, Window layer).</summary>
         public override async UniTask PlayExitAnimation()
         {
             if (_rectTransform == null) return;

@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 using GamePlay.Units;
 using GamePlay.Skill;
@@ -10,7 +12,12 @@ namespace Managers
     {
         public static BattleUIManager Instance;
 
-        private UIStack _uiStack;
+        /// <summary>
+        /// Navigation history for the in-battle menu chain.
+        /// Pure navigation helper; activation is handled by UIManager.Open/ClosePanel.
+        /// </summary>
+        private readonly Stack<Type> _navStack = new Stack<Type>();
+
         private MapUnit _currentUnit;
         private SkillDataSO _selectedSkill;
         private string _pendingItemId;
@@ -24,84 +31,97 @@ namespace Managers
         void Awake()
         {
             Instance = this;
-            _uiStack = new UIStack();
         }
 
         public void ShowActionMenu(MapUnit unit)
         {
             _currentUnit = unit;
             _selectedSkill = null;
-
-            var panel = UIManager.Instance.OpenPanel<ActionMenuPanel>();
-            if (panel == null)
+            ShowOnNav(typeof(ActionMenuPanel), () =>
             {
-                Debug.LogError("BattleUIManager: 无法打开 ActionMenuPanel");
-                return;
-            }
-
-            panel.Initialize(unit);
-            if (_uiStack.Count == 0 || _uiStack.Current.GetType() != typeof(ActionMenuPanel))
-            {
-                _uiStack.Push(panel).Forget();
-            }
-        }
-
-        public void HideActionMenu()
-        {
-            _uiStack.Clear();
-            UIManager.Instance.ClosePanel<ActionMenuPanel>();
+                var panel = UIManager.Instance.OpenPanel<ActionMenuPanel>();
+                if (panel == null)
+                {
+                    Debug.LogError("BattleUIManager: 无法打开 ActionMenuPanel");
+                    return;
+                }
+                panel.Initialize(unit);
+            });
         }
 
         public void ShowSkillMenu(MapUnit unit)
         {
-            var panel = UIManager.Instance.OpenPanel<SkillMenuPanel>();
-            if (panel == null)
+            ShowOnNav(typeof(SkillMenuPanel), () =>
             {
-                Debug.LogError("BattleUIManager: 无法打开 SkillMenuPanel");
-                return;
-            }
-
-            panel.Initialize(unit);
-            if (_uiStack.Count == 0 || _uiStack.Current.GetType() != typeof(SkillMenuPanel))
-            {
-                _uiStack.Push(panel).Forget();
-            }
+                var panel = UIManager.Instance.OpenPanel<SkillMenuPanel>();
+                if (panel == null)
+                {
+                    Debug.LogError("BattleUIManager: 无法打开 SkillMenuPanel");
+                    return;
+                }
+                panel.Initialize(unit);
+            });
         }
 
-        /// <summary>Opens the item window (party-shared stock) via UIStack, same as the skill menu.</summary>
+        /// <summary>Opens the item window (party-shared stock); same nav pattern as the skill menu.</summary>
         public void ShowItemMenu(MapUnit unit)
         {
             _currentUnit = unit;
             _selectedSkill = null;
-
-            var panel = UIManager.Instance.OpenPanel<ItemWindow>();
-            if (panel == null)
+            ShowOnNav(typeof(ItemWindow), () =>
             {
-                Debug.LogError("BattleUIManager: 无法打开 ItemWindow");
-                return;
-            }
-
-            // Stock query from the party-shared RunManager stock
-            panel.stockGetter = itemId => RunManager.Instance != null ? RunManager.Instance.GetItemStock(itemId) : 0;
-            panel.init();
-
-            // UIStack.Push hides the current panel (ActionMenuPanel) before sliding the item window in
-            if (_uiStack.Count == 0 || _uiStack.Current.GetType() != typeof(ItemWindow))
-            {
-                _uiStack.Push(panel).Forget();
-            }
+                var panel = UIManager.Instance.OpenPanel<ItemWindow>();
+                if (panel == null)
+                {
+                    Debug.LogError("BattleUIManager: 无法打开 ItemWindow");
+                    return;
+                }
+                panel.stockGetter = itemId => RunManager.Instance != null ? RunManager.Instance.GetItemStock(itemId) : 0;
+                panel.init();
+            });
         }
 
-        public async void PopPanel()
+        /// <summary>
+        /// Pops nav entries until stack top equals <paramref name="target"/>.
+        /// If target is already at the top (was hidden by a higher panel) the open action
+        /// re-activates the cached panel via UIManager.OpenPanel&lt;T&gt;.
+        /// </summary>
+        private void ShowOnNav(Type target, Action openAction)
         {
-            await _uiStack.Pop();
+            while (_navStack.Count > 0 && _navStack.Peek() != target)
+            {
+                var t = _navStack.Pop();
+                UIManager.Instance.ClosePanel(t);
+            }
+            if (_navStack.Count > 0 && _navStack.Peek() == target)
+            {
+                openAction();
+                return;
+            }
+            openAction();
+            _navStack.Push(target);
+        }
+
+        public void PopPanel()
+        {
+            if (_navStack.Count == 0) return;
+            var top = _navStack.Pop();
+            UIManager.Instance.ClosePanel(top);
+        }
+
+        public void HideActionMenu()
+        {
+            while (_navStack.Count > 0)
+            {
+                var t = _navStack.Pop();
+                UIManager.Instance.ClosePanel(t);
+            }
         }
 
         public void ShowAttributePanel(MapUnit unit)
         {
             var panel = UIManager.Instance.OpenPanel<StatusPopWindow>();
-            if (panel != null)
-                panel.init(unit);
+            if (panel != null) panel.init(unit);
         }
 
         public void HideAttributePanel()
@@ -112,10 +132,7 @@ namespace Managers
         public void OnSkillSelected(SkillDataSO skill)
         {
             _selectedSkill = skill;
-            _uiStack.Clear();
-            UIManager.Instance.ClosePanel<ActionMenuPanel>();
-            UIManager.Instance.ClosePanel<SkillMenuPanel>();
-
+            HideActionMenu();
             GamePlay.Control.BattleInputController.Instance.StartSkillTargeting(skill);
         }
 
