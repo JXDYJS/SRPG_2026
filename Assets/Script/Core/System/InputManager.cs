@@ -28,6 +28,7 @@ namespace Core.System
                 Actions = new GameInput();
             }
             Actions.Gameplay.Enable();
+            Actions.UI.Enable();         // safe to leave on; ActionMapRouter toggles per panel state
             Actions.Debug.Enable();
         }
 

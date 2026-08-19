@@ -1,6 +1,7 @@
 using UnityEngine;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using GamePlay.InputSystem;
 using Utils;
 
 namespace UI.Panel
@@ -15,6 +16,13 @@ namespace UI.Panel
         [SerializeField] protected float _dropDistance = 0f;
         [SerializeField] protected AnimationDirection _enterDirection = AnimationDirection.Left;
         [SerializeField] protected AnimationDirection _exitDirection = AnimationDirection.Right;
+
+        [Header("输入路由")]
+        [Tooltip("Modal:打开时禁用 Gameplay map;NonModal:保持 Gameplay 启用(用于小型 tooltip)")]
+        [SerializeField] private ActionMapRouter.UIInputMode _inputMode = ActionMapRouter.UIInputMode.Modal;
+
+        /// <summary>Stable id for ActionMapRouter; defaults to the concrete type name.</summary>
+        protected virtual string PanelId => GetType().Name;
 
         public enum AnimationDirection
         {
@@ -53,10 +61,12 @@ namespace UI.Panel
         public virtual void OnOpen(object data = null)
         {
             if (!IsInitialized) OnInit();
+            ActionMapRouter.Push(PanelId, _inputMode);
         }
 
         public virtual void OnClose()
         {
+            ActionMapRouter.Pop(PanelId);
         }
 
         public virtual void OnHide()
