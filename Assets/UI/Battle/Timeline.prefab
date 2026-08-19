@@ -105,4 +105,5 @@ MonoBehaviour:
   _slideDistance: 300
   _enterDirection: 0
   _exitDirection: 1
+  _inputMode: 0
   trackRect: {fileID: 7074663903093708297}

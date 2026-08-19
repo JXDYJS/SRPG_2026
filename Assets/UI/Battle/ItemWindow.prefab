@@ -344,6 +344,7 @@ MonoBehaviour:
   _dropDistance: 0
   _enterDirection: 0
   _exitDirection: 1
+  _inputMode: 1
   ItemContent: {fileID: 3993671294494317107}
   ItemSlotPrefab: {fileID: 3087692342465678124, guid: e9e0d0f91298cf24cb10f81efb20d810,
     type: 3}

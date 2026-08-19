@@ -111,6 +111,7 @@ MonoBehaviour:
   _slideDistance: 300
   _enterDirection: 0
   _exitDirection: 1
+  _inputMode: 1
   ChoosePerfab: {fileID: 7484147547056873766, guid: 641f65ef8405772408d2b3e60876ea88,
     type: 3}
   content: {fileID: 8103337278478951965}

@@ -160,6 +160,7 @@ MonoBehaviour:
   _dropDistance: 0
   _enterDirection: 0
   _exitDirection: 1
+  _inputMode: 1
   _moveButton: {fileID: 6219417594963795691}
   _attackButton: {fileID: 898678636624310810}
   _skillButton: {fileID: 2318820864463381448}

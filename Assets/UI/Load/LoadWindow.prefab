@@ -141,6 +141,7 @@ MonoBehaviour:
   _slideDistance: 300
   _enterDirection: 0
   _exitDirection: 1
+  _inputMode: 1
   slider: {fileID: 8495682624841425585}
 --- !u!1 &656159682117403768
 GameObject:

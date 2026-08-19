@@ -66,6 +66,7 @@ MonoBehaviour:
   _slideDistance: 300
   _enterDirection: 0
   _exitDirection: 1
+  _inputMode: 1
   optionContainer: {fileID: 818390157640055045}
   optionPrefab: {fileID: 6696993251744450521, guid: 0416615973ead9b4291ad8d51de6ac22,
     type: 3}

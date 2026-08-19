@@ -66,6 +66,7 @@ MonoBehaviour:
   _slideDistance: 300
   _enterDirection: 0
   _exitDirection: 1
+  _inputMode: 1
   _buttonContainer: {fileID: 2458117449175165999}
   _buttonPrefab: {fileID: 2309090171303487159, guid: 732ac50125401824498fa9fc0491fa33,
     type: 3}

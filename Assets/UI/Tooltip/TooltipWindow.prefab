@@ -108,6 +108,7 @@ MonoBehaviour:
   _slideDistance: 300
   _enterDirection: 0
   _exitDirection: 1
+  _inputMode: 0
   _fadeDuration: 0.15
   _maxDepth: 4
   TooltipColPrefab: {fileID: 6993168515062797648, guid: a1daac440ea664a47b9c2193dfec0274,

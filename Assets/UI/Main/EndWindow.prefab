@@ -582,6 +582,7 @@ MonoBehaviour:
   _dropDistance: 0
   _enterDirection: 0
   _exitDirection: 1
+  _inputMode: 1
   exitBtn: {fileID: 3730197091636021573}
   Title: {fileID: 3610030955427198514}
 --- !u!1 &6463184240220595025

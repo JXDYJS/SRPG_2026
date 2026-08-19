@@ -304,6 +304,7 @@ MonoBehaviour:
   _dropDistance: 0
   _enterDirection: 0
   _exitDirection: 1
+  _inputMode: 1
   Content: {fileID: 6583976087065384788}
   RewardSlotPrefab: {fileID: 3087692342465678124, guid: db51bf08d653a9447804f679ec65abb7,
     type: 3}

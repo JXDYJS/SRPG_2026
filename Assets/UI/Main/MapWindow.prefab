@@ -142,6 +142,7 @@ MonoBehaviour:
   _slideDistance: 300
   _enterDirection: 0
   _exitDirection: 1
+  _inputMode: 1
   scroll: {fileID: 2587565906295607480}
   _layerPrefab: {fileID: 6339982400643949915, guid: f0313f7fcaf00704eb58678cff209305,
     type: 3}

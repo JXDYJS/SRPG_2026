@@ -275,6 +275,7 @@ MonoBehaviour:
   _slideDistance: 300
   _enterDirection: 0
   _exitDirection: 1
+  _inputMode: 1
   Content: {fileID: 6524584097207753881}
   itemSlots: []
   BuyButton: {fileID: 4300984899380111066}

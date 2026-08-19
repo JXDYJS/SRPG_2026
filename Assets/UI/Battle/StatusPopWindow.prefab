@@ -143,6 +143,7 @@ MonoBehaviour:
   _slideDistance: 300
   _enterDirection: 0
   _exitDirection: 1
+  _inputMode: 1
   BuffContent: {fileID: 9043042356952436358}
   StatsContent: {fileID: 6406942629101309818}
   SkillContent: {fileID: 7607732645815610804}

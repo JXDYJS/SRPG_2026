@@ -1163,6 +1163,7 @@ MonoBehaviour:
   _slideDistance: 300
   _enterDirection: 0
   _exitDirection: 1
+  _inputMode: 1
   NewGameBtn: {fileID: 4720513504846712389}
   ContinueBtn: {fileID: 1764077165075470000}
   ExitBtn: {fileID: 1286434018536102031}

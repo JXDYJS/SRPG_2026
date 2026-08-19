@@ -820,6 +820,7 @@ MonoBehaviour:
   _slideDistance: 300
   _enterDirection: 0
   _exitDirection: 1
+  _inputMode: 1
   BGContent: {fileID: 3192784429759097548}
   Mask: {fileID: 3847666536842567663}
   Obstacle: {fileID: 3374235442161187864, guid: 9690ac61bd950724e81cdf4c5387f4a4,
