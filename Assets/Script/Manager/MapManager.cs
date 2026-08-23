@@ -405,6 +405,9 @@ namespace Managers
                 logicalGrid.Clear();
             }
 
+            // Free the GPU voxel volume / heightmap tied to the old map.
+            Render.VoxelGpuMap.Release();
+
             Debug.Log("地图已清理");
         }
 
@@ -488,6 +491,11 @@ namespace Managers
                 var pos = block.Key;
                 voxelGrid.SetBlock(pos.x, pos.y, pos.z, type_val);
             }
+
+            // Upload the static map into the GPU byte-voxel volume so GI /
+            // DDA ray queries can run entirely on the GPU (type ids come from
+            // the baked FaceTiles atlas, half-block flag from YCellSize).
+            Render.VoxelGpuMap.UploadFromBlocks(blocks);
         }
 
 

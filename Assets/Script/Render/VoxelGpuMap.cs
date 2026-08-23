@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using GamePlay.Units;
 using UnityEngine;
 using UnityEngine.Experimental.Rendering;
 
@@ -39,10 +41,154 @@ namespace Render
 
         public const int MaxTypeId = 63;
 
+        /// <summary>GPU volume uploaded for the current map, or null.</summary>
+        public static Texture3D Volume { get; private set; }
+
+        /// <summary>Per-column topmost solid height, or null until uploaded.</summary>
+        public static Texture2D HeightMap { get; private set; }
+
+        public static bool IsReady => Volume != null;
+
+        /// <summary>Frees the current GPU map (e.g. on map clear).</summary>
+        public static void Release()
+        {
+            if (Volume != null)
+            {
+                UnityEngine.Object.DestroyImmediate(Volume);
+                Volume = null;
+            }
+            if (HeightMap != null)
+            {
+                UnityEngine.Object.DestroyImmediate(HeightMap);
+                HeightMap = null;
+            }
+        }
+
         /// <summary>Linear index identical to Grid.VoxelGrid.GetIndex layout.</summary>
         public static int ToIndex(int x, int y, int z)
         {
             return x + y * ChunkWidth + z * ChunkWidth * ChunkHeight;
+        }
+
+        /// <summary>
+        /// Uploads the currently loaded map into the GPU byte-voxel format.
+        /// Call right after map loading (MapManager.initVoxel) and before any
+        /// map clear. Type ids come from the baked atlas (TypeLayerBase), the
+        /// half-block flag from the block's YCellSize — this keeps the exact
+        /// block identity needed for FaceTiles color lookup.
+        /// </summary>
+        public static void UploadFromBlocks(Dictionary<Vector3Int, MapObject> blocks)
+        {
+            Release();
+
+            if (blocks == null)
+            {
+                Debug.LogWarning("[VoxelGpuMap] upload skipped: no blocks.");
+                return;
+            }
+
+            // The atlas bakes in the launch flow; maps loaded outside that
+            // flow (e.g. straight into battle) need it baked here. BakeAll is
+            // idempotent: it returns immediately when already baked.
+            if (VoxelFaceBaker.TypeLayerBase == null && !Application.isPlaying)
+            {
+                Debug.LogWarning("[VoxelGpuMap] upload skipped: atlas not baked yet and not in play mode.");
+                return;
+            }
+            if (VoxelFaceBaker.TypeLayerBase == null)
+            {
+                Debug.Log("[VoxelGpuMap] atlas not baked yet, baking now...");
+                VoxelFaceBaker.BakeAll();
+            }
+            if (VoxelFaceBaker.TypeLayerBase == null)
+            {
+                Debug.LogWarning("[VoxelGpuMap] upload skipped: atlas could not be baked.");
+                return;
+            }
+
+            var data = new byte[ChunkWidth * ChunkHeight * ChunkDepth]; // zero = air
+            int solidCount = 0;
+            int skipped = 0;
+            foreach (var kvp in blocks)
+            {
+                Vector3Int p = kvp.Key;
+                MapObject mo = kvp.Value;
+                if (mo == null)
+                {
+                    continue;
+                }
+                if (p.x < 0 || p.x >= ChunkWidth || p.z < 0 || p.z >= ChunkDepth ||
+                    p.y < 0 || p.y >= ChunkHeight)
+                {
+                    skipped++;
+                    continue;
+                }
+
+                if (string.IsNullOrEmpty(mo.blockConfigId) ||
+                    !VoxelFaceBaker.TypeLayerBase.TryGetValue(mo.blockConfigId, out int layerBase))
+                {
+                    skipped++;
+                    continue;
+                }
+
+                int typeId = layerBase / 6 + 1; // layerBase = typeIndex*6
+                byte b = (byte)(typeId & TypeMask);
+                if (mo.YCellSize > 0f && mo.YCellSize < 1f)
+                {
+                    b |= HalfBlockFlag;
+                }
+                data[ToIndex(p.x, p.y, p.z)] = b;
+                solidCount++;
+            }
+
+            Volume = CreateVolumeFromData(data);
+            HeightMap = CreateHeightMapFromData(data);
+            Debug.Log($"[VoxelGpuMap] uploaded {solidCount} blocks ({skipped} skipped) -> " +
+                      $"{ChunkWidth}x{ChunkHeight}x{ChunkDepth} R8 + heightmap");
+        }
+
+        private static Texture3D CreateVolumeFromData(byte[] data)
+        {
+            var volume = new Texture3D(
+                ChunkWidth, ChunkHeight, ChunkDepth,
+                GraphicsFormat.R8_UNorm,
+                TextureCreationFlags.None)
+            {
+                name = "VoxelVolume_R8",
+                filterMode = FilterMode.Point,
+                wrapMode = TextureWrapMode.Clamp
+            };
+            volume.SetPixelData(data, 0);
+            volume.Apply(false, true);
+            return volume;
+        }
+
+        private static Texture2D CreateHeightMapFromData(byte[] data)
+        {
+            var heights = new byte[ChunkWidth * ChunkDepth];
+            for (int z = 0; z < ChunkDepth; z++)
+            {
+                for (int x = 0; x < ChunkWidth; x++)
+                {
+                    for (int y = ChunkHeight - 1; y >= 0; y--)
+                    {
+                        if (data[ToIndex(x, y, z)] != 0)
+                        {
+                            heights[z * ChunkWidth + x] = (byte)(y + 1);
+                            break;
+                        }
+                    }
+                }
+            }
+            var map = new Texture2D(ChunkWidth, ChunkDepth, GraphicsFormat.R8_UNorm, TextureCreationFlags.None)
+            {
+                name = "VoxelHeightMap_R8",
+                filterMode = FilterMode.Point,
+                wrapMode = TextureWrapMode.Clamp
+            };
+            map.SetPixelData(heights, 0);
+            map.Apply(false, true);
+            return map;
         }
 
         /// <summary>
@@ -88,18 +234,7 @@ namespace Render
                 }
             }
 
-            var volume = new Texture3D(
-                ChunkWidth, ChunkHeight, ChunkDepth,
-                GraphicsFormat.R8_UNorm,
-                TextureCreationFlags.None)
-            {
-                name = "VoxelVolume_R8",
-                filterMode = FilterMode.Point,
-                wrapMode = TextureWrapMode.Clamp
-            };
-            volume.SetPixelData(data, 0);
-            volume.Apply(false, true);
-            return volume;
+            return CreateVolumeFromData(data);
         }
 
         /// <summary>

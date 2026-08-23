@@ -375,8 +375,12 @@ namespace Render
                         // materials (Shader Graph) expose a texture under a
                         // generated property name, so fall back to scanning the
                         // shader's texture properties.
-                        Texture2D baseTex = src[i].GetTexture("_BaseMap") as Texture2D;
-                        if (baseTex == null)
+                        Texture2D baseTex = null;
+                        if (src[i].HasProperty("_BaseMap"))
+                        {
+                            baseTex = src[i].GetTexture("_BaseMap") as Texture2D;
+                        }
+                        if (baseTex == null && src[i].HasProperty("_MainTex"))
                         {
                             baseTex = src[i].GetTexture("_MainTex") as Texture2D;
                         }
