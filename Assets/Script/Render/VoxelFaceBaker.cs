@@ -491,7 +491,12 @@ namespace Render
             {
                 b.Encapsulate(renderers[i].bounds);
             }
-            Vector3 targetPos = b.center;
+            // Frame the voxel CELL [0,1]^3 (anchor: bottom-center at origin),
+            // not the object's bounds: shaders sample with frac of the cell
+            // position, so sub-cell blocks (slabs) must be baked with their
+            // content at the bottom of the tile, e.g. a 0.5-high side face
+            // occupies tile rows 0..8.
+            Vector3 targetPos = new Vector3(b.center.x, 0.5f, b.center.z);
 
             // Drive a real camera transform so Unity computes view/proj matrices
             // correctly, then render through the camera. A plain Camera.Render is
