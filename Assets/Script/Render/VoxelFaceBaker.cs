@@ -48,13 +48,19 @@ namespace Render
         /// <summary>Clears any cached bake and re-bakes from scratch.</summary>
         public static void ForceRebake()
         {
+            // DestroyImmediate: menu-triggered bakes cannot wait for the
+            // end-of-frame deferred Destroy, or the re-bake would keep
+            // skipping on the "already baked" guard below.
             if (FaceTiles != null)
             {
-                UnityEngine.Object.Destroy(FaceTiles);
+                UnityEngine.Object.DestroyImmediate(FaceTiles);
                 FaceTiles = null;
             }
             TypeLayerBase = null;
             VoxelTypeId = null;
+            // Unbind first: a midway failure must never leave the old atlas
+            // visible to shaders.
+            Managers.ShaderManager.BindVoxelFaceTiles(null);
             BakeAllInternal();
         }
 
@@ -100,6 +106,9 @@ namespace Render
             ReleaseResources();
 
             Debug.Log($"[VoxelFaceBaker] Baked {typeCount} block types -> {typeCount * 6} layers ({FaceTiles.width}x{FaceTiles.height} tex2darray).");
+
+            // Expose the atlas to all shaders: layer = (typeId-1)*6 + face.
+            Managers.ShaderManager.BindVoxelFaceTiles(FaceTiles);
         }
 
         private static readonly string[] FaceNames = { "+Y", "-Y", "+X", "-X", "+Z", "-Z" };
