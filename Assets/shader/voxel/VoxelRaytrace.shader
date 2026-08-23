@@ -53,7 +53,7 @@ Shader "Hidden/VoxelRaytrace"
                 float3 dir = normalize(mul((float3x3)UNITY_MATRIX_I_V, viewDir));
 
                 VoxelRaytraceRes r = VoxelRaytrace(GetCameraPositionWS(), dir);
-                if (r.alpha <= 0) return half4(1, 0, 1, 1); // miss -> magenta
+                if (r.typeId == VOXEL_HIT_NONE) return half4(1, 0, 1, 1); // miss -> magenta
                 return half4(r.hitColor, 1);
             }
             ENDHLSL

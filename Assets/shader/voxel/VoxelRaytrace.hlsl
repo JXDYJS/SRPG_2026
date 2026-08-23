@@ -20,11 +20,17 @@ static const int VOXEL_FACE_RES = 16;
 static const int VOXEL_MAX_STEPS = 128;
 static const float VOXEL_EPS = 1e-4;
 
+// Hit types, reusing the byte-map encoding: 1..63 are block type ids, values
+// beyond the 6-bit range classify non-voxel hits, 0 = nothing (sky).
+#define VOXEL_HIT_NONE  0
+#define VOXEL_HIT_WATER 64
+
 struct VoxelRaytraceRes{
     float3 hitPos;
     float3 hitNormal;
     half3 hitColor;
     half alpha;
+    uint typeId; // VOXEL_HIT_*, or 1..63 for a map block
 };
 
 /// <summary>Atlas layer for a face normal: 0=+Y 1=-Y 2=+X 3=-X 4=+Z 5=-Z.</summary>
@@ -112,6 +118,7 @@ VoxelRaytraceRes VoxelRaytrace(float3 ori, float3 dir)
                     res.hitNormal = float3(0, 1, 0);
                     res.hitColor = VOXEL_WATER_COLOR;
                     res.alpha = 0.5;
+                    res.typeId = VOXEL_HIT_WATER;
                     return res;
                 }
             }
@@ -125,6 +132,7 @@ VoxelRaytraceRes VoxelRaytrace(float3 ori, float3 dir)
         res.hitNormal = n;
         res.hitColor = col.rgb;
         res.alpha = 1.0;
+        res.typeId = typeId;
         return res;
     }
 
@@ -139,9 +147,11 @@ VoxelRaytraceRes VoxelRaytrace(float3 ori, float3 dir)
             res.hitNormal = dir.y > 0 ? float3(0, -1, 0) : float3(0, 1, 0);
             res.hitColor = VOXEL_WATER_COLOR;
             res.alpha = 0.5;
+            res.typeId = VOXEL_HIT_WATER;
             return res;
         }
     }
     res.alpha = 0; // missed everything
+    res.typeId = VOXEL_HIT_NONE;
     return res;
 }
