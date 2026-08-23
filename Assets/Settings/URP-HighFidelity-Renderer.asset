@@ -110,6 +110,7 @@ MonoBehaviour:
   - {fileID: 3367451691278569946}
   - {fileID: -5600187897153478597}
   - {fileID: -468816753662192350}
+  - {fileID: 286769587864370014}
   m_RendererFeatureMap: adc0de57c6d2eee51e0e96ade2be5eea837ea1deb8f3110fda91f2c07897bb2e2295367da56d7ef9
   m_UseNativeRenderPass: 0
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
@@ -153,6 +154,20 @@ MonoBehaviour:
   m_CopyDepthMode: 0
   m_AccurateGbufferNormals: 0
   m_IntermediateTextureMode: 1
+--- !u!114 &286769587864370014
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88ab7227842cc2d4faa9761283efff87, type: 3}
+  m_Name: VoxelRaytrace
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  _material: {fileID: 0}
 --- !u!114 &1085916960507657859
 MonoBehaviour:
   m_ObjectHideFlags: 0

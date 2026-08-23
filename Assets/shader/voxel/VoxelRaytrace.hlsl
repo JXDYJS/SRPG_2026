@@ -20,7 +20,7 @@ static const int VOXEL_FACE_RES = 16;
 static const int VOXEL_MAX_STEPS = 128;
 static const float VOXEL_EPS = 1e-4;
 
-struct VoxelReflectRes{
+struct VoxelRaytraceRes{
     float3 hitPos;
     float3 hitNormal;
     half3 hitColor;
@@ -50,10 +50,10 @@ half4 VoxelSampleFace(uint typeId, float3 normal, float3 hitPos)
     return (half4)_VoxelFaceTiles.Load(int4(texel, layer, 0));
 }
 
-VoxelReflectRes VoxelReflect(float3 ori, float3 dir)
+VoxelRaytraceRes VoxelRaytrace(float3 ori, float3 dir)
 {
     //目前只有对静态地图的体素处理
-    VoxelReflectRes res = (VoxelReflectRes)0;
+    VoxelRaytraceRes res = (VoxelRaytraceRes)0;
     float3 size = _VoxelMapSize.xyz;
 
     // Nudge so an origin lying exactly on a face enters the correct cell.
