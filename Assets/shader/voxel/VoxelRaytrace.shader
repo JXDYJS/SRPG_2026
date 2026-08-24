@@ -73,7 +73,9 @@ Shader "Hidden/VoxelRaytrace"
                 }
 
                 VoxelRaytraceRes r = VoxelRaytrace(GetCameraPositionWS(), dir);
-                if (r.typeId == VOXEL_HIT_NONE) return half4(1, 0, 1, 1); // miss -> magenta
+                // v2 marker: miss now renders orange. Magenta means the
+                // committed shader was never reimported (stale variant).
+                if (r.typeId == VOXEL_HIT_NONE) return half4(1, 0.55f, 0, 1); // miss -> orange
                 return half4(r.hitColor, 1);
             }
             ENDHLSL

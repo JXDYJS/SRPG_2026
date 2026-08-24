@@ -37,12 +37,8 @@ namespace Render.EditorTools
         [InitializeOnLoadMethod]
         private static void AutoRunOnce()
         {
-            string verFile = Path.Combine(OutDir, "VoxelFlipProbe.version");
-            if (File.Exists(verFile) && File.ReadAllText(verFile).Trim() == Version)
-            {
-                return; // already probed at this probe version
-            }
-            EditorApplication.delayCall += Run;
+            // Intentionally disabled: auto-rendering at load time crashed the
+            // editor startup. Keep the probe fully manual via the menu item.
         }
 
         [MenuItem("Tools/Voxel Diag/Capture Flip Probe")]
