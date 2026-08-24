@@ -51,15 +51,12 @@ Shader "Hidden/VoxelRaytrace"
                 // projection terms; camera-relative safe because only the
                 // rotation of the inverse view matrix is used.
                 //
-                // SV_Position runs top-down on D3D/Metal (UV starts at top)
-                // and bottom-up on GL, while URP renders camera targets with
-                // a Y-flipped projection on those platforms so one screen UV
-                // means the same pixel everywhere. Raw SV_Position must be
-                // flipped first, or every ray is mirrored vertically and the
-                // whole image comes out upside-down on D3D (correct on GL).
-                // GetNormalizedScreenSpaceUV applies exactly that flip (URP
-                // ShaderVariablesFunctions.hlsl).
-                float2 ndc = GetNormalizedScreenSpaceUV(i.positionCS) * 2.0 - 1.0;
+                // Verified empirically on the Vulkan target (2026-08): raw
+                // SV_Position already matches the presented frame here, so no
+                // Y flip is applied. On D3D the GetNormalizedScreenSpaceUV
+                // flip was needed; if a D3D build renders mirrored, restore
+                // `GetNormalizedScreenSpaceUV(i.positionCS) * 2.0 - 1.0`.
+                float2 ndc = (i.positionCS.xy / _ScaledScreenParams.xy) * 2.0 - 1.0;
                 float3 viewDir = normalize(float3(
                     ndc.x / UNITY_MATRIX_P._m00,
                     ndc.y / UNITY_MATRIX_P._m11,
