@@ -13,6 +13,12 @@ namespace Render
     {
         [SerializeField] private Material _material; // optional override; auto-created when null
 
+        [Header("Diagnostic")]
+        [Tooltip("Mirrors the ray Y direction. The two states are exact mirror images; " +
+                 "keep the one that renders the world upright.")]
+        [SerializeField] private bool _flipRayY = true;
+
+        private static readonly int FlipRayYId = Shader.PropertyToID("_VoxelFlipUv");
         private VoxelRaytracePass m_Pass;
 
         public override void Create()
@@ -76,7 +82,17 @@ namespace Render
                     return;
                 }
 
+                // The face-bake camera renders blocks into the atlas; a
+                // full-screen overwrite there would corrupt every baked face
+                // (Camera.Render() still runs URP renderer features).
+                Camera cam = renderingData.cameraData.camera;
+                if (cam != null && cam.name == "_VoxelFaceBakerCam")
+                {
+                    return;
+                }
+
                 CommandBuffer cmd = CommandBufferPool.Get("VoxelRaytrace");
+                cmd.SetGlobalFloat(FlipRayYId, _flipRayY ? 1f : 0f);
                 cmd.SetRenderTarget(target, RenderBufferLoadAction.Load, RenderBufferStoreAction.Store);
                 cmd.DrawProcedural(Matrix4x4.identity, _material, 0, MeshTopology.Triangles, 3, 1, null);
                 context.ExecuteCommandBuffer(cmd);

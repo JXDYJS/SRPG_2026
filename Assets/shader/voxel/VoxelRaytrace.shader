@@ -27,6 +27,9 @@ Shader "Hidden/VoxelRaytrace"
             // ray-march: red = NDC scanline (presented row), green = ray up.
             // The gradients must agree; inverted green = mirrored rays.
             float _VoxelDiagMode;
+            // Y-mirror switch driven by the feature inspector; the two states
+            // are exact mirrors of each other, so exactly one is correct.
+            float _VoxelFlipUv;
 
             struct RaytraceAttributes
             {
@@ -51,12 +54,17 @@ Shader "Hidden/VoxelRaytrace"
                 // projection terms; camera-relative safe because only the
                 // rotation of the inverse view matrix is used.
                 //
-                // Verified empirically on the Vulkan target (2026-08): raw
-                // SV_Position already matches the presented frame here, so no
-                // Y flip is applied. On D3D the GetNormalizedScreenSpaceUV
-                // flip was needed; if a D3D build renders mirrored, restore
-                // `GetNormalizedScreenSpaceUV(i.positionCS) * 2.0 - 1.0`.
+                // A 2026-08 controlled run (feature-only renderer, orange
+                // miss marker active) showed the RAW SV_Position mapping
+                // yields a mirrored image on this Vulkan target, so the
+                // committed state flips ndc.y. The inspector toggle flips it
+                // back for a definitive one-line A/B; exactly one of the two
+                // states is correct because they are mirror images.
                 float2 ndc = (i.positionCS.xy / _ScaledScreenParams.xy) * 2.0 - 1.0;
+                if (_VoxelFlipUv > 0.5)
+                {
+                    ndc.y = -ndc.y;
+                }
                 float3 viewDir = normalize(float3(
                     ndc.x / UNITY_MATRIX_P._m00,
                     ndc.y / UNITY_MATRIX_P._m11,
