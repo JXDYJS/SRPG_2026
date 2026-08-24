@@ -41,7 +41,7 @@ Shader "Hidden/VoxelRaytrace"
 
             half4 frag(RaytraceVaryings i) : SV_Target
             {
-                float2 ndc = GetNormalizedScreenSpaceUV(i.positionCS) * 2.0 - 1.0;
+                float2 ndc = (i.positionCS.xy / _ScaledScreenParams.xy) * 2.0 - 1.0;
                 float3 viewDir = normalize(float3(
                     ndc.x / UNITY_MATRIX_P._m00,
                     ndc.y / UNITY_MATRIX_P._m11,

@@ -13,7 +13,6 @@ namespace Render
     {
         [SerializeField] private Material _material; // optional override; auto-created when null
 
-        private static readonly int ScaleBiasRtId = Shader.PropertyToID("_ScaleBiasRt");
         private VoxelRaytracePass m_Pass;
 
         public override void Create()
@@ -88,7 +87,6 @@ namespace Render
                 }
 
                 CommandBuffer cmd = CommandBufferPool.Get("VoxelRaytrace");
-                cmd.SetGlobalVector(ScaleBiasRtId, new Vector4(1f, 1f, 0f, 0f));
                 cmd.SetRenderTarget(target, RenderBufferLoadAction.Load, RenderBufferStoreAction.Store);
                 cmd.DrawProcedural(Matrix4x4.identity, material, 0, MeshTopology.Triangles, 3, 1, null);
                 context.ExecuteCommandBuffer(cmd);
