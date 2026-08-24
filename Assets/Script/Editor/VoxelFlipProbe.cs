@@ -64,6 +64,7 @@ namespace Render.EditorTools
             RenderTexture rt = null;
             try
             {
+                Directory.CreateDirectory(OutDir);
                 Shader.SetGlobalFloat(DiagId, 0f); // normal ray-march output
                 volume = BuildProbeVolume();
                 atlas = BuildProbeAtlas();
