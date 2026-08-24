@@ -20,6 +20,7 @@ namespace Render
         [SerializeField] private bool _diagGradient;
 
         private static readonly int DiagModeId = Shader.PropertyToID("_VoxelDiagMode");
+        private static readonly int ScaleBiasRtId = Shader.PropertyToID("_ScaleBiasRt");
         private VoxelRaytracePass m_Pass;
 
         public override void Create()
@@ -94,6 +95,10 @@ namespace Render
                 }
 
                 CommandBuffer cmd = CommandBufferPool.Get("VoxelRaytrace");
+                // GetNormalizedScreenSpaceUV's flip reads _ScaleBiasRt, which
+                // nothing in URP 14 sets; feed the identity value so the
+                // official helper behaves as designed on every platform.
+                cmd.SetGlobalVector(ScaleBiasRtId, new Vector4(1f, 1f, 0f, 0f));
                 cmd.SetGlobalFloat(DiagModeId, _feature._diagGradient ? 1f : 0f);
                 cmd.SetRenderTarget(target, RenderBufferLoadAction.Load, RenderBufferStoreAction.Store);
                 cmd.DrawProcedural(Matrix4x4.identity, material, 0, MeshTopology.Triangles, 3, 1, null);

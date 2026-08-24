@@ -50,19 +50,12 @@ Shader "Hidden/VoxelRaytrace"
                 // projection terms; camera-relative safe because only the
                 // rotation of the inverse view matrix is used.
                 //
-                // RenderDoc-verified model: on this platform (D3D-class RT
-                // storage + flipped projection) every camera/other pass writes
-                // its content INVERTED into the RT (world-top at memory bottom
-                // row), and the final blit presents with a yflip, so
-                // inverted content displays upright. This pass must therefore
-                // also write inverted content: world-top colors must land on
-                // the memory bottom rows, which needs the explicit ndc.y flip
-                // below. Do NOT route this through GetNormalizedScreenSpaceUV
-                // (its flip depends on the UNITY_UV_STARTS_AT_TOP macro and
-                // the _ScaleBiasRt global, both unreliable here - that was
-                // the bug: the flip silently did nothing).
-                float2 ndc = (i.positionCS.xy / _ScaledScreenParams.xy) * 2.0 - 1.0;
-                ndc.y = -ndc.y;
+                // Official cross-platform path: GetNormalizedScreenSpaceUV
+                // (URP's own effects use it). Its internal Y flip reads the
+                // _ScaleBiasRt global, which nothing in URP 14 ever sets;
+                // VoxelRaytraceFeature feeds it (1,1,0,0) explicitly so the
+                // flip cannot be silently neutralized by the engine default.
+                float2 ndc = GetNormalizedScreenSpaceUV(i.positionCS) * 2.0 - 1.0;
                 float3 viewDir = normalize(float3(
                     ndc.x / UNITY_MATRIX_P._m00,
                     ndc.y / UNITY_MATRIX_P._m11,
