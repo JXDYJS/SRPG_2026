@@ -22,14 +22,10 @@ Shader "Hidden/VoxelRaytrace"
             #include "Packages/com.unity.render-pipelines.core/Runtime/Utilities/Blit.hlsl"
             #include "Assets/shader/voxel/VoxelRaytrace.hlsl"
 
-            // Diagnostic global set by the editor flip probe (VoxelFlipProbe).
-            // When > 0 the fragment outputs a gradient pair instead of the
-            // ray-march: red = NDC scanline (presented row), green = ray up.
-            // The gradients must agree; inverted green = mirrored rays.
+            // Diagnostic global set by the renderer feature. When > 0 the fragment
+            // outputs a gradient pair instead of the ray-march:
+            // red = NDC scanline (presented row), green = ray up-ness.
             float _VoxelDiagMode;
-            // Y-mirror switch driven by the feature inspector; the two states
-            // are exact mirrors of each other, so exactly one is correct.
-            float _VoxelFlipUv;
 
             struct RaytraceAttributes
             {
@@ -54,17 +50,14 @@ Shader "Hidden/VoxelRaytrace"
                 // projection terms; camera-relative safe because only the
                 // rotation of the inverse view matrix is used.
                 //
-                // A 2026-08 controlled run (feature-only renderer, orange
-                // miss marker active) showed the RAW SV_Position mapping
-                // yields a mirrored image on this Vulkan target, so the
-                // committed state flips ndc.y. The inspector toggle flips it
-                // back for a definitive one-line A/B; exactly one of the two
-                // states is correct because they are mirror images.
-                float2 ndc = (i.positionCS.xy / _ScaledScreenParams.xy) * 2.0 - 1.0;
-                if (_VoxelFlipUv > 0.5)
-                {
-                    ndc.y = -ndc.y;
-                }
+                // Root cause (algebra, verified against the target rasterizer
+                // semantics and the user's projFlip=True log): on D3D-class
+                // platforms the final blit presents RT rows reversed, so the
+                // raw SV_Position mapping is mirrored and SV_Position must be
+                // flipped first. GetNormalizedScreenSpaceUV applies exactly
+                // that flip. The 'unflipped' variant was confirmed mirrored
+                // on this target ("sky at bottom"), matching this derivation.
+                float2 ndc = GetNormalizedScreenSpaceUV(i.positionCS) * 2.0 - 1.0;
                 float3 viewDir = normalize(float3(
                     ndc.x / UNITY_MATRIX_P._m00,
                     ndc.y / UNITY_MATRIX_P._m11,

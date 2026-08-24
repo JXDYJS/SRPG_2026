@@ -14,11 +14,12 @@ namespace Render
         [SerializeField] private Material _material; // optional override; auto-created when null
 
         [Header("Diagnostic")]
-        [Tooltip("Mirrors the ray Y direction. The two states are exact mirror images; " +
-                 "keep the one that renders the world upright.")]
-        [SerializeField] private bool _flipRayY = true;
+        [Tooltip("Renders NDC/gradient pairs instead of the ray-march: red = NDC " +
+                 "scanline, green = ray up-ness. Correct state: top of the screen " +
+                 "green, bottom red. Mirrored state: top red, bottom green.")]
+        [SerializeField] private bool _diagGradient;
 
-        private static readonly int FlipRayYId = Shader.PropertyToID("_VoxelFlipUv");
+        private static readonly int DiagModeId = Shader.PropertyToID("_VoxelDiagMode");
         private VoxelRaytracePass m_Pass;
 
         public override void Create()
@@ -92,7 +93,7 @@ namespace Render
                 }
 
                 CommandBuffer cmd = CommandBufferPool.Get("VoxelRaytrace");
-                cmd.SetGlobalFloat(FlipRayYId, _flipRayY ? 1f : 0f);
+                cmd.SetGlobalFloat(DiagModeId, _diagGradient ? 1f : 0f);
                 cmd.SetRenderTarget(target, RenderBufferLoadAction.Load, RenderBufferStoreAction.Store);
                 cmd.DrawProcedural(Matrix4x4.identity, _material, 0, MeshTopology.Triangles, 3, 1, null);
                 context.ExecuteCommandBuffer(cmd);
