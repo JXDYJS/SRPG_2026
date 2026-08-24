@@ -41,11 +41,19 @@ Shader "Hidden/VoxelRaytrace"
 
             half4 frag(RaytraceVaryings i) : SV_Target
             {
-                // Screen pixel -> NDC (SV_POSITION.y is top-down on D3D,
-                // bottom-up on GL, both yield +Y = up), then view-space ray
-                // from the projection terms; camera-relative safe because
-                // only rotation of the inverse view matrix is used.
-                float2 ndc = (i.positionCS.xy / _ScreenParams.xy) * 2.0 - 1.0;
+                // Screen pixel -> NDC, then view-space ray from the
+                // projection terms; camera-relative safe because only the
+                // rotation of the inverse view matrix is used.
+                //
+                // SV_Position runs top-down on D3D/Metal (UV starts at top)
+                // and bottom-up on GL, while URP renders camera targets with
+                // a Y-flipped projection on those platforms so one screen UV
+                // means the same pixel everywhere. Raw SV_Position must be
+                // flipped first, or every ray is mirrored vertically and the
+                // whole image comes out upside-down on D3D (correct on GL).
+                // GetNormalizedScreenSpaceUV applies exactly that flip (URP
+                // ShaderVariablesFunctions.hlsl).
+                float2 ndc = GetNormalizedScreenSpaceUV(i.positionCS) * 2.0 - 1.0;
                 float3 viewDir = normalize(float3(
                     ndc.x / UNITY_MATRIX_P._m00,
                     ndc.y / UNITY_MATRIX_P._m11,
