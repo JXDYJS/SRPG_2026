@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Experimental.Rendering;
 using UnityEngine.Rendering.Universal;
 
 namespace Render.EditorTools
@@ -98,7 +99,7 @@ namespace Render.EditorTools
                 RenderTexture.active = prev;
                 Color32[] px = shot.GetPixels32();
                 File.WriteAllBytes(Path.Combine(OutDir, "VoxelProbeContent.png"), shot.EncodeToPNG());
-                DestroyImmediate(shot);
+                UnityEngine.Object.DestroyImmediate(shot);
 
                 int fixedMatches = CountConventionMatches(px, cam, true);
                 int rawMatches = CountConventionMatches(px, cam, false);
@@ -134,20 +135,20 @@ namespace Render.EditorTools
                 Managers.ShaderManager.BindVoxelFaceTiles(Render.VoxelFaceBaker.FaceTiles);
                 if (cam != null)
                 {
-                    DestroyImmediate(cam.gameObject);
+                    UnityEngine.Object.DestroyImmediate(cam.gameObject);
                 }
                 if (rt != null)
                 {
                     rt.Release();
-                    DestroyImmediate(rt);
+                    UnityEngine.Object.DestroyImmediate(rt);
                 }
                 if (volume != null)
                 {
-                    DestroyImmediate(volume);
+                    UnityEngine.Object.DestroyImmediate(volume);
                 }
                 if (atlas != null)
                 {
-                    DestroyImmediate(atlas);
+                    UnityEngine.Object.DestroyImmediate(atlas);
                 }
             }
         }
