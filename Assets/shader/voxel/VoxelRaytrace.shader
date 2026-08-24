@@ -66,11 +66,17 @@ Shader "Hidden/VoxelRaytrace"
 
                 if (_VoxelDiagMode > 0.5)
                 {
-                    // Probe mode: red = ndc.y scanline, green = ray up-ness.
-                    // Blue = 1 is the v3 build fingerprint: if the screen has
-                    // no blue tint at all, the editor still runs an old
-                    // shader import and the file never reimported.
-                    return half4(ndc.y * 0.5 + 0.5, dir.y * 0.5 + 0.5, 1, 1);
+                    // Three independent facts, one glance:
+                    //   red   = raw RT row fraction (sv / height): measures
+                    //           directly whether the presented top shows
+                    //           RT row 0 (red dark at top) or row H (red
+                    //           bright at top) - the blit/copy row order.
+                    //   green = 1 where rays point UP (world truth): correct
+                    //           images have green at the TOP, mirrored has
+                    //           green at the BOTTOM.
+                    //   blue  = 1: build fingerprint (v3 shader active).
+                    float svRow = saturate(i.positionCS.y / _ScaledScreenParams.y);
+                    return half4(svRow, dir.y > 0 ? 1 : 0, 1, 1);
                 }
 
                 VoxelRaytraceRes r = VoxelRaytrace(GetCameraPositionWS(), dir);
