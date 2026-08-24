@@ -76,6 +76,15 @@ namespace Render
                     return;
                 }
 
+                // The face-bake camera renders blocks into the atlas; a
+                // full-screen overwrite there would corrupt every baked face
+                // (Camera.Render() still runs URP renderer features).
+                Camera cam = renderingData.cameraData.camera;
+                if (cam != null && cam.name == "_VoxelFaceBakerCam")
+                {
+                    return;
+                }
+
                 CommandBuffer cmd = CommandBufferPool.Get("VoxelRaytrace");
                 cmd.SetRenderTarget(target, RenderBufferLoadAction.Load, RenderBufferStoreAction.Store);
                 cmd.DrawProcedural(Matrix4x4.identity, _material, 0, MeshTopology.Triangles, 3, 1, null);
