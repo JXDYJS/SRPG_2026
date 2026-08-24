@@ -1,7 +1,6 @@
 _className,_tableName,_isDic,*id,prefabAddress,blockType,isWalkable,xCellSize,yCellSize,zCellSize,heightOffset,threatScore,effectEnter,effectExit,effectStay
 BlockConfig,BlockConfigs,TRUE,string,string,Global.BlockType,bool,float,float,float,float,int,List<object>,List<object>,List<object>
 ,,,grass,Assets/Perfob/block/Block_Grass.prefab,Solid,TRUE,1,1,1,0,0,[],[],[]
-,,,grass_,Assets/Perfob/block/Block_Grass_.prefab,Solid,TRUE,1,1,1,0,0,[],[],[]
 ,,,dirt,Assets/Perfob/block/Block_Dirt.prefab,Solid,TRUE,1,1,1,0,0,[],[],[]
 ,,,cobblestone,Assets/Perfob/block/Block_Cobblestone.prefab,Solid,TRUE,1,1,1,0,0,[],[],[]
 ,,,cobbles_slab,Assets/Perfob/block/Block_Cobbles_Slab.prefab,Slab,TRUE,1,0.5,1,0,0,[],[],[]

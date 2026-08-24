@@ -39,6 +39,11 @@ namespace Managers
         {
             Shader.SetGlobalFloat("_WaterSurfaceHeight", _waterSurfaceHeight);
 
+            // Re-bind static voxel data after a scene reload: the textures are
+            // owned by static builders and outlive this manager.
+            BindVoxelFaceTiles(Render.VoxelFaceBaker.FaceTiles);
+            BindVoxelVolume(Render.VoxelGpuMap.Volume, Render.VoxelGpuMap.HeightMap);
+
             if (_enableDynamicGIUpdate)
             {
                 StartCoroutine(UpdateEnvironmentGIRoutine());
@@ -71,7 +76,37 @@ namespace Managers
                 _skyboxMaterial.SetFloat("_Exposure", exposure);
             }
         }
-        
+
+        // ================ 静态体素全局绑定 ================
+        // The static map voxel data lives on the GPU in three textures:
+        //   _VoxelFaceTiles  Texture2DArray, layer = (typeId-1)*6 + face
+        //   _VoxelMap        Texture3D R8, byte-voxel map (static blocks only)
+        //   _VoxelHeightMap  Texture2D R8, per-column topmost solid height
+        public static readonly int VoxelFaceTilesId = Shader.PropertyToID("_VoxelFaceTiles");
+        public static readonly int VoxelMapId = Shader.PropertyToID("_VoxelMap");
+        public static readonly int VoxelHeightMapId = Shader.PropertyToID("_VoxelHeightMap");
+        public static readonly int VoxelMapSizeId = Shader.PropertyToID("_VoxelMapSize");
+
+        /// <summary>Binds the baked 6-face atlas (call after BakeAll). Null clears.</summary>
+        public static void BindVoxelFaceTiles(Texture2DArray tiles)
+        {
+            Shader.SetGlobalTexture(VoxelFaceTilesId, tiles);
+        }
+
+        /// <summary>
+        /// Binds the static map voxel volume + column heightmap. Call after a
+        /// map upload; null clears the bindings (e.g. on map clear).
+        /// </summary>
+        public static void BindVoxelVolume(Texture3D volume, Texture2D heightMap)
+        {
+            Shader.SetGlobalTexture(VoxelMapId, volume);
+            Shader.SetGlobalTexture(VoxelHeightMapId, heightMap);
+            Vector4 size = volume != null
+                ? new Vector4(volume.width, volume.height, volume.depth, 0f)
+                : Vector4.zero;
+            Shader.SetGlobalVector(VoxelMapSizeId, size);
+        }
+
         private void OnDisable()
         {
             StopAllCoroutines();

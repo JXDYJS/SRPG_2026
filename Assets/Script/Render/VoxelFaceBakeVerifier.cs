@@ -246,9 +246,6 @@ namespace Render
                 shot.ReadPixels(new Rect(0, 0, Res, Res), 0, 0);
                 shot.Apply();
                 Color32[] shotPixels = shot.GetPixels32();
-                // Same RT row convention as the bake, or the live/baked
-                // comparison flips on negative-viewport platforms (Vulkan).
-                VoxelFaceBaker.NormalizeReadbackRows(shotPixels, cam);
                 Destroy(shot);
                 RenderTexture.active = null;
 

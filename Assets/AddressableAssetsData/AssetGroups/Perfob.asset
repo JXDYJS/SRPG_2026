@@ -37,11 +37,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 2e1ffed7ba73dc14ba85100cd83b0f60
-    m_Address: Assets/Perfob/block/Block_Iron.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 348122e827ab26a4589e778262c39785
     m_Address: Assets/Perfob/block/Block_Cobblestone.prefab
     m_ReadOnly: 0
@@ -77,11 +72,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: a04e018e534d1c34082c996f7781fdaf
-    m_Address: Assets/Perfob/block/Block_Grass_.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a18ef909c9618f747afe6f00d27123a2
     m_Address: Assets/Perfob/block/Block_Cobbles_Slab.prefab
     m_ReadOnly: 0
@@ -109,6 +99,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e507b5994683ecd48b0b6c8732ae80ac
     m_Address: Assets/Perfob/block/Block_Grass.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f37de308fe60bda4fa0092dc25643a76
+    m_Address: Assets/Perfob/block/Block_Iron.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

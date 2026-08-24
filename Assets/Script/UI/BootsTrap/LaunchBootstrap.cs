@@ -30,6 +30,11 @@ namespace UI.BootsTrap
             // Lua is Addressable; init only after catalog update, otherwise stale content is prefetched
             await LuaManager.Instance.InitializeAsync();
 
+            // Bake block face tiles during the load bar; independent of any scene.
+            window.SetProgress(0.6f);
+            Render.VoxelFaceBaker.BakeAll();
+            window.SetProgress(0.8f);
+
             window.Close();
             UIManager.Instance.OpenPanel<LaunchWindow>();
         }

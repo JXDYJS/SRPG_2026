@@ -627,6 +627,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3065c1a3de34fbe4a880ce521fa5f1a1
+    m_Address: Assets/textures/entity/player/HeadIcon/noor.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 30d09ef81cb5bf942a8c6b0eb2cc4887
     m_Address: Assets/textures/entity/sheep/sheep_wool.png
     m_ReadOnly: 0
@@ -737,6 +742,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3828add559a1caf4eb580db184748821
+    m_Address: Assets/textures/entity/player/HeadIcon/kai.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 39730c10f32e94940b224163e0d8b5b3
     m_Address: Assets/textures/entity/copper_golem/exposed_copper_golem_eyes.png
     m_ReadOnly: 0
@@ -749,6 +759,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3a630eea706d5ec4481378c274986863
     m_Address: Assets/textures/entity/equipment/pig_saddle/saddle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3a66b04b4d9f5534db358788b03a362c
+    m_Address: Assets/textures/entity/player/HeadIcon/zuri.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1682,6 +1697,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 86dcc08498a1ce642aa9e2b1426c93c9
+    m_Address: Assets/textures/entity/player/HeadIcon/alex.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8724e629aa1f240468ce2ebb27a68af3
     m_Address: Assets/textures/entity/decorated_pot/shelter_pottery_pattern.png
     m_ReadOnly: 0
@@ -2207,6 +2227,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b1b4bbceacc0bbf47920781aa847acae
+    m_Address: Assets/textures/entity/player/HeadIcon/sunny.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b35c9ac2622bcca4785e86972877d3fe
     m_Address: Assets/textures/entity/spider/cave_spider.png
     m_ReadOnly: 0
@@ -2279,6 +2304,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: bad5f877a1fa1254eb5f29714182155a
     m_Address: Assets/textures/entity/shulker/shulker_purple.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bb193fc46e367a44d9094d4aac77550d
+    m_Address: Assets/textures/entity/player/HeadIcon/steve.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -2444,6 +2474,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c9c8991efe6285344a3ec8c4a6776625
     m_Address: Assets/textures/entity/wolf/wolf_snowy.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c9cbfe741c989794a8d447bfa3f1657a
+    m_Address: Assets/textures/entity/player/HeadIcon/efe.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -2937,6 +2972,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f0cd7da900504064a9aa67eedfa6d9b6
+    m_Address: Assets/textures/entity/player/HeadIcon/ari.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f220ad4c05b9bd244ace2a26bd45ae1d
     m_Address: Assets/textures/entity/chest/trapped_right.png
     m_ReadOnly: 0
@@ -2944,6 +2984,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f3226f014d5647e4aba353cfe63d158a
     m_Address: Assets/textures/entity/cat/siamese.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f4911e580e7e5a2438a7e89f72372443
+    m_Address: Assets/textures/entity/player/HeadIcon/makena.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

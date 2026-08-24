@@ -73,11 +73,20 @@ VoxelRaytraceRes VoxelRaytrace(float3 ori, float3 dir)
     float3 tMax = (step > 0 ? (cell + 1 - ori) : (ori - cell)) / safeDir;
     float3 delta = 1.0 / safeDir;
 
+    // Slab test: the t-interval in which the ray is inside the chunk. The
+    // origin may lie outside the chunk (camera outside the map), so the
+    // march must not abort on out-of-bounds cells before reaching it.
+    float3 invDir = 1.0 / safeDir;
+    float3 tMinSide = min(-ori * invDir, (size - ori) * invDir);
+    float3 tMaxSide = max(-ori * invDir, (size - ori) * invDir);
+    float rayEnter = max(max(tMinSide.x, tMinSide.y), tMinSide.z);
+    float rayExit = min(min(tMaxSide.x, tMaxSide.y), tMaxSide.z);
+
     // [loop]: dynamic control flow inside; unrolling a full march fails on Vulkan,
     // and dynamic vector indexing is not addressable there, so each axis is
     // written out explicitly.
     [loop]
-    for (int i = 0; i < VOXEL_MAX_STEPS; i++)
+    for (int i = 0; i < VOXEL_MAX_STEPS && rayEnter <= rayExit && rayExit >= 0.0; i++)
     {
         // Cross the closest boundary into the next cell.
         float tEnter;
@@ -95,8 +104,12 @@ VoxelRaytraceRes VoxelRaytrace(float3 ori, float3 dir)
             tEnter = tMax.z; cell.z += step.z; tMax.z += delta.z; n.z = -step.z;
         }
 
-        // Outside the chunk: nothing opaque left inside the map.
-        if (any(cell < 0) || any(cell >= size)) break;
+        // Passed the chunk: nothing left to hit.
+        if (tEnter > rayExit) break;
+
+        // Out-of-bounds cells (origin outside the chunk, or just stepped
+        // past an edge): nothing to load, keep marching.
+        if (any(cell < 0) || any(cell >= size)) continue;
 
         uint b = (uint)round(_VoxelMap.Load(int4(cell, 0)).r * 255.0);
         uint typeId = b & 0x3F;

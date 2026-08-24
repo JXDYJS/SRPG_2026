@@ -62,6 +62,8 @@ namespace Render
                 UnityEngine.Object.DestroyImmediate(HeightMap);
                 HeightMap = null;
             }
+            // Clear the global bindings so shaders stop referencing a dead map.
+            Managers.ShaderManager.BindVoxelVolume(null, null);
         }
 
         /// <summary>Linear index identical to Grid.VoxelGrid.GetIndex layout.</summary>
@@ -145,6 +147,9 @@ namespace Render
             HeightMap = CreateHeightMapFromData(data);
             Debug.Log($"[VoxelGpuMap] uploaded {solidCount} blocks ({skipped} skipped) -> " +
                       $"{ChunkWidth}x{ChunkHeight}x{ChunkDepth} R8 + heightmap");
+
+            // Expose the static map volume + heightmap to all shaders.
+            Managers.ShaderManager.BindVoxelVolume(Volume, HeightMap);
         }
 
         private static Texture3D CreateVolumeFromData(byte[] data)

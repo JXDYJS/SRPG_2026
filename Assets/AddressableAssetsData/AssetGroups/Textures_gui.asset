@@ -172,6 +172,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0ef8bb3e1172da640ba5500069c9ed24
+    m_Address: Assets/textures/gui/title/background/LaunchMap.cubemap
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0f7f816b0e953f84fa5aeb21de250c44
     m_Address: Assets/textures/gui/sprites/container/villager/scroller.png
     m_ReadOnly: 0
