@@ -22,6 +22,12 @@ Shader "Hidden/VoxelRaytrace"
             #include "Packages/com.unity.render-pipelines.core/Runtime/Utilities/Blit.hlsl"
             #include "Assets/shader/voxel/VoxelRaytrace.hlsl"
 
+            // Diagnostic global set by the editor flip probe (VoxelFlipProbe).
+            // When > 0 the fragment outputs a gradient pair instead of the
+            // ray-march: red = NDC scanline (presented row), green = ray up.
+            // The gradients must agree; inverted green = mirrored rays.
+            float _VoxelDiagMode;
+
             struct RaytraceAttributes
             {
                 uint vertexID : SV_VertexID;
@@ -59,6 +65,12 @@ Shader "Hidden/VoxelRaytrace"
                     ndc.y / UNITY_MATRIX_P._m11,
                     -1.0));
                 float3 dir = normalize(mul((float3x3)UNITY_MATRIX_I_V, viewDir));
+
+                if (_VoxelDiagMode > 0.5)
+                {
+                    // Probe mode: red = ndc.y scanline, green = ray up-ness.
+                    return half4(ndc.y * 0.5 + 0.5, dir.y * 0.5 + 0.5, 0, 1);
+                }
 
                 VoxelRaytraceRes r = VoxelRaytrace(GetCameraPositionWS(), dir);
                 if (r.typeId == VOXEL_HIT_NONE) return half4(1, 0, 1, 1); // miss -> magenta
