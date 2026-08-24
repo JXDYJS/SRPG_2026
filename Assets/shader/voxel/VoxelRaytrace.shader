@@ -50,14 +50,14 @@ Shader "Hidden/VoxelRaytrace"
                 // projection terms; camera-relative safe because only the
                 // rotation of the inverse view matrix is used.
                 //
-                // Diag gradient measurement on the Vulkan target (top red =
-                // top pixels look DOWN = mirrored) proved the flipped NDC
-                // variant is wrong here. This platform combines the native
-                // Vulkan rasterizer with a matrix flip for RTs (projFlip
-                // reported true) and a straight row-order presentation, so
-                // raw SV_Position already matches the presented frame:
-                // the unflipped mapping is the correct one.
-                float2 ndc = (i.positionCS.xy / _ScaledScreenParams.xy) * 2.0 - 1.0;
+                // Final derivation from the blue-fingerprint diag run: the
+                // unflipped mapping placed ndc=+1 on the last RT row and that
+                // row is presented at the TOP of the screen, so this platform
+                // presents RT rows reversed (screen top <- last row), i.e.
+                // D3D-class rasterizer + flipped projection (projFlip=True).
+                // The algebra for that combination: SV_Position must be
+                // flipped before NDC. GetNormalizedScreenSpaceUV applies it.
+                float2 ndc = GetNormalizedScreenSpaceUV(i.positionCS) * 2.0 - 1.0;
                 float3 viewDir = normalize(float3(
                     ndc.x / UNITY_MATRIX_P._m00,
                     ndc.y / UNITY_MATRIX_P._m11,
