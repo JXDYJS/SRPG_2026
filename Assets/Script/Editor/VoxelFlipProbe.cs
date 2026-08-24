@@ -22,6 +22,7 @@ namespace Render.EditorTools
     public static class VoxelFlipProbe
     {
         private const int Res = 256;
+        private const string Version = "2";
         private static readonly string OutDir =
             Path.Combine(Application.dataPath, "..", "Temp", "VoxelFlipProbe");
 
@@ -36,9 +37,10 @@ namespace Render.EditorTools
         [InitializeOnLoadMethod]
         private static void AutoRunOnce()
         {
-            if (File.Exists(Path.Combine(OutDir, "VoxelProbeContent.png")))
+            string verFile = Path.Combine(OutDir, "VoxelFlipProbe.version");
+            if (File.Exists(verFile) && File.ReadAllText(verFile).Trim() == Version)
             {
-                return; // already probed once
+                return; // already probed at this probe version
             }
             EditorApplication.delayCall += Run;
         }
@@ -102,26 +104,45 @@ namespace Render.EditorTools
                 File.WriteAllBytes(Path.Combine(OutDir, "VoxelProbeContent.png"), shot.EncodeToPNG());
                 UnityEngine.Object.DestroyImmediate(shot);
 
-                int fixedMatches = CountConventionMatches(px, cam, true);
-                int rawMatches = CountConventionMatches(px, cam, false);
-                string verdict;
-                if (fixedMatches > rawMatches + 2)
+                // Four combos: convention (fixed/raw) x readback row order.
+                // The PNG rows come from ReadPixels; whether row 0 of the PNG
+                // is RT row 0 or RT row H-1 is what we cannot assume.
+                int[] m = new int[4];
+                string[] names = { "fixed fwd", "fixed rev", "raw fwd", "raw rev" };
+                m[0] = CountConventionMatches(px, cam, true, false);
+                m[1] = CountConventionMatches(px, cam, true, true);
+                m[2] = CountConventionMatches(px, cam, false, false);
+                m[3] = CountConventionMatches(px, cam, false, true);
+
+                int best = 0;
+                for (int i = 1; i < 4; i++)
                 {
-                    verdict = "RAYS CORRECT: the running shader matches the fixed " +
-                              "GetNormalizedScreenSpaceUV convention.";
+                    if (m[i] > m[best])
+                    {
+                        best = i;
+                    }
                 }
-                else if (rawMatches > fixedMatches + 2)
+
+                string verdict;
+                if (m[best] > Res * 0.55f)
                 {
-                    verdict = "RAYS MIRRORED: the running shader still uses the old raw " +
-                              "SV_Position convention (stale shader reimport?).";
+                    verdict = "MATCH: " + names[best] +
+                              " explains the capture (rays " +
+                              (best < 2 ? "use the fixed convention" : "still use the raw convention") +
+                              "; readback rows " + (best % 2 == 0 ? "forward" : "reversed") + ").";
                 }
                 else
                 {
-                    verdict = "AMBIGUOUS: neither convention matches the capture; the flip is " +
-                              "not in the ray math (check presentation/atlas/data).";
+                    verdict = "NO MATCH (best " + names[best] + " = " + m[best] + "/" + Res +
+                              ") - capture is not a plain raymarch; dominant colors follow.";
                 }
-                Debug.Log($"[VoxelFlipProbe] VERDICT: {verdict} " +
-                          $"[fixed={fixedMatches}/{Res}, raw={rawMatches}/{Res}]");
+
+                Debug.Log($"[VoxelFlipProbe] VERDICT: {verdict}");
+                Debug.Log($"[VoxelFlipProbe] matches: fixedFwd={m[0]} fixedRev={m[1]} " +
+                          $"rawFwd={m[2]} rawRev={m[3]} ({names[best]})");
+                Debug.Log("[VoxelFlipProbe] " + DominantColors(px));
+                Debug.Log("[VoxelFlipProbe] center column: " + CenterColumnTrace(px));
+                File.WriteAllText(Path.Combine(OutDir, "VoxelFlipProbe.version"), Version);
                 Debug.Log($"[VoxelFlipProbe] captures in {OutDir}");
             }
             catch (Exception e)
@@ -210,7 +231,7 @@ namespace Render.EditorTools
         /// ray-box test against the two probe blocks. Counts rows whose
         /// expected color matches the captured pixel.
         /// </summary>
-        private static int CountConventionMatches(Color32[] px, Camera cam, bool fixedConvention)
+        private static int CountConventionMatches(Color32[] px, Camera cam, bool fixedConvention, bool reverseRows)
         {
             Matrix4x4 projGpu = GL.GetGPUProjectionMatrix(cam.projectionMatrix, true);
             Quaternion camRot = cam.transform.rotation;
@@ -220,11 +241,12 @@ namespace Render.EditorTools
             int matches = 0;
             for (int r = 0; r < Res; r++)
             {
+                int svRow = reverseRows ? Res - 1 - r : r;
                 // Fixed convention (GetNormalizedScreenSpaceUV): flip on UVSAST
                 // platforms; raw convention: track SV_Position directly.
                 float uvY = fixedConvention
-                    ? (uvStartsAtTop ? 1f - r / (float)Res : r / (float)Res)
-                    : r / (float)Res;
+                    ? (uvStartsAtTop ? 1f - svRow / (float)Res : svRow / (float)Res)
+                    : svRow / (float)Res;
                 float ndcX = 2f * (Res / 2 + 0.5f) / Res - 1f;
                 float ndcY = 2f * uvY - 1f;
                 Vector3 viewDir = new Vector3(
@@ -243,6 +265,49 @@ namespace Render.EditorTools
                 }
             }
             return matches;
+        }
+
+        /// <summary>Top 5 captured colors with pixel counts (6-bit quantized keys).</summary>
+        private static string DominantColors(Color32[] px)
+        {
+            var counts = new Dictionary<int, int>();
+            for (int i = 0; i < px.Length; i++)
+            {
+                Color32 c = px[i];
+                int key = ((c.r >> 2) << 12) | ((c.g >> 2) << 6) | (c.b >> 2);
+                counts.TryGetValue(key, out int n);
+                counts[key] = n + 1;
+            }
+            var top = new List<KeyValuePair<int, int>>(counts);
+            top.Sort((a, b) => b.Value.CompareTo(a.Value));
+            var parts = new List<string>(5);
+            for (int i = 0; i < 5 && i < top.Count; i++)
+            {
+                int k = top[i].Key;
+                int r = ((k >> 12) & 63) * 4 + 2;
+                int g = ((k >> 6) & 63) * 4 + 2;
+                int b = (k & 63) * 4 + 2;
+                parts.Add($"({r},{g},{b})x{top[i].Value}");
+            }
+            return "dominant colors: " + string.Join(" ", parts);
+        }
+
+        /// <summary>Center-column color trace, one character per 4 rows
+        /// (W=white R=red M=magenta C=cyan-blue O=other).</summary>
+        private static string CenterColumnTrace(Color32[] px)
+        {
+            var sb = new System.Text.StringBuilder(64);
+            for (int r = 0; r < Res; r += 4)
+            {
+                Color32 c = px[r * Res + Res / 2];
+                char ch = 'O';
+                if (c.r > 200 && c.g > 200 && c.b > 200) ch = 'W';
+                else if (c.r > 200 && c.g < 100 && c.b < 100) ch = 'R';
+                else if (c.r > 200 && c.b > 200 && c.g < 100) ch = 'M';
+                else if (c.b > 100 && c.g > 100 && c.r < 100) ch = 'C';
+                sb.Append(ch);
+            }
+            return sb.ToString();
         }
 
         private static Color32 RayBox(Color32[] px, Vector3 ori, Vector3 dir)
