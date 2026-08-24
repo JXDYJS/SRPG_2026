@@ -67,7 +67,10 @@ Shader "Hidden/VoxelRaytrace"
                 if (_VoxelDiagMode > 0.5)
                 {
                     // Probe mode: red = ndc.y scanline, green = ray up-ness.
-                    return half4(ndc.y * 0.5 + 0.5, dir.y * 0.5 + 0.5, 0, 1);
+                    // Blue = 1 is the v3 build fingerprint: if the screen has
+                    // no blue tint at all, the editor still runs an old
+                    // shader import and the file never reimported.
+                    return half4(ndc.y * 0.5 + 0.5, dir.y * 0.5 + 0.5, 1, 1);
                 }
 
                 VoxelRaytraceRes r = VoxelRaytrace(GetCameraPositionWS(), dir);
