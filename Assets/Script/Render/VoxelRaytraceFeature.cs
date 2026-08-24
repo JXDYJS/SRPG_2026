@@ -21,7 +21,7 @@ namespace Render
             {
                 _material = CreateMaterial();
             }
-            m_Pass = new VoxelRaytracePass(this);
+            m_Pass = new VoxelRaytracePass(_material);
         }
 
         public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
@@ -60,35 +60,25 @@ namespace Render
 
         private class VoxelRaytracePass : ScriptableRenderPass
         {
-            private readonly VoxelRaytraceFeature _feature;
+            private readonly Material _material;
 
-            public VoxelRaytracePass(VoxelRaytraceFeature feature)
+            public VoxelRaytracePass(Material material)
             {
-                _feature = feature;
+                _material = material;
                 renderPassEvent = RenderPassEvent.AfterRenderingPostProcessing;
             }
 
             public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
             {
-                Material material = _feature._material;
                 RTHandle target = renderingData.cameraData.renderer.cameraColorTargetHandle;
-                if (material == null || target == null)
-                {
-                    return;
-                }
-
-                // The face-bake camera renders blocks into the atlas; a
-                // full-screen overwrite there would corrupt every baked face
-                // (Camera.Render() still runs URP renderer features).
-                Camera cam = renderingData.cameraData.camera;
-                if (cam != null && cam.name == "_VoxelFaceBakerCam")
+                if (_material == null || target == null)
                 {
                     return;
                 }
 
                 CommandBuffer cmd = CommandBufferPool.Get("VoxelRaytrace");
                 cmd.SetRenderTarget(target, RenderBufferLoadAction.Load, RenderBufferStoreAction.Store);
-                cmd.DrawProcedural(Matrix4x4.identity, material, 0, MeshTopology.Triangles, 3, 1, null);
+                cmd.DrawProcedural(Matrix4x4.identity, _material, 0, MeshTopology.Triangles, 3, 1, null);
                 context.ExecuteCommandBuffer(cmd);
                 CommandBufferPool.Release(cmd);
             }

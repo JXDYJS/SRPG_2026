@@ -41,7 +41,11 @@ Shader "Hidden/VoxelRaytrace"
 
             half4 frag(RaytraceVaryings i) : SV_Target
             {
-                float2 ndc = (i.positionCS.xy / _ScaledScreenParams.xy) * 2.0 - 1.0;
+                // Screen pixel -> NDC (SV_POSITION.y is top-down on D3D,
+                // bottom-up on GL, both yield +Y = up), then view-space ray
+                // from the projection terms; camera-relative safe because
+                // only rotation of the inverse view matrix is used.
+                float2 ndc = (i.positionCS.xy / _ScreenParams.xy) * 2.0 - 1.0;
                 float3 viewDir = normalize(float3(
                     ndc.x / UNITY_MATRIX_P._m00,
                     ndc.y / UNITY_MATRIX_P._m11,
@@ -49,7 +53,7 @@ Shader "Hidden/VoxelRaytrace"
                 float3 dir = normalize(mul((float3x3)UNITY_MATRIX_I_V, viewDir));
 
                 VoxelRaytraceRes r = VoxelRaytrace(GetCameraPositionWS(), dir);
-                if (r.typeId == VOXEL_HIT_NONE) return half4(1, 0.55f, 0, 1);
+                if (r.typeId == VOXEL_HIT_NONE) return half4(1, 0, 1, 1); // miss -> magenta
                 return half4(r.hitColor, 1);
             }
             ENDHLSL

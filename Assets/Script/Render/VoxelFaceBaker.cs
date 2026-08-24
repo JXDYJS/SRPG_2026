@@ -80,7 +80,6 @@ namespace Render
             }
 
             InitResources();
-            s_flipReadbackRows = null; // re-probe platform row convention
 
             int typeCount = configs.Count;
             FaceTiles = new Texture2DArray(FaceRes, FaceRes, typeCount * 6, TextureFormat.ARGB32, false)
@@ -524,48 +523,10 @@ namespace Render
             RenderTexture.active = prevActive;
 
             Color32[] px = tmp.GetPixels32();
-            NormalizeReadbackRows(px, _bakeCam);
             LogTileStats(dir, faceIndex, layer, px);
 
             target.SetPixels32(px, layer);
             UnityEngine.Object.Destroy(tmp);
-        }
-
-        private static bool? s_flipReadbackRows;
-
-        /// <summary>
-        /// ReadPixels returns RT rows in memory order. The raymarch expects
-        /// v=0 = cell min corner (image bottom), which D3D already produces:
-        /// its flipped projection puts the image bottom at RT row 0. Vulkan /
-        /// Metal render with a negative viewport instead, so the image TOP
-        /// lands at RT row 0 and every baked tile comes out vertically
-        /// mirrored. Probe once per bake whether the platform needs the rows
-        /// reversed (matrix flip present = row 0 already is the image bottom).
-        /// </summary>
-        private static bool ShouldFlipReadbackRows(Camera cam)
-        {
-            if (!s_flipReadbackRows.HasValue)
-            {
-                Matrix4x4 proj = cam.projectionMatrix;
-                bool matrixFlipped = GL.GetGPUProjectionMatrix(proj, true) != GL.GetGPUProjectionMatrix(proj, false);
-                s_flipReadbackRows = SystemInfo.graphicsUVStartsAtTop && !matrixFlipped;
-                Debug.Log($"[VoxelFaceBaker] readback row flip: {s_flipReadbackRows.Value} " +
-                          $"(uvStartsAtTop={SystemInfo.graphicsUVStartsAtTop}, projFlip={matrixFlipped})");
-            }
-            return s_flipReadbackRows.Value;
-        }
-
-        /// <summary>
-        /// Vertically mirrors the pixel rows in place when the platform's RT
-        /// readback is top-down (Vulkan/Metal); no-op on D3D/GL. Shared with
-        /// the face verifier so live captures use the same convention.
-        /// </summary>
-        public static void NormalizeReadbackRows(Color32[] px, Camera cam)
-        {
-            if (ShouldFlipReadbackRows(cam))
-            {
-                Array.Reverse(px);
-            }
         }
 
         private static int faceIndex;
