@@ -28,7 +28,7 @@ namespace Render
             {
                 _material = CreateMaterial();
             }
-            m_Pass = new VoxelRaytracePass(_material);
+            m_Pass = new VoxelRaytracePass(this);
         }
 
         public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
@@ -67,18 +67,19 @@ namespace Render
 
         private class VoxelRaytracePass : ScriptableRenderPass
         {
-            private readonly Material _material;
+            private readonly VoxelRaytraceFeature _feature;
 
-            public VoxelRaytracePass(Material material)
+            public VoxelRaytracePass(VoxelRaytraceFeature feature)
             {
-                _material = material;
+                _feature = feature;
                 renderPassEvent = RenderPassEvent.AfterRenderingPostProcessing;
             }
 
             public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
             {
+                Material material = _feature._material;
                 RTHandle target = renderingData.cameraData.renderer.cameraColorTargetHandle;
-                if (_material == null || target == null)
+                if (material == null || target == null)
                 {
                     return;
                 }
@@ -93,9 +94,9 @@ namespace Render
                 }
 
                 CommandBuffer cmd = CommandBufferPool.Get("VoxelRaytrace");
-                cmd.SetGlobalFloat(DiagModeId, _diagGradient ? 1f : 0f);
+                cmd.SetGlobalFloat(DiagModeId, _feature._diagGradient ? 1f : 0f);
                 cmd.SetRenderTarget(target, RenderBufferLoadAction.Load, RenderBufferStoreAction.Store);
-                cmd.DrawProcedural(Matrix4x4.identity, _material, 0, MeshTopology.Triangles, 3, 1, null);
+                cmd.DrawProcedural(Matrix4x4.identity, material, 0, MeshTopology.Triangles, 3, 1, null);
                 context.ExecuteCommandBuffer(cmd);
                 CommandBufferPool.Release(cmd);
             }
