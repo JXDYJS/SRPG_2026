@@ -279,19 +279,21 @@ namespace Render
             cmd.SetGlobalFloat(k_SlotOffsetXId, (objID - 1) * GridResX);
             Material mat = m_Material;
 
-            // -Y sweep (top-down): records horizontal surfaces.
+            // Sweeps work purely in canonical space [0,size]: the writer feeds
+            // corner-relative coords, so the virtual camera must look at the
+            // box center measured from the SAME origin (= half).
             cmd.SetGlobalMatrix(k_CanonicalToClipId,
-                MakeSweep(center, Vector3.up * py, Vector3.forward, new Vector2(px, pz), 2f * py));
+                MakeSweep(half, Vector3.up * py, Vector3.forward, new Vector2(px, pz), 2f * py));
             DrawAll(cmd, entry, mat);
 
             // +Z sweep: records front/back facing surfaces.
             cmd.SetGlobalMatrix(k_CanonicalToClipId,
-                MakeSweep(center, Vector3.forward * pz, Vector3.up, new Vector2(px, py), 2f * pz));
+                MakeSweep(half, Vector3.forward * pz, Vector3.up, new Vector2(px, py), 2f * pz));
             DrawAll(cmd, entry, mat);
 
             // +X sweep: records left/right facing surfaces.
             cmd.SetGlobalMatrix(k_CanonicalToClipId,
-                MakeSweep(center, Vector3.right * px, Vector3.up, new Vector2(pz, py), 2f * px));
+                MakeSweep(half, Vector3.right * px, Vector3.up, new Vector2(pz, py), 2f * px));
             DrawAll(cmd, entry, mat);
 
 #if UNITY_EDITOR
