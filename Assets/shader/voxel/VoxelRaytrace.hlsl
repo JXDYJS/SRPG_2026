@@ -15,6 +15,22 @@ Texture2DArray<float4> _VoxelFaceTiles;
 float4 _VoxelMapSize;
 float _WaterSurfaceHeight;
 
+// ---- dynamic unit volumes (filled by VoxelUnitBakerFeature) ----
+// Packed 3D volume, slot X offset = (objID-1) * UNIT_GRID_RES.x;
+// RGBA = color + occupancy. Roster indexed by objID.
+struct UnitGridData
+{
+    float4 originYaw; // xyz = world min corner of the grid box, w = yaw (reserved)
+    float4 sizeSlot;  // xyz = grid world size, w = packed volume X offset of this slot
+    float4 flags;     // x = active
+};
+
+Texture3D<float4> _PackedUnitVolume;
+StructuredBuffer<UnitGridData> _UnitGrids;
+float4 _UnitScanParams; // x = highest live objID to scan (0 = no units)
+
+static const int3 UNIT_GRID_RES = int3(16, 48, 16);
+
 static const half3 VOXEL_WATER_COLOR = half3(0.02, 0.20, 0.30);
 static const int VOXEL_FACE_RES = 16;
 static const int VOXEL_MAX_STEPS = 128;
@@ -24,6 +40,7 @@ static const float VOXEL_EPS = 1e-4;
 // beyond the 6-bit range classify non-voxel hits, 0 = nothing (sky).
 #define VOXEL_HIT_NONE  0
 #define VOXEL_HIT_WATER 64
+#define VOXEL_HIT_UNIT 100
 
 struct VoxelRaytraceRes{
     float3 hitPos;
@@ -56,7 +73,92 @@ half4 VoxelSampleFace(uint typeId, float3 normal, float3 hitPos)
     return (half4)_VoxelFaceTiles.Load(int4(texel, layer, 0));
 }
 
-VoxelRaytraceRes VoxelRaytrace(float3 ori, float3 dir)
+// Slab test against an AABB; t values share the global ray parametrization.
+bool UnitRayBox(float3 ori, float3 dir, float3 bmin, float3 bmax,
+                out float tEnter, out float tExit)
+{
+    float3 invDir = (1.0 / max(abs(dir), 1e-6)) * (step(0.0, dir) * 2.0 - 1.0);
+    float3 t0 = (bmin - ori) * invDir;
+    float3 t1 = (bmax - ori) * invDir;
+    float3 tn = min(t0, t1);
+    float3 tf = max(t0, t1);
+    tEnter = max(max(tn.x, tn.y), tn.z);
+    tExit = min(min(tf.x, tf.y), tf.z);
+    return tExit >= max(tEnter, 0.0);
+}
+
+/// <summary>
+/// Scans the unit roster: continuous-position AABB cull per unit, then a short
+/// local DDA through that unit's 16x48x16 sub-grid inside the packed volume.
+/// Returns the closest unit hit (white until real albedo lands).
+/// </summary>
+VoxelRaytraceRes TraceUnitVolumes(float3 ori, float3 dir)
+{
+    VoxelRaytraceRes best = (VoxelRaytraceRes)0;
+    float bestT = 1e30;
+    int scanMax = (int)_UnitScanParams.x;
+
+    [loop]
+    for (int i = 1; i <= scanMax; i++)
+    {
+        UnitGridData g = _UnitGrids[i];
+        if (g.flags.x < 0.5) continue;
+
+        float3 bmin = g.originYaw.xyz;
+        float3 bsize = g.sizeSlot.xyz;
+        float tBoxEnter, tBoxExit;
+        if (!UnitRayBox(ori, dir, bmin, bmin + bsize, tBoxEnter, tBoxExit)) continue;
+
+        // Local-space DDA; direction is shared so t offsets are identical.
+        float3 voxelSize = bsize / UNIT_GRID_RES;
+        float3 lp = (ori - bmin) + dir * (tBoxEnter + VOXEL_EPS);
+        int3 stp = int3(sign(dir));
+        float3 safeDir = max(abs(dir), 1e-6);
+        int3 cell = clamp(int3(floor(lp / voxelSize)), int3(0, 0, 0), UNIT_GRID_RES - 1);
+        float3 tNext = ((stp > 0 ? cell + 1 : cell) * voxelSize - lp) / safeDir;
+        float3 tDelta = voxelSize / safeDir;
+        float tSpan = (tBoxExit - tBoxEnter) + VOXEL_EPS;
+
+        [loop]
+        for (int s = 0; s < 96; s++)
+        {
+            float tStep;
+            float3 n = 0;
+            if (tNext.x <= tNext.y && tNext.x <= tNext.z)
+            {
+                tStep = tNext.x; cell.x += stp.x; tNext.x += tDelta.x; n.x = -stp.x;
+            }
+            else if (tNext.y <= tNext.z)
+            {
+                tStep = tNext.y; cell.y += stp.y; tNext.y += tDelta.y; n.y = -stp.y;
+            }
+            else
+            {
+                tStep = tNext.z; cell.z += stp.z; tNext.z += tDelta.z; n.z = -stp.z;
+            }
+
+            if (tStep > tSpan) break; // left this unit's box
+            if (any(cell < 0) || any(cell >= UNIT_GRID_RES)) continue;
+
+            float4 v = _PackedUnitVolume.Load(int4((int)g.sizeSlot.w + cell.x, cell.y, cell.z, 0));
+            if (v.a < 0.5) continue; // empty voxel: keep marching
+
+            float tGlobal = tBoxEnter + tStep;
+            if (tGlobal >= bestT) break; // cannot beat current best
+
+            best.hitPos = ori + dir * tGlobal;
+            best.hitNormal = n;
+            best.hitColor = v.rgb;
+            best.alpha = 1.0;
+            best.typeId = VOXEL_HIT_UNIT;
+            bestT = tGlobal;
+            break; // nearest surface of this unit found
+        }
+    }
+    return best;
+}
+
+VoxelRaytraceRes VoxelRaytraceStatic(float3 ori, float3 dir)
 {
     //目前只有对静态地图的体素处理
     VoxelRaytraceRes res = (VoxelRaytraceRes)0;
@@ -167,4 +269,23 @@ VoxelRaytraceRes VoxelRaytrace(float3 ori, float3 dir)
     res.alpha = 0; // missed everything
     res.typeId = VOXEL_HIT_NONE;
     return res;
+}
+
+/// <summary>
+/// Combined entry point: static map march vs dynamic unit volumes, closest hit wins.
+/// </summary>
+VoxelRaytraceRes VoxelRaytrace(float3 ori, float3 dir)
+{
+    VoxelRaytraceRes sres = VoxelRaytraceStatic(ori, dir);
+    float ts = sres.alpha > 0.0 ? length(sres.hitPos - ori) : 1e30;
+
+    VoxelRaytraceRes ures = TraceUnitVolumes(ori, dir);
+    float tu = ures.alpha > 0.0 ? length(ures.hitPos - ori) : 1e30;
+
+    // HLSL ternary cannot return structs: use explicit branch.
+    if (tu < ts)
+    {
+        return ures;
+    }
+    return sres;
 }

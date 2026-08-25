@@ -19,6 +19,7 @@
                float4x4 _CanonicalToClip;
                float3   _GridRes;   
                float3   _GridWorldSize; 
+               float    _SlotOffsetX; // packed volume X offset of this unit's sub-grid
 
                struct VIn  { float4 positionOS : POSITION; };
                struct VOut
@@ -42,6 +43,7 @@
                {
                    int3 c = (int3)clamp(i.positionCanon / _GridWorldSize * _GridRes,
                                         0, _GridRes - 1);
+                   c.x += (int)_SlotOffsetX; // write into this unit's slot of the packed volume
                    _Volume[c] = float4(1, 1, 1, 1); 
                }
                ENDHLSL
