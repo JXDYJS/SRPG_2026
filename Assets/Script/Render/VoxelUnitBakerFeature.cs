@@ -320,7 +320,13 @@ namespace Render
         static Matrix4x4 MakeSweep(Vector3 center, Vector3 eyeOffset, Vector3 up,
             Vector2 rectHalf, float span)
         {
-            var view = Matrix4x4.LookAt(center + eyeOffset, center, up);
+            // Matrix4x4.LookAt returns the camera WORLD matrix (TRS(eye, rot, 1)),
+            // NOT a view matrix. Per Unity docs, a view matrix needs
+            // scale(1,1,-1) * LookAt.inverse; otherwise every vertex is offset
+            // by +eye and lands outside NDC (nothing rasterizes).
+            var look = Matrix4x4.LookAt(center + eyeOffset, center, up);
+            var mirrorZ = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, new Vector3(1f, 1f, -1f));
+            var view = mirrorZ * look.inverse;
             var proj = Matrix4x4.Ortho(-rectHalf.x, rectHalf.x, -rectHalf.y, rectHalf.y, 0.01f, span);
             return proj * view;
         }
