@@ -20,6 +20,7 @@
                float3   _GridRes;   
                float3   _GridWorldSize; 
                float    _SlotOffsetX; // packed volume X offset of this unit's sub-grid
+               float3   _GridOrigin;  // world min corner of this unit's grid box
 
                struct VIn  { float4 positionOS : POSITION; };
                struct VOut
@@ -32,7 +33,7 @@
                {
                    VOut o;
                    float3 wpos = TransformObjectToWorld(i.positionOS.xyz);
-                   float3 canon = wpos;
+                   float3 canon = wpos - _GridOrigin; // world -> this unit's local grid space
 
                    o.positionCS    = mul(_CanonicalToClip, float4(canon, 1.0));
                    o.positionCanon = canon;
@@ -41,6 +42,10 @@
 
                void Frag(VOut i)
                {
+                   // Reject anything outside this unit's box (ground plane, other
+                   // geometry caught by the sweep frustum).
+                   if (any(i.positionCanon < 0) || any(i.positionCanon > _GridWorldSize)) discard;
+
                    int3 c = (int3)clamp(i.positionCanon / _GridWorldSize * _GridRes,
                                         0, _GridRes - 1);
                    c.x += (int)_SlotOffsetX; // write into this unit's slot of the packed volume

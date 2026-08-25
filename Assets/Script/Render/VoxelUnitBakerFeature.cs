@@ -36,6 +36,7 @@ namespace Render
         static readonly int k_GridResId = Shader.PropertyToID("_GridRes");
         static readonly int k_GridWorldSizeId = Shader.PropertyToID("_GridWorldSize");
         static readonly int k_SlotOffsetXId = Shader.PropertyToID("_SlotOffsetX");
+        static readonly int k_GridOriginId = Shader.PropertyToID("_GridOrigin");
         static readonly int k_PackedVolumeId = Shader.PropertyToID("_PackedUnitVolume");
         static readonly int k_UnitGridsId = Shader.PropertyToID("_UnitGrids");
         static readonly int k_UnitScanParamsId = Shader.PropertyToID("_UnitScanParams");
@@ -62,6 +63,8 @@ namespace Render
         class UnitEntry
         {
             public Renderer[] renderers;
+            public Vector3 bakeCenter; // world center of the voxel grid box
+            public bool debugLogged;
         }
 
         BakePass m_Pass;
@@ -162,6 +165,7 @@ namespace Render
                 m_Entries[id] = new UnitEntry
                 {
                     renderers = CollectRenderers(unit),
+                    bakeCenter = unit.transform.position + Vector3.up * (GridWorldSize.y * 0.5f),
                 };
             }
         }
@@ -203,7 +207,6 @@ namespace Render
             System.Array.Clear(m_GridData, 0, m_GridData.Length);
             int maxId = 0;
             Vector3 half = GridWorldSize * 0.5f;
-
             foreach (var kv in m_Entries)
             {
                 int id = kv.Key;
@@ -213,8 +216,16 @@ namespace Render
                 }
                 if (!unit.gameObject.activeInHierarchy) continue;
 
-                Vector3 pos = unit.transform.position;
-                Vector3 origin = pos + new Vector3(-half.x, 0f, -half.z);
+                // Center the grid box on the union of renderer bounds: for skinned
+                // meshes the renderer transform can diverge from the visual mesh,
+                // and bounds are the authoritative skinned location.
+                Vector3 center = ComputeBoundsCenter(kv.Value.renderers, unit.transform.position);
+                kv.Value.bakeCenter = center;
+
+                Vector3 pos = center;
+                // Min corner on ALL axes so the roster box == writer/reader box
+                // ([bakeCenter-half, bakeCenter+half]).
+                Vector3 origin = pos - half;
                 m_GridData[id] = new UnitGpuData
                 {
                     originYaw = new Vector4(origin.x, origin.y, origin.z, 0f),
@@ -229,18 +240,42 @@ namespace Render
             return maxId;
         }
 
+        static Vector3 ComputeBoundsCenter(Renderer[] renderers, Vector3 fallback)
+        {
+            Bounds? acc = null;
+            foreach (var r in renderers)
+            {
+                if (r == null || !r.enabled || !r.gameObject.activeInHierarchy) continue;
+                var b = r.bounds;
+                if (b.extents == Vector3.zero) continue; // never-yet-skinned
+                acc = acc.HasValue ? Union(acc.Value, b) : b;
+            }
+            return acc.HasValue ? acc.Value.center : fallback + Vector3.up * (GridWorldSize.y * 0.5f);
+        }
+
+        static Bounds Union(Bounds a, Bounds b)
+        {
+            a.Encapsulate(b.min);
+            a.Encapsulate(b.max);
+            return a;
+        }
+
         void Bake(CommandBuffer cmd, int objID, UnitEntry entry)
         {
             if (entry.renderers == null || entry.renderers.Length == 0) return;
             if (!UnitObjectIdRegistry.TryGetUnit(objID, out var unit) || unit == null) return;
             if (!unit.gameObject.activeInHierarchy) return;
 
-            // Vertical slice: canonical space == world axis-aligned box above feet.
-            Vector3 center = unit.transform.position + Vector3.up * (GridWorldSize.y * 0.5f);
+            // Vertical slice: canonical space == world axis-aligned box around
+            // the skinned mesh's real location.
+            Vector3 center = entry.bakeCenter;
             Vector3 half = GridWorldSize * 0.5f;
             float pad = GridWorldSize.x / GridResX; // one voxel of margin against clipping
             float px = half.x + pad, py = half.y + pad, pz = half.z + pad;
 
+            // Same min corner the roster reports: writer and reader must agree
+            // on where this unit's box sits in the world.
+            cmd.SetGlobalVector(k_GridOriginId, center - half);
             cmd.SetGlobalFloat(k_SlotOffsetXId, (objID - 1) * GridResX);
             Material mat = m_Material;
 
@@ -258,6 +293,17 @@ namespace Render
             cmd.SetGlobalMatrix(k_CanonicalToClipId,
                 MakeSweep(center, Vector3.right * px, Vector3.up, new Vector2(pz, py), 2f * px));
             DrawAll(cmd, entry, mat);
+
+#if UNITY_EDITOR
+            if (!entry.debugLogged)
+            {
+                entry.debugLogged = true;
+                var r0 = entry.renderers[0];
+                Debug.Log($"[VoxelUnitBaker] id={objID} unit='{unit.name}' root={unit.transform.position:F2} " +
+                          $"bakeCenter={center:F2} renderer='{r0.name}' rendererPos={r0.transform.position:F2} " +
+                          $"boundsCenter={r0.bounds.center:F2} boundsExtents={r0.bounds.extents:F2}");
+            }
+#endif
         }
 
         static void DrawAll(CommandBuffer cmd, UnitEntry entry, Material material)
