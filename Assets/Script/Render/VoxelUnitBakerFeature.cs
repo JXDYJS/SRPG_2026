@@ -82,6 +82,16 @@ namespace Render
             m_Pass = new BakePass(this);
             m_Pass.renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing;
             Instance = this;
+
+            // Create GPU resources and publish their bindings eagerly: consuming
+            // shaders (VoxelRaytrace.hlsl) must never see them unbound, whatever
+            // order features execute in.
+            EnsureMaterial();
+            EnsureResources();
+            m_GridsBuffer.SetData(m_GridData);
+            Shader.SetGlobalTexture(k_PackedVolumeId, m_PackedVolume);
+            Shader.SetGlobalBuffer(k_UnitGridsId, m_GridsBuffer);
+            Shader.SetGlobalVector(k_UnitScanParamsId, Vector4.zero);
         }
 
         void EnsureMaterial()
@@ -287,11 +297,10 @@ namespace Render
 
                 m_Feature.PruneReleased();
                 m_Feature.EnsureEntries();
-                m_Feature.EnsureResources();
 
                 int maxId = m_Feature.UpdateGridData();
 
-                // Publish bindings for consuming shaders (VoxelRaytrace.hlsl).
+                // Re-publish bindings (positions changed; keeps other cameras covered).
                 Shader.SetGlobalTexture(k_PackedVolumeId, m_Feature.m_PackedVolume);
                 Shader.SetGlobalBuffer(k_UnitGridsId, m_Feature.m_GridsBuffer);
                 Shader.SetGlobalVector(k_UnitScanParamsId, new Vector4(maxId, 0f, 0f, 0f));

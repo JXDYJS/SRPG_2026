@@ -15,6 +15,13 @@ namespace Render
 
         private VoxelRaytracePass m_Pass;
 
+        // Fallback roster for when VoxelUnitBakerFeature is absent/disabled:
+        // guarantees the unit-volume bindings declared in VoxelRaytrace.hlsl
+        // are always valid, otherwise the draw is rejected with
+        // "Attempting to draw with missing bindings".
+        private static GraphicsBuffer s_EmptyGrids;
+        private static Texture3D s_EmptyVolume;
+
         public override void Create()
         {
             if (_material == null)
@@ -45,6 +52,42 @@ namespace Render
                 CoreUtils.Destroy(_material);
                 _material = null;
             }
+            s_EmptyGrids?.Release();
+            s_EmptyGrids = null;
+            if (s_EmptyVolume != null) CoreUtils.Destroy(s_EmptyVolume);
+            s_EmptyVolume = null;
+        }
+
+        /// <summary>
+        /// Falls back to an empty roster when no baker published real bindings.
+        /// Scan count stays 0, so units contribute nothing but binds stay valid.
+        /// </summary>
+        private static void EnsureUnitBindings()
+        {
+            var baker = Render.VoxelUnitBakerFeature.Instance;
+            if (baker != null && baker.GridsBuffer != null && baker.PackedVolume != null)
+            {
+                return; // baker owns the bindings this frame
+            }
+
+            if (s_EmptyGrids == null)
+            {
+                s_EmptyGrids = new GraphicsBuffer(GraphicsBuffer.Target.Structured, 1, 48);
+                Shader.SetGlobalVector(Shader.PropertyToID("_UnitScanParams"), Vector4.zero);
+            }
+            if (s_EmptyVolume == null)
+            {
+                s_EmptyVolume = new Texture3D(4, 4, 4, TextureFormat.RGBA32, false)
+                {
+                    name = "VoxelUnitEmptyFallback",
+                    filterMode = FilterMode.Point,
+                };
+                s_EmptyVolume.SetPixels(new Color[64]);
+                s_EmptyVolume.Apply(false, true);
+            }
+            Shader.SetGlobalBuffer(Shader.PropertyToID("_UnitGrids"), s_EmptyGrids);
+            Shader.SetGlobalTexture(Shader.PropertyToID("_PackedUnitVolume"), s_EmptyVolume);
+            Shader.SetGlobalVector(Shader.PropertyToID("_UnitScanParams"), Vector4.zero);
         }
 
         private static Material CreateMaterial()
@@ -75,6 +118,7 @@ namespace Render
                 {
                     return;
                 }
+                EnsureUnitBindings();
 
                 // The face-bake camera renders blocks into the atlas; a
                 // full-screen overwrite there would corrupt every baked face
