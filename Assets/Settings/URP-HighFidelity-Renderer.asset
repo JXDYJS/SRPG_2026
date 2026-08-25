@@ -111,7 +111,8 @@ MonoBehaviour:
   - {fileID: -5600187897153478597}
   - {fileID: -468816753662192350}
   - {fileID: 286769587864370014}
-  m_RendererFeatureMap: adc0de57c6d2eee51e0e96ade2be5eea837ea1deb8f3110fda91f2c07897bb2e2295367da56d7ef9
+  - {fileID: -119711594952331695}
+  m_RendererFeatureMap: adc0de57c6d2eee51e0e96ade2be5eea837ea1deb8f3110fda91f2c07897bb2e2295367da56d7ef9fe56b2f04b5eee51
   m_UseNativeRenderPass: 0
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}
@@ -202,3 +203,18 @@ MonoBehaviour:
     stretchIntensity: 1
     stretchThreshold: 0.5
     edgeFadeOut: 0.1
+
+--- !u!114 &-119711594952331695
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df82e3ac28de3724abae82f95ee0c863, type: 3}
+  m_Name: VoxelUnitBakerFeature
+  m_EditorClassIdentifier: 
+  settings:
+    VoxelWriteShader: {fileID: 0}

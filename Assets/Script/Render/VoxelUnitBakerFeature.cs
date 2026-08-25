@@ -336,11 +336,12 @@ namespace Render
         protected override void Dispose(bool disposing)
         {
             m_Entries.Clear();
-            if (m_PackedVolume != null) Destroy(m_PackedVolume);
-            if (m_BlankTemplate != null) Destroy(m_BlankTemplate);
+            // CoreUtils.Destroy works in both edit and play mode contexts.
+            if (m_PackedVolume != null) CoreUtils.Destroy(m_PackedVolume);
+            if (m_BlankTemplate != null) CoreUtils.Destroy(m_BlankTemplate);
             m_GridsBuffer?.Release();
             m_GridsBuffer = null;
-            if (m_Material != null) Destroy(m_Material);
+            if (m_Material != null) CoreUtils.Destroy(m_Material);
             // Stop shaders from scanning a dead roster.
             Shader.SetGlobalVector(k_UnitScanParamsId, Vector4.zero);
             Instance = null;
