@@ -43,7 +43,7 @@ namespace Render
 
         class VolumeEntry
         {
-            public Texture3D volume;
+            public RenderTexture volume;
             public Renderer[] renderers;
         }
 
@@ -55,7 +55,7 @@ namespace Render
         int m_LastBakeFrame = -1;
 
         /// <summary>Fine voxel volume of a unit (false until first bake).</summary>
-        public bool TryGetVolume(int objID, out Texture3D volume)
+        public bool TryGetVolume(int objID, out RenderTexture volume)
         {
             if (m_Entries.TryGetValue(objID, out var e) && e?.volume != null)
             {
@@ -110,10 +110,15 @@ namespace Render
 
             if ((m_BlankTemplate == null) && m_Entries.Count > 0)
             {
-                m_BlankTemplate = CreateVolume("UnitVoxelVolume_Blank");
-                // Fill with transparent black once; used as the GPU clear source.
-                var zero = new Color[GridResX * GridResY * GridResZ];
-                m_BlankTemplate.SetPixels(zero);
+                // CPU-zeroed source texture used to GPU-clear unit volumes each frame.
+                m_BlankTemplate = new Texture3D(GridResX, GridResY, GridResZ,
+                    TextureFormat.RGBA32, false)
+                {
+                    name = "UnitVoxelVolume_Blank",
+                    filterMode = FilterMode.Point,
+                    wrapMode = TextureWrapMode.Clamp,
+                };
+                m_BlankTemplate.SetPixels(new Color[GridResX * GridResY * GridResZ]);
                 m_BlankTemplate.Apply(false, true);
             }
         }
@@ -129,15 +134,21 @@ namespace Render
             return list.ToArray();
         }
 
-        static Texture3D CreateVolume(string name)
+        // 3D RenderTexture with random write (UAV): the well-supported path for
+        // pixel-shader RWTexture3D output.
+        static RenderTexture CreateVolume(string name)
         {
-            return new Texture3D(GridResX, GridResY, GridResZ,
-                GraphicsFormat.R8G8B8A8_UNorm, TextureCreationFlags.RandomWrite)
+            var rt = new RenderTexture(GridResX, GridResY, 0, RenderTextureFormat.ARGB32)
             {
                 name = name,
+                dimension = TextureDimension.Tex3D,
+                volumeDepth = GridResZ,
+                enableRandomWrite = true,
                 filterMode = FilterMode.Point,
                 wrapMode = TextureWrapMode.Clamp,
             };
+            rt.Create();
+            return rt;
         }
 
         void PruneReleased()
