@@ -168,107 +168,87 @@ VoxelRaytraceRes VoxelRaytraceStatic(float3 ori, float3 dir)
     ori += dir * 0.001;
     dir = normalize(dir);
 
-    // Slab test: the t-interval in which the ray crosses the chunk. A ray
-    // that never intersects it cannot hit any voxel data, so skip the march
-    // entirely (the water fallback below still applies).
+    // Amanatides & Woo setup: tMax = ray distance to the next x/y/z boundary.
+    int3 cell = int3(floor(ori));
+    int3 step = int3(sign(dir));
     float3 safeDir = max(abs(dir), 1e-6);
+    float3 tMax = (step > 0 ? (cell + 1 - ori) : (ori - cell)) / safeDir;
+    float3 delta = 1.0 / safeDir;
+
+    // Slab test: the t-interval in which the ray is inside the chunk. The
+    // origin may lie outside the chunk (camera outside the map), so the
+    // march must not abort on out-of-bounds cells before reaching it.
     float3 invDir = 1.0 / safeDir;
     float3 tMinSide = min(-ori * invDir, (size - ori) * invDir);
     float3 tMaxSide = max(-ori * invDir, (size - ori) * invDir);
     float rayEnter = max(max(tMinSide.x, tMinSide.y), tMinSide.z);
     float rayExit = min(min(tMaxSide.x, tMaxSide.y), tMaxSide.z);
 
-    if (rayEnter <= rayExit && rayExit >= 0.0)
+    // [loop]: dynamic control flow inside; unrolling a full march fails on Vulkan,
+    // and dynamic vector indexing is not addressable there, so each axis is
+    // written out explicitly.
+    [loop]
+    for (int i = 0; i < VOXEL_MAX_STEPS && rayEnter <= rayExit && rayExit >= 0.0; i++)
     {
-        // Origin outside the chunk while the ray still crosses it: clamp the
-        // march start to just inside the entry point, so the step budget is
-        // spent only on in-chunk cells and the entry cell is the first sample.
-        float tEnterLocal = max(rayEnter, 0.0);
-        float tExitLocal = rayExit - tEnterLocal;
-        if (tEnterLocal > 0.0)
+        // Cross the closest boundary into the next cell.
+        float tEnter;
+        float3 n = 0;
+        if (tMax.x <= tMax.y && tMax.x <= tMax.z)
         {
-            ori = ori + dir * (tEnterLocal + 0.001);
-            tExitLocal = max(tExitLocal - 0.001, 0.0);
+            tEnter = tMax.x; cell.x += step.x; tMax.x += delta.x; n.x = -step.x;
+        }
+        else if (tMax.y <= tMax.z)
+        {
+            tEnter = tMax.y; cell.y += step.y; tMax.y += delta.y; n.y = -step.y;
+        }
+        else
+        {
+            tEnter = tMax.z; cell.z += step.z; tMax.z += delta.z; n.z = -step.z;
         }
 
-        // Amanatides & Woo setup: tMax = ray distance to the next x/y/z boundary.
-        int3 cell = int3(floor(ori));
-        int3 step = int3(sign(dir));
-        float3 tMax = (step > 0 ? (cell + 1 - ori) : (ori - cell)) / safeDir;
-        float3 delta = 1.0 / safeDir;
+        // Passed the chunk: nothing left to hit.
+        if (tEnter > rayExit) break;
 
-        // The ray entered the current cell through the face opposing step.
-        float3 n = float3(-step.x, -step.y, -step.z);
+        // Out-of-bounds cells (origin outside the chunk, or just stepped
+        // past an edge): nothing to load, keep marching.
+        if (any(cell < 0) || any(cell >= size)) continue;
 
-        // [loop]: dynamic control flow inside; unrolling a full march fails on Vulkan,
-        // and dynamic vector indexing is not addressable there, so each axis is
-        // written out explicitly.
-        float tStep = 0.0;
-        [loop]
-        for (int i = 0; i < VOXEL_MAX_STEPS && tStep <= tExitLocal; i++)
+        uint b = (uint)round(_VoxelMap.Load(int4(cell, 0)).r * 255.0);
+        uint typeId = b & 0x3F;
+        if (typeId == 0) continue; // air
+
+        float3 hitPos = ori + dir * tEnter;
+
+        if ((b & 0x40) != 0) // half block: solid below cell.y + 0.5 only
         {
-            // Sample the current cell before crossing the next boundary: the
-            // entry cell holds the first possible hit (chunk-face walls).
-            if (!any(cell < 0) && !any(cell >= size))
+            float tExit = min(min(tMax.x, tMax.y), tMax.z);
+            if (dir.y < 0)
             {
-                uint b = (uint)round(_VoxelMap.Load(int4(cell, 0)).r * 255.0);
-                uint typeId = b & 0x3F;
-                if (typeId != 0) // air: nothing here, keep marching
+                // Reaching the slab top from above hits the water surface.
+                float tHalf = (cell.y + 0.5 - ori.y) / dir.y;
+                if (tHalf >= tEnter - VOXEL_EPS && tHalf <= tExit + VOXEL_EPS)
                 {
-                    float3 hitPos = ori + dir * tStep;
-                    bool passedOver = false;
-
-                    if ((b & 0x40) != 0) // half block: solid below cell.y + 0.5 only
-                    {
-                        float tExitCell = min(min(tMax.x, tMax.y), tMax.z);
-                        if (dir.y < 0)
-                        {
-                            // Reaching the slab top from above hits the water surface.
-                            float tHalf = (cell.y + 0.5 - ori.y) / dir.y;
-                            if (tHalf >= tStep - VOXEL_EPS && tHalf <= tExitCell + VOXEL_EPS)
-                            {
-                                //目前打到水面的体素数据完全是硬编码
-                                res.hitPos = ori + dir * tHalf;
-                                res.hitNormal = float3(0, 1, 0);
-                                res.hitColor = VOXEL_WATER_COLOR;
-                                res.alpha = 0.5;
-                                res.typeId = VOXEL_HIT_WATER;
-                                return res;
-                            }
-                        }
-                        if (hitPos.y > cell.y + 0.5 + VOXEL_EPS) passedOver = true; // passed over the side
-                    }
-
-                    if (!passedOver)
-                    {
-                        half4 col = VoxelSampleFace(typeId, n, hitPos);
-                        if (col.a >= 0.5) // cutout texel: keep marching
-                        {
-                            res.hitPos = hitPos;
-                            res.hitNormal = n;
-                            res.hitColor = col.rgb;
-                            res.alpha = 1.0;
-                            res.typeId = typeId;
-                            return res;
-                        }
-                    }
+                    //目前打到水面的体素数据完全是硬编码
+                    res.hitPos = ori + dir * tHalf;
+                    res.hitNormal = float3(0, 1, 0);
+                    res.hitColor = VOXEL_WATER_COLOR;
+                    res.alpha = 0.5;
+                    res.typeId = VOXEL_HIT_WATER;
+                    return res;
                 }
             }
-
-            // Cross the closest boundary into the next cell.
-            if (tMax.x <= tMax.y && tMax.x <= tMax.z)
-            {
-                tStep = tMax.x; cell.x += step.x; tMax.x += delta.x; n.x = -step.x;
-            }
-            else if (tMax.y <= tMax.z)
-            {
-                tStep = tMax.y; cell.y += step.y; tMax.y += delta.y; n.y = -step.y;
-            }
-            else
-            {
-                tStep = tMax.z; cell.z += step.z; tMax.z += delta.z; n.z = -step.z;
-            }
+            if (hitPos.y > cell.y + 0.5 + VOXEL_EPS) continue; // passed over the side
         }
+
+        half4 col = VoxelSampleFace(typeId, n, hitPos);
+        if (col.a < 0.5) continue; // cutout texel: keep marching
+
+        res.hitPos = hitPos;
+        res.hitNormal = n;
+        res.hitColor = col.rgb;
+        res.alpha = 1.0;
+        res.typeId = typeId;
+        return res;
     }
 
     // No opaque hit: fall back to the water plane (ocean beyond the chunk,
