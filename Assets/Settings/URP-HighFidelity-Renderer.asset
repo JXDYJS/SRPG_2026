@@ -166,7 +166,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88ab7227842cc2d4faa9761283efff87, type: 3}
   m_Name: VoxelRaytrace
   m_EditorClassIdentifier: 
-  m_Active: 1
+  m_Active: 0
   _material: {fileID: 0}
 --- !u!114 &1085916960507657859
 MonoBehaviour:
