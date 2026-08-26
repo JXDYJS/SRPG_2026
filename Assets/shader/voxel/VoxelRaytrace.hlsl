@@ -185,6 +185,19 @@ VoxelRaytraceRes VoxelRaytraceStatic(float3 ori, float3 dir)
         // span stays >= 0; the 0.001 offset keeps floor() on the entry side
         // of shared face planes.
         float tStart = max(rayEnter, 0.0);
+
+        // Binding axis of the slab test = face the ray enters through; seed
+        // the origin cell's entry normal from it. Without this, a clamped
+        // start inside a solid block samples with n = 0, which selects the
+        // wrong uv pair and atlas tile (stretched/striped walls).
+        float3 n = 0;
+        if (rayEnter > 0.0)
+        {
+            if (rayEnter == tMinSide.x)      n.x = dir.x >= 0.0 ? -1.0 : 1.0;
+            else if (rayEnter == tMinSide.y) n.y = dir.y >= 0.0 ? -1.0 : 1.0;
+            else                             n.z = dir.z >= 0.0 ? -1.0 : 1.0;
+        }
+
         ori += dir * (tStart + 0.001);
         rayExit -= tStart;
 
@@ -199,12 +212,12 @@ VoxelRaytraceRes VoxelRaytraceStatic(float3 ori, float3 dir)
         // Sample the current cell first, then step. Sampling before stepping
         // is required: after the entry clamp the origin cell is the first
         // in-chunk cell, and stepping first would skip chunk-face walls.
+        // tEnter = -0.001 puts that first hitPos on the entry face plane.
         //
         // [loop]: dynamic control flow inside; unrolling a full march fails on
         // Vulkan, and dynamic vector indexing is not addressable there, so each
         // axis is written out explicitly.
-        float tEnter = 0.0;
-        float3 n = 0;
+        float tEnter = -0.001;
         [loop]
         for (int s = 0; s <= VOXEL_MAX_STEPS; s++)
         {
