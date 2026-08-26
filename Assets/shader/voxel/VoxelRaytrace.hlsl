@@ -89,6 +89,26 @@ half4 VoxelSampleFace(uint typeId, float3 normal, float3 hitPos)
     return (half4)_VoxelFaceTiles.Load(int4(texel, layer, 0));
 }
 
+/// <summary>
+/// Geometric first intersection of the ray with a cell's unit cube —
+/// independent of DDA crossing order, whose tie-breaking aliases stripes on
+/// grazing surfaces. Returns the entered face normal; tEntry out.
+/// </summary>
+float3 CellEntryFace(float3 cellMin, float3 ori, float3 dir, out float tEntry)
+{
+    float3 inv = (1.0 / max(abs(dir), 1e-6)) * (step(0.0, dir) * 2.0 - 1.0);
+    float3 t0 = (cellMin - ori) * inv;
+    float3 t1 = (cellMin + 1.0 - ori) * inv;
+    float3 tn = min(t0, t1);
+    float3 tf = max(t0, t1);
+    tEntry = max(max(tn.x, tn.y), tn.z);
+    float3 n = 0;
+    if (tEntry == tn.x)      n = float3(dir.x >= 0.0 ? -1.0 : 1.0, 0, 0);
+    else if (tEntry == tn.y) n = float3(0, dir.y >= 0.0 ? -1.0 : 1.0, 0);
+    else                     n = float3(0, 0, dir.z >= 0.0 ? -1.0 : 1.0);
+    return n;
+}
+
 // Slab test against an AABB; t values share the global ray parametrization.
 bool UnitRayBox(float3 ori, float3 dir, float3 bmin, float3 bmax,
                 out float tEnter, out float tExit)
@@ -243,7 +263,12 @@ VoxelRaytraceRes VoxelRaytraceStatic(float3 ori, float3 dir)
                 uint typeId = b & 0x3F;
                 if (typeId != 0) // non-air
                 {
-                    float3 hitPos = ori + dir * tEnter;
+                    // Geometric entry of the current cell: the sampled n and
+                    // hitPos come from the true ray-box intersection, not from
+                    // DDA crossing order (whose ties stripe grazing surfaces).
+                    float tFace;
+                    float3 nG = CellEntryFace(float3(cell), ori, dir, tFace);
+                    float3 hitPos = ori + dir * tFace;
 
                     if ((b & 0x40) != 0 && VOXEL_DEBUG_MODE != 4) // half block: solid below cell.y + 0.5 only
                     {
@@ -265,23 +290,23 @@ VoxelRaytraceRes VoxelRaytraceStatic(float3 ori, float3 dir)
                         }
                         if (hitPos.y <= cell.y + 0.5 + VOXEL_EPS || VOXEL_DEBUG_MODE == 4) // not passing over the side
                         {
-                            half4 col = VoxelSampleFace(typeId, n, hitPos);
+                            half4 col = VoxelSampleFace(typeId, nG, hitPos);
                             if (col.a >= 0.5 || VOXEL_DEBUG_MODE == 3 || VOXEL_DEBUG_MODE == 4)
                             {
                                 res.hitPos = hitPos;
-                                res.hitNormal = n;
+                                res.hitNormal = nG;
 #if VOXEL_DEBUG_MODE == 1
-                                res.hitColor = half3(VoxelFaceUv(n, hitPos), 0); // debug: raw uv
+                                res.hitColor = half3(VoxelFaceUv(nG, hitPos), 0); // debug: raw uv
 #elif VOXEL_DEBUG_MODE == 2
-                                res.hitColor = half3(VoxelFaceIndex(n) / 5.0, 0, 0); // debug: hit face
+                                res.hitColor = half3(VoxelFaceIndex(nG) / 5.0, 0, 0); // debug: hit face
 #elif VOXEL_DEBUG_MODE == 3
-                                res.hitColor = half3(VoxelFaceUv(n, hitPos), 0); // debug: uv, opaque
+                                res.hitColor = half3(VoxelFaceUv(nG, hitPos), 0); // debug: uv, opaque
 #elif VOXEL_DEBUG_MODE == 4
-                                res.hitColor = half3(VoxelFaceUv(n, hitPos), 0); // debug: uv, half-block disabled
+                                res.hitColor = half3(VoxelFaceUv(nG, hitPos), 0); // debug: uv, half-block disabled
 #elif VOXEL_DEBUG_MODE == 5
                                 res.hitColor = half3((b & 0x3F) / 63.0, (b & 0x3F) / 63.0, (b & 0x3F) / 63.0);
 #elif VOXEL_DEBUG_MODE == 6
-                                res.hitColor = half3(n * 0.5 + 0.5); // debug: raw normal
+                                res.hitColor = half3(nG * 0.5 + 0.5); // debug: raw normal
 #else
                                 res.hitColor = col.rgb;
 #endif
@@ -293,23 +318,23 @@ VoxelRaytraceRes VoxelRaytraceStatic(float3 ori, float3 dir)
                     }
                     else
                     {
-                        half4 col = VoxelSampleFace(typeId, n, hitPos);
+                        half4 col = VoxelSampleFace(typeId, nG, hitPos);
                         if (col.a >= 0.5 || VOXEL_DEBUG_MODE == 3) // cutout texels keep marching
                         {
                             res.hitPos = hitPos;
-                            res.hitNormal = n;
+                            res.hitNormal = nG;
 #if VOXEL_DEBUG_MODE == 1
-                            res.hitColor = half3(VoxelFaceUv(n, hitPos), 0); // debug: raw uv
+                            res.hitColor = half3(VoxelFaceUv(nG, hitPos), 0); // debug: raw uv
 #elif VOXEL_DEBUG_MODE == 2
-                            res.hitColor = half3(VoxelFaceIndex(n) / 5.0, 0, 0); // debug: hit face
+                            res.hitColor = half3(VoxelFaceIndex(nG) / 5.0, 0, 0); // debug: hit face
 #elif VOXEL_DEBUG_MODE == 3
-                            res.hitColor = half3(VoxelFaceUv(n, hitPos), 0); // debug: uv, opaque
+                            res.hitColor = half3(VoxelFaceUv(nG, hitPos), 0); // debug: uv, opaque
 #elif VOXEL_DEBUG_MODE == 4
-                            res.hitColor = half3(VoxelFaceUv(n, hitPos), 0); // debug: uv, half-block disabled
+                            res.hitColor = half3(VoxelFaceUv(nG, hitPos), 0); // debug: uv, half-block disabled
 #elif VOXEL_DEBUG_MODE == 5
                             res.hitColor = half3((b & 0x3F) / 63.0, (b & 0x3F) / 63.0, (b & 0x3F) / 63.0);
 #elif VOXEL_DEBUG_MODE == 6
-                            res.hitColor = half3(n * 0.5 + 0.5); // debug: raw normal
+                            res.hitColor = half3(nG * 0.5 + 0.5); // debug: raw normal
 #else
                             res.hitColor = col.rgb;
 #endif
