@@ -14,7 +14,7 @@ Shader "Hidden/VoxelRaytrace"
         Pass
         {
             HLSLPROGRAM
-            #pragma vertex vert
+            #pragma vertex Vert
             #pragma fragment frag
             #pragma target 5.0
 
@@ -22,30 +22,17 @@ Shader "Hidden/VoxelRaytrace"
             #include "Packages/com.unity.render-pipelines.core/Runtime/Utilities/Blit.hlsl"
             #include "Assets/shader/voxel/VoxelRaytrace.hlsl"
 
-            struct RaytraceAttributes
+            half4 frag(Varyings i) : SV_Target
             {
-                uint vertexID : SV_VertexID;
-            };
-
-            struct RaytraceVaryings
-            {
-                float4 positionCS : SV_POSITION;
-            };
-
-            RaytraceVaryings vert(RaytraceAttributes input)
-            {
-                RaytraceVaryings o;
-                o.positionCS = GetFullScreenTriangleVertexPosition(input.vertexID);
-                return o;
-            }
-
-            half4 frag(RaytraceVaryings i) : SV_Target
-            {
-                // Screen pixel -> NDC (SV_POSITION.y is top-down on D3D,
-                // bottom-up on GL, both yield +Y = up), then view-space ray
-                // from the projection terms; camera-relative safe because
-                // only rotation of the inverse view matrix is used.
+                // Screen pixel -> NDC. SV_POSITION.y is top-down on D3D and
+                // bottom-up on GL; UNITY_UV_STARTS_AT_TOP flips D3D back so
+                // +Y = up on both platforms. Then view-space ray from the
+                // projection terms; camera-relative safe because only the
+                // rotation of the inverse view matrix is used.
                 float2 ndc = (i.positionCS.xy / _ScreenParams.xy) * 2.0 - 1.0;
+                #if UNITY_UV_STARTS_AT_TOP
+                    ndc.y = -ndc.y;
+                #endif
                 float3 viewDir = normalize(float3(
                     ndc.x / UNITY_MATRIX_P._m00,
                     ndc.y / UNITY_MATRIX_P._m11,
