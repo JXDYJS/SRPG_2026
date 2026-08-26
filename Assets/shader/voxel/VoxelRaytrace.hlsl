@@ -42,6 +42,9 @@ static const float VOXEL_EPS = 1e-4;
 #define VOXEL_HIT_WATER 64
 #define VOXEL_HIT_UNIT 100
 
+// Debug: output the face-local sampling uv as color instead of the albedo tile.
+#define VOXEL_DEBUG_UV 1
+
 struct VoxelRaytraceRes{
     float3 hitPos;
     float3 hitNormal;
@@ -61,13 +64,19 @@ int VoxelFaceIndex(float3 n)
     return 5;
 }
 
-/// <summary>Point-samples the 16x16 tile of the hit face at the hit position.</summary>
-half4 VoxelSampleFace(uint typeId, float3 normal, float3 hitPos)
+/// <summary>Face-local uv [0,1) of a hit point, from the face's two tangent axes.</summary>
+float2 VoxelFaceUv(float3 normal, float3 hitPos)
 {
     float2 uv = abs(normal.x) > 0.5 ? hitPos.zy
               : abs(normal.z) > 0.5 ? hitPos.xy
               : hitPos.xz;
-    uv -= floor(uv); // face-local [0,1)
+    return uv - floor(uv);
+}
+
+/// <summary>Point-samples the 16x16 tile of the hit face at the hit position.</summary>
+half4 VoxelSampleFace(uint typeId, float3 normal, float3 hitPos)
+{
+    float2 uv = VoxelFaceUv(normal, hitPos);
     int2 texel = min(int2(uv * VOXEL_FACE_RES), VOXEL_FACE_RES - 1);
     int layer = (typeId - 1) * 6 + VoxelFaceIndex(normal);
     return (half4)_VoxelFaceTiles.Load(int4(texel, layer, 0));
@@ -254,7 +263,11 @@ VoxelRaytraceRes VoxelRaytraceStatic(float3 ori, float3 dir)
                             {
                                 res.hitPos = hitPos;
                                 res.hitNormal = n;
+#if VOXEL_DEBUG_UV
+                                res.hitColor = half3(VoxelFaceUv(n, hitPos), 0); // debug: raw uv
+#else
                                 res.hitColor = col.rgb;
+#endif
                                 res.alpha = 1.0;
                                 res.typeId = typeId;
                                 return res;
@@ -268,7 +281,11 @@ VoxelRaytraceRes VoxelRaytraceStatic(float3 ori, float3 dir)
                         {
                             res.hitPos = hitPos;
                             res.hitNormal = n;
+#if VOXEL_DEBUG_UV
+                            res.hitColor = half3(VoxelFaceUv(n, hitPos), 0); // debug: raw uv
+#else
                             res.hitColor = col.rgb;
+#endif
                             res.alpha = 1.0;
                             res.typeId = typeId;
                             return res;
