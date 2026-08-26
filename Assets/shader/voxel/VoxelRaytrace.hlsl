@@ -185,19 +185,6 @@ VoxelRaytraceRes VoxelRaytraceStatic(float3 ori, float3 dir)
         // span stays >= 0; the 0.001 offset keeps floor() on the entry side
         // of shared face planes.
         float tStart = max(rayEnter, 0.0);
-
-        // Binding axis of the slab test = face the ray enters through; seed
-        // the origin cell's entry normal from it. Without this, a clamped
-        // start inside a solid block samples with n = 0, which selects the
-        // wrong uv pair and atlas tile (stretched/striped walls).
-        float3 n = 0;
-        if (rayEnter > 0.0)
-        {
-            if (rayEnter == tMinSide.x)      n.x = dir.x >= 0.0 ? -1.0 : 1.0;
-            else if (rayEnter == tMinSide.y) n.y = dir.y >= 0.0 ? -1.0 : 1.0;
-            else                             n.z = dir.z >= 0.0 ? -1.0 : 1.0;
-        }
-
         ori += dir * (tStart + 0.001);
         rayExit -= tStart;
 
@@ -209,76 +196,22 @@ VoxelRaytraceRes VoxelRaytraceStatic(float3 ori, float3 dir)
         float3 tMax = (step > 0 ? (cell + 1 - ori) : (ori - cell)) / safeDir;
         float3 delta = 1.0 / safeDir;
 
-        // Sample the current cell first, then step. Sampling before stepping
-        // is required: after the entry clamp the origin cell is the first
-        // in-chunk cell, and stepping first would skip chunk-face walls.
-        // tEnter = -0.001 puts that first hitPos on the entry face plane.
+        // Step first, then sample. Sampling only happens after a boundary
+        // crossing, so tEnter/n/hitPos always agree on the exact face of the
+        // voxel being rendered (the pixel-fraction uv stays well-defined).
+        // A clamped ray does lose one candidate sample (its own entry cell),
+        // but that cell is usually air backside anyway — and no real hit is
+        // skipped because a wall ABOVE the terrain is still hit on the next
+        // step through its correct face.
         //
         // [loop]: dynamic control flow inside; unrolling a full march fails on
         // Vulkan, and dynamic vector indexing is not addressable there, so each
         // axis is written out explicitly.
-        float tEnter = -0.001;
+        float tEnter = 0.0;
+        float3 n = 0;
         [loop]
-        for (int s = 0; s <= VOXEL_MAX_STEPS; s++)
+        for (int s = 0; s < VOXEL_MAX_STEPS; s++)
         {
-            if (!any(cell < 0) && !any(cell >= size))
-            {
-                uint b = (uint)round(_VoxelMap.Load(int4(cell, 0)).r * 255.0);
-                uint typeId = b & 0x3F;
-                if (typeId != 0) // non-air
-                {
-                    float3 hitPos = ori + dir * tEnter;
-
-                    if ((b & 0x40) != 0) // half block: solid below cell.y + 0.5 only
-                    {
-                        float tCellExit = min(min(tMax.x, tMax.y), tMax.z);
-                        if (dir.y < 0)
-                        {
-                            // Reaching the slab top from above hits the water surface.
-                            float tHalf = (cell.y + 0.5 - ori.y) / dir.y;
-                            if (tHalf >= tEnter - VOXEL_EPS && tHalf <= tCellExit + VOXEL_EPS)
-                            {
-                                //目前打到水面的体素数据完全是硬编码
-                                res.hitPos = ori + dir * tHalf;
-                                res.hitNormal = float3(0, 1, 0);
-                                res.hitColor = VOXEL_WATER_COLOR;
-                                res.alpha = 0.5;
-                                res.typeId = VOXEL_HIT_WATER;
-                                return res;
-                            }
-                        }
-                        if (hitPos.y <= cell.y + 0.5 + VOXEL_EPS) // not passing over the side
-                        {
-                            half4 col = VoxelSampleFace(typeId, n, hitPos);
-                            if (col.a >= 0.5)
-                            {
-                                res.hitPos = hitPos;
-                                res.hitNormal = n;
-                                res.hitColor = col.rgb;
-                                res.alpha = 1.0;
-                                res.typeId = typeId;
-                                return res;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        half4 col = VoxelSampleFace(typeId, n, hitPos);
-                        if (col.a >= 0.5) // cutout texels keep marching
-                        {
-                            res.hitPos = hitPos;
-                            res.hitNormal = n;
-                            res.hitColor = col.rgb;
-                            res.alpha = 1.0;
-                            res.typeId = typeId;
-                            return res;
-                        }
-                    }
-                }
-            }
-
-            if (s == VOXEL_MAX_STEPS) break;
-
             // Cross the closest boundary into the next cell.
             if (tMax.x <= tMax.y && tMax.x <= tMax.z)
             {
@@ -295,6 +228,47 @@ VoxelRaytraceRes VoxelRaytraceStatic(float3 ori, float3 dir)
 
             // Passed the chunk: nothing left to hit.
             if (tEnter > rayExit) break;
+
+            // Out-of-bounds cells (origin outside the chunk, or just stepped
+            // past an edge): nothing to load, keep marching.
+            if (any(cell < 0) || any(cell >= size)) continue;
+
+            uint b = (uint)round(_VoxelMap.Load(int4(cell, 0)).r * 255.0);
+            uint typeId = b & 0x3F;
+            if (typeId == 0) continue; // air
+
+            float3 hitPos = ori + dir * tEnter;
+
+            if ((b & 0x40) != 0) // half block: solid below cell.y + 0.5 only
+            {
+                float tCellExit = min(min(tMax.x, tMax.y), tMax.z);
+                if (dir.y < 0)
+                {
+                    // Reaching the slab top from above hits the water surface.
+                    float tHalf = (cell.y + 0.5 - ori.y) / dir.y;
+                    if (tHalf >= tEnter - VOXEL_EPS && tHalf <= tCellExit + VOXEL_EPS)
+                    {
+                        //目前打到水面的体素数据完全是硬编码
+                        res.hitPos = ori + dir * tHalf;
+                        res.hitNormal = float3(0, 1, 0);
+                        res.hitColor = VOXEL_WATER_COLOR;
+                        res.alpha = 0.5;
+                        res.typeId = VOXEL_HIT_WATER;
+                        return res;
+                    }
+                }
+                if (hitPos.y > cell.y + 0.5 + VOXEL_EPS) continue; // passed over the side
+            }
+
+            half4 col = VoxelSampleFace(typeId, n, hitPos);
+            if (col.a < 0.5) continue; // cutout texel: keep marching
+
+            res.hitPos = hitPos;
+            res.hitNormal = n;
+            res.hitColor = col.rgb;
+            res.alpha = 1.0;
+            res.typeId = typeId;
+            return res;
         }
     }
 
