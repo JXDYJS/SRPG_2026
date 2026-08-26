@@ -47,6 +47,9 @@ static const float VOXEL_EPS = 1e-4;
 //   1 = face-local uv as RG gradient
 //   2 = hit face index as red (0..5 -> 0..1): checks normal selection
 //   3 = uv RG, alpha cutoff disabled: texel pass-through test
+//   4 = half-block logic disabled (all voxels full solid), uv RG
+//   5 = raw map byte / 255 grayscale: data sanity
+//   6 = raw hit normal mapped to 0..1 (fixed independent of camera)
 #define VOXEL_DEBUG_MODE 1
 
 struct VoxelRaytraceRes{
@@ -260,10 +263,10 @@ VoxelRaytraceRes VoxelRaytraceStatic(float3 ori, float3 dir)
                                 return res;
                             }
                         }
-                        if (hitPos.y <= cell.y + 0.5 + VOXEL_EPS) // not passing over the side
+                        if (hitPos.y <= cell.y + 0.5 + VOXEL_EPS || VOXEL_DEBUG_MODE == 4) // not passing over the side
                         {
                             half4 col = VoxelSampleFace(typeId, n, hitPos);
-                            if (col.a >= 0.5 || VOXEL_DEBUG_MODE == 3)
+                            if (col.a >= 0.5 || VOXEL_DEBUG_MODE == 3 || VOXEL_DEBUG_MODE == 4)
                             {
                                 res.hitPos = hitPos;
                                 res.hitNormal = n;
@@ -273,6 +276,12 @@ VoxelRaytraceRes VoxelRaytraceStatic(float3 ori, float3 dir)
                                 res.hitColor = half3(VoxelFaceIndex(n) / 5.0, 0, 0); // debug: hit face
 #elif VOXEL_DEBUG_MODE == 3
                                 res.hitColor = half3(VoxelFaceUv(n, hitPos), 0); // debug: uv, opaque
+#elif VOXEL_DEBUG_MODE == 4
+                                res.hitColor = half3(VoxelFaceUv(n, hitPos), 0); // debug: uv, half-block disabled
+#elif VOXEL_DEBUG_MODE == 5
+                                res.hitColor = half3((b & 0x3F) / 63.0, (b & 0x3F) / 63.0, (b & 0x3F) / 63.0);
+#elif VOXEL_DEBUG_MODE == 6
+                                res.hitColor = half3(n * 0.5 + 0.5); // debug: raw normal
 #else
                                 res.hitColor = col.rgb;
 #endif
@@ -295,6 +304,12 @@ VoxelRaytraceRes VoxelRaytraceStatic(float3 ori, float3 dir)
                             res.hitColor = half3(VoxelFaceIndex(n) / 5.0, 0, 0); // debug: hit face
 #elif VOXEL_DEBUG_MODE == 3
                             res.hitColor = half3(VoxelFaceUv(n, hitPos), 0); // debug: uv, opaque
+#elif VOXEL_DEBUG_MODE == 4
+                            res.hitColor = half3(VoxelFaceUv(n, hitPos), 0); // debug: uv, half-block disabled
+#elif VOXEL_DEBUG_MODE == 5
+                            res.hitColor = half3((b & 0x3F) / 63.0, (b & 0x3F) / 63.0, (b & 0x3F) / 63.0);
+#elif VOXEL_DEBUG_MODE == 6
+                            res.hitColor = half3(n * 0.5 + 0.5); // debug: raw normal
 #else
                             res.hitColor = col.rgb;
 #endif
