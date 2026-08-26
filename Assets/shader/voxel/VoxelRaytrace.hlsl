@@ -47,10 +47,10 @@ static const float VOXEL_EPS = 1e-4;
 //   1 = face-local uv as RG gradient
 //   2 = hit face index as red (0..5 -> 0..1): checks normal selection
 //   3 = uv RG, alpha cutoff disabled: texel pass-through test
-//   4 = half-block logic disabled (all voxels full solid), uv RG
+//   4 = half-block logic disabled entirely (incl. water check), uv RG
 //   5 = raw map byte / 255 grayscale: data sanity
 //   6 = raw hit normal mapped to 0..1 (fixed independent of camera)
-#define VOXEL_DEBUG_MODE 1
+#define VOXEL_DEBUG_MODE 6
 
 struct VoxelRaytraceRes{
     float3 hitPos;
@@ -245,7 +245,7 @@ VoxelRaytraceRes VoxelRaytraceStatic(float3 ori, float3 dir)
                 {
                     float3 hitPos = ori + dir * tEnter;
 
-                    if ((b & 0x40) != 0) // half block: solid below cell.y + 0.5 only
+                    if ((b & 0x40) != 0 && VOXEL_DEBUG_MODE != 4) // half block: solid below cell.y + 0.5 only
                     {
                         float tCellExit = min(min(tMax.x, tMax.y), tMax.z);
                         if (dir.y < 0)
@@ -257,7 +257,7 @@ VoxelRaytraceRes VoxelRaytraceStatic(float3 ori, float3 dir)
                                 //目前打到水面的体素数据完全是硬编码
                                 res.hitPos = ori + dir * tHalf;
                                 res.hitNormal = float3(0, 1, 0);
-                                res.hitColor = VOXEL_WATER_COLOR;
+                                res.hitColor = VOXEL_DEBUG_MODE == 0 ? VOXEL_WATER_COLOR : half3(0, 1, 0.5);
                                 res.alpha = 0.5;
                                 res.typeId = VOXEL_HIT_WATER;
                                 return res;
@@ -351,7 +351,7 @@ VoxelRaytraceRes VoxelRaytraceStatic(float3 ori, float3 dir)
         {
             res.hitPos = ori + dir * tWater;
             res.hitNormal = dir.y > 0 ? float3(0, -1, 0) : float3(0, 1, 0);
-            res.hitColor = VOXEL_WATER_COLOR;
+            res.hitColor = VOXEL_DEBUG_MODE == 0 ? VOXEL_WATER_COLOR : half3(0, 1, 0.5);
             res.alpha = 0.5;
             res.typeId = VOXEL_HIT_WATER;
             return res;
