@@ -156,9 +156,12 @@ VoxelRaytraceRes TraceUnitVolumes(float3 ori, float3 dir)
         float3 safeDir = max(abs(dir), 1e-6);
         int3 cell = clamp(int3(floor(lp / voxelSize)), int3(0, 0, 0), UNIT_GRID_RES - 1);
 
-        // Axes parallel to the ray never cross a boundary: keep them inert,
-        // otherwise a stale negative tNext gets "crossed" in place.
-        float3 tNext = (stp > 0 ? (cell + 1) * voxelSize : cell * voxelSize - lp) / safeDir;
+        // Axes parallel to the ray never cross a boundary: keep them inert.
+        // Both directions must be NON-NEGATIVE (same as the static march:
+        // stp<0 uses lp - cell*voxel, not cell*voxel - lp), otherwise the
+        // negative tNext is repeatedly picked by the min() comparison and
+        // the cell sequence zigzags off the true ray path.
+        float3 tNext = (stp > 0 ? ((cell + 1) * voxelSize - lp) : (lp - cell * voxelSize)) / safeDir;
         float3 tDelta = voxelSize / safeDir;
         tNext = stp == 0 ? float3(1e30, 1e30, 1e30) : tNext;
         float tSpan = (tBoxExit - tBoxEnter) + VOXEL_EPS;
