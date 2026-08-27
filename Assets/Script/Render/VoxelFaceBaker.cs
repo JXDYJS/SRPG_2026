@@ -215,6 +215,11 @@ namespace Render
             inst.hideFlags = HideFlags.HideAndDontSave;
 
             CenterAtOrigin(inst);
+            // Meshes that do not fill their cell footprint (the slab FBX is
+            // only 0.5 deep) would bake a content band narrower than the cell;
+            // shaders sample with frac of the cell position and rays would cut
+            // out through the missing half. Scale to the logical cell size.
+            NormalizeToCell(inst, cfg);
             SetLayerRecursive(inst, BakeLayer);
             ReplaceWithUnlit(inst);
 
@@ -272,6 +277,41 @@ namespace Render
             // Block bottom-center to world origin, sizes anchored by convention.
             inst.transform.position -= b.center - new Vector3(0f, 0.5f * b.size.y, 0f);
             inst.transform.rotation = Quaternion.identity;
+        }
+
+        /// <summary>World-space bounds of the instance's combined renderers.</summary>
+        private static Bounds GetRenderBounds(GameObject inst)
+        {
+            Renderer[] renderers = inst.GetComponentsInChildren<Renderer>(true);
+            Bounds b = renderers.Length > 0 ? renderers[0].bounds : new Bounds();
+            for (int i = 1; i < renderers.Length; i++)
+            {
+                if (renderers[i] != null)
+                {
+                    b.Encapsulate(renderers[i].bounds);
+                }
+            }
+            return b;
+        }
+
+        /// <summary>
+        /// Stretches the instance so its renderer bounds match the block's
+        /// x/z cell footprint (cfg cell sizes). The bake frames the voxel cell
+        /// [0,1]^3 and shaders sample with frac of the cell position, so a
+        /// mesh that does not fill the footprint (e.g. a 0.5-deep slab) must
+        /// be stretched before capture, or rays cut out through the missing
+        /// half. Y is left untouched: block height is baked into the textures
+        /// (alpha masks), not the mesh. Runs after CenterAtOrigin, which
+        /// zeroed the rotation, so root axes == world axes and the
+        /// non-uniform scale cannot shear.
+        /// </summary>
+        private static void NormalizeToCell(GameObject inst, TableData.BlockConfig cfg)
+        {
+            Vector3 size = GetRenderBounds(inst).size;
+            Vector3 s = inst.transform.localScale;
+            if (size.x > 1e-4f) { s.x *= cfg.xCellSize / size.x; }
+            if (size.z > 1e-4f) { s.z *= cfg.zCellSize / size.z; }
+            inst.transform.localScale = s;
         }
 
         private static void SetLayerRecursive(GameObject go, int layer)
