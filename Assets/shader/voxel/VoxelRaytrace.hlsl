@@ -50,7 +50,7 @@ static const float VOXEL_EPS = 1e-4;
 //   4 = half-block logic disabled entirely (incl. water check), uv RG
 //   5 = raw map byte / 255 grayscale: data sanity
 //   6 = raw hit normal mapped to 0..1 (fixed independent of camera)
-#define VOXEL_DEBUG_MODE 5
+#define VOXEL_DEBUG_MODE 0
 
 struct VoxelRaytraceRes{
     float3 hitPos;
@@ -151,15 +151,47 @@ VoxelRaytraceRes TraceUnitVolumes(float3 ori, float3 dir)
         int3 stp = int3(sign(dir));
         float3 safeDir = max(abs(dir), 1e-6);
         int3 cell = clamp(int3(floor(lp / voxelSize)), int3(0, 0, 0), UNIT_GRID_RES - 1);
-        float3 tNext = ((stp > 0 ? cell + 1 : cell) * voxelSize - lp) / safeDir;
+
+        // Axes parallel to the ray never cross a boundary: keep them inert,
+        // otherwise a stale negative tNext gets "crossed" in place.
+        float3 tNext = (stp > 0 ? (cell + 1) * voxelSize : cell * voxelSize - lp) / safeDir;
         float3 tDelta = voxelSize / safeDir;
+        tNext = stp == 0 ? float3(1e30, 1e30, 1e30) : tNext;
         float tSpan = (tBoxExit - tBoxEnter) + VOXEL_EPS;
+
+        // Sample the current cell before stepping (same order as the static
+        // march): the entry cell must be sampled, else 1-voxel-thick shells
+        // vanish on grazing rays and the silhouette shifts with distance.
+        // The entry cell's normal comes from the geometric cell entry face.
+        float tStep = 0.0;
+        float tEntry;
+        float3 n = CellEntryFace(float3(cell) * voxelSize, lp, dir, tEntry);
 
         [loop]
         for (int s = 0; s < 96; s++)
         {
-            float tStep;
-            float3 n = 0;
+            if (!any(cell < 0) && !any(cell >= UNIT_GRID_RES))
+            {
+                float4 v = _PackedUnitVolume.Load(int4((int)g.sizeSlot.w + cell.x, cell.y, cell.z, 0));
+                if (v.a >= 0.5) // occupied voxel
+                {
+                    float tGlobal = tBoxEnter + tStep;
+                    if (tGlobal < bestT)
+                    {
+                        best.hitPos = ori + dir * tGlobal;
+                        best.hitNormal = n;
+                        best.hitColor = v.rgb;
+                        best.alpha = 1.0;
+                        best.typeId = VOXEL_HIT_UNIT;
+                        bestT = tGlobal;
+                    }
+                    break; // nearest surface of this unit found
+                }
+            }
+
+            if (s == 95) break;
+
+            // Cross the closest boundary into the next cell.
             if (tNext.x <= tNext.y && tNext.x <= tNext.z)
             {
                 tStep = tNext.x; cell.x += stp.x; tNext.x += tDelta.x; n.x = -stp.x;
@@ -174,21 +206,6 @@ VoxelRaytraceRes TraceUnitVolumes(float3 ori, float3 dir)
             }
 
             if (tStep > tSpan) break; // left this unit's box
-            if (any(cell < 0) || any(cell >= UNIT_GRID_RES)) continue;
-
-            float4 v = _PackedUnitVolume.Load(int4((int)g.sizeSlot.w + cell.x, cell.y, cell.z, 0));
-            if (v.a < 0.5) continue; // empty voxel: keep marching
-
-            float tGlobal = tBoxEnter + tStep;
-            if (tGlobal >= bestT) break; // cannot beat current best
-
-            best.hitPos = ori + dir * tGlobal;
-            best.hitNormal = n;
-            best.hitColor = v.rgb;
-            best.alpha = 1.0;
-            best.typeId = VOXEL_HIT_UNIT;
-            bestT = tGlobal;
-            break; // nearest surface of this unit found
         }
     }
     return best;
