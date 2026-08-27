@@ -6,7 +6,7 @@
 //   _VoxelMap       Texture3D R8, Load returns byte/255 in .r
 //   _VoxelFaceTiles Texture2DArray ARGB32, layer = (typeId-1)*6 + face
 //   _VoxelMapSize   (width, height, depth, 0)
-//   _WaterSurfaceHeight (slab tops / water plane height)
+//   _WaterSurfaceHeight (water plane height, fallback for chunk misses)
 // 8-bit data lives in the texture format (R8), not in a shader type:
 // HLSL has no uint8 scalar; Load/Sample return a 32-bit value.
 
@@ -50,7 +50,7 @@ static const float VOXEL_EPS = 1e-4;
 //   4 = half-block logic disabled entirely (incl. water check), uv RG
 //   5 = raw map byte / 255 grayscale: data sanity
 //   6 = raw hit normal mapped to 0..1 (fixed independent of camera)
-#define VOXEL_DEBUG_MODE 6
+#define VOXEL_DEBUG_MODE 5
 
 struct VoxelRaytraceRes{
     float3 hitPos;
@@ -272,20 +272,19 @@ VoxelRaytraceRes VoxelRaytraceStatic(float3 ori, float3 dir)
 
                     if ((b & 0x40) != 0 && VOXEL_DEBUG_MODE != 4) // half block: solid below cell.y + 0.5 only
                     {
+                        // The slab top (y = cell.y + 0.5) splits the cell, so
+                        // the cell entry face cannot represent it. A descending
+                        // ray crossing that plane hits the slab's +Y face while
+                        // still inside the cell, before the DDA leaves it;
+                        // override the entry face with the slab top.
                         float tCellExit = min(min(tMax.x, tMax.y), tMax.z);
                         if (dir.y < 0)
                         {
-                            // Reaching the slab top from above hits the water surface.
                             float tHalf = (cell.y + 0.5 - ori.y) / dir.y;
                             if (tHalf >= tEnter - VOXEL_EPS && tHalf <= tCellExit + VOXEL_EPS)
                             {
-                                //目前打到水面的体素数据完全是硬编码
-                                res.hitPos = ori + dir * tHalf;
-                                res.hitNormal = float3(0, 1, 0);
-                                res.hitColor = VOXEL_DEBUG_MODE == 0 ? VOXEL_WATER_COLOR : half3(0, 1, 0.5);
-                                res.alpha = 0.5;
-                                res.typeId = VOXEL_HIT_WATER;
-                                return res;
+                                nG = float3(0, 1, 0);
+                                hitPos = ori + dir * tHalf;
                             }
                         }
                         if (hitPos.y <= cell.y + 0.5 + VOXEL_EPS || VOXEL_DEBUG_MODE == 4) // not passing over the side

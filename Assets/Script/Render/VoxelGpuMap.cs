@@ -26,8 +26,9 @@ namespace Render
     /// would only add ALU per sample for zero gain.
     ///
     /// Water is NOT stored in voxels. It is a query-time fallback: rays that
-    /// leave the chunk bounds or reach the slab top (0.5 height, _WaterLevel)
-    /// hit water, expressed as a shader uniform instead of data.
+    /// leave the chunk bounds (or pass through an empty column) hit the water
+    /// plane at _WaterSurfaceHeight, expressed as a shader uniform instead of
+    /// data. Slab tops are solid block faces, not a water surface.
     /// </summary>
     public static class VoxelGpuMap
     {
@@ -283,8 +284,8 @@ namespace Render
         /// <summary>
         /// Pack CPU block values (0=air,1=solid,2=slab) into this format while
         /// stamping the half-block flag for the map's 0.5-height blocks, so a
-        /// shader can stop at the slab top (= water level 0.5) without knowing
-        /// the block's YCellSize table.
+        /// shader can stop at the slab top (solid +Y face) without knowing the
+        /// block's YCellSize table.
         /// </summary>
         public static byte PackCpuValue(byte cpuVal)
         {
