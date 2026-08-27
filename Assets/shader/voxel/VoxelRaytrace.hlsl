@@ -50,7 +50,11 @@ static const float VOXEL_EPS = 1e-4;
 //   4 = half-block logic disabled entirely (incl. water check), uv RG
 //   5 = raw map byte / 255 grayscale: data sanity
 //   6 = raw hit normal mapped to 0..1 (fixed independent of camera)
-#define VOXEL_DEBUG_MODE 0
+//   7 = unit volumes: ignore occupancy, every cell path counts as solid
+//   8 = unit volumes: empty cells on the march path render cyan (path
+//       keeps marching); cyan = data hole on the path, gray = ray never
+//       reached that cell -> DDA/box-intersection problem instead
+#define VOXEL_DEBUG_MODE 8
 
 struct VoxelRaytraceRes{
     float3 hitPos;
@@ -158,6 +162,9 @@ VoxelRaytraceRes TraceUnitVolumes(float3 ori, float3 dir)
         float3 tDelta = voxelSize / safeDir;
         tNext = stp == 0 ? float3(1e30, 1e30, 1e30) : tNext;
         float tSpan = (tBoxExit - tBoxEnter) + VOXEL_EPS;
+#if VOXEL_DEBUG_MODE == 8
+        float firstEmptyT = 1e30;
+#endif
 
         // Sample the current cell before stepping (same order as the static
         // march): the entry cell must be sampled, else 1-voxel-thick shells
@@ -173,19 +180,34 @@ VoxelRaytraceRes TraceUnitVolumes(float3 ori, float3 dir)
             if (!any(cell < 0) && !any(cell >= UNIT_GRID_RES))
             {
                 float4 v = _PackedUnitVolume.Load(int4((int)g.sizeSlot.w + cell.x, cell.y, cell.z, 0));
-                if (v.a >= 0.5) // occupied voxel
+#if VOXEL_DEBUG_MODE == 8
+                if (v.a < 0.5)
                 {
                     float tGlobal = tBoxEnter + tStep;
-                    if (tGlobal < bestT)
+                    firstEmptyT = min(firstEmptyT, tGlobal);
+                }
+                else
+#endif
+                {
+#if VOXEL_DEBUG_MODE == 7
+                    bool occupied = true; // ignore occupancy: DDA path test
+#else
+                    bool occupied = v.a >= 0.5;
+#endif
+                    if (occupied)
                     {
-                        best.hitPos = ori + dir * tGlobal;
-                        best.hitNormal = n;
-                        best.hitColor = v.rgb;
-                        best.alpha = 1.0;
-                        best.typeId = VOXEL_HIT_UNIT;
-                        bestT = tGlobal;
+                        float tGlobal = tBoxEnter + tStep;
+                        if (tGlobal < bestT)
+                        {
+                            best.hitPos = ori + dir * tGlobal;
+                            best.hitNormal = n;
+                            best.hitColor = v.rgb;
+                            best.alpha = 1.0;
+                            best.typeId = VOXEL_HIT_UNIT;
+                            bestT = tGlobal;
+                        }
+                        break; // nearest surface of this unit found
                     }
-                    break; // nearest surface of this unit found
                 }
             }
 
@@ -207,6 +229,21 @@ VoxelRaytraceRes TraceUnitVolumes(float3 ori, float3 dir)
 
             if (tStep > tSpan) break; // left this unit's box
         }
+
+#if VOXEL_DEBUG_MODE == 8
+        // No solid hit in this box: report the first empty cell on the path
+        // as cyan so data holes become visible (static gray = ray never got
+        // here, i.e. box intersect or march exited early).
+        if (firstEmptyT < bestT && firstEmptyT < 1e30)
+        {
+            best.hitPos = ori + dir * firstEmptyT;
+            best.hitNormal = n;
+            best.hitColor = half3(0.1, 0.7, 1.0);
+            best.alpha = 1.0;
+            best.typeId = VOXEL_HIT_UNIT;
+            bestT = firstEmptyT;
+        }
+#endif
     }
     return best;
 }
