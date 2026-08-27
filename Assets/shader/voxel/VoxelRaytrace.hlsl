@@ -164,6 +164,7 @@ VoxelRaytraceRes TraceUnitVolumes(float3 ori, float3 dir)
         float tSpan = (tBoxExit - tBoxEnter) + VOXEL_EPS;
 #if VOXEL_DEBUG_MODE == 8
         float firstEmptyT = 1e30;
+        int3 firstEmptyCell = int3(0, 0, 0);
 #endif
 
         // Sample the current cell before stepping (same order as the static
@@ -184,7 +185,11 @@ VoxelRaytraceRes TraceUnitVolumes(float3 ori, float3 dir)
                 if (v.a < 0.5)
                 {
                     float tGlobal = tBoxEnter + tStep;
-                    firstEmptyT = min(firstEmptyT, tGlobal);
+                    if (tGlobal < firstEmptyT)
+                    {
+                        firstEmptyT = tGlobal;
+                        firstEmptyCell = cell; // color encodes path cell
+                    }
                 }
                 else
 #endif
@@ -231,14 +236,16 @@ VoxelRaytraceRes TraceUnitVolumes(float3 ori, float3 dir)
         }
 
 #if VOXEL_DEBUG_MODE == 8
-        // No solid hit in this box: report the first empty cell on the path
-        // as cyan so data holes become visible (static gray = ray never got
-        // here, i.e. box intersect or march exited early).
+        // No solid hit in this box: paint the first empty cell on the march
+        // path with RGB = (x/16, y/48, z/16) of that cell, so ray-path cells
+        // can be compared against the known solid data positions (white).
         if (firstEmptyT < bestT && firstEmptyT < 1e30)
         {
             best.hitPos = ori + dir * firstEmptyT;
             best.hitNormal = n;
-            best.hitColor = half3(0.1, 0.7, 1.0);
+            best.hitColor = half3((firstEmptyCell.x + 0.5) / UNIT_GRID_RES.x,
+                                  (firstEmptyCell.y + 0.5) / UNIT_GRID_RES.y,
+                                  (firstEmptyCell.z + 0.5) / UNIT_GRID_RES.z);
             best.alpha = 1.0;
             best.typeId = VOXEL_HIT_UNIT;
             bestT = firstEmptyT;
