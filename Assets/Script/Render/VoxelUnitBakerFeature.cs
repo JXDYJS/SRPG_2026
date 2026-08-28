@@ -40,6 +40,9 @@ namespace Render
         static readonly int k_PackedVolumeId = Shader.PropertyToID("_PackedUnitVolume");
         static readonly int k_UnitGridsId = Shader.PropertyToID("_UnitGrids");
         static readonly int k_UnitScanParamsId = Shader.PropertyToID("_UnitScanParams");
+        static readonly int k_BaseMapId = Shader.PropertyToID("_BaseMap");
+        static readonly int k_BaseColorId = Shader.PropertyToID("_BaseColor");
+        static readonly int k_BaseMapStId = Shader.PropertyToID("_BaseMap_ST");
 
         /// <summary>
         /// GPU roster entry, 48 bytes (3x float4) to stay alignment-safe.
@@ -69,6 +72,7 @@ namespace Render
 
         BakePass m_Pass;
         Material m_Material;
+        readonly MaterialPropertyBlock m_DrawBlock = new MaterialPropertyBlock();
         bool m_MaterialMissingLogged;
         Texture3D m_BlankTemplate;
         RenderTexture m_PackedVolume;
@@ -308,12 +312,36 @@ namespace Render
 #endif
         }
 
-        static void DrawAll(CommandBuffer cmd, UnitEntry entry, Material material)
+        void DrawAll(CommandBuffer cmd, UnitEntry entry, Material material)
         {
             foreach (var r in entry.renderers)
             {
                 if (r == null || !r.enabled) continue;
-                cmd.DrawRenderer(r, material);
+
+                // cmd.DrawRenderer ignores the renderer's own MPB, so the
+                // writer's albedo props are fed from the shared material here.
+                // Fallbacks mirror URP Lit (_BaseMap/_BaseColor) and built-in
+                // Lit (_MainTex/_Color); texture-less materials stay white.
+                m_DrawBlock.Clear();
+                var sm = r.sharedMaterial;
+                if (sm != null)
+                {
+                    Texture2D tex = sm.HasProperty("_BaseMap") ? sm.GetTexture("_BaseMap") as Texture2D
+                                  : sm.HasProperty("_MainTex") ? sm.GetTexture("_MainTex") as Texture2D
+                                  : null;
+                    m_DrawBlock.SetTexture(k_BaseMapId, tex != null ? tex : Texture2D.whiteTexture);
+
+                    Color col = sm.HasProperty("_BaseColor") ? sm.GetColor("_BaseColor")
+                              : sm.HasProperty("_Color") ? sm.GetColor("_Color")
+                              : Color.white;
+                    m_DrawBlock.SetColor(k_BaseColorId, col);
+
+                    Vector4 st = sm.HasProperty("_BaseMap_ST") ? sm.GetVector("_BaseMap_ST")
+                              : sm.HasProperty("_MainTex_ST") ? sm.GetVector("_MainTex_ST")
+                              : new Vector4(1f, 1f, 0f, 0f);
+                    m_DrawBlock.SetVector(k_BaseMapStId, st);
+                }
+                cmd.DrawRenderer(r, material, 0, m_DrawBlock);
             }
         }
 
