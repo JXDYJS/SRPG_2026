@@ -1,5 +1,7 @@
-// Voxel ray marching (Amanatides & Woo DDA) through the static map volume.
-// World units == voxel units: voxel (x,y,z) occupies cube [x,x+1)x[y,y+1)x[z,z+1).
+// Static map DDA (Amanatides & Woo) through the map volume. Block GameObjects
+// use a feet-centered pivot, so voxel (x,y,z) occupies world
+// [-0.5, x+0.5]x[y, y+1)x[-0.5, z+0.5); the march happens in shifted space
+// (world + 0.5 x/z) where cells are unit cubes [x,x+1)x[y,y+1)x[z,z+1).
 // Byte layout per voxel (see VoxelGpuMap.cs):
 //   bits 0..5 blockTypeId (0 = air, 1..63), bit 6 halfBlock, bit 7 reserved.
 // Globals bound by ShaderManager:
@@ -54,7 +56,7 @@ static const float VOXEL_EPS = 1e-4;
 //   8 = unit volumes: empty cells on the march path render cyan (path
 //       keeps marching); cyan = data hole on the path, gray = ray never
 //       reached that cell -> DDA/box-intersection problem instead
-#define VOXEL_DEBUG_MODE 8
+#define VOXEL_DEBUG_MODE 0
 
 struct VoxelRaytraceRes{
     float3 hitPos;
@@ -260,6 +262,14 @@ VoxelRaytraceRes TraceUnitVolumes(float3 ori, float3 dir)
 
 VoxelRaytraceRes VoxelRaytraceStatic(float3 ori, float3 dir)
 {
+    // Block GameObjects use a feet-centered pivot (Pivot is at the feet,
+    // see MapManager.GetWorldPosition), so block (x,y,z) occupies world
+    // [-0.5, x+0.5] xz while the DDA works voxel-major ([x, x+1)). March in
+    // shifted space (world + 0.5 in x/z) and convert hit positions back.
+    const float3 MAP_SHIFT = float3(0.5, 0.0, 0.5);
+    float3 oriW = ori;
+    ori += MAP_SHIFT;
+
     //目前只有对静态地图的体素处理
     VoxelRaytraceRes res = (VoxelRaytraceRes)0;
     float3 size = _VoxelMapSize.xyz;
@@ -356,7 +366,7 @@ VoxelRaytraceRes VoxelRaytraceStatic(float3 ori, float3 dir)
                             half4 col = VoxelSampleFace(typeId, nG, hitPos);
                             if (col.a >= 0.5 || VOXEL_DEBUG_MODE == 3 || VOXEL_DEBUG_MODE == 4)
                             {
-                                res.hitPos = hitPos;
+                                res.hitPos = hitPos - MAP_SHIFT;
                                 res.hitNormal = nG;
 #if VOXEL_DEBUG_MODE == 1
                                 res.hitColor = half3(VoxelFaceUv(nG, hitPos), 0); // debug: raw uv
@@ -384,7 +394,7 @@ VoxelRaytraceRes VoxelRaytraceStatic(float3 ori, float3 dir)
                         half4 col = VoxelSampleFace(typeId, nG, hitPos);
                         if (col.a >= 0.5 || VOXEL_DEBUG_MODE == 3) // cutout texels keep marching
                         {
-                            res.hitPos = hitPos;
+                            res.hitPos = hitPos - MAP_SHIFT;
                             res.hitNormal = nG;
 #if VOXEL_DEBUG_MODE == 1
                             res.hitColor = half3(VoxelFaceUv(nG, hitPos), 0); // debug: raw uv
@@ -437,7 +447,7 @@ VoxelRaytraceRes VoxelRaytraceStatic(float3 ori, float3 dir)
         float tWater = (_WaterSurfaceHeight - ori.y) / dir.y;
         if (tWater > 0)
         {
-            res.hitPos = ori + dir * tWater;
+            res.hitPos = oriW + dir * tWater;
             res.hitNormal = dir.y > 0 ? float3(0, -1, 0) : float3(0, 1, 0);
             res.hitColor = VOXEL_DEBUG_MODE == 0 ? VOXEL_WATER_COLOR : half3(0, 1, 0.5);
             res.alpha = 0.5;
