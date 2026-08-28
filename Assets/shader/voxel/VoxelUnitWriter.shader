@@ -14,12 +14,13 @@ Shader "Custom/VoxelUnitWrite"
             #pragma fragment Frag
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 
-            // Per-renderer albedo supplied by VoxelUnitBakerFeature via
-            // MaterialPropertyBlock; falls back to white for color-only units.
-            Texture2D _BaseMap;
-            SamplerState sampler_BaseMap;
-            float4 _BaseColor;
-            float4 _BaseMap_ST;
+            // Per-renderer albedo supplied by VoxelUnitBakerFeature via CB-local
+            // SetGlobal* (set before each DrawRenderer); falls back to white
+            // for color-only units.
+            Texture2D _UnitAlbedoMap;
+            SamplerState sampler_UnitAlbedoMap;
+            float4 _UnitAlbedoColor;
+            float4 _UnitAlbedoMap_ST;
 
             RWTexture3D<float4> _Volume : register(u1);
 
@@ -59,8 +60,8 @@ Shader "Custom/VoxelUnitWrite"
                                      0, _GridRes - 1);
                 c.x += (int)_SlotOffsetX; // write into this unit's slot of the packed volume
 
-                float2 uv = TRANSFORM_TEX(i.uv, _BaseMap);
-                half4 albedo = _BaseMap.Sample(sampler_BaseMap, uv) * _BaseColor;
+                float2 uv = TRANSFORM_TEX(i.uv, _UnitAlbedoMap);
+                half4 albedo = _UnitAlbedoMap.Sample(sampler_UnitAlbedoMap, uv) * _UnitAlbedoColor;
                 _Volume[c] = float4(albedo.rgb, 1.0);
             }
             ENDHLSL
