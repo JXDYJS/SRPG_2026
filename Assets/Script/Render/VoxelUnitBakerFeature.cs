@@ -241,16 +241,18 @@ namespace Render
                 }
                 if (!unit.gameObject.activeInHierarchy) continue;
 
-                // Center the grid box on the union of renderer bounds: for skinned
-                // meshes the renderer transform can diverge from the visual mesh,
-                // and bounds are the authoritative skinned location.
-                Vector3 center = ComputeBoundsCenter(kv.Value.renderers, unit.transform.position);
-                kv.Value.bakeCenter = center;
+                // Anchor the box on the unit's logical position instead of the
+                // union of renderer bounds: asymmetric parts (weapon, tail, VFX)
+                // and pose-shifted skinned bounds move the box off the unit,
+                // pushing the voxel silhouette toward the box edge. The logical
+                // anchor (feet on the tile center) keeps the voxel under the
+                // character; Y ranges [unitPos.y, +GridWorldSize.y].
+                Vector3 pos = unit.transform.position;
+                Vector3 origin = pos - half + Vector3.up * (GridWorldSize.y * 0.5f);
+                kv.Value.bakeCenter = origin + half;
 
-                Vector3 pos = center;
                 // Min corner on ALL axes so the roster box == writer/reader box
                 // ([bakeCenter-half, bakeCenter+half]).
-                Vector3 origin = pos - half;
                 m_GridData[id] = new UnitGpuData
                 {
                     originYaw = new Vector4(origin.x, origin.y, origin.z, 0f),
@@ -265,26 +267,6 @@ namespace Render
             return maxId;
         }
 
-        static Vector3 ComputeBoundsCenter(Renderer[] renderers, Vector3 fallback)
-        {
-            Bounds? acc = null;
-            foreach (var r in renderers)
-            {
-                if (r == null || !r.enabled || !r.gameObject.activeInHierarchy) continue;
-                var b = r.bounds;
-                if (b.extents == Vector3.zero) continue; // never-yet-skinned
-                acc = acc.HasValue ? Union(acc.Value, b) : b;
-            }
-            return acc.HasValue ? acc.Value.center : fallback + Vector3.up * (GridWorldSize.y * 0.5f);
-        }
-
-        static Bounds Union(Bounds a, Bounds b)
-        {
-            a.Encapsulate(b.min);
-            a.Encapsulate(b.max);
-            return a;
-        }
-
         void Bake(CommandBuffer cmd, int objID, UnitEntry entry)
         {
             if (entry.renderers == null || entry.renderers.Length == 0) return;
@@ -292,7 +274,7 @@ namespace Render
             if (!unit.gameObject.activeInHierarchy) return;
 
             // Vertical slice: canonical space == world axis-aligned box around
-            // the skinned mesh's real location.
+            // the unit's logical position (anchored feet-on-tile, see UpdateGridData).
             Vector3 center = entry.bakeCenter;
             Vector3 half = GridWorldSize * 0.5f;
             float pad = GridWorldSize.x / GridResX; // one voxel of margin against clipping
