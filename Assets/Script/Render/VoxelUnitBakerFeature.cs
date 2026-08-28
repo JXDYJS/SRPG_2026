@@ -80,7 +80,6 @@ namespace Render
         ComputeShader m_ResolveCS;
         int m_ResolveKernel = -1;
         int m_ZeroKernel = -1;
-        int m_CloseKernel = -1;
         bool m_AccumNeedsZero = true;
         GraphicsBuffer m_GridsBuffer;
         readonly UnitGpuData[] m_GridData = new UnitGpuData[MaxSlots];
@@ -89,7 +88,6 @@ namespace Render
 
         public RenderTexture PackedVolume => m_PackedVolume;
         public GraphicsBuffer GridsBuffer => m_GridsBuffer;
-        public GraphicsBuffer AccumBuffer => m_AccumBuffer;
 
         public override void Create()
         {
@@ -134,7 +132,6 @@ namespace Render
                 {
                     m_ResolveKernel = m_ResolveCS.FindKernel("CSResolve");
                     m_ZeroKernel = m_ResolveCS.FindKernel("CSZero");
-                    m_CloseKernel = m_ResolveCS.FindKernel("CSClose");
                 }
                 else
                 {
@@ -430,19 +427,11 @@ namespace Render
                     {
                         cmd.SetComputeBufferParam(m_Feature.m_ResolveCS, m_Feature.m_ResolveKernel,
                             "_VolumeAccum", m_Feature.m_AccumBuffer);
-                        // Explicit RenderTargetIdentifier: the same texture is globally
-                        // SRV-bound for the raytracer (VoxelRaytrace.hlsl), so the
-                        // RT-overload must not bind a texture (SRV) view by accident.
                         cmd.SetComputeTextureParam(m_Feature.m_ResolveCS, m_Feature.m_ResolveKernel,
-                            "_PackedUnitVolume", new RenderTargetIdentifier(m_Feature.m_PackedVolume));
+                            "_PackedUnitVolume", m_Feature.m_PackedVolume);
                         cmd.SetComputeVectorParam(m_Feature.m_ResolveCS,
                             "_VolumePackedSize", new Vector4(PackedWidth, GridResY, GridResZ, 0f));
                         cmd.DispatchCompute(m_Feature.m_ResolveCS, m_Feature.m_ResolveKernel,
-                            PackedWidth / 8, GridResY / 8, GridResZ / 4);
-                        // Second pass: close 1-voxel holes left by point
-                        // voxelization on oblique surfaces (belly/limbs), so
-                        // grazing rays stop tunneling to the water fallback.
-                        cmd.DispatchCompute(m_Feature.m_ResolveCS, m_Feature.m_CloseKernel,
                             PackedWidth / 8, GridResY / 8, GridResZ / 4);
                     }
                 }
