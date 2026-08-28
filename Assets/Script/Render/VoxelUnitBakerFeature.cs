@@ -43,6 +43,7 @@ namespace Render
         static readonly int k_UnitAlbedoMapId = Shader.PropertyToID("_UnitAlbedoMap");
         static readonly int k_UnitAlbedoColorId = Shader.PropertyToID("_UnitAlbedoColor");
         static readonly int k_UnitAlbedoMapStId = Shader.PropertyToID("_UnitAlbedoMap_ST");
+        static readonly int k_VolumePackedSizeId = Shader.PropertyToID("_VolumePackedSize");
 
         /// <summary>
         /// GPU roster entry, 48 bytes (3x float4) to stay alignment-safe.
@@ -73,8 +74,13 @@ namespace Render
         BakePass m_Pass;
         Material m_Material;
         bool m_MaterialMissingLogged;
-        Texture3D m_BlankTemplate;
+        bool m_ResolveMissingLogged;
         RenderTexture m_PackedVolume;
+        GraphicsBuffer m_AccumBuffer;
+        ComputeShader m_ResolveCS;
+        int m_ResolveKernel = -1;
+        int m_ZeroKernel = -1;
+        bool m_AccumNeedsZero = true;
         GraphicsBuffer m_GridsBuffer;
         readonly UnitGpuData[] m_GridData = new UnitGpuData[MaxSlots];
         readonly Dictionary<int, UnitEntry> m_Entries = new Dictionary<int, UnitEntry>();
@@ -102,21 +108,39 @@ namespace Render
 
         void EnsureMaterial()
         {
-            if (m_Material != null) return;
-
-            var shader = settings.VoxelWriteShader != null
-                ? settings.VoxelWriteShader
-                : Shader.Find("Custom/VoxelUnitWrite");
-            if (shader == null)
+            if (m_Material == null)
             {
-                if (!m_MaterialMissingLogged)
+                var shader = settings.VoxelWriteShader != null
+                    ? settings.VoxelWriteShader
+                    : Shader.Find("Custom/VoxelUnitWrite");
+                if (shader == null)
                 {
-                    Debug.LogWarning("[VoxelUnitBaker] shader 'Custom/VoxelUnitWrite' not found; unit voxel baking disabled.");
-                    m_MaterialMissingLogged = true;
+                    if (!m_MaterialMissingLogged)
+                    {
+                        Debug.LogWarning("[VoxelUnitBaker] shader 'Custom/VoxelUnitWrite' not found; unit voxel baking disabled.");
+                        m_MaterialMissingLogged = true;
+                    }
+                    return;
                 }
-                return;
+                m_Material = new Material(shader) { name = "VoxelUnitWriteRuntime" };
             }
-            m_Material = new Material(shader) { name = "VoxelUnitWriteRuntime" };
+
+            if (m_ResolveCS == null && !m_ResolveMissingLogged)
+            {
+                m_ResolveCS = Resources.Load<ComputeShader>("VoxelUnitResolve");
+                if (m_ResolveCS != null)
+                {
+                    m_ResolveKernel = m_ResolveCS.FindKernel("CSResolve");
+                    m_ZeroKernel = m_ResolveCS.FindKernel("CSZero");
+                }
+                else
+                {
+                    // Resolve is required for fresh voxels each frame; without
+                    // it the volume keeps stale data but the pass still runs.
+                    m_ResolveMissingLogged = true;
+                    Debug.LogWarning("[VoxelUnitBaker] compute 'Resources/VoxelUnitResolve' not found; unit voxel resolve disabled.");
+                }
+            }
         }
 
         void EnsureResources()
@@ -135,18 +159,16 @@ namespace Render
                 m_PackedVolume.Create();
             }
 
-            if (m_BlankTemplate == null)
+            if (m_AccumBuffer == null)
             {
-                // CPU-zeroed source texture used to GPU-clear the packed volume.
-                m_BlankTemplate = new Texture3D(PackedWidth, GridResY, GridResZ,
-                    TextureFormat.RGBA32, false)
+                // Atomic accumulation target for the baker pixel shader:
+                // uint4 per voxel, RGB = sum(albedo*255), A = fragment count.
+                // Count >= PackedWidth*GridResY*GridResZ = PackedWidth*768.
+                m_AccumBuffer = new GraphicsBuffer(GraphicsBuffer.Target.Structured,
+                    PackedWidth * GridResY * GridResZ, 16)
                 {
-                    name = "UnitVoxelVolume_Blank",
-                    filterMode = FilterMode.Point,
-                    wrapMode = TextureWrapMode.Clamp,
+                    name = "UnitVoxelAccum",
                 };
-                m_BlankTemplate.SetPixels(new Color[PackedWidth * GridResY * GridResZ]);
-                m_BlankTemplate.Apply(false, true);
             }
 
             if (m_GridsBuffer == null)
@@ -394,16 +416,42 @@ namespace Render
                     // Constant grid parameters for the voxel write shader.
                     cmd.SetGlobalVector(k_GridResId, new Vector3(GridResX, GridResY, GridResZ));
                     cmd.SetGlobalVector(k_GridWorldSizeId, GridWorldSize);
+                    cmd.SetGlobalVector(k_VolumePackedSizeId,
+                        new Vector4(PackedWidth, GridResY, GridResZ, 0f));
 
-                    // Clear last frame's voxels, then rebind the UAV once for all units.
-                    cmd.CopyTexture(m_Feature.m_BlankTemplate, m_Feature.m_PackedVolume);
-                    cmd.SetRandomWriteTarget(1, m_Feature.m_PackedVolume);
+                    // Zero the accumulation buffer once (first frame after creation).
+                    if (m_Feature.m_AccumNeedsZero && m_Feature.m_ResolveCS != null)
+                    {
+                        cmd.SetComputeBufferParam(m_Feature.m_ResolveCS, m_Feature.m_ZeroKernel,
+                            "_VolumeAccum", m_Feature.m_AccumBuffer);
+                        cmd.SetComputeVectorParam(m_Feature.m_ResolveCS,
+                            "_VolumePackedSize", new Vector4(PackedWidth, GridResY, GridResZ, 0f));
+                        cmd.DispatchCompute(m_Feature.m_ResolveCS, m_Feature.m_ZeroKernel,
+                            PackedWidth / 8, GridResY / 8, GridResZ / 4);
+                        m_Feature.m_AccumNeedsZero = false;
+                    }
 
+                    // Bakes accumulate colors atomically (no overwrite races).
+                    cmd.SetRandomWriteTarget(1, m_Feature.m_AccumBuffer);
                     foreach (var kv in m_Feature.m_Entries)
                     {
                         m_Feature.Bake(cmd, kv.Key, kv.Value);
                     }
                     cmd.ClearRandomWriteTargets();
+
+                    // Resolve accum -> packed volume (and reset accum for next frame).
+                    // Also clears voxels that had no write this frame.
+                    if (m_Feature.m_ResolveCS != null)
+                    {
+                        cmd.SetComputeBufferParam(m_Feature.m_ResolveCS, m_Feature.m_ResolveKernel,
+                            "_VolumeAccum", m_Feature.m_AccumBuffer);
+                        cmd.SetComputeTextureParam(m_Feature.m_ResolveCS, m_Feature.m_ResolveKernel,
+                            "_PackedUnitVolume", m_Feature.m_PackedVolume);
+                        cmd.SetComputeVectorParam(m_Feature.m_ResolveCS,
+                            "_VolumePackedSize", new Vector4(PackedWidth, GridResY, GridResZ, 0f));
+                        cmd.DispatchCompute(m_Feature.m_ResolveCS, m_Feature.m_ResolveKernel,
+                            PackedWidth / 8, GridResY / 8, GridResZ / 4);
+                    }
                 }
                 context.ExecuteCommandBuffer(cmd);
                 CommandBufferPool.Release(cmd);
@@ -421,7 +469,8 @@ namespace Render
             m_Entries.Clear();
             // CoreUtils.Destroy works in both edit and play mode contexts.
             if (m_PackedVolume != null) CoreUtils.Destroy(m_PackedVolume);
-            if (m_BlankTemplate != null) CoreUtils.Destroy(m_BlankTemplate);
+            m_AccumBuffer?.Release();
+            m_AccumBuffer = null;
             m_GridsBuffer?.Release();
             m_GridsBuffer = null;
             if (m_Material != null) CoreUtils.Destroy(m_Material);

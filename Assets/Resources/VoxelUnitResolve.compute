@@ -1,0 +1,56 @@
+// Resolves the unit voxel accumulation buffer into the packed RGBA volume
+// that VoxelRaytrace.hlsl samples, and resets the accumulation buffer for
+// the next frame. One thread per voxel; also keeps the resolved volume
+// cleared for cells with no surface writes this frame.
+//
+// Bindings (VoxelUnitBakerFeature):
+//   _VolumeAccum       RWStructuredBuffer<uint4> RGB=sum(albedo*255) A=count
+//   _PackedUnitVolume  RWTexture3D<float4> resolved RGBA (occupancy in .a)
+//   _VolumePackedSize  (packedWidth, gridY, gridZ, 0)
+
+#pragma kernel CSResolve
+#pragma kernel CSZero
+
+RWStructuredBuffer<uint4> _VolumeAccum;
+RWTexture3D<float4> _PackedUnitVolume;
+float4 _VolumePackedSize;
+
+uint LinearIndex(uint3 c)
+{
+    return (c.z * (uint)_VolumePackedSize.y + c.y) * (uint)_VolumePackedSize.x + c.x;
+}
+
+bool InBounds(uint3 c)
+{
+    return (c.x < (uint)_VolumePackedSize.x) &&
+           (c.y < (uint)_VolumePackedSize.y) &&
+           (c.z < (uint)_VolumePackedSize.z);
+}
+
+[numthreads(8, 8, 4)]
+void CSResolve(uint3 id : SV_DispatchThreadID)
+{
+    if (!InBounds(id)) return;
+
+    uint idx = LinearIndex(id);
+    uint4 acc = _VolumeAccum[idx];
+
+    if (acc.w > 0u)
+    {
+        float3 avg = float3(acc.rgb) / float(acc.w) / 255.0;
+        _PackedUnitVolume[int3(id)] = float4(avg, 1.0);
+    }
+    else
+    {
+        _PackedUnitVolume[int3(id)] = float4(0, 0, 0, 0);
+    }
+
+    _VolumeAccum[idx] = uint4(0u, 0u, 0u, 0u);
+}
+
+[numthreads(8, 8, 4)]
+void CSZero(uint3 id : SV_DispatchThreadID)
+{
+    if (!InBounds(id)) return;
+    _VolumeAccum[LinearIndex(id)] = uint4(0u, 0u, 0u, 0u);
+}
