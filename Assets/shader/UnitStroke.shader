@@ -36,20 +36,24 @@ Shader "Custom/UnitStroke"
             TEXTURE2D(_GBuffer);
             SAMPLER(sampler_GBuffer);
 
+            #include "Assets/shader/GBufferIds.hlsl"
+
             struct GBufferData
             {
                 int objID;
-                bool isUnit;
-                int type;
+                bool isUnit;    // G != 0: 该像素属于某单位(可见或透视)
+                bool isVisible; // R == G: 单位直接可见, 未被遮挡
             };
 
             void readData(half4 data, out GBufferData bufferData)
             {
                 // R8 UNorm 经 half 往返有精度损失，必须 round 不能 floor（如 32/255*255 可能得 31.999）
-                int x = (int)round(data.x * 255.0);
-                bufferData.type = x & 0xF;            // 低4bit: 0=sky 1=block 2=unit 3=water
-                bufferData.isUnit = (x >> 4) == 2;    // 高4bit: 2=unit 占用
-                bufferData.objID = (int)round(data.y * 255.0);
+                int visibleId = (int)round(data.x * 255.0); // 可见面 id: 0=sky 1..250=单位 253=墙 254=水
+                int unitId = (int)round(data.y * 255.0);    // 最近单位 id (0=无单位)
+
+                bufferData.objID = unitId;
+                bufferData.isUnit = unitId != GBUFFER_ID_SKY;
+                bufferData.isVisible = unitId != GBUFFER_ID_SKY && visibleId == unitId;
             }
 
             bool isStroke(float2 uv, out GBufferData bufferData)

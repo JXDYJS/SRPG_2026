@@ -5,13 +5,13 @@ using GamePlay.Units;
 namespace Render
 {
     /// <summary>
-    /// Single source of truth for unit object ids (1..255, 0 reserved for non-units).
-    /// The same id drives outline colors (GBuffer G channel) and voxel slot
-    /// addressing; ids are recycled after Release.
+    /// Single source of truth for unit object ids (1..GbufferIdScheme.UnitMax, 0 reserved for non-units).
+    /// The same id drives outline colors (GBuffer G channel), visible-face id (R channel)
+    /// and voxel slot addressing; ids are recycled after Release.
     /// </summary>
     public static class UnitObjectIdRegistry
     {
-        public const int MaxId = 255;
+        public const int MaxId = GbufferIdScheme.UnitMax;
 
         static readonly Dictionary<int, MapUnit> s_UnitsById = new Dictionary<int, MapUnit>();
         static readonly Stack<int> s_FreeIds = new Stack<int>();
