@@ -56,6 +56,103 @@ namespace Render.EditorTools
             EditorApplication.update += OnEditorFrame;
         }
 
+        /// <summary>
+        /// GPU-side probe: dispatches the IRCProbe kernel in the bake compute
+        /// (same cbuffer bindings as IRCBake), reads back the world->shadow
+        /// matrix rows and the fixed-point shadow visibility, and diffs them
+        /// across the frame trace. Any nonzero delta = shadow state is
+        /// frame-variant, the EMA non-convergence condition.
+        /// </summary>
+        [MenuItem("Voxel/Probe Shadow Matrix (Play Mode)")]
+        public static void ProbeShadowMatrix()
+        {
+            if (!Application.isPlaying)
+            {
+                Debug.LogWarning("[IRCLog] enter Play Mode first.");
+                return;
+            }
+            var feature = IrradianceCacheFeature.Instance;
+            if (feature == null || feature.BakeCS == null)
+            {
+                Debug.LogError("[IRCLog] IrradianceCacheFeature not ready. Abort.");
+                return;
+            }
+
+            s_probeValues.Clear();
+            s_frame = 0;
+            s_allFramesLogged = false;
+            Debug.Log("[IRCLog] shadow-matrix probe started (IPCProbe kernel)");
+            EditorApplication.update += OnProbeFrame;
+        }
+
+        static readonly List<float[]> s_probeValues = new List<float[]>();
+        static int s_probeKernel = -1;
+        static GraphicsBuffer s_probeBuf;
+
+        static void OnProbeFrame()
+        {
+            if (!Application.isPlaying || s_allFramesLogged)
+            {
+                EditorApplication.update -= OnProbeFrame;
+                return;
+            }
+            if (s_frame == 0)
+            {
+                s_frame++;
+                return;
+            }
+
+            var feature = IrradianceCacheFeature.Instance;
+            if (feature == null || feature.BakeCS == null)
+            {
+                EditorApplication.update -= OnProbeFrame;
+                return;
+            }
+            if (s_probeKernel < 0) s_probeKernel = feature.BakeCS.FindKernel("IRCProbe");
+            if (s_probeBuf == null) s_probeBuf = new GraphicsBuffer(GraphicsBuffer.Target.Structured, 3, 16);
+
+            var cb = new CommandBuffer();
+            try
+            {
+                cb.SetComputeBufferParam(feature.BakeCS, s_probeKernel, "_IRCProbeOut", s_probeBuf);
+                cb.DispatchCompute(feature.BakeCS, s_probeKernel, 1, 1, 1);
+                Graphics.ExecuteCommandBuffer(cb);
+            }
+            finally
+            {
+                cb.Release();
+            }
+
+            var data = new float[12];
+            s_probeBuf.GetData(data);
+            s_probeValues.Add(data);
+            Debug.Log($"[IRCLog] probe f={s_frame:00} " +
+                      $"m00={data[0]:F5} m01={data[1]:F5} m02={data[2]:F5} m03={data[3]:F5} | " +
+                      $"m10={data[4]:F5} m11={data[5]:F5} m12={data[6]:F5} m13={data[7]:F5} | " +
+                      $"vis={data[8]:F5} sc=({data[9]:F5},{data[10]:F5},{data[11]:F5})");
+
+            if (++s_frame >= FrameCount)
+            {
+                s_allFramesLogged = true;
+                if (s_probeValues.Count > 1)
+                {
+                    float[] first = s_probeValues[0];
+                    float maxDelta = 0f;
+                    for (int i = 1; i < s_probeValues.Count; i++)
+                    {
+                        for (int j = 0; j < 12; j++)
+                        {
+                            maxDelta = Mathf.Max(maxDelta, Mathf.Abs(s_probeValues[i][j] - first[j]));
+                        }
+                    }
+                    Debug.Log(maxDelta < 1e-5f
+                        ? "[IRCLog] SHADOW MATRIX: frame-stable across all logged frames (max delta " + maxDelta + ")"
+                        : "[IRCLog] SHADOW MATRIX VARIES across logged frames (max delta " + maxDelta + ") -> shadow state frame-variant");
+                }
+                EditorApplication.update -= OnProbeFrame;
+            }
+        }
+
         static Light FindMainLight()
         {
             foreach (var l in Object.FindObjectsOfType<Light>())
