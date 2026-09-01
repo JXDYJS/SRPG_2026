@@ -38,6 +38,7 @@ namespace Render
         static readonly int k_FudgeId = Shader.PropertyToID("_IrcFudge");
         static readonly int k_SelfBounceId = Shader.PropertyToID("_IrcSelfBounce");
         static readonly int k_RoundId = Shader.PropertyToID("_IrcRound");
+        static readonly int k_SppId = Shader.PropertyToID("_IrcSpp");
         static readonly int k_WaterScatterId = Shader.PropertyToID("_WaterScatter");
         static readonly int k_WaterAbsorbId = Shader.PropertyToID("_WaterAbsorb");
         static readonly int k_WaterPhaseGId = Shader.PropertyToID("_WaterPhaseG");
@@ -64,6 +65,9 @@ namespace Render
             [Range(0f, 1f)] public float PerFrameBlend = 0.99f;
             public float SphereFudge = 1.6f;
             [Range(0f, 0.1f)] public float SelfBounce = 0.01f;
+            /// <summary>Rays per texel per iteration; higher smooths MC noise
+            /// (variance / spp) at quadratic cost.</summary>
+            [Range(1, 8)] public int Spp = 1;
             public float DebugExposure = 1.0f;
             public float WaterHackDepth = 2.0f;
             public Vector4 SkyZenith = new Vector4(0.85f, 0.90f, 1.00f, 0f);
@@ -256,6 +260,7 @@ namespace Render
             cmd.SetComputeFloatParam(m_CS, k_FudgeId, settings.SphereFudge);
             cmd.SetComputeFloatParam(m_CS, k_SelfBounceId, settings.SelfBounce);
             cmd.SetComputeIntParam(m_CS, k_RoundId, round);
+            cmd.SetComputeFloatParam(m_CS, k_SppId, settings.Spp);
             cmd.SetComputeVectorParam(m_CS, k_WaterScatterId, m_WaterScatter);
             cmd.SetComputeVectorParam(m_CS, k_WaterAbsorbId, m_WaterAbsorb);
             cmd.SetComputeFloatParam(m_CS, k_WaterPhaseGId, m_WaterPhaseG);

@@ -47,6 +47,7 @@ float _IrcBlend;       // EMA factor for the old value (0.9)
 float _IrcFudge;       // sphere-sample calibration weight (1.6)
 float _IrcSelfBounce;  // prev-cache weight for recursive bounces (<= 0.01)
 uint _IrcRound;        // iteration index for sample decorrelation
+float _IrcSpp;         // rays per texel per iteration (>= 1)
 
 uint g_seed;
 
@@ -130,60 +131,64 @@ void IRCBake(uint3 dtid : SV_DispatchThreadID)
     float3 sunDir = IrcSafeNormalize(_MainLightPosition.xyz);
     float3 sunColor = _MainLightColor.rgb;
 
-    float3 dir;
-    float3 origin = cellCenter;
-    float weight = _IrcFudge;
-    if (solidCount == 1)
-    {
-        // Cosine hemisphere around the unique interface normal (points from
-        // the solid face into this air texel); shift toward the interface so
-        // the hemisphere is not clipped by the solid itself.
-        float3 n = -float3(firstDelta);
-        origin = cellCenter + n * (0.125 + IRC_EPS);
-        if (IrcSolidAtWorld(origin)) origin = cellCenter;
-        IrcCosHemiSample(n, dir);
-        weight = 1.0;
-    }
-    else
-    {
-        // Open texel (no solid neighbor) or multi-interface texel: sphere.
-        IrcSphereSample(dir);
-    }
-
-    VoxelRaytraceRes hit = VoxelRaytraceStatic(origin, dir);
     float3 E = float3(0.0, 0.0, 0.0);
-
-    if (hit.typeId == VOXEL_HIT_NONE)
+    uint spp = max((uint)_IrcSpp, 1u);
+    for (uint s = 0u; s < spp; s++)
     {
-        E = IrcSkyAmbient(dir);
-    }
-    else if (hit.typeId == VOXEL_HIT_WATER)
-    {
-        float cosT = abs(dir.y);
-        float F = 0.02 + 0.98 * pow(1.0 - cosT, 5.0);
-        // From a viewpoint above the surface: reflect + scattered body light;
-        // from below the ray is absorbed (no contribution).
-        if (dir.y < 0.0)
+        float3 dir;
+        float3 origin = cellCenter;
+        float weight = _IrcFudge;
+        if (solidCount == 1)
         {
-            float3 sunVis = sunColor * IrcSunVisibility(hit.hitPos);
-            float dist = (_WaterSurfaceHeight - hit.hitPos.y) / max(sunDir.y, 1e-3);
-            if (dist > 0.0) sunVis *= exp(-(_WaterScatter + _WaterAbsorb) * dist);
-            E = F * IrcSkyAmbient(reflect(dir, float3(0.0, 1.0, 0.0)))
-              + (1.0 - F) * IrcWaterColor(dir, sunDir, sunVis);
+            // Cosine hemisphere around the unique interface normal (points from
+            // the solid face into this air texel); shift toward the interface so
+            // the hemisphere is not clipped by the solid itself.
+            float3 n = -float3(firstDelta);
+            origin = cellCenter + n * (0.125 + IRC_EPS);
+            if (IrcSolidAtWorld(origin)) origin = cellCenter;
+            IrcCosHemiSample(n, dir);
+            weight = 1.0;
+        }
+        else
+        {
+            // Open texel (no solid neighbor) or multi-interface texel: sphere.
+            IrcSphereSample(dir);
+        }
+
+        VoxelRaytraceRes hit = VoxelRaytraceStatic(origin, dir);
+
+        if (hit.typeId == VOXEL_HIT_NONE)
+        {
+            E += IrcSkyAmbient(dir);
+        }
+        else if (hit.typeId == VOXEL_HIT_WATER)
+        {
+            float cosT = abs(dir.y);
+            float F = 0.02 + 0.98 * pow(1.0 - cosT, 5.0);
+            // From a viewpoint above the surface: reflect + scattered body light;
+            // from below the ray is absorbed (no contribution).
+            if (dir.y < 0.0)
+            {
+                float3 sunVis = sunColor * IrcSunVisibility(hit.hitPos);
+                float dist = (_WaterSurfaceHeight - hit.hitPos.y) / max(sunDir.y, 1e-3);
+                if (dist > 0.0) sunVis *= exp(-(_WaterScatter + _WaterAbsorb) * dist);
+                E += weight * (F * IrcSkyAmbient(reflect(dir, float3(0.0, 1.0, 0.0)))
+                             + (1.0 - F) * IrcWaterColor(dir, sunDir, sunVis));
+            }
+        }
+        else
+        {
+            // Static map block: Lambertian emission from the hit face.
+            float3 albedo = _IrcForceAlbedo.x > 0.5 ? _IrcForceAlbedo.yzw
+                                                    : VoxelSampleFace(hit.typeId, hit.hitNormal, hit.hitPos).rgb;
+            float3 direct = IrcEmissive(hit.typeId)
+                          + sunColor * saturate(dot(hit.hitNormal, sunDir)) * IrcSunVisibility(hit.hitPos);
+            float3 prevPos = hit.hitPos + hit.hitNormal * IRC_EPS;
+            float3 prev = _IRCCachePrev.Load(int4(IrcWorldToTexel(prevPos), 0)).rgb;
+            E += weight * albedo * (direct + prev * _IrcSelfBounce);
         }
     }
-    else
-    {
-        // Static map block: Lambertian emission from the hit face.
-        float3 albedo = _IrcForceAlbedo.x > 0.5 ? _IrcForceAlbedo.yzw
-                                                : VoxelSampleFace(hit.typeId, hit.hitNormal, hit.hitPos).rgb;
-        float3 direct = IrcEmissive(hit.typeId)
-                      + sunColor * saturate(dot(hit.hitNormal, sunDir)) * IrcSunVisibility(hit.hitPos);
-        float3 prevPos = hit.hitPos + hit.hitNormal * IRC_EPS;
-        float3 prev = _IRCCachePrev.Load(int4(IrcWorldToTexel(prevPos), 0)).rgb;
-        E = albedo * (direct + prev * _IrcSelfBounce);
-    }
-    E *= weight;
+    E /= (float)spp;
 
     float4 old = _IRCCachePrev.Load(int4(texel, 0));
     float3 blended = lerp(old.rgb, E, 1.0 - _IrcBlend);
