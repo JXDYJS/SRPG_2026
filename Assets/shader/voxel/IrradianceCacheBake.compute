@@ -233,6 +233,72 @@ void IRCProbe()
     _IRCProbeOut[2] = float4(IrcSunVisibility(fixedPos), sc.x, sc.y, sc.z);
 }
 
+// ---- E decomposition probe (IrradianceCacheInputLog) ------------------------
+// Replays the IRCBake E computation for a small set of fixed texels with a
+// FIXED rng seed (round override), splitting E into its three sources so any
+// frame-to-frame variation can be attributed to the exact pipeline stage:
+//   channel0 = direct (sun*NdotL*IrcSunVisibility + emissive)
+//   channel1 = albedo point-sample (VoxelSampleFace output rgb)
+//   channel2 = prev cache read at hit position (self-bounce source)
+//   channel3 = full E (weights + bounce applied)
+// If all channels stay constant but the published cache still drifts, the
+// variation is coming from the RNG round sequence (sampling noise), not from
+// the deterministic inputs.
+
+RWStructuredBuffer<float4> _IRCEProbeOut; // 4 slots, one per probe texel
+float4 _IRCEProbeTexels;                  // 4 x (tx, ty, tz, 0)
+
+[numthreads(4, 1, 1)]
+void IRCEProbe(uint3 dtid : SV_DispatchThreadID)
+{
+    if (dtid.x >= 4u) return;
+    float4 t = _IRCEProbeTexels;
+    int3 texel = dtid.x == 0 ? int3(t.x, t.y, t.z)
+              : dtid.x == 1 ? int3(t.w, t.x, t.y)
+              : dtid.x == 2 ? int3(t.z, t.w, t.x)
+              : int3(t.y, t.z, t.w);
+    int3 size = int3(IrcTexelSize() + 0.5);
+    texel = clamp(texel, int3(0, 0, 0), size - 1);
+
+    float3 cellCenter = IrcTexelToWorld(texel);
+
+    // Fixed deterministic direction hash with a frozen round so the ray is
+    // identical across frames: only task inputs can differ between frames.
+    uint seed = (uint)texel.x * 73856093u ^ (uint)texel.y * 19349663u ^ (uint)texel.z * 83492791u;
+    g_seed = seed ^ 0x1337CAFEu;
+    float3 dir;
+    IrcSphereSample(dir);
+
+    VoxelRaytraceRes hit = VoxelRaytraceStatic(cellCenter, dir);
+    float3 E = float3(0.0, 0.0, 0.0);
+    float directSum = 0.0;
+    float3 albedo = float3(1.0, 1.0, 1.0);
+    float prevVal = 0.0;
+
+    if (hit.typeId == VOXEL_HIT_NONE)
+    {
+        E = IrcSkyAmbient(dir);
+    }
+    else if (hit.typeId == VOXEL_HIT_WATER)
+    {
+        E = float3(0.2, 0.5, 0.8);
+    }
+    else
+    {
+        float3 sunDir = IrcSafeNormalize(_MainLightPosition.xyz);
+        float3 sunColor = _MainLightColor.rgb;
+        albedo = VoxelSampleFace(hit.typeId, hit.hitNormal, hit.hitPos).rgb;
+        float direct = IrcEmissive(hit.typeId)
+                     + sunColor * saturate(dot(hit.hitNormal, sunDir)) * IrcSunVisibility(hit.hitPos);
+        directSum = dot(direct, float3(1.0, 1.0, 1.0)) * (1.0 / 3.0);
+        float3 prevPos = hit.hitPos + hit.hitNormal * IRC_EPS;
+        prevVal = _IRCCachePrev.Load(int4(IrcWorldToTexel(prevPos), 0)).r;
+        E = albedo * (direct + prevVal * _IrcSelfBounce);
+    }
+
+    _IRCEProbeOut[dtid.x] = float4(directSum, albedo.r, prevVal, dot(E, float3(1.0, 1.0, 1.0)) * (1.0 / 3.0));
+}
+
 // Map byte dump for diagnostics (IrradianceCacheDiagnose): flat uint per voxel.
 #pragma kernel IRCDumpMap
 

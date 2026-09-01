@@ -153,6 +153,110 @@ namespace Render.EditorTools
             }
         }
 
+        /// <summary>
+        /// E-source probe: replays the IRCBake E computation for 4 fixed
+        /// texels with a frozen rng seed, dumping (directSum, albedo.r,
+        /// prevVal, Esum) per texel per frame. All four should be constant;
+        /// any channel that varies names the drift source immediately.
+        /// </summary>
+        [MenuItem("Voxel/Probe E Decomposition (Play Mode)")]
+        public static void ProbeEDecomposition()
+        {
+            if (!Application.isPlaying)
+            {
+                Debug.LogWarning("[IRCLog] enter Play Mode first.");
+                return;
+            }
+            var feature = IrradianceCacheFeature.Instance;
+            if (feature == null || feature.BakeCS == null)
+            {
+                Debug.LogError("[IRCLog] IrradianceCacheFeature not ready. Abort.");
+                return;
+            }
+
+            s_eProbeValues.Clear();
+            s_frame = 0;
+            s_allFramesLogged = false;
+            // Texel lattice: (4, 60, 4) mid-air near wall, (4, 20, 4) low air,
+            // (12, 96, 12) sky-adjacent air, (30, 64, 30) far-side air.
+            s_eProbeTexels = new Vector4(4f, 60f, 4f, 20f);
+            Debug.Log("[IRCLog] E-decomposition probe started (IRCEProbe kernel)");
+            EditorApplication.update += OnEProbeFrame;
+        }
+
+        static readonly List<float[]> s_eProbeValues = new List<float[]>();
+        static int s_eProbeKernel = -1;
+        static GraphicsBuffer s_eProbeBuf;
+        static Vector4 s_eProbeTexels;
+
+        static void OnEProbeFrame()
+        {
+            if (!Application.isPlaying || s_allFramesLogged)
+            {
+                EditorApplication.update -= OnEProbeFrame;
+                return;
+            }
+            if (s_frame == 0)
+            {
+                s_frame++;
+                return;
+            }
+
+            var feature = IrradianceCacheFeature.Instance;
+            if (feature == null || feature.BakeCS == null)
+            {
+                EditorApplication.update -= OnEProbeFrame;
+                return;
+            }
+            if (s_eProbeKernel < 0) s_eProbeKernel = feature.BakeCS.FindKernel("IRCEProbe");
+            if (s_eProbeBuf == null) s_eProbeBuf = new GraphicsBuffer(GraphicsBuffer.Target.Structured, 4, 16);
+
+            var cb = new CommandBuffer();
+            try
+            {
+                cb.SetComputeBufferParam(feature.BakeCS, s_eProbeKernel, "_IRCEProbeOut", s_eProbeBuf);
+                cb.SetComputeVectorParam(feature.BakeCS, Shader.PropertyToID("_IRCEProbeTexels"), s_eProbeTexels);
+                cb.DispatchCompute(feature.BakeCS, s_eProbeKernel, 1, 1, 1);
+                Graphics.ExecuteCommandBuffer(cb);
+            }
+            finally
+            {
+                cb.Release();
+            }
+
+            var data = new float[16];
+            s_eProbeBuf.GetData(data);
+            s_eProbeValues.Add(data);
+            Debug.Log($"[IRCLog] Eprobe f={s_frame:00} " +
+                      $"T0(direct={data[0]:F4} alb={data[1]:F4} prev={data[2]:F4} E={data[3]:F4}) " +
+                      $"T1(direct={data[4]:F4} alb={data[5]:F4} prev={data[6]:F4} E={data[7]:F4}) " +
+                      $"T2(direct={data[8]:F4} alb={data[9]:F4} prev={data[10]:F4} E={data[11]:F4}) " +
+                      $"T3(direct={data[12]:F4} alb={data[13]:F4} prev={data[14]:F4} E={data[15]:F4})");
+
+            if (++s_frame >= FrameCount)
+            {
+                s_allFramesLogged = true;
+                if (s_eProbeValues.Count > 1)
+                {
+                    float[] first = s_eProbeValues[0];
+                    var span = new float[16];
+                    for (int j = 0; j < 16; j++)
+                    {
+                        for (int i = 1; i < s_eProbeValues.Count; i++)
+                        {
+                            span[j] = Mathf.Max(span[j], Mathf.Abs(s_eProbeValues[i][j] - first[j]));
+                        }
+                    }
+                    Debug.Log($"[IRCLog] E DECOMPOSITION SPAN across {s_eProbeValues.Count} frames: " +
+                              $"T0(d={span[0]:F5} a={span[1]:F5} p={span[2]:F5} E={span[3]:F5}) " +
+                              $"T1(d={span[4]:F5} a={span[5]:F5} p={span[6]:F5} E={span[7]:F5}) " +
+                              $"T2(d={span[8]:F5} a={span[9]:F5} p={span[10]:F5} E={span[11]:F5}) " +
+                              $"T3(d={span[12]:F5} a={span[13]:F5} p={span[14]:F5} E={span[15]:F5})");
+                }
+                EditorApplication.update -= OnEProbeFrame;
+            }
+        }
+
         static Light FindMainLight()
         {
             foreach (var l in Object.FindObjectsOfType<Light>())
