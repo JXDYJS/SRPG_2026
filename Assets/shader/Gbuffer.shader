@@ -6,8 +6,9 @@
 //   R = visibleType(低4bit) | occupancyType(高4bit)   0=sky 1=block 2=unit 3=water
 //       单位像素由 pass3 覆盖为 34 (占用=2<<4 | 可见=2)，穿墙像素同样标记为 unit
 //   G = objectID (1..255, 非单位=0)，单位像素为最近单位 id
-//   B = 空闲
-//   A = mask (1=已标记, 0=sky)
+//   B = normalWS.x 编码:(x+1)/2    -> 可见面法线(标准 GBuffer normal)
+//   A = normalWS.z 编码:(z+1)/2    -> 由 pass0/1/2 按相机深度写入，pass3(ColorMask RG)不覆盖
+//       重建 y = sqrt(1 - x^2 - z^2)，天空像素为 0(由 R==0 判定)
 Shader "Custom/Gbuffer"
 {
     Properties
@@ -41,23 +42,30 @@ Shader "Custom/Gbuffer"
             struct VertIn
             {
                 float4 positionOS : POSITION;
+                float3 normalOS : NORMAL;
             };
 
             struct VertOut
             {
                 float4 positionCS : SV_POSITION;
+                float3 normalWS : TEXCOORD0;
             };
 
             VertOut vert(VertIn input)
             {
                 VertOut o;
                 o.positionCS = TransformObjectToHClip(input.positionOS.xyz);
+                o.normalWS = TransformObjectToWorldNormal(input.normalOS.xyz);
                 return o;
             }
 
             half4 frag(VertOut input) : SV_Target
             {
-                return half4(1.0 / 255.0, 0, 0, 1); // type=block(1), mask=1
+                float3 n = input.normalWS;
+                if (dot(n, n) < 1e-6) n = float3(0, 1, 0); // fallback for meshes without NORMALs
+                else n = normalize(n);
+                // type=block(1); B/A = normalWS.x/z 编码 (n+1)/2
+                return half4(1.0 / 255.0, 0, (n.x + 1.0) * 0.5, (n.z + 1.0) * 0.5);
             }
             ENDHLSL
         }
@@ -83,23 +91,30 @@ Shader "Custom/Gbuffer"
             struct VertIn
             {
                 float4 positionOS : POSITION;
+                float3 normalOS : NORMAL;
             };
 
             struct VertOut
             {
                 float4 positionCS : SV_POSITION;
+                float3 normalWS : TEXCOORD0;
             };
 
             VertOut vert(VertIn input)
             {
                 VertOut o;
                 o.positionCS = TransformObjectToHClip(input.positionOS.xyz);
+                o.normalWS = TransformObjectToWorldNormal(input.normalOS.xyz);
                 return o;
             }
 
             half4 frag(VertOut input) : SV_Target
             {
-                return half4(2.0 / 255.0, 0, 0, 1); // type=unit(2), mask=1
+                float3 n = input.normalWS;
+                if (dot(n, n) < 1e-6) n = float3(0, 1, 0); // fallback for meshes without NORMALs
+                else n = normalize(n);
+                // type=unit(2); B/A = normalWS.x/z 编码 (n+1)/2
+                return half4(2.0 / 255.0, 0, (n.x + 1.0) * 0.5, (n.z + 1.0) * 0.5);
             }
             ENDHLSL
         }
@@ -125,29 +140,37 @@ Shader "Custom/Gbuffer"
             struct VertIn
             {
                 float4 positionOS : POSITION;
+                float3 normalOS : NORMAL;
             };
 
             struct VertOut
             {
                 float4 positionCS : SV_POSITION;
+                float3 normalWS : TEXCOORD0;
             };
 
             VertOut vert(VertIn input)
             {
                 VertOut o;
                 o.positionCS = TransformObjectToHClip(input.positionOS.xyz);
+                o.normalWS = TransformObjectToWorldNormal(input.normalOS.xyz);
                 return o;
             }
 
             half4 frag(VertOut input) : SV_Target
             {
-                return half4(3.0 / 255.0, 0, 0, 1); // type=water(3), mask=1
+                float3 n = input.normalWS;
+                if (dot(n, n) < 1e-6) n = float3(0, 1, 0); // fallback for meshes without NORMALs
+                else n = normalize(n);
+                // type=water(3); B/A = normalWS.x/z 编码 (n+1)/2
+                return half4(3.0 / 255.0, 0, (n.x + 1.0) * 0.5, (n.z + 1.0) * 0.5);
             }
             ENDHLSL
         }
 
         // ============ pass 3: UnitOccupancy ============
         // 占用语义: ZTest LEqual 对着单位深度RT（最近者赢）; 覆盖写，不再加法累加
+        // ColorMask RG: 只覆盖类型+ID，B/A 保留可见面法线（透视描边不污染法线）
         Pass
         {
             Name "GBufferUnitOccupancy"
@@ -155,6 +178,7 @@ Shader "Custom/Gbuffer"
             ZTest LEqual
             ZWrite Off
             Cull Off
+            ColorMask RG
 
             HLSLPROGRAM
             #pragma vertex vert
@@ -184,8 +208,9 @@ Shader "Custom/Gbuffer"
 
             half4 frag(VertOut input) : SV_Target
             {
-                // 高nibble=unit(2<<4=32) | 低nibble=unit(2) = 34; G=objectID, A=1(mask)
-                return half4(34.0 / 255.0, (float)_ObjectID / 255.0, 0, 1);
+                // 高nibble=unit(2<<4=32) | 低nibble=unit(2) = 34; G=objectID
+                // B/A 由 ColorMask RG 屏蔽，保留可见面法线
+                return half4(34.0 / 255.0, (float)_ObjectID / 255.0, 0, 0);
             }
             ENDHLSL
         }
