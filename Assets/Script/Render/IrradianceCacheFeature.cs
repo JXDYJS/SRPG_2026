@@ -67,7 +67,7 @@ namespace Render
             [Range(0f, 0.1f)] public float SelfBounce = 0.01f;
             /// <summary>Rays per texel per iteration; higher smooths MC noise
             /// (variance / spp) at quadratic cost.</summary>
-            [Range(1, 8)] public int Spp = 1;
+            [Range(1, 8)] public int Spp = 4;
             public float DebugExposure = 1.0f;
             public float WaterHackDepth = 2.0f;
             public Vector4 SkyZenith = new Vector4(0.85f, 0.90f, 1.00f, 0f);
