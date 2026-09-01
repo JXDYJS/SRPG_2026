@@ -103,7 +103,16 @@ void IRCBake(uint3 dtid : SV_DispatchThreadID)
         return;
     }
 
+    // Dynamic units: a cache texel whose center sits inside a unit voxel is
+    // treated as solid too, so rays never spawn inside a unit. Otherwise the
+    // unit would read as "air" (static map) while its own voxels occlude the
+    // sun, leaving a dark ring where rays sample the unit's shaded interior.
     float3 cellCenter = IrcTexelToWorld(texel);
+    if (IrcUnitSolidAtWorld(cellCenter) > 0.5)
+    {
+        _IRCCacheWrite[uint3(texel)] = float4(0.0, 0.0, 0.0, 1.0);
+        return;
+    }
 
     // Solid face neighbors (sub-texel granularity, covers same-voxel cross-
     // half neighbors): count + first direction; arrays avoided for Vulkan.
