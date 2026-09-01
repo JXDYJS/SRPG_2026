@@ -19,6 +19,7 @@ namespace Render.EditorTools
     public static class IrradianceCacheInputLog
     {
         const int FrameCount = 30;
+        const int EProbeFrameCount = 300;
 
         static readonly int k_MainLightPositionId = Shader.PropertyToID("_MainLightPosition");
         static readonly int k_MainLightColorId = Shader.PropertyToID("_MainLightColor");
@@ -177,6 +178,7 @@ namespace Render.EditorTools
             s_eProbeValues.Clear();
             s_frame = 0;
             s_allFramesLogged = false;
+            s_eProbeTotal = EProbeFrameCount;
             // Texel lattice: (4, 60, 4) mid-air near wall, (4, 20, 4) low air,
             // (12, 96, 12) sky-adjacent air, (30, 64, 30) far-side air.
             s_eProbeTexels = new Vector4(4f, 60f, 4f, 20f);
@@ -188,6 +190,7 @@ namespace Render.EditorTools
         static int s_eProbeKernel = -1;
         static GraphicsBuffer s_eProbeBuf;
         static Vector4 s_eProbeTexels;
+        static int s_eProbeTotal = EProbeFrameCount;
 
         static void OnEProbeFrame()
         {
@@ -230,13 +233,16 @@ namespace Render.EditorTools
             var data = new float[16];
             s_eProbeBuf.GetData(data);
             s_eProbeValues.Add(data);
-            Debug.Log($"[IRCLog] Eprobe f={s_frame:00} " +
-                      $"T0(direct={data[0]:F4} alb={data[1]:F4} prev={data[2]:F4} E={data[3]:F4}) " +
-                      $"T1(direct={data[4]:F4} alb={data[5]:F4} prev={data[6]:F4} E={data[7]:F4}) " +
-                      $"T2(direct={data[8]:F4} alb={data[9]:F4} prev={data[10]:F4} E={data[11]:F4}) " +
-                      $"T3(direct={data[12]:F4} alb={data[13]:F4} prev={data[14]:F4} E={data[15]:F4})");
+            if (s_frame % 10 == 0)
+            {
+                Debug.Log($"[IRCLog] Eprobe f={s_frame:00} " +
+                          $"T0(direct={data[0]:F4} alb={data[1]:F4} prev={data[2]:F4} E={data[3]:F4}) " +
+                          $"T1(direct={data[4]:F4} alb={data[5]:F4} prev={data[6]:F4} E={data[7]:F4}) " +
+                          $"T2(direct={data[8]:F4} alb={data[9]:F4} prev={data[10]:F4} E={data[11]:F4}) " +
+                          $"T3(direct={data[12]:F4} alb={data[13]:F4} prev={data[14]:F4} E={data[15]:F4})");
+            }
 
-            if (++s_frame >= FrameCount)
+            if (++s_frame >= s_eProbeTotal)
             {
                 s_allFramesLogged = true;
                 if (s_eProbeValues.Count > 1)
