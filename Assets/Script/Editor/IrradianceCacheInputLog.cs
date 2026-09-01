@@ -216,6 +216,8 @@ namespace Render.EditorTools
             {
                 cb.SetComputeTextureParam(feature.BakeCS, s_eProbeKernel, "_IRCCachePrev", feature.ReadCache);
                 cb.SetComputeBufferParam(feature.BakeCS, s_eProbeKernel, "_IRCEProbeOut", s_eProbeBuf);
+                cb.SetComputeBufferParam(feature.BakeCS, s_eProbeKernel, "_IRCEmissive", feature.EmissiveBuffer);
+                cb.SetComputeFloatParam(feature.BakeCS, "_IrcSelfBounce", feature.settings.SelfBounce);
                 cb.SetComputeVectorParam(feature.BakeCS, Shader.PropertyToID("_IRCEProbeTexels"), s_eProbeTexels);
                 cb.DispatchCompute(feature.BakeCS, s_eProbeKernel, 1, 1, 1);
                 Graphics.ExecuteCommandBuffer(cb);
