@@ -204,11 +204,12 @@ void IrcEvalBasis(float3 d,
 
 /// <summary>
 /// Loads a float4 chunk holding slots [4s, 4s+4) of the logical texel's SH
-/// coefficient array from the given cache texture.
+/// coefficient array from the given cache texture. Each chunk is exactly one
+/// physical z-slice: chunk s lives at texel.z * IRC_SH_SLICES + s.
 /// </summary>
 float4 IrcLoadChunkFrom(Texture3D<float4> tex, int3 texel, int s)
 {
-    return tex.Load(int4(texel.x, texel.y, texel.z * IRC_SH_SLICES + (s << 2), 0));
+    return tex.Load(int4(texel.x, texel.y, texel.z * IRC_SH_SLICES + s, 0));
 }
 
 float4 IrcLoadChunk(int3 texel, int s)
