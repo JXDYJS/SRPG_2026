@@ -23,6 +23,7 @@ Shader "Custom/CustomLit"
         [ToggleOff] _EnvironmentReflections("Environment Reflections", Float) = 1.0
 
         [KeywordEnum(Off, D, G, F, Specular)] _BRDFDebug("BRDF Debug", Float) = 0
+        [KeywordEnum(Off, EnvDiffuse)] _IRCDebug("IRC Debug", Float) = 0
 
         _BumpScale("Scale", Float) = 1.0
         _BumpMap("Normal Map", 2D) = "bump" {}
@@ -109,7 +110,8 @@ Shader "Custom/CustomLit"
             AlphaToMask[_AlphaToMask]
 
             HLSLPROGRAM
-            #pragma target 2.0
+            // IRC sampling in the GI term requires Texture3D (SM 4.0+).
+            #pragma target 4.5
 
             // -------------------------------------
             // Shader Stages
@@ -136,6 +138,8 @@ Shader "Custom/CustomLit"
             // -------------------------------------
             // BRDF Debug Keywords
             #pragma multi_compile_local _BRDFDEBUG_OFF _BRDFDEBUG_D _BRDFDEBUG_G _BRDFDEBUG_F _BRDFDEBUG_SPECULAR
+            // IRC Debug Keywords (env diffuse visualization; separate from BRDF debug)
+            #pragma multi_compile_local _IRCDEBUG_OFF _IRCDEBUG_ENVDIFFUSE
 
             // -------------------------------------
             // Universal Pipeline keywords

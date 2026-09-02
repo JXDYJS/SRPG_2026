@@ -3,6 +3,7 @@
 
 #include "CustomBRDF.hlsl"
 #include "Assets/shader/global.hlsl"
+#include "Assets/shader/voxel/IrradianceCacheCommon.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Debug/Debugging3D.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/GlobalIllumination.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/RealtimeLights.hlsl"
@@ -10,10 +11,18 @@
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DBuffer.hlsl"
 
 // Dynamic sky map: baked per-frame by FakeSunLight, replaces unity_SpecCube0 for IBL specular
-TEXTURE2D(_DynamicSkyMap);
+// _DynamicSkyMap is declared by IrradianceCacheCommon.hlsl (included above).
 SAMPLER(sampler_DynamicSkyMap);
 // DynamicSkyMap is 256x128 with 9 mip levels (0-8)
 #define DYNAMIC_SKY_MIP_COUNT 8
+
+// Ambient floor for shadowed GI (published per-frame by FakeSunLight):
+// _IrcSkyAmbient = cloud-free sky tint sampled perpendicular to the sun's
+// orbital plane; _IrcShadowBoost = lift strength; _IrcFloorLum = irradiance
+// luminance below which the floor kicks in.
+float3 _IrcSkyAmbient;
+float _IrcShadowBoost;
+float _IrcFloorLum;
 
 #if defined(LIGHTMAP_ON)
     #define DECLARE_LIGHTMAP_OR_SH(lmName, shName, index) float2 lmName : TEXCOORD##index
@@ -168,6 +177,13 @@ struct LightingData
 
 half3 CalculateLightingColor(LightingData lightingData, half3 albedo)
 {
+#if defined(_IRCDEBUG_ENVDIFFUSE)
+    // IRC env-diffuse debug: giColor already = IrcSampleDiffuse * brdfData.diffuse
+    // * occlusion (see CustomDynamicGI). Multiplying by albedo reproduces the
+    // real composite's outer albedo term, so this equals the exact
+    // environment-diffuse contribution that reaches the final color.
+    return lightingData.giColor * albedo;
+#endif
 #if defined(_BRDFDEBUG_D) || defined(_BRDFDEBUG_G) || defined(_BRDFDEBUG_F) || defined(_BRDFDEBUG_SPECULAR)
     return lightingData.mainLightColor;
 #endif
@@ -277,22 +293,43 @@ half3 CalculateBlinnPhong(Light light, InputData inputData, SurfaceData surfaceD
 // Custom dynamic GI: replaces GlossyEnvironmentReflection's static cubemap
 // (unity_SpecCube0) with the dynamic equirectangular sky map baked per-frame
 // by FakeSunLight. Mirrors GlobalIllumination() logic but uses _DynamicSkyMap.
+// Diffuse indirect light comes from the voxel irradiance cache (IRC) instead of
+// bakedGI: the cache stores multi-bounce indirect irradiance, matching the
+// environment-diffuse role that SH/lightmap bakedGI filled before.
 half3 CustomDynamicGI(BRDFData brdfData, BRDFData brdfDataClearCoat, float clearCoatMask,
     half3 bakedGI, half occlusion,
-    half3 normalWS, half3 viewDirectionWS)
+    half3 normalWS, half3 viewDirectionWS, float3 positionWS)
 {
     half3 reflectVector = reflect(-viewDirectionWS, normalWS);
     half NoV = saturate(dot(normalWS, viewDirectionWS));
     half fresnelTerm = Pow4(1.0 - NoV);
 
-    half3 indirectDiffuse = bakedGI;
+    half3 indirectDiffuse = IrcSampleDiffuse(positionWS, normalWS);
+
+    // Shadow floor: boost dim indirect light with a cloud-free sky tint so
+    // enclosed shadows don't fall to pure black. Strongest where the cache is
+    // dark (ircLum << _IrcFloorLum), fades out where IRC already carries light
+    // (sunlit / open surfaces stay untouched). ratio = floor/(floor+ircLum):
+    // ircLum=0 -> 1 (full lift), ircLum=floor -> 0.5, ircLum>>floor -> ~0.
+    float ircLum = Luminance(indirectDiffuse);
+    half shadowFloor = saturate(_IrcFloorLum / max(_IrcFloorLum + ircLum, 1e-4));
+    indirectDiffuse += _IrcSkyAmbient * (shadowFloor * _IrcShadowBoost);
 
     // Equirectangular dynamic sky map sampling replaces cubemap SAMPLE_TEXTURECUBE_LOD
     float2 envUV = DirToEquirectangularUV(reflectVector);
     half mip = PerceptualRoughnessToMipmapLevel(brdfData.perceptualRoughness, DYNAMIC_SKY_MIP_COUNT);
     half3 indirectSpecular = SAMPLE_TEXTURE2D_LOD(_DynamicSkyMap, sampler_DynamicSkyMap, envUV, mip).rgb;
 
-    half3 color = EnvironmentBRDF(brdfData, indirectDiffuse, indirectSpecular, fresnelTerm);
+    half3 color;
+#if defined(_IRCDEBUG_ENVDIFFUSE)
+    // IRC debug: output the exact environment-diffuse term that reaches the
+    // final composite (IrcSampleDiffuse * diffuse BRDF * occlusion). The outer
+    // albedo multiply in CalculateLightingColor still applies, so the debug
+    // view matches the real lighting chain bit-for-bit. Specular IBL is the
+    // only part cut out.
+    color = indirectDiffuse * brdfData.diffuse * occlusion;
+#else
+    color = EnvironmentBRDF(brdfData, indirectDiffuse, indirectSpecular, fresnelTerm);
 
     if (IsOnlyAOLightingFeatureEnabled())
     {
@@ -305,10 +342,12 @@ half3 CustomDynamicGI(BRDFData brdfData, BRDFData brdfDataClearCoat, float clear
     half3 coatColor = EnvironmentBRDFClearCoat(brdfDataClearCoat, clearCoatMask, coatIndirectSpecular, fresnelTerm);
 
     half coatFresnel = kDielectricSpec.x + kDielectricSpec.a * fresnelTerm;
-    return (color * (1.0 - coatFresnel * clearCoatMask) + coatColor) * occlusion;
+    color = (color * (1.0 - coatFresnel * clearCoatMask) + coatColor) * occlusion;
 #else
-    return color * occlusion;
+    color = color * occlusion;
 #endif
+#endif // _IRCDEBUG_ENVDIFFUSE
+    return color;
 }
 
 half4 UniversalFragmentPBR(InputData inputData, SurfaceData surfaceData)
@@ -353,7 +392,8 @@ half4 UniversalFragmentPBR(InputData inputData, SurfaceData surfaceData)
 
     lightingData.giColor = CustomDynamicGI(brdfData, brdfDataClearCoat, surfaceData.clearCoatMask,
                                               inputData.bakedGI, aoFactor.indirectAmbientOcclusion,
-                                              inputData.normalWS, inputData.viewDirectionWS);
+                                              inputData.normalWS, inputData.viewDirectionWS,
+                                              inputData.positionWS);
 #ifdef _LIGHT_LAYERS
     if (IsMatchingLightLayer(mainLight.layerMask, meshRenderingLayers))
 #endif
