@@ -72,6 +72,32 @@ MonoBehaviour:
     speedLightToDark: 1
     minLuminance: 0.001
     maxLuminance: 10
+--- !u!114 &-876543210987654321
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1d5b52200f459148a3ba4ba54112c3a, type: 3}
+  m_Name: IrradianceCache
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  settings:
+    BakeCompute: {fileID: 7200000, guid: 683bf0ff4a445aa45ac9354c5f0dd4cd, type: 3}
+    BakeIterations: 128
+    Blend: 0.9
+    BakeEveryFrame: 1
+    PerFrameBlend: 0.99
+    SphereFudge: 1.6
+    SelfBounce: 0.01
+    Spp: 4
+    DebugExposure: 1
+    WaterHackDepth: 2
+    SkyZenith: {x: 0.85, y: 0.9, z: 1, w: 0}
+    SkyHorizon: {x: 0.25, y: 0.32, z: 0.4, w: 0}
 --- !u!114 &-468816753662192350
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -87,6 +113,21 @@ MonoBehaviour:
   m_Active: 1
   settings:
     Mat: {fileID: 0}
+--- !u!114 &-119711594952331695
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df82e3ac28de3724abae82f95ee0c863, type: 3}
+  m_Name: VoxelUnitBakerFeature
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  settings:
+    VoxelWriteShader: {fileID: 0}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -104,6 +145,7 @@ MonoBehaviour:
       type: 3}
     hdrDebugViewPS: {fileID: 4800000, guid: 573620ae32aec764abd4d728906d2587, type: 3}
   m_RendererFeatures:
+  - {fileID: -876543210987654321}
   - {fileID: -1878332245247344467}
   - {fileID: -1558598540239434210}
   - {fileID: 1085916960507657859}
@@ -167,7 +209,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88ab7227842cc2d4faa9761283efff87, type: 3}
   m_Name: VoxelRaytrace
   m_EditorClassIdentifier: 
-  m_Active: 0
+  m_Active: 1
   _material: {fileID: 0}
 --- !u!114 &1085916960507657859
 MonoBehaviour:
@@ -203,18 +245,3 @@ MonoBehaviour:
     stretchIntensity: 1
     stretchThreshold: 0.5
     edgeFadeOut: 0.1
-
---- !u!114 &-119711594952331695
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: df82e3ac28de3724abae82f95ee0c863, type: 3}
-  m_Name: VoxelUnitBakerFeature
-  m_EditorClassIdentifier: 
-  settings:
-    VoxelWriteShader: {fileID: 0}
