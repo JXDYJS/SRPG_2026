@@ -154,6 +154,8 @@ MonoBehaviour:
   - {fileID: -468816753662192350}
   - {fileID: 286769587864370014}
   - {fileID: -119711594952331695}
+  - {fileID: -1111111111111111112}
+  - {fileID: -1111111111111111113}
   m_RendererFeatureMap: adc0de57c6d2eee51e0e96ade2be5eea837ea1deb8f3110fda91f2c07897bb2e2295367da56d7ef9fe56b2f04b5eee51
   m_UseNativeRenderPass: 0
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
@@ -245,3 +247,34 @@ MonoBehaviour:
     stretchIntensity: 1
     stretchThreshold: 0.5
     edgeFadeOut: 0.1
+--- !u!114 &-1111111111111111112
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: edcdd4bac22190f4e8bf19e5592d6b4f, type: 3}
+  m_Name: ReflectionData
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  settings:
+    scale: 1
+--- !u!114 &-1111111111111111113
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f7c6147250b861428b0dec2dc7ae7b4, type: 3}
+  m_Name: SSR
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  settings:
+    MaxAccum: 16
+    Scale: 1

@@ -176,6 +176,11 @@ Shader "Custom/CustomLit"
             #pragma instancing_options renderinglayer
             #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DOTS.hlsl"
 
+            // Consume the temporal SSR accumulation (_Accum) as the env-specular
+            // term when present; CustomDynamicGI falls back to the sky map when
+            // the per-pixel hit-count is zero (units/water/open sky).
+            #define _SSR_ENABLED 1
+
             #include "Assets/shader/pbr/CustomLitInput.hlsl"
             #include "Assets/shader/pbr/CustomLitForwardPass.hlsl"
             ENDHLSL
@@ -312,6 +317,45 @@ Shader "Custom/CustomLit"
             // Includes
             #include "Assets/shader/pbr/CustomLitInput.hlsl"
             #include "Assets/shader/pbr/CustomLitGBufferPass.hlsl"
+            ENDHLSL
+        }
+
+        // Writes per-pixel reflection inputs (albedo / rough+metal / oct
+        // normal). Drawn by ReflectionDataFeature via ShaderTagId, using each
+        // object's own material (LightMode=ReflectionData). Kept in sync with
+        // the ForwardLit surface sampling so reflector params match shading.
+        Pass
+        {
+            Name "ReflectionData"
+            Tags
+            {
+                "LightMode" = "ReflectionData"
+            }
+
+            ZWrite Off
+            Cull[_Cull]
+
+            HLSLPROGRAM
+            #pragma target 4.5
+
+            #pragma vertex ReflectionDataVertex
+            #pragma fragment ReflectionDataFragment
+
+            #pragma shader_feature_local _NORMALMAP
+            #pragma shader_feature_local _PARALLAXMAP
+            #pragma shader_feature_local _ _DETAIL_MULX2 _DETAIL_SCALED
+            #pragma shader_feature_local_fragment _ALPHATEST_ON
+            #pragma shader_feature_local_fragment _METALLICSPECGLOSSMAP
+            #pragma shader_feature_local_fragment _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
+            #pragma shader_feature_local_fragment _SPECULAR_SETUP
+
+            #pragma multi_compile_fragment _ LOD_FADE_CROSSFADE
+
+            #pragma multi_compile_instancing
+            #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DOTS.hlsl"
+
+            #include "Assets/shader/pbr/CustomLitInput.hlsl"
+            #include "Assets/shader/pbr/CustomLitReflectionDataPass.hlsl"
             ENDHLSL
         }
 

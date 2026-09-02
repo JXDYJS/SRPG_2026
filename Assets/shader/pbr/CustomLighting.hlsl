@@ -16,6 +16,11 @@ SAMPLER(sampler_DynamicSkyMap);
 // DynamicSkyMap is 256x128 with 9 mip levels (0-8)
 #define DYNAMIC_SKY_MIP_COUNT 8
 
+// Temporal SSR accumulation (SSRFeature). RGB = reflected radiance, A = hit count
+// (0 = no valid reflection -> material falls back to the sky map). Declared here
+// so the _SSR_ENABLED path in CustomDynamicGI compiles; only bound when SSR is on.
+TEXTURE2D(_Accum);          SAMPLER(sampler_Accum);
+
 // Ambient floor for shadowed GI (published per-frame by FakeSunLight):
 // _IrcSkyAmbient = cloud-free sky tint sampled perpendicular to the sun's
 // orbital plane; _IrcShadowBoost = lift strength; _IrcFloorLum = irradiance
@@ -298,7 +303,7 @@ half3 CalculateBlinnPhong(Light light, InputData inputData, SurfaceData surfaceD
 // environment-diffuse role that SH/lightmap bakedGI filled before.
 half3 CustomDynamicGI(BRDFData brdfData, BRDFData brdfDataClearCoat, float clearCoatMask,
     half3 bakedGI, half occlusion,
-    half3 normalWS, half3 viewDirectionWS, float3 positionWS)
+    half3 normalWS, half3 viewDirectionWS, float3 positionWS, float2 screenUV)
 {
     half3 reflectVector = reflect(-viewDirectionWS, normalWS);
     half NoV = saturate(dot(normalWS, viewDirectionWS));
@@ -315,10 +320,31 @@ half3 CustomDynamicGI(BRDFData brdfData, BRDFData brdfDataClearCoat, float clear
     half shadowFloor = saturate(_IrcFloorLum / max(_IrcFloorLum + ircLum, 1e-4));
     indirectDiffuse += _IrcSkyAmbient * (shadowFloor * _IrcShadowBoost);
 
-    // Equirectangular dynamic sky map sampling replaces cubemap SAMPLE_TEXTURECUBE_LOD
-    float2 envUV = DirToEquirectangularUV(reflectVector);
-    half mip = PerceptualRoughnessToMipmapLevel(brdfData.perceptualRoughness, DYNAMIC_SKY_MIP_COUNT);
-    half3 indirectSpecular = SAMPLE_TEXTURE2D_LOD(_DynamicSkyMap, sampler_DynamicSkyMap, envUV, mip).rgb;
+    // Environment specular: the temporal SSR accumulation (_Accum, written by
+    // SSRFeature) at this pixel replaces the equirect sky map when it has a
+    // valid hit-count; otherwise fall back to the sky IBL so non-reflected
+    // surfaces (units/water/open sky) keep their old look.
+    half3 indirectSpecular = 0;
+#if defined(_SSR_ENABLED)
+    float4 ssr = SAMPLE_TEXTURE2D_LOD(_Accum, sampler_Accum, screenUV, 0);
+    float ssrCount = ssr.a;
+    if (ssrCount > 0.5)
+    {
+        indirectSpecular = ssr.rgb;
+    }
+    else
+    {
+        float2 envUV = DirToEquirectangularUV(reflectVector);
+        half mip = PerceptualRoughnessToMipmapLevel(brdfData.perceptualRoughness, DYNAMIC_SKY_MIP_COUNT);
+        indirectSpecular = SAMPLE_TEXTURE2D_LOD(_DynamicSkyMap, sampler_DynamicSkyMap, envUV, mip).rgb;
+    }
+#else
+    {
+        float2 envUV = DirToEquirectangularUV(reflectVector);
+        half mip = PerceptualRoughnessToMipmapLevel(brdfData.perceptualRoughness, DYNAMIC_SKY_MIP_COUNT);
+        indirectSpecular = SAMPLE_TEXTURE2D_LOD(_DynamicSkyMap, sampler_DynamicSkyMap, envUV, mip).rgb;
+    }
+#endif
 
     half3 color;
 #if defined(_IRCDEBUG_ENVDIFFUSE)
@@ -337,8 +363,7 @@ half3 CustomDynamicGI(BRDFData brdfData, BRDFData brdfDataClearCoat, float clear
     }
 
 #if defined(_CLEARCOAT) || defined(_CLEARCOATMAP)
-    half mipCoat = PerceptualRoughnessToMipmapLevel(brdfDataClearCoat.perceptualRoughness, DYNAMIC_SKY_MIP_COUNT);
-    half3 coatIndirectSpecular = SAMPLE_TEXTURE2D_LOD(_DynamicSkyMap, sampler_DynamicSkyMap, envUV, mipCoat).rgb;
+    half3 coatIndirectSpecular = indirectSpecular; // reuse SSR / sky fallback
     half3 coatColor = EnvironmentBRDFClearCoat(brdfDataClearCoat, clearCoatMask, coatIndirectSpecular, fresnelTerm);
 
     half coatFresnel = kDielectricSpec.x + kDielectricSpec.a * fresnelTerm;
@@ -393,7 +418,7 @@ half4 UniversalFragmentPBR(InputData inputData, SurfaceData surfaceData)
     lightingData.giColor = CustomDynamicGI(brdfData, brdfDataClearCoat, surfaceData.clearCoatMask,
                                               inputData.bakedGI, aoFactor.indirectAmbientOcclusion,
                                               inputData.normalWS, inputData.viewDirectionWS,
-                                              inputData.positionWS);
+                                              inputData.positionWS, inputData.normalizedScreenSpaceUV);
 #ifdef _LIGHT_LAYERS
     if (IsMatchingLightLayer(mainLight.layerMask, meshRenderingLayers))
 #endif
