@@ -11,6 +11,14 @@
 //   _WaterSurfaceHeight (water plane height, fallback for chunk misses)
 // 8-bit data lives in the texture format (R8), not in a shader type:
 // HLSL has no uint8 scalar; Load/Sample return a 32-bit value.
+//
+// Include-safe: intentionally pure (no samplers, Load only) so compute
+// shaders (IrradianceCacheBake.compute) can include this file and reuse the
+// exact same march. Unit scanning is parameterized: pass 0 to skip roster
+// scans from compute.
+
+#ifndef VOXEL_RAYTRACE_HLSL
+#define VOXEL_RAYTRACE_HLSL
 
 Texture3D<float4> _VoxelMap;
 Texture2DArray<float4> _VoxelFaceTiles;
@@ -33,7 +41,7 @@ float4 _UnitScanParams; // x = highest live objID to scan (0 = no units)
 
 static const int3 UNIT_GRID_RES = int3(16, 48, 16);
 
-static const half3 VOXEL_WATER_COLOR = half3(0.02, 0.20, 0.30);
+static const float3 VOXEL_WATER_COLOR = float3(0.02, 0.20, 0.30);
 static const int VOXEL_FACE_RES = 16;
 static const int VOXEL_MAX_STEPS = 128;
 static const float VOXEL_EPS = 1e-4;
@@ -56,25 +64,30 @@ static const float VOXEL_EPS = 1e-4;
 //   8 = unit volumes: empty cells on the march path render cyan (path
 //       keeps marching); cyan = data hole on the path, gray = ray never
 //       reached that cell -> DDA/box-intersection problem instead
-#define VOXEL_DEBUG_MODE 0
+//   9 = irradiance cache RGB at the hit (tonemapped, see VoxelRaytrace.shader)
+//  10 = irradiance cache occupancy A channel (white=solid texel, black=air)
+//  11 = shadow visibility at the hit point (IrcSunVisibility): grayscale, for
+//       checking whether per-frame shadow sampling drifts (flicker source)
+#define VOXEL_DEBUG_MODE 9
 
 struct VoxelRaytraceRes{
     float3 hitPos;
     float3 hitNormal;
-    half3 hitColor;
-    half alpha;
+    float3 hitColor;
+    float alpha;
     uint typeId; // VOXEL_HIT_*, or 1..63 for a map block
 };
 
 /// <summary>Atlas layer for a face normal: 0=+Y 1=-Y 2=+X 3=-X 4=+Z 5=-Z.</summary>
 int VoxelFaceIndex(float3 n)
 {
-    if (n.y > 0.5) return 0;
-    if (n.y < -0.5) return 1;
-    if (n.x > 0.5) return 2;
-    if (n.x < -0.5) return 3;
-    if (n.z > 0.5) return 4;
-    return 5;
+    int face = 5;
+    if (n.y > 0.5) face = 0;
+    else if (n.y < -0.5) face = 1;
+    else if (n.x > 0.5) face = 2;
+    else if (n.x < -0.5) face = 3;
+    else if (n.z > 0.5) face = 4;
+    return face;
 }
 
 /// <summary>Face-local uv [0,1) of a hit point, from the face's two tangent axes.</summary>
@@ -87,12 +100,12 @@ float2 VoxelFaceUv(float3 normal, float3 hitPos)
 }
 
 /// <summary>Point-samples the 16x16 tile of the hit face at the hit position.</summary>
-half4 VoxelSampleFace(uint typeId, float3 normal, float3 hitPos)
+float4 VoxelSampleFace(uint typeId, float3 normal, float3 hitPos)
 {
     float2 uv = VoxelFaceUv(normal, hitPos);
     int2 texel = min(int2(uv * VOXEL_FACE_RES), VOXEL_FACE_RES - 1);
     int layer = (typeId - 1) * 6 + VoxelFaceIndex(normal);
-    return (half4)_VoxelFaceTiles.Load(int4(texel, layer, 0));
+    return (float4)_VoxelFaceTiles.Load(int4(texel, layer, 0));
 }
 
 /// <summary>
@@ -133,12 +146,13 @@ bool UnitRayBox(float3 ori, float3 dir, float3 bmin, float3 bmax,
 /// Scans the unit roster: continuous-position AABB cull per unit, then a short
 /// local DDA through that unit's 16x48x16 sub-grid inside the packed volume.
 /// Returns the closest unit hit (white until real albedo lands).
+/// scanMax comes from _UnitScanParams.x in the combined entry point; bake
+/// callers pass 0 to skip units entirely.
 /// </summary>
-VoxelRaytraceRes TraceUnitVolumes(float3 ori, float3 dir)
+VoxelRaytraceRes TraceUnitVolumes(float3 ori, float3 dir, int scanMax)
 {
     VoxelRaytraceRes best = (VoxelRaytraceRes)0;
     float bestT = 1e30;
-    int scanMax = (int)_UnitScanParams.x;
 
     [loop]
     for (int i = 1; i <= scanMax; i++)
@@ -248,7 +262,7 @@ VoxelRaytraceRes TraceUnitVolumes(float3 ori, float3 dir)
         {
             best.hitPos = ori + dir * firstEmptyT;
             best.hitNormal = n;
-            best.hitColor = half3((firstEmptyCell.x + 0.5) / UNIT_GRID_RES.x,
+            best.hitColor = float3((firstEmptyCell.x + 0.5) / UNIT_GRID_RES.x,
                                   (firstEmptyCell.y + 0.5) / UNIT_GRID_RES.y,
                                   (firstEmptyCell.z + 0.5) / UNIT_GRID_RES.z);
             best.alpha = 1.0;
@@ -270,7 +284,6 @@ VoxelRaytraceRes VoxelRaytraceStatic(float3 ori, float3 dir)
     float3 oriW = ori;
     ori += MAP_SHIFT;
 
-    //目前只有对静态地图的体素处理
     VoxelRaytraceRes res = (VoxelRaytraceRes)0;
     float3 size = _VoxelMapSize.xyz;
     dir = normalize(dir);
@@ -327,7 +340,7 @@ VoxelRaytraceRes VoxelRaytraceStatic(float3 ori, float3 dir)
         // [loop]: dynamic control flow inside; unrolling a full march fails on
         // Vulkan, and dynamic vector indexing is not addressable there, so each
         // axis is written out explicitly.
-        float tEnter = -0.001;
+        float tEnter = -0.001;;
         [loop]
         for (int s = 0; s <= VOXEL_MAX_STEPS; s++)
         {
@@ -359,27 +372,35 @@ VoxelRaytraceRes VoxelRaytraceStatic(float3 ori, float3 dir)
                             {
                                 nG = float3(0, 1, 0);
                                 hitPos = ori + dir * tHalf;
+                                tFace = tHalf; // slab top is the effective entry
                             }
                         }
-                        if (hitPos.y <= cell.y + 0.5 + VOXEL_EPS || VOXEL_DEBUG_MODE == 4) // not passing over the side
+                        // Reject phantom entries: with the origin inside a half-block
+                        // cell (above the slab), CellEntryFace reports the box face
+                        // BEHIND the origin (negative tFace). Upward rays then land
+                        // hitPos.y below the slab top and falsely record a hit (and a
+                        // wrong side-face normal), baking the hugging air texel black.
+                        // tFace must stay at/after the DDA's current entry plane.
+                        if (tFace >= tEnter - VOXEL_EPS &&
+                            (hitPos.y <= cell.y + 0.5 + VOXEL_EPS || VOXEL_DEBUG_MODE == 4)) // not passing over the side
                         {
-                            half4 col = VoxelSampleFace(typeId, nG, hitPos);
+                            float4 col = VoxelSampleFace(typeId, nG, hitPos);
                             if (col.a >= 0.5 || VOXEL_DEBUG_MODE == 3 || VOXEL_DEBUG_MODE == 4)
                             {
                                 res.hitPos = hitPos - MAP_SHIFT;
                                 res.hitNormal = nG;
 #if VOXEL_DEBUG_MODE == 1
-                                res.hitColor = half3(VoxelFaceUv(nG, hitPos), 0); // debug: raw uv
+                                res.hitColor = float3(VoxelFaceUv(nG, hitPos), 0); // debug: raw uv
 #elif VOXEL_DEBUG_MODE == 2
-                                res.hitColor = half3(VoxelFaceIndex(nG) / 5.0, 0, 0); // debug: hit face
+                                res.hitColor = float3(VoxelFaceIndex(nG) / 5.0, 0, 0); // debug: hit face
 #elif VOXEL_DEBUG_MODE == 3
-                                res.hitColor = half3(VoxelFaceUv(nG, hitPos), 0); // debug: uv, opaque
+                                res.hitColor = float3(VoxelFaceUv(nG, hitPos), 0); // debug: uv, opaque
 #elif VOXEL_DEBUG_MODE == 4
-                                res.hitColor = half3(VoxelFaceUv(nG, hitPos), 0); // debug: uv, half-block disabled
+                                res.hitColor = float3(VoxelFaceUv(nG, hitPos), 0); // debug: uv, half-block disabled
 #elif VOXEL_DEBUG_MODE == 5
-                                res.hitColor = half3((b & 0x3F) / 63.0, (b & 0x3F) / 63.0, (b & 0x3F) / 63.0);
+                                res.hitColor = float3((b & 0x3F) / 63.0, (b & 0x3F) / 63.0, (b & 0x3F) / 63.0);
 #elif VOXEL_DEBUG_MODE == 6
-                                res.hitColor = half3(nG * 0.5 + 0.5); // debug: raw normal
+                                res.hitColor = float3(nG * 0.5 + 0.5); // debug: raw normal
 #else
                                 res.hitColor = col.rgb;
 #endif
@@ -391,23 +412,23 @@ VoxelRaytraceRes VoxelRaytraceStatic(float3 ori, float3 dir)
                     }
                     else
                     {
-                        half4 col = VoxelSampleFace(typeId, nG, hitPos);
+                        float4 col = VoxelSampleFace(typeId, nG, hitPos);
                         if (col.a >= 0.5 || VOXEL_DEBUG_MODE == 3) // cutout texels keep marching
                         {
                             res.hitPos = hitPos - MAP_SHIFT;
                             res.hitNormal = nG;
 #if VOXEL_DEBUG_MODE == 1
-                            res.hitColor = half3(VoxelFaceUv(nG, hitPos), 0); // debug: raw uv
+                            res.hitColor = float3(VoxelFaceUv(nG, hitPos), 0); // debug: raw uv
 #elif VOXEL_DEBUG_MODE == 2
-                            res.hitColor = half3(VoxelFaceIndex(nG) / 5.0, 0, 0); // debug: hit face
+                            res.hitColor = float3(VoxelFaceIndex(nG) / 5.0, 0, 0); // debug: hit face
 #elif VOXEL_DEBUG_MODE == 3
-                            res.hitColor = half3(VoxelFaceUv(nG, hitPos), 0); // debug: uv, opaque
+                            res.hitColor = float3(VoxelFaceUv(nG, hitPos), 0); // debug: uv, opaque
 #elif VOXEL_DEBUG_MODE == 4
-                            res.hitColor = half3(VoxelFaceUv(nG, hitPos), 0); // debug: uv, half-block disabled
+                            res.hitColor = float3(VoxelFaceUv(nG, hitPos), 0); // debug: uv, half-block disabled
 #elif VOXEL_DEBUG_MODE == 5
-                            res.hitColor = half3((b & 0x3F) / 63.0, (b & 0x3F) / 63.0, (b & 0x3F) / 63.0);
+                            res.hitColor = float3((b & 0x3F) / 63.0, (b & 0x3F) / 63.0, (b & 0x3F) / 63.0);
 #elif VOXEL_DEBUG_MODE == 6
-                            res.hitColor = half3(nG * 0.5 + 0.5); // debug: raw normal
+                            res.hitColor = float3(nG * 0.5 + 0.5); // debug: raw normal
 #else
                             res.hitColor = col.rgb;
 #endif
@@ -449,12 +470,17 @@ VoxelRaytraceRes VoxelRaytraceStatic(float3 ori, float3 dir)
         {
             res.hitPos = oriW + dir * tWater;
             res.hitNormal = dir.y > 0 ? float3(0, -1, 0) : float3(0, 1, 0);
-            res.hitColor = VOXEL_DEBUG_MODE == 0 ? VOXEL_WATER_COLOR : half3(0, 1, 0.5);
+            res.hitColor = VOXEL_DEBUG_MODE == 0 ? VOXEL_WATER_COLOR : float3(0, 1, 0.5);
             res.alpha = 0.5;
             res.typeId = VOXEL_HIT_WATER;
             return res;
         }
     }
+    // Explicit branch: the compiler's per-path uninit check still flags the
+    // struct zero-init above; state the fallback fields directly.
+    res.hitPos = float3(0, 0, 0);
+    res.hitNormal = float3(0, 0, 0);
+    res.hitColor = float3(0, 0, 0);
     res.alpha = 0; // missed everything
     res.typeId = VOXEL_HIT_NONE;
     return res;
@@ -468,7 +494,7 @@ VoxelRaytraceRes VoxelRaytrace(float3 ori, float3 dir)
     VoxelRaytraceRes sres = VoxelRaytraceStatic(ori, dir);
     float ts = sres.alpha > 0.0 ? length(sres.hitPos - ori) : 1e30;
 
-    VoxelRaytraceRes ures = TraceUnitVolumes(ori, dir);
+    VoxelRaytraceRes ures = TraceUnitVolumes(ori, dir, (int)_UnitScanParams.x);
     float tu = ures.alpha > 0.0 ? length(ures.hitPos - ori) : 1e30;
 
     // HLSL ternary cannot return structs: use explicit branch.
@@ -478,3 +504,5 @@ VoxelRaytraceRes VoxelRaytrace(float3 ori, float3 dir)
     }
     return sres;
 }
+
+#endif // VOXEL_RAYTRACE_HLSL
