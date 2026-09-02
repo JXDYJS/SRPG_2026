@@ -6,20 +6,19 @@ namespace Render
 {
     /// <summary>
     /// Bakes the static voxel irradiance cache: Jacobi iterations over the
-    /// 8x32x8 voxel map into a 34x130x34 ARGBHalf 3D texture (4 sub-texels per
-    /// voxel, +1 border texel per face; see IrradianceCacheBake.compute and
-    /// .planning/docs/IrradianceCache-Plan.md).
+    /// 8x32x8 voxel map into a Texture3D of L2 spherical-harmonics radiance.
+    /// Each logical cache texel (4x4x4 per voxel, +1 border per face) stores a
+    /// 9-basis x RGB SH plus an accumulation counter N, packed into
+    /// IrcShSlices float4 layers stacked along the texture z axis (see
+    /// IrradianceCacheCommon.hlsl for the exact layout).
     ///
     /// A,B ping-pong with no CopyTexture: each iteration reads one texture and
     /// writes the other. BakeAll runs all iterations in one frame at load /
-    /// edit time (rebake blends from the old cache at EMA b=0.9); afterwards
-    /// the cache is frozen at zero per-frame cost. The cache read texture
-    /// (_IRCCacheRead) is published globally so VoxelRaytrace debug modes can
-    /// sample it.
-    ///
-    /// Units never enter the static cache: the kernel traces with
-    /// VoxelRaytraceStatic only (no roster scan), and _UnitScanParams is
-    /// never touched by this feature.
+    /// edit time; afterwards BakeFrame mode accumulates progressively (1/N)
+    /// per frame, so the cache can follow animated light / unit state. The
+    /// cache read texture (_IRCCacheRead) is published globally so the PBR
+    /// shaders sample the SH (diffuse via band convolution, reflections via
+    /// directional radiance).
     /// </summary>
     public class IrradianceCacheFeature : ScriptableRendererFeature
     {
@@ -28,6 +27,10 @@ namespace Render
         internal const int SubRes = 4;
         internal const int MaskCount = 128;
         internal const int EmissiveCount = 64;
+        /// <summary>Physical float4 slices per logical cache texel (L2 SH = 9
+        /// RGB coeffs + N accumulator = 28 slots). Must match IRC_SH_SLICES in
+        /// IrradianceCacheCommon.hlsl.</summary>
+        internal const int IrcShSlices = 7;
 
         static readonly int k_CacheReadId = Shader.PropertyToID("_IRCCacheRead");
         static readonly int k_CachePrevId = Shader.PropertyToID("_IRCCachePrev");
@@ -60,14 +63,18 @@ namespace Render
             /// follows animated main-light / sky state (plan §6). Default off;
             /// static sun should stay on the one-shot BakeAll path.</summary>
             public bool BakeEveryFrame = false;
-            /// <summary>Per-frame EMA blend in BakeFrame mode: 0.99 = slow and
-            /// smooth (converges in ~100 frames), 0.9 = fast but responsive.</summary>
+            /// <summary>Legacy per-frame EMA blend in BakeFrame mode. The SH
+            /// kernel now accumulates progressively with 1/N (N carried in the
+            /// cache), so this value is ignored for the coefficient blend; it
+            /// is kept only for editor-tool compatibility.</summary>
             [Range(0f, 1f)] public float PerFrameBlend = 0.99f;
             public float SphereFudge = 1.6f;
             [Range(0f, 0.1f)] public float SelfBounce = 0.01f;
-            /// <summary>Rays per texel per iteration; higher smooths MC noise
-            /// (variance / spp) at quadratic cost.</summary>
-            [Range(1, 8)] public int Spp = 4;
+            /// <summary>Rays per texel per iteration. With progressive 1/N the
+            /// per-frame variance is spread across frames, so 1 is sufficient
+            /// (higher only speeds re-convergence after a state change at the
+            /// cost of per-frame cost).</summary>
+            [Range(1, 8)] public int Spp = 1;
             public float DebugExposure = 1.0f;
             public float WaterHackDepth = 2.0f;
             public Vector4 SkyZenith = new Vector4(0.85f, 0.90f, 1.00f, 0f);
@@ -80,7 +87,12 @@ namespace Render
         internal RenderTexture CacheB { get; private set; }
         public int CacheWidth { get; private set; }
         public int CacheHeight { get; private set; }
+        /// <summary>Physical texture depth = logical depth * IRC_SH_SLICES.</summary>
         public int CacheDepth { get; private set; }
+        /// <summary>Logical cache depth (before stacking SH slices), i.e. the
+        /// original voxel-chunk depth scale. Dispatch and kernels iterate over
+        /// this; the slice stack is an internal z-expansion of the texture.</summary>
+        public int LogicalCacheDepth { get; private set; }
 
         /// <summary>Cache texture published for sampling (final bake target).</summary>
         public RenderTexture ReadCache { get; private set; }
@@ -150,7 +162,10 @@ namespace Render
             {
                 CacheWidth = VoxelGpuMap.ChunkWidth * SubRes + 2;
                 CacheHeight = VoxelGpuMap.ChunkHeight * SubRes + 2;
-                CacheDepth = VoxelGpuMap.ChunkDepth * SubRes + 2;
+                // Each logical cache texel stores an L2 SH (7 float4 slices) +
+                // N counter, stacked along z inside the same Texture3D.
+                LogicalCacheDepth = VoxelGpuMap.ChunkDepth * SubRes + 2;
+                CacheDepth = LogicalCacheDepth * IrcShSlices;
                 CacheA = CreateCache("IRCCacheA");
                 CacheB = CreateCache("IRCCacheB");
                 ReadCache = CacheA;
@@ -249,7 +264,9 @@ namespace Render
 
             int wx = (CacheWidth + 3) / 4;
             int wy = (CacheHeight + 3) / 4;
-            int wz = (CacheDepth + 3) / 4;
+            // Iterate over LOGICAL texels; the kernel expands each into the
+            // IRC_SH_SLICES physical z-slices of the stacked texture.
+            int wz = (LogicalCacheDepth + 3) / 4;
             RenderTexture prev = (round & 1) == 0 ? CacheA : CacheB;
             RenderTexture write = (round & 1) == 0 ? CacheB : CacheA;
             cmd.SetComputeTextureParam(m_CS, m_Kernel, k_CachePrevId, prev);

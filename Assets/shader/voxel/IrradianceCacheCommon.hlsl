@@ -144,16 +144,180 @@ bool IrcSolidAtWorld(float3 worldPos)
     return IrcSolidAtTexel(IrcWorldToTexel(worldPos));
 }
 
-/// <summary>
-/// Nearest-neighbor cache sample. Offset P by N*eps first (epsilon extrusions
-/// into the border ring must land in the air texel hugging the surface).
-/// </summary>
-float4 IrcSampleNearest(float3 worldPos, float3 n)
+// ===================== L2 SH cache layout =====================
+// Each logical air texel stores a second-order spherical-harmonics radiance
+// function plus an accumulation-frame counter N:
+//   9 real-SH basis (order 0/1/2) x RGB = 27 floats + N = 28 floats
+//   = 7 physical z-slices of float4 (IrcCacheSlice). Solid texels write all
+//   zero coefficients with N = 0 (marker). Open texels that are never read
+//   (no solid / unit neighbour) are skipped by the bake, so their slice
+//   contents are stale but never sampled.
+// Coefficient slot = basis * 3 + channel (0..26), N is slot 27.
+// Slice layout (float4): each float4 carries 4 consecutive slots.
+//   basis0 -> (L0.x, L0.y, L0.z, L1.x)
+//   basis1 -> (L0.w, L1.x, L1.y)  -- see IrcReadCoeffs below.
+// Band scaling for diffuse (radiance -> irradiance convolution, Ramamoorthi
+// & Hanrahan): lambda_l = pi (l=0), 2pi/3 (l=1), pi/4 (l=2). Applied at read
+// time on the diffuse query only; radiance queries evaluate unscaled.
+
+#define IRC_SH_SLICES 7
+#define IRC_SH_MAX_N 1024.0
+#define IRC_SH_N_SOLID 0.0     // N marker on solid texels (reset trigger when air returns)
+#define IRC_SH_L0 0.282095f    // Y_00
+#define IRC_SH_L1 0.488603f    // sqrt(3/4pi)
+#define IRC_SH_L2XY 1.092548f  // 0.5 sqrt(15/pi)
+#define IRC_SH_L2ZZ 0.315392f  // 0.25 sqrt(5/pi)
+#define IRC_SH_L2XX 0.546274f  // 0.25 sqrt(15/pi)
+// diffuse band convolution weights
+#define IRC_LAM0 3.14159265f
+#define IRC_LAM1 2.09439510f
+#define IRC_LAM2 0.78539816f
+
+/// <summary>Logical texel + coefficient slot (0..26) -> physical texture z.</summary>
+int3 IrcCacheSlice(int3 texel, int slot)
 {
-    worldPos += n * IRC_EPS;
+    return int3(texel.x, texel.y, texel.z * IRC_SH_SLICES + (slot >> 2));
+}
+
+/// <summary>
+/// Evaluates the 9 real-SH basis functions at a unit direction (constants
+/// baked in, i.e. orthonormal Y_lm). Used by the bake to project samples:
+/// coeff_b = (4pi/N) * sum_i radiance_i * Y_b(dir_i). Order matches the
+/// coefficient layout: 0 = Y00, 1..3 = Y1{-1,0,1}, 4..8 = Y2{-2,-1,0,1,2}.
+/// </summary>
+void IrcEvalBasis(float3 d,
+                  out float y0, out float y1, out float y2, out float y3,
+                  out float y4, out float y5, out float y6, out float y7,
+                  out float y8)
+{
+    float x = d.x, y = d.y, z = d.z;
+    y0 = IRC_SH_L0;
+    y1 = IRC_SH_L1 * y;
+    y2 = IRC_SH_L1 * z;
+    y3 = IRC_SH_L1 * x;
+    y4 = IRC_SH_L2XY * x * y;
+    y5 = IRC_SH_L2XY * y * z;
+    y6 = IRC_SH_L2ZZ * (3.0 * z * z - 1.0);
+    y7 = IRC_SH_L2XY * x * z;
+    y8 = IRC_SH_L2XX * (x * x - y * y);
+}
+
+/// <summary>
+/// Loads a float4 chunk holding slots [4s, 4s+4) of the logical texel's SH
+/// coefficient array from the given cache texture.
+/// </summary>
+float4 IrcLoadChunkFrom(Texture3D<float4> tex, int3 texel, int s)
+{
+    return tex.Load(int4(texel.x, texel.y, texel.z * IRC_SH_SLICES + (s << 2), 0));
+}
+
+float4 IrcLoadChunk(int3 texel, int s)
+{
+    return IrcLoadChunkFrom(_IRCCacheRead, texel, s);
+}
+
+/// <summary>
+/// Gathers the 9 RGB radiance coefficients + N for a logical texel from the
+/// given cache texture. Slot layout: coefficient[b*3+c] = basis b channel c,
+/// slot 27 = N. Packing across the 7 float4 slices (28 slots):
+///   slice0 = slots  0..3, slice1 =  4..7, ... slice6 = slots 24..27
+/// </summary>
+void IrcReadCoeffsFrom(Texture3D<float4> tex, int3 texel,
+                       out float3 c0, out float3 c1, out float3 c2, out float3 c3,
+                       out float3 c4, out float3 c5, out float3 c6, out float3 c7,
+                       out float3 c8, out float nFrames)
+{
+    float4 S0 = IrcLoadChunkFrom(tex, texel, 0);
+    float4 S1 = IrcLoadChunkFrom(tex, texel, 1);
+    float4 S2 = IrcLoadChunkFrom(tex, texel, 2);
+    float4 S3 = IrcLoadChunkFrom(tex, texel, 3);
+    float4 S4 = IrcLoadChunkFrom(tex, texel, 4);
+    float4 S5 = IrcLoadChunkFrom(tex, texel, 5);
+    float4 S6 = IrcLoadChunkFrom(tex, texel, 6);
+
+    c0 = float3(S0.x, S0.y, S0.z);              // basis 0
+    c1 = float3(S0.w, S1.x, S1.y);              // basis 1
+    c2 = float3(S1.z, S1.w, S2.x);              // basis 2
+    c3 = float3(S2.y, S2.z, S2.w);              // basis 3
+    c4 = float3(S3.x, S3.y, S3.z);              // basis 4
+    c5 = float3(S3.w, S4.x, S4.y);              // basis 5
+    c6 = float3(S4.z, S4.w, S5.x);              // basis 6
+    c7 = float3(S5.y, S5.z, S5.w);              // basis 7
+    c8 = float3(S6.x, S6.y, S6.z);              // basis 8
+    nFrames = S6.w;                             // slot 27 = N
+}
+
+void IrcReadCoeffs(int3 texel,
+                   out float3 c0, out float3 c1, out float3 c2, out float3 c3,
+                   out float3 c4, out float3 c5, out float3 c6, out float3 c7,
+                   out float3 c8, out float nFrames)
+{
+    IrcReadCoeffsFrom(_IRCCacheRead, texel, c0, c1, c2, c3, c4, c5, c6, c7, c8, nFrames);
+}
+
+/// <summary>
+/// Evaluates a L2 radiance SH function at a direction d (radiance query:
+/// no band scaling). c0..c8 are the RGB coefficient triplets in standard
+/// real-SH order (basis0 = Y00, 1..3 = Y1{-1,0,1}, 4..8 = Y2{-2,-1,0,1,2}).
+/// </summary>
+float3 IrcEvalRadiance(float3 c0, float3 c1, float3 c2, float3 c3,
+                       float3 c4, float3 c5, float3 c6, float3 c7, float3 c8,
+                       float3 d)
+{
+    float x = d.x, y = d.y, z = d.z;
+    float3 result = c0 * IRC_SH_L0;
+    result += (c1 * y + c2 * z + c3 * x) * IRC_SH_L1;
+    result += c4 * (IRC_SH_L2XY * x * y)
+            + c5 * (IRC_SH_L2XY * y * z)
+            + c6 * (IRC_SH_L2ZZ * (3.0 * z * z - 1.0))
+            + c7 * (IRC_SH_L2XY * x * z)
+            + c8 * (IRC_SH_L2XX * (x * x - y * y));
+    return result;
+}
+
+/// <summary>
+/// Evaluates the diffuse irradiance from a L2 radiance SH at normal n
+/// (band-convolution by lambda_l). This is the PBR environment-diffuse query.
+/// </summary>
+float3 IrcEvalDiffuse(float3 c0, float3 c1, float3 c2, float3 c3,
+                      float3 c4, float3 c5, float3 c6, float3 c7, float3 c8,
+                      float3 n)
+{
+    return IrcEvalRadiance(c0 * IRC_LAM0, c1 * IRC_LAM1, c2 * IRC_LAM1,
+                           c3 * IRC_LAM1, c4 * IRC_LAM2, c5 * IRC_LAM2,
+                           c6 * IRC_LAM2, c7 * IRC_LAM2, c8 * IRC_LAM2, n);
+}
+
+/// <summary>
+/// Directional radiance along a look direction at a surface point. Offset the
+/// position along the geometric normal so the query lands in the air texel
+/// hugging the surface (same rule as the old diffuse sample).
+/// </summary>
+float3 IrcSampleRadiance(float3 worldPos, float3 normalWS, float3 dir)
+{
+    worldPos += normalWS * IRC_EPS;
     int3 texel = IrcWorldToTexel(worldPos);
     texel = clamp(texel, int3(0, 0, 0), int3(IrcTexelSize() + 0.5) - 1);
-    return _IRCCacheRead.Load(int4(texel, 0));
+    float3 c0, c1, c2, c3, c4, c5, c6, c7, c8;
+    float nF;
+    IrcReadCoeffs(texel, c0, c1, c2, c3, c4, c5, c6, c7, c8, nF);
+    return IrcEvalRadiance(c0, c1, c2, c3, c4, c5, c6, c7, c8, dir);
+}
+
+/// <summary>
+/// Diffuse environment irradiance for surface lighting (PBR GI term): L2
+/// radiance SH convolved to irradiance at the hit normal. Replaces the old
+/// single-float3 bakedGI (which was this SH's L0 average).
+/// </summary>
+float3 IrcSampleDiffuse(float3 worldPos, float3 normalWS)
+{
+    worldPos += normalWS * IRC_EPS;
+    int3 texel = IrcWorldToTexel(worldPos);
+    texel = clamp(texel, int3(0, 0, 0), int3(IrcTexelSize() + 0.5) - 1);
+    float3 c0, c1, c2, c3, c4, c5, c6, c7, c8;
+    float nF;
+    IrcReadCoeffs(texel, c0, c1, c2, c3, c4, c5, c6, c7, c8, nF);
+    return IrcEvalDiffuse(c0, c1, c2, c3, c4, c5, c6, c7, c8, normalWS);
 }
 
 /// <summary>
