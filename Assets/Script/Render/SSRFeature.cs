@@ -46,6 +46,8 @@ namespace Render
         static readonly int k_ShaderId = Shader.PropertyToID("Hidden/SSR");
         static readonly int k_PrevVPId = Shader.PropertyToID("_PrevVP");
         static readonly int k_InvViewProjId = Shader.PropertyToID("_InvViewProj");
+        static readonly int k_SSRProjId = Shader.PropertyToID("_SSRProj");
+        static readonly int k_SSRInvProjId = Shader.PropertyToID("_SSRInvProj");
         static readonly int k_SSRParamsId = Shader.PropertyToID("_SSRParams");
         static readonly int k_FrameId = Shader.PropertyToID("_Frame");
         static readonly int k_FrameIdxId = Shader.PropertyToID("_FrameIdx");
@@ -183,6 +185,11 @@ namespace Render
                     // Matrices for reprojection + world unprojection.
                     cmd.SetGlobalMatrix(k_PrevVPId, m_PrevVP);
                     cmd.SetGlobalMatrix(k_InvViewProjId, vp.inverse);
+                    // GPU projection pair for the SSR screen-space march. Explicit
+                    // because Blitter blits run with the blit projection, not the
+                    // camera's (SSR.hlsl must not read UNITY_MATRIX_P/_I_P).
+                    cmd.SetGlobalMatrix(k_SSRProjId, gpuProj);
+                    cmd.SetGlobalMatrix(k_SSRInvProjId, gpuProj.inverse);
 
                     cmd.SetGlobalVector(k_SSRParamsId, new Vector4(0, m_Settings.MaxAccum, 0, 0));
                     cmd.SetGlobalFloat(k_FrameId, m_FrameIdx * 0.005f);

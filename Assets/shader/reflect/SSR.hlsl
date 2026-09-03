@@ -6,8 +6,16 @@
 // Reference: iterationRP SpecularTracer.glsl (screen projection + binary refine).
 // All depth comparisons use linear positive view depth (-viewPos.z), so the code
 // is independent of reversed-Z / NDC conventions.
+//
+// All projections go through the explicitly-passed _SSRProj / _SSRInvProj GPU
+// projection matrices (SSRFeature uploads the real game camera's). URP Blitter
+// blits must NOT rely on the built-in UNITY_MATRIX_P / UNITY_MATRIX_I_P, which
+// describe the blit's own projection, not the camera's.
 
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+
+float4x4 _SSRProj;    // GPU projection (SSRFeature: gpuProj)
+float4x4 _SSRInvProj; // inverse GPU projection
 
 #define SSR_HIT_NONE    0
 #define SSR_HIT_SURFACE 1  // generic hit; caller reclassifies via _GBuffer (R/G)
@@ -40,18 +48,18 @@ struct SSRRaytraceRes
 
 // uv (0..1) + raw depth -> view-space position. Depth is used as clip.z directly:
 // _CameraDepthTexture is in the same NDC range the GPU projection produced, and
-// UNITY_MATRIX_I_P is the matching inverse GPU projection.
+// _SSRInvProj is the matching inverse GPU projection.
 float3 SSRViewPosFromScreen(float2 uv, float depth)
 {
     float4 clipPos = float4(uv * 2.0 - 1.0, depth, 1.0);
-    float4 viewPos = mul(UNITY_MATRIX_I_P, clipPos);
+    float4 viewPos = mul(_SSRInvProj, clipPos);
     return viewPos.xyz / viewPos.w;
 }
 
 // View-space position -> screenPos (xy = uv 0..1, z = linear positive view depth).
 float3 SSRScreenPosFromViewPos(float3 viewPos)
 {
-    float4 clipPos = mul(UNITY_MATRIX_P, float4(viewPos, 1.0));
+    float4 clipPos = mul(_SSRProj, float4(viewPos, 1.0));
     clipPos.xyz /= max(clipPos.w, 1e-6);
     float2 uv = clipPos.xy * 0.5 + 0.5;
     return float3(uv, -viewPos.z);
