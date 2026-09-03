@@ -30,6 +30,7 @@ SAMPLER(sampler_CameraDepthTexture);
 
 struct SSRRaytraceRes
 {
+    float2 hitUv;      // screen uv of the hit (always in [0,1]; set on hit)
     float3 hitPos;     // view-space hit position
     float3 hitNormal;  // 0; caller may fill from _CameraNormalsTexture
     float3 hitColor;   // 0; caller samples scene color at the hit UV
@@ -68,6 +69,7 @@ float SSRSampleViewDepth(float2 uv)
 SSRRaytraceRes SSRRaytrace(float3 ori, float3 dir)
 {
     SSRRaytraceRes res;
+    res.hitUv = 0;
     res.hitPos = 0;
     res.hitNormal = 0;
     res.hitColor = 0;
@@ -144,6 +146,7 @@ SSRRaytraceRes SSRRaytrace(float3 ori, float3 dir)
             float diff = abs(hitDepth - hit.z);
             if (diff < SSR_THICKNESS * max(hit.z, 0.001))
             {
+                res.hitUv = hit.xy;
                 res.hitPos = SSRViewPosFromScreen(hit.xy, SAMPLE_TEXTURE2D_LOD(_CameraDepthTexture, sampler_CameraDepthTexture, hit.xy, 0).r);
                 res.alpha = 1.0;
                 res.typeId = SSR_HIT_SURFACE;

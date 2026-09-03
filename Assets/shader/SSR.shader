@@ -161,20 +161,16 @@ Shader "Hidden/SSR"
                 int hitType = 0; // 0 = none yet, 1 = screen-space, 2 = voxel
                 int ssrMissReason = 0; // SSRRaytrace miss code when hitType ends up voxel
 
-                // 1) Screen-space ray march over the current depth buffer.
+                // 1) Screen-space ray march over the current depth buffer. The
+                // march runs entirely in screen (uv, depth) space, so a hit's uv
+                // is always inside [0,1]; sample the scene color there directly.
                 float3 viewOri = TransformWorldToView(worldPos + normalWS * 1e-3);
                 float3 viewDirS = TransformWorldToViewDir(dir, false);
                 SSRRaytraceRes ssrHit = SSRRaytrace(viewOri, viewDirS);
                 if (ssrHit.alpha > 0.5)
                 {
-                    float3 hitView = ssrHit.hitPos;
-                    float4 clipHit = mul(UNITY_MATRIX_P, float4(hitView, 1.0));
-                    float2 hitUv = clipHit.xy / clipHit.w * 0.5 + 0.5;
-                    if (all(hitUv >= 0.0) && all(hitUv <= 1.0))
-                    {
-                        radiance = SAMPLE_TEXTURE2D(_SceneColor, sampler_SceneColor, hitUv).rgb;
-                        hitType = 1;
-                    }
+                    radiance = SAMPLE_TEXTURE2D(_SceneColor, sampler_SceneColor, ssrHit.hitUv).rgb;
+                    hitType = 1;
                 }
                 else
                 {
