@@ -208,8 +208,9 @@ Shader "Hidden/SSR"
                     // is not the camera's real projection, the round-trip drifts and
                     // the reflector shows magenta (projection mismatch).
                     float3 vTrue = TransformWorldToView(worldPos);
-                    float3 rt = SSRScreenPosFromViewPos(vTrue);
-                    float rtErr = max(abs(rt.x - uv.x), abs(rt.y - uv.y));
+                    float3 rt;
+                    bool rtOk = SSRScreenPosFromViewPos(vTrue, rt);
+                    float rtErr = rtOk ? max(abs(rt.x - uv.x), abs(rt.y - uv.y)) : 1.0;
                     float3 c;
                     if (rtErr > 0.01) c = float3(1, 0, 1); // magenta: projection broken
                     else

@@ -59,12 +59,19 @@ float3 SSRViewPosFromScreen(float2 uv, float depth)
 }
 
 // View-space position -> screenPos (xy = uv 0..1, z = linear positive view depth).
-float3 SSRScreenPosFromViewPos(float3 viewPos)
+// Returns false when viewPos is behind the camera (w <= 0) so callers never
+// march a corrupted (mirrored) projection.
+bool SSRScreenPosFromViewPos(float3 viewPos, out float3 screenPos)
 {
+    screenPos = 0;
     float4 clipPos = mul(_SSRProj, float4(viewPos, 1.0));
-    clipPos.xyz /= max(clipPos.w, 1e-6);
-    float2 uv = clipPos.xy * 0.5 + 0.5;
-    return float3(uv, -viewPos.z);
+    // Behind the near plane: projection flips and a divide would fabricate a
+    // bogus on-screen uv. Treat as invalid rather than feeding normalize() a
+    // garbage direction (which produced NaN and the orange/yellow scatter).
+    if (clipPos.w <= 1e-6) return false;
+    float2 uv = clipPos.xy / clipPos.w * 0.5 + 0.5;
+    screenPos = float3(uv, -viewPos.z);
+    return true;
 }
 
 // Linear positive view depth at a screen UV.
@@ -86,17 +93,45 @@ SSRRaytraceRes SSRRaytrace(float3 ori, float3 dir)
     res.alpha = 0;
     res.typeId = SSR_HIT_NONE;
 
-    // Ray origin outside the frustum: nothing to do.
-    float3 screenPos = SSRScreenPosFromViewPos(ori);
+    // Ray origin outside the frustum: nothing to do. (Can't happen in practice:
+    // ori is the reflector's own view position, always in front and on-screen.)
+    float3 screenPos;
+    if (!SSRScreenPosFromViewPos(ori, screenPos))
+    {
+        res.typeId = SSR_MISS_ORIGIN_OFFSCREEN;
+        return res;
+    }
     if (any(screenPos.xy < -0.05) || any(screenPos.xy > 1.05))
     {
         res.typeId = SSR_MISS_ORIGIN_OFFSCREEN;
         return res;
     }
 
-    // Project a far point to get the 3D screen-space march direction.
-    float3 screenFar = SSRScreenPosFromViewPos(ori + dir * SSR_MARCH_DIST);
-    float3 screenRayDir = normalize(screenFar - screenPos);
+    // Ray far point in view space. If it ends up behind the camera the ray
+    // points back toward the viewer, so there is no on-screen surface ahead;
+    // report a clean backward miss instead of marching a NaN direction.
+    float3 rayFar = ori + dir * SSR_MARCH_DIST;
+    if (rayFar.z >= 0.0)
+    {
+        res.typeId = SSR_MISS_Z_REGRESS;
+        return res;
+    }
+
+    // Screen-space direction of the march.
+    float3 screenFar;
+    if (!SSRScreenPosFromViewPos(rayFar, screenFar))
+    {
+        res.typeId = SSR_MISS_Z_REGRESS;
+        return res;
+    }
+    float3 screenDelta = screenFar - screenPos;
+    float deltaLen = length(screenDelta);
+    if (deltaLen < 1e-6)
+    {
+        res.typeId = SSR_MISS_MARCHLEN;
+        return res;
+    }
+    float3 screenRayDir = screenDelta / deltaLen;
 
     // Reflected ray must move away from the camera (linear depth increases).
     if (screenRayDir.z <= 0.0)
