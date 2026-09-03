@@ -188,6 +188,11 @@ Shader "Hidden/SSR"
                 }
 
                 // Debug visualization of the hit path, skipping temporal accumulation:
+                //   magenta = SSR projection round-trip broken: reprojecting this
+                //             pixel's own view position (from the known-good
+                //             _InvViewProj worldPos) through _SSRProj does NOT land
+                //             back at this uv. Means _SSRProj/_SSRInvProj are wrong
+                //             (not the camera's GPU projection), so no SSR can ever hit.
                 //   red    = screen-space scene hit
                 //   green  = voxel fallback because the SSR ray never aimed on-screen
                 //            (started off-screen / pointed backward / depth regressed)
@@ -197,10 +202,23 @@ Shader "Hidden/SSR"
                 //            binary refine failed the thickness gate
                 if (_SSRDebugHitPath > 0.5)
                 {
-                    float3 c = float3(0, 1, 0); // default green
-                    if (hitType == 1) c = float3(1, 0, 0);
-                    else if (ssrMissReason == SSR_MISS_NO_CROSSING) c = float3(0, 0, 1);
-                    else if (ssrMissReason == SSR_MISS_THICKNESS) c = float3(1, 1, 0);
+                    // Consistency check: worldPos (via the known-good _InvViewProj)
+                    // reprojected to view with the built-in view matrix, then to
+                    // screen with _SSRProj, must land back at this uv. If _SSRProj
+                    // is not the camera's real projection, the round-trip drifts and
+                    // the reflector shows magenta (projection mismatch).
+                    float3 vTrue = TransformWorldToView(worldPos);
+                    float3 rt = SSRScreenPosFromViewPos(vTrue);
+                    float rtErr = max(abs(rt.x - uv.x), abs(rt.y - uv.y));
+                    float3 c;
+                    if (rtErr > 0.01) c = float3(1, 0, 1); // magenta: projection broken
+                    else
+                    {
+                        c = float3(0, 1, 0); // default green
+                        if (hitType == 1) c = float3(1, 0, 0);
+                        else if (ssrMissReason == SSR_MISS_NO_CROSSING) c = float3(0, 0, 1);
+                        else if (ssrMissReason == SSR_MISS_THICKNESS) c = float3(1, 1, 0);
+                    }
                     return float4(c, 1.0);
                 }
 
