@@ -140,12 +140,17 @@ SSRRaytraceRes SSRRaytrace(float3 ori, float3 dir)
         return res;
     }
 
-    // Step length until the ray exits the screen cube.
+    // Step length until the ray exits the screen cube. Only the xy axes are
+    // [0,1] screen bounds; z is linear view depth in metres, so a [0,1] bound
+    // there is wrong (tMax.z is always <= 0 for any ray going deeper, which
+    // made marchLen <= 0 and killed every march before it started). Bound the
+    // march by the xy screen exit and cap at the far point's own path length.
     float3 rInv = 1.0 / screenRayDir;
     float3 t1 = -screenPos * rInv;
     float3 t2 = (float3(1.0, 1.0, 1.0) - screenPos) * rInv;
     float3 tMax = max(t1, t2);
-    float marchLen = min(min(tMax.x, tMax.y), tMax.z);
+    float marchLen = min(tMax.x, tMax.y);
+    marchLen = min(marchLen, deltaLen);
     if (marchLen <= 0.0)
     {
         res.typeId = SSR_MISS_MARCHLEN;
