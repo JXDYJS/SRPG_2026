@@ -185,10 +185,14 @@ Shader "Hidden/SSR"
                 // the reprojected UV lands between texels, so instead of a single
                 // point sample that can pick the wrong face at edges / scatter on
                 // smooth planes, we fetch the 2x2 neighborhood and keep only the
-                // taps that are the *same* reflector surface (reflector flag +
-                // tight world-normal cone + depth close to this pixel). Kept taps
-                // are blended by their bilinear weights; count advances from the
-                // largest kept count so edge pixels don't reset to 1 every frame.
+                // taps that are on the *same* surface plane as this pixel. Coplanarity
+                // is judged the iterationRP way: reconstruct the tap's world position
+                // from the current-frame depth at its UV, then measure the distance
+                // along the surface normal (dot(delta, normal)). Points on the same
+                // plane project to ~0 whatever the view tilt, so oblique walls no
+                // longer reject their own neighbours (a raw view-space depth compare
+                // did). Kept taps are blended by their bilinear weights; count advances
+                // from the largest kept count so edges don't reset to 1 every frame.
                 float3 accumulated = radiance;
                 float count = 1.0;
 
@@ -198,9 +202,8 @@ Shader "Hidden/SSR"
 
                 if (prevInScreen && _FrameIdx > 1)
                 {
-                    float3 curViewPos = SSRViewPosFromScreen(uv, rawDepth);
-                    float curViewDepth = -curViewPos.z;
-                    float depthTol = 0.01 + 0.002 * max(curViewDepth, 0.1);
+                    // World-space coplanarity tolerance along the normal (~ a few cm).
+                    float planeTol = 0.05;
 
                     // Continuous texel coord of the reprojected point.
                     float2 prevTexel = prevUv * _ScreenParams.xy - 0.5;
@@ -233,14 +236,20 @@ Shader "Hidden/SSR"
                             float4 tapMeta = _PrevMeta.Load(int3(tapTexel, 0));
                             float3 tapNormal = SSRDecodeNormal(tapMeta.rg);
 
-                            // Surface gates: was a reflector, normal cone, depth match.
+                            // Surface gates: was a reflector + tight normal cone.
                             bool keep = tapMeta.a > 0.5;
                             keep = keep && saturate(dot(tapNormal, normalWS)) > 0.9;
 
+                            // Coplanarity gate (iterationRP): unproject the tap's
+                            // current-frame depth to world and take the distance to
+                            // this pixel along the surface normal. Same plane -> ~0.
                             float2 tapUv = (tapTexel + 0.5) / screenSize;
                             float tapRawDepth = SAMPLE_TEXTURE2D_LOD(_CameraDepthTexture, sampler_CameraDepthTexture, tapUv, 0).r;
-                            float tapViewDepth = -SSRViewPosFromScreen(tapUv, tapRawDepth).z;
-                            keep = keep && abs(tapViewDepth - curViewDepth) < depthTol;
+                            float4 tapClip = float4(tapUv * 2.0 - 1.0, tapRawDepth, 1.0);
+                            float4 tapW = mul(_InvViewProj, tapClip);
+                            float3 tapWorldPos = tapW.xyz / tapW.w;
+                            float planeDist = dot(tapWorldPos - worldPos, normalWS);
+                            keep = keep && abs(planeDist) < planeTol;
 
                             if (keep)
                             {
