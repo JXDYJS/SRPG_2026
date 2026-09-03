@@ -44,7 +44,6 @@ Shader "Hidden/SSR"
 
             TEXTURE2D(_ReflNormal);     SAMPLER(sampler_ReflNormal);
             TEXTURE2D(_ReflRoughMetal); SAMPLER(sampler_ReflRoughMetal);
-            TEXTURE2D(_ReflAlbedo);     SAMPLER(sampler_ReflAlbedo);
             TEXTURE2D(_GBuffer);        SAMPLER(sampler_GBuffer);
             TEXTURE2D(_SceneColor);     SAMPLER(sampler_SceneColor);
             // previous frame accumulation (ping-pong read side)
@@ -91,13 +90,11 @@ Shader "Hidden/SSR"
             // valid radiance sample so the temporal accumulator always advances:
             //   sky (VOXEL_HIT_NONE) -> dynamic sky color along the ray
             //   water               -> Fresnel sky reflection + scattered body light
-            //   block/unit          -> incident light field at the hit (sun + SH
-            //                          irradiance), WITHOUT the hit's albedo.
-            //
-            // The accumulator stores the incident light field only: the reflector
-            // pixel applies its own BRDF/albedo weight in the forward pass
-            // (CustomDynamicGI -> EnvironmentBRDFSpecular). Multiplying here by
-            // the hit albedo would double-count the hit's surface albedo.
+            //   block/unit          -> hit's outgoing radiance = its albedo (the
+            //                          mirrored object's color, NOT the reflector's
+            //                          own albedo) * (sun + SH irradiance).
+            // The reflector's own albedo/F0 is applied once by the forward
+            // EnvironmentBRDF, so nothing here is double-counted.
             float3 SSRRelightHit(VoxelRaytraceRes hit, float3 dir, float3 sunDir, float3 sunColor)
             {
                 if (hit.typeId == VOXEL_HIT_NONE)
@@ -120,11 +117,14 @@ Shader "Hidden/SSR"
                     }
                     return IrcSkyAmbient(float3(0, 1, 0)); // upward water hit: sky floor
                 }
-                float3 emissive = hit.typeId == VOXEL_HIT_UNIT ? float3(0, 0, 0) : IrcEmissive(hit.typeId);
+                bool isUnit = hit.typeId == VOXEL_HIT_UNIT;
+                float3 albedo = isUnit ? hit.hitColor
+                                       : VoxelSampleFace(hit.typeId, hit.hitNormal, hit.hitPos).rgb;
+                float3 emissive = isUnit ? float3(0, 0, 0) : IrcEmissive(hit.typeId);
                 float3 direct = emissive
                     + sunColor * saturate(dot(hit.hitNormal, sunDir)) * IrcSunVisibility(hit.hitPos);
                 float3 indirect = IrcSampleDiffuse(hit.hitPos, hit.hitNormal);
-                return direct + indirect;
+                return albedo * (direct + indirect);
             }
 
             float4 TraceFragment(Varyings input) : SV_Target
@@ -183,23 +183,11 @@ Shader "Hidden/SSR"
                     ssrHit = SSRRaytrace(viewOri, viewDirS);
                     if (ssrHit.alpha > 0.5)
                     {
-                        // Store the incident light field, not the hit's shaded
-                        // color: sceneColor = hitAlbedo * L (approx). Dividing by
-                        // the hit's albedo yields L, so the forward pass applies
-                        // *this* pixel's BRDF weight once (no double albedo).
-                        // Falls back to the raw color when the hit has no
-                        // ReflectionData albedo (albedoLum ~ 0).
-                        float3 hitAlbedo = SAMPLE_TEXTURE2D(_ReflAlbedo, sampler_ReflAlbedo, ssrHit.hitUv).rgb;
-                        float hitAlbedoLum = max(hitAlbedo.r, max(hitAlbedo.g, hitAlbedo.b));
-                        if (hitAlbedoLum > 0.01)
-                        {
-                            radiance = SAMPLE_TEXTURE2D(_SceneColor, sampler_SceneColor, ssrHit.hitUv).rgb
-                                     * rcp(max(hitAlbedo + 1e-4, 1e-3));
-                        }
-                        else
-                        {
-                            radiance = SAMPLE_TEXTURE2D(_SceneColor, sampler_SceneColor, ssrHit.hitUv).rgb;
-                        }
+                        // sceneColor at the hit is the hit object's outgoing
+                        // radiance (its albedo * light already baked in). That is
+                        // exactly what a mirror sees; the reflector's own albedo /
+                        // F0 is applied once by the forward EnvironmentBRDF.
+                        radiance = SAMPLE_TEXTURE2D(_SceneColor, sampler_SceneColor, ssrHit.hitUv).rgb;
                         hitType = 1;
                     }
                     else
