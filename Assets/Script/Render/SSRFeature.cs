@@ -33,6 +33,9 @@ namespace Render
         {
             [Range(1f, 1024f)] public float MaxAccum = 128f;
             [Range(0.1f, 1f)] public float Scale = 1f;
+
+            [Tooltip("Debug: colorize the reflection hit path. Red = screen-space scene hit, green = voxel relight.")]
+            public bool DebugHitPath = false;
         }
 
         public Settings settings = new Settings();
@@ -48,6 +51,10 @@ namespace Render
         static readonly int k_FrameIdxId = Shader.PropertyToID("_FrameIdx");
         static readonly int k_PrevAccumId = Shader.PropertyToID("_PrevAccum");
         static readonly int k_AccumId = Shader.PropertyToID("_Accum");
+
+        // Debug visualization of the hit path (see _SSR_DEBUG_HIT in SSR.shader).
+        // Local keyword: enabled/disabled on the material itself.
+        const string k_DebugHitPathKeyword = "_SSR_DEBUG_HIT";
 
         public override void Create()
         {
@@ -100,6 +107,7 @@ namespace Render
             bool m_ReadA; // true: this frame reads A, writes B
             int m_FrameIdx;
             Matrix4x4 m_PrevVP;
+            bool m_LastDebugHitPath;
 
             static readonly int k_SceneColorId = Shader.PropertyToID("_SceneColor");
             static readonly int k_PrevMetaId = Shader.PropertyToID("_PrevMeta");
@@ -110,6 +118,7 @@ namespace Render
                 m_Settings = settings;
                 m_ReadA = true;
                 m_PrevVP = Matrix4x4.identity;
+                m_LastDebugHitPath = m_Settings.DebugHitPath;
                 profilingSampler = new ProfilingSampler("SSRTrace");
                 // Ensure depth + scene color exist for the trace (SSR.hlsl reads
                 // _CameraDepthTexture; we read the post-transparent color target).
@@ -156,6 +165,16 @@ namespace Render
                 RTHandle metaWrite = m_ReadA ? mMetaB : mMetaA;
                 m_ReadA = !m_ReadA;
                 m_FrameIdx++;
+
+                // Sync the debug-hit-path keyword with the Inspector toggle. Only
+                // touch the material when the value changed so the keyword doesn't
+                // get re-set (and re-uploaded) every frame.
+                if (m_LastDebugHitPath != m_Settings.DebugHitPath)
+                {
+                    m_LastDebugHitPath = m_Settings.DebugHitPath;
+                    if (m_Settings.DebugHitPath) m_Material.EnableKeyword(k_DebugHitPathKeyword);
+                    else m_Material.DisableKeyword(k_DebugHitPathKeyword);
+                }
 
                 // Scene color (post-transparent, pre-tonemap HDR).
                 RTHandle sceneColor = cameraData.renderer.cameraColorTargetHandle;

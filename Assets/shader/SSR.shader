@@ -34,6 +34,11 @@ Shader "Hidden/SSR"
             #pragma vertex Vert
             #pragma fragment TraceFragment
             #pragma target 5.0
+            // Debug-only: visualize the hit path (see Settings.DebugHitPath in
+            // SSRFeature). When the keyword is on, the fragment returns a solid
+            // color instead of the accumulated radiance: red = screen-space
+            // scene hit, green = voxel relight fallback.
+            #pragma shader_feature_local _SSR_DEBUG_HIT
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.core/Runtime/Utilities/Blit.hlsl"
@@ -152,7 +157,7 @@ Shader "Hidden/SSR"
                 float3 sunColor = _MainLightColor.rgb;
 
                 float3 radiance;
-                bool traced = false;
+                int hitType = 0; // 0 = none yet, 1 = screen-space, 2 = voxel
 
                 // 1) Screen-space ray march over the current depth buffer.
                 float3 viewOri = TransformWorldToView(worldPos + normalWS * 1e-3);
@@ -166,19 +171,25 @@ Shader "Hidden/SSR"
                     if (all(hitUv >= 0.0) && all(hitUv <= 1.0))
                     {
                         radiance = SAMPLE_TEXTURE2D(_SceneColor, sampler_SceneColor, hitUv).rgb;
-                        traced = true;
+                        hitType = 1;
                     }
                 }
 
                 // 2) Voxel DDA along the reflection ray when SSR missed. Every
                 // outcome is a valid radiance (block/unit relight, sky color, or
                 // water shade), so the accumulator always advances.
-                if (!traced)
+                if (hitType == 0)
                 {
                     VoxelRaytraceRes dda = VoxelRaytrace(worldPos, dir);
                     radiance = SSRRelightHit(dda, dir, sunDir, sunColor);
-                    traced = true;
+                    hitType = 2;
                 }
+
+                // Debug visualization: solid red = screen-space hit, solid green =
+                // voxel relight. Skip the temporal accumulation entirely.
+                #if defined(_SSR_DEBUG_HIT)
+                return float4(hitType == 1 ? float3(1, 0, 0) : float3(0, 1, 0), 1.0);
+                #endif
 
                 // Temporal accumulation with manual 4-tap (catmull-free bilinear)
                 // history fetch, gating each tap independently (iterationRP scheme):
