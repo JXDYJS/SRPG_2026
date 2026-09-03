@@ -180,57 +180,89 @@ Shader "Hidden/SSR"
                     traced = true;
                 }
 
-                // Temporal accumulation. The history is usable only if reprojecting
-                // this surface point into the previous frame lands on the *same*
-                // reflector surface: same reflector id, similar depth (projected on
-                // the vertex normal) and a tight normal cone (iterationRP gates).
-                // Otherwise the history belongs to another surface / disocclusion ->
-                // reset to the current single sample (count = 1).
+                // Temporal accumulation with manual 4-tap (catmull-free bilinear)
+                // history fetch, gating each tap independently (iterationRP scheme):
+                // the reprojected UV lands between texels, so instead of a single
+                // point sample that can pick the wrong face at edges / scatter on
+                // smooth planes, we fetch the 2x2 neighborhood and keep only the
+                // taps that are the *same* reflector surface (reflector flag +
+                // tight world-normal cone + depth close to this pixel). Kept taps
+                // are blended by their bilinear weights; count advances from the
+                // largest kept count so edge pixels don't reset to 1 every frame.
+                float3 accumulated = radiance;
+                float count = 1.0;
+
                 float4 prevClip = mul(_PrevVP, float4(worldPos, 1.0));
                 float2 prevUv = prevClip.xy / max(prevClip.w, 1e-6) * 0.5 + 0.5;
                 bool prevInScreen = all(prevUv >= 0.0) && all(prevUv <= 1.0) && prevClip.w > 0.0;
 
-                float3 accumulated = radiance;
-                float count = 1.0;
                 if (prevInScreen && _FrameIdx > 1)
                 {
-                    float4 prev = SAMPLE_TEXTURE2D(_PrevAccum, sampler_PrevAccum, prevUv);
-                    float4 prevMeta = SAMPLE_TEXTURE2D(_PrevMeta, sampler_PrevMeta, prevUv);
-                    float3 prevNormal = SSRDecodeNormal(prevMeta.rg);
-                    float prevReflFlag = prevMeta.a;
-
-                    // Same reflector surface at the reprojected point?
-                    bool historyValid = prevReflFlag > 0.5;
-
-                    // Normal reject: tight cone on world normals (world space -> camera
-                    // independent). A disoccluded or different surface tilts beyond it.
-                    float nDot = saturate(dot(prevNormal, normalWS));
-                    historyValid = historyValid && nDot > 0.9;
-
-                    // Depth/disocclusion reject: the surface currently shown at the
-                    // reprojected UV must sit at this pixel's depth. A nearer/farther
-                    // surface there means this point was occluded or moved last frame,
-                    // so the stored history belongs to another object.
-                    float reprojRawDepth = SAMPLE_TEXTURE2D_LOD(_CameraDepthTexture, sampler_CameraDepthTexture, prevUv, 0).r;
-                    float3 reprojViewPos = SSRViewPosFromScreen(prevUv, reprojRawDepth);
                     float3 curViewPos = SSRViewPosFromScreen(uv, rawDepth);
-                    float depthDiff = abs(-reprojViewPos.z - (-curViewPos.z));
-                    historyValid = historyValid && depthDiff < 0.01 + 0.002 * max(-curViewPos.z, 0.1);
+                    float curViewDepth = -curViewPos.z;
+                    float depthTol = 0.01 + 0.002 * max(curViewDepth, 0.1);
 
-                    if (historyValid)
+                    // Continuous texel coord of the reprojected point.
+                    float2 prevTexel = prevUv * _ScreenParams.xy - 0.5;
+                    int2 baseTexel = int2(floor(prevTexel));
+                    float2 frac = prevTexel - baseTexel; // in [0,1)
+
+                    float2 screenSize = _ScreenParams.xy;
+
+                    float3 prevColor = 0;
+                    float weightSum = 0;
+                    float maxCount = 0;
+
+                    [unroll]
+                    for (int ty = 0; ty < 2; ty++)
                     {
-                        // Same surface: 1/N blend of the new radiance sample. A just
-                        // discovered reflector (prev.a == 0) still starts accumulating.
-                        float prevN = max(prev.a, 1.0);
+                        [unroll]
+                        for (int tx = 0; tx < 2; tx++)
+                        {
+                            int2 tapTexel = baseTexel + int2(tx, ty);
+                            if (tapTexel.x < 0 || tapTexel.y < 0 ||
+                                tapTexel.x >= (int)screenSize.x || tapTexel.y >= (int)screenSize.y) continue;
+
+                            // Bilinear weight of this tap.
+                            float2 tapFrac = float2(tx == 0 ? 1.0 - frac.x : frac.x,
+                                                    ty == 0 ? 1.0 - frac.y : frac.y);
+                            float bilinearW = tapFrac.x * tapFrac.y;
+
+                            // Per-tap history + meta (point fetch).
+                            float4 tap = _PrevAccum.Load(int3(tapTexel, 0));
+                            float4 tapMeta = _PrevMeta.Load(int3(tapTexel, 0));
+                            float3 tapNormal = SSRDecodeNormal(tapMeta.rg);
+
+                            // Surface gates: was a reflector, normal cone, depth match.
+                            bool keep = tapMeta.a > 0.5;
+                            keep = keep && saturate(dot(tapNormal, normalWS)) > 0.9;
+
+                            float2 tapUv = (tapTexel + 0.5) / screenSize;
+                            float tapRawDepth = SAMPLE_TEXTURE2D_LOD(_CameraDepthTexture, sampler_CameraDepthTexture, tapUv, 0).r;
+                            float tapViewDepth = -SSRViewPosFromScreen(tapUv, tapRawDepth).z;
+                            keep = keep && abs(tapViewDepth - curViewDepth) < depthTol;
+
+                            if (keep)
+                            {
+                                prevColor += tap.rgb * bilinearW;
+                                weightSum += bilinearW;
+                                maxCount = max(maxCount, tap.a);
+                            }
+                        }
+                    }
+
+                    if (weightSum > 1e-5)
+                    {
+                        // Valid history on this surface: blend 1/N with the weighted
+                        // previous color; N continues from the largest kept count so
+                        // sub-pixel reprojection does not restart the accumulator.
+                        prevColor /= weightSum;
+                        float prevN = max(maxCount, 1.0);
                         count = min(prevN + 1.0, _SSRParams.y);
-                        accumulated = lerp(prev.rgb, radiance, 1.0 / count);
+                        accumulated = lerp(prevColor, radiance, 1.0 / count);
                     }
-                    else
-                    {
-                        // Different surface / disoccluded / first history: restart.
-                        accumulated = radiance;
-                        count = 1.0;
-                    }
+                    // else: no kept tap -> the reprojected area is a different
+                    // surface / disoccluded / empty history -> restart (count 1).
                 }
 
                 return float4(accumulated, count);
