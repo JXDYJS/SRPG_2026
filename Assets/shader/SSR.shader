@@ -74,6 +74,14 @@ Shader "Hidden/SSR"
                 return reflect(-v, h);
             }
 
+            // Interleaved gradient noise; index with pixel pos + frame index so
+            // consecutive frames use decorrelated sequence positions.
+            float InterleavedGradientNoise(float2 pix, int frameIdx)
+            {
+                float frame = (float)frameIdx * 0.0009764375; // one step per frame
+                return frac(52.9829189 * frac(dot(pix, float2(0.06711056, 0.00583715)) + frame));
+            }
+
             // Relight a voxel hit along the reflection ray (Lambert + SH + sun).
             float3 SSRRelightHit(VoxelRaytraceRes hit, float3 dir, float3 sunDir, float3 sunColor)
             {
@@ -117,9 +125,13 @@ Shader "Hidden/SSR"
                 float perceptualRoughness = rm.r;
                 float roughness = max(perceptualRoughness * perceptualRoughness, 0.02);
 
-                // One GGX ray per frame (temporal blue noise decorrelated).
-                float n1 = frac(sin(dot(uv, float2(12.9898, 78.233)) + _Frame * 1.61803399) * 43758.5453);
-                float n2 = frac(sin(dot(uv + 0.5, float2(39.346, 11.135)) + _Frame * 0.61803399) * 12543.11);
+                // Interleaved gradient noise (Jimenez 2014): spatially
+                // decorrelated blue-noise-like sequence; each frame slips the
+                // noise field by one step so the 1-spp trace decorrelates
+                // temporally and converges over frames.
+                float2 pix = uv * _ScreenParams.xy;
+                float n1 = InterleavedGradientNoise(pix, _FrameIdx);
+                float n2 = InterleavedGradientNoise(pix + 12.0, _FrameIdx);
                 float3 dir = SSRSampleGGX(viewDir, normalWS, roughness, n1, n2);
 
                 float3 sunDir = normalize(_MainLightPosition.xyz);
@@ -170,6 +182,7 @@ Shader "Hidden/SSR"
                 {
                     if (hitSomething && any(radiance > 1e-4))
                     {
+                        // Real hit: advance the integer hit count and blend.
                         count = min(prevN + 1.0, _SSRParams.y);
                         accumulated = lerp(prev.rgb, radiance, 1.0 / count);
                     }
@@ -181,9 +194,10 @@ Shader "Hidden/SSR"
                     }
                     else
                     {
-                        // no hit at all this frame: fade history out
-                        accumulated = prev.rgb * 0.95;
-                        count = prevN * 0.95;
+                        // no hit at all this frame: keep the color, drop one
+                        // count. History expires after prevN frames of misses.
+                        accumulated = prev.rgb;
+                        count = max(prevN - 1.0, 0.0);
                     }
                 }
 

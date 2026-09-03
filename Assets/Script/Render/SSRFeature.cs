@@ -121,8 +121,13 @@ namespace Render
                 desc.width = w;
                 desc.height = h;
 
-                RenderingUtils.ReAllocateIfNeeded(ref m_AccumA, desc, FilterMode.Bilinear, TextureWrapMode.Clamp, name: "SSRAccumA");
-                RenderingUtils.ReAllocateIfNeeded(ref m_AccumB, desc, FilterMode.Bilinear, TextureWrapMode.Clamp, name: "SSRAccumB");
+                // Point sampling keeps the accumulated hit-count in .w pristine:
+                // bilinear reads would mix neighboring pixels' counts and
+                // produce fractional, invalid blend weights. The consumer
+                // (CustomDynamicGI) samples _Accum once per pixel at the same
+                // resolution, so point is visually consistent.
+                RenderingUtils.ReAllocateIfNeeded(ref m_AccumA, desc, FilterMode.Point, TextureWrapMode.Clamp, name: "SSRAccumA");
+                RenderingUtils.ReAllocateIfNeeded(ref m_AccumB, desc, FilterMode.Point, TextureWrapMode.Clamp, name: "SSRAccumB");
             }
 
             public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
