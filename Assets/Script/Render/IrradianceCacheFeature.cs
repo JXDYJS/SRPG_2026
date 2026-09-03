@@ -183,6 +183,15 @@ namespace Render
                 m_Emissive = new GraphicsBuffer(GraphicsBuffer.Target.Structured, EmissiveCount, 16);
                 m_Emissive.SetData(new Vector4[EmissiveCount]);
             }
+
+            // Publish both as globals so fragment passes that include
+            // IrradianceCacheCommon.hlsl (e.g. the SSR trace's voxel relight)
+            // can bind them. StructuredBuffers have no engine fallback: an
+            // unbound global buffer makes any draw using it fail with
+            // "Attempting to draw with missing bindings" (the SSR fullscreen
+            // trace renderpass was being culled whole as a result).
+            Shader.SetGlobalBuffer(k_MasksId, m_Masks);
+            Shader.SetGlobalBuffer(k_EmissiveId, m_Emissive);
         }
 
         RenderTexture CreateCache(string name)
@@ -287,6 +296,8 @@ namespace Render
 
             ReadCache = write;
             Shader.SetGlobalTexture(k_CacheReadId, write);
+            Shader.SetGlobalBuffer(k_MasksId, m_Masks);
+            Shader.SetGlobalBuffer(k_EmissiveId, m_Emissive);
         }
 
         class BakePass : ScriptableRenderPass
