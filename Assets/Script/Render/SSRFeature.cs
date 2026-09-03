@@ -9,10 +9,13 @@ namespace Render
     ///
     /// Runs after transparents, before tonemap (post-processing). For each block
     /// reflector pixel it GGX-samples a reflection ray, marches the scene depth
-    /// (screen-space), and on miss relights the voxel world (map+units) via the
-    /// SH irradiance cache. Accumulates into a ping-pong pair (_Accum / _PrevAccum)
-    /// with a hit-count in .w and reprojection to the previous frame, so a 1-spp
-    /// per-frame trace converges over frames.
+    /// (screen-space), and on miss relights the voxel world (map+units+sky+water)
+    /// via the SH irradiance cache. Every reflector pixel yields a radiance sample
+    /// every frame. Accumulates into a ping-pong pair (_Accum / _PrevAccum) with a
+    /// count in .w; history is accepted only when reprojection lands on the same
+    /// reflector surface (validated with the ping-pong _PrevMeta normal/depth
+    /// buffers), so a 1-spp per-frame trace converges over frames without being
+    /// reset by sky/water rays or disocclusion smearing.
     ///
     /// The reflected radiance is consumed by CustomDynamicGI (materials read
     /// _Accum as the environment-specular term instead of the sky map), so the
@@ -28,7 +31,7 @@ namespace Render
         [System.Serializable]
         public class Settings
         {
-            [Range(1f, 64f)] public float MaxAccum = 16f;
+            [Range(1f, 1024f)] public float MaxAccum = 128f;
             [Range(0.1f, 1f)] public float Scale = 1f;
         }
 
@@ -92,11 +95,14 @@ namespace Render
 
             RTHandle m_AccumA;
             RTHandle m_AccumB;
+            RTHandle mMetaA;
+            RTHandle mMetaB;
             bool m_ReadA; // true: this frame reads A, writes B
             int m_FrameIdx;
             Matrix4x4 m_PrevVP;
 
             static readonly int k_SceneColorId = Shader.PropertyToID("_SceneColor");
+            static readonly int k_PrevMetaId = Shader.PropertyToID("_PrevMeta");
 
             public SSRTracePass(Material material, Settings settings)
             {
@@ -128,6 +134,13 @@ namespace Render
                 // resolution, so point is visually consistent.
                 RenderingUtils.ReAllocateIfNeeded(ref m_AccumA, desc, FilterMode.Point, TextureWrapMode.Clamp, name: "SSRAccumA");
                 RenderingUtils.ReAllocateIfNeeded(ref m_AccumB, desc, FilterMode.Point, TextureWrapMode.Clamp, name: "SSRAccumB");
+
+                // Per-pixel reflector surface meta (oct world normal + flag),
+                // ping-ponged alongside the accumulation for the history gate.
+                // Point filter keeps the reflector flag binary and avoids blending
+                // oct normals across surface edges.
+                RenderingUtils.ReAllocateIfNeeded(ref mMetaA, desc, FilterMode.Point, TextureWrapMode.Clamp, name: "SSRMetaA");
+                RenderingUtils.ReAllocateIfNeeded(ref mMetaB, desc, FilterMode.Point, TextureWrapMode.Clamp, name: "SSRMetaB");
             }
 
             public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
@@ -139,6 +152,8 @@ namespace Render
 
                 RTHandle read = m_ReadA ? m_AccumA : m_AccumB;
                 RTHandle write = m_ReadA ? m_AccumB : m_AccumA;
+                RTHandle metaRead = m_ReadA ? mMetaA : mMetaB;
+                RTHandle metaWrite = m_ReadA ? mMetaB : mMetaA;
                 m_ReadA = !m_ReadA;
                 m_FrameIdx++;
 
@@ -155,6 +170,7 @@ namespace Render
                     cmd.SetGlobalTexture(k_SceneColorId, sceneColor);
                     cmd.SetGlobalTexture(k_PrevAccumId, read);
                     cmd.SetGlobalTexture(k_AccumId, write);
+                    cmd.SetGlobalTexture(k_PrevMetaId, metaRead);
 
                     // Matrices for reprojection + world unprojection.
                     cmd.SetGlobalMatrix(k_PrevVPId, m_PrevVP);
@@ -170,6 +186,10 @@ namespace Render
                     // manual SetRenderTarget ran inside the pass URP already
                     // began for the ConfigureTarget, so it never wrote.
                     Blitter.BlitCameraTexture(cmd, sceneColor, write, m_Material, 0);
+
+                    // Store this frame's reflector meta into the other ping-pong
+                    // half for next frame's history validation.
+                    Blitter.BlitCameraTexture(cmd, sceneColor, metaWrite, m_Material, 1);
                 }
                 context.ExecuteCommandBuffer(cmd);
                 CommandBufferPool.Release(cmd);
@@ -185,6 +205,8 @@ namespace Render
             {
                 m_AccumA?.Release();
                 m_AccumB?.Release();
+                mMetaA?.Release();
+                mMetaB?.Release();
             }
         }
     }
