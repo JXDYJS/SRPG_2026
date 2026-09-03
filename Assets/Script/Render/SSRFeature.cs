@@ -123,8 +123,6 @@ namespace Render
 
                 RenderingUtils.ReAllocateIfNeeded(ref m_AccumA, desc, FilterMode.Bilinear, TextureWrapMode.Clamp, name: "SSRAccumA");
                 RenderingUtils.ReAllocateIfNeeded(ref m_AccumB, desc, FilterMode.Bilinear, TextureWrapMode.Clamp, name: "SSRAccumB");
-
-                ConfigureTarget(m_AccumA); // not used for a blit; we draw manually
             }
 
             public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
@@ -161,10 +159,12 @@ namespace Render
                     cmd.SetGlobalFloat(k_FrameId, m_FrameIdx * 0.005f);
                     cmd.SetGlobalInt(k_FrameIdxId, m_FrameIdx);
 
-                    // Draw into the write target.
-                    CoreUtils.SetRenderTarget(cmd, write);
-                    cmd.ClearRenderTarget(RTClearFlags.Color, Color.clear, 1f, 0);
-                    cmd.DrawProcedural(Matrix4x4.identity, m_Material, 0, MeshTopology.Triangles, 3, 1, null);
+                    // Fullscreen trace into the write target. Blitter issues the
+                    // procedural draw through the engine-managed blit path (same
+                    // as UnitStroke/ApplyExposure); a bare DrawProcedural after
+                    // manual SetRenderTarget ran inside the pass URP already
+                    // began for the ConfigureTarget, so it never wrote.
+                    Blitter.BlitCameraTexture(cmd, sceneColor, write, m_Material, 0);
                 }
                 context.ExecuteCommandBuffer(cmd);
                 CommandBufferPool.Release(cmd);
