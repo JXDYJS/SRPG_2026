@@ -74,14 +74,6 @@ Shader "Hidden/SSR"
                 return reflect(-v, h);
             }
 
-            // Interleaved gradient noise; index with pixel pos + frame index so
-            // consecutive frames use decorrelated sequence positions.
-            float InterleavedGradientNoise(float2 pix, int frameIdx)
-            {
-                float frame = (float)frameIdx * 0.0009764375; // one step per frame
-                return frac(52.9829189 * frac(dot(pix, float2(0.06711056, 0.00583715)) + frame));
-            }
-
             // Relight a voxel hit along the reflection ray (Lambert + SH + sun).
             float3 SSRRelightHit(VoxelRaytraceRes hit, float3 dir, float3 sunDir, float3 sunColor)
             {
