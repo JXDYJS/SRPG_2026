@@ -51,10 +51,7 @@ namespace Render
         static readonly int k_FrameIdxId = Shader.PropertyToID("_FrameIdx");
         static readonly int k_PrevAccumId = Shader.PropertyToID("_PrevAccum");
         static readonly int k_AccumId = Shader.PropertyToID("_Accum");
-
-        // Debug visualization of the hit path (see _SSR_DEBUG_HIT in SSR.shader).
-        // Local keyword: enabled/disabled on the material itself.
-        const string k_DebugHitPathKeyword = "_SSR_DEBUG_HIT";
+        static readonly int k_DebugHitPathId = Shader.PropertyToID("_SSRDebugHitPath");
 
         public override void Create()
         {
@@ -107,8 +104,6 @@ namespace Render
             bool m_ReadA; // true: this frame reads A, writes B
             int m_FrameIdx;
             Matrix4x4 m_PrevVP;
-            bool m_LastDebugHitPath;
-
             static readonly int k_SceneColorId = Shader.PropertyToID("_SceneColor");
             static readonly int k_PrevMetaId = Shader.PropertyToID("_PrevMeta");
 
@@ -118,7 +113,6 @@ namespace Render
                 m_Settings = settings;
                 m_ReadA = true;
                 m_PrevVP = Matrix4x4.identity;
-                m_LastDebugHitPath = m_Settings.DebugHitPath;
                 profilingSampler = new ProfilingSampler("SSRTrace");
                 // Ensure depth + scene color exist for the trace (SSR.hlsl reads
                 // _CameraDepthTexture; we read the post-transparent color target).
@@ -166,15 +160,10 @@ namespace Render
                 m_ReadA = !m_ReadA;
                 m_FrameIdx++;
 
-                // Sync the debug-hit-path keyword with the Inspector toggle. Only
-                // touch the material when the value changed so the keyword doesn't
-                // get re-set (and re-uploaded) every frame.
-                if (m_LastDebugHitPath != m_Settings.DebugHitPath)
-                {
-                    m_LastDebugHitPath = m_Settings.DebugHitPath;
-                    if (m_Settings.DebugHitPath) m_Material.EnableKeyword(k_DebugHitPathKeyword);
-                    else m_Material.DisableKeyword(k_DebugHitPathKeyword);
-                }
+                // Sync the debug-hit-path float uniform with the Inspector toggle.
+                // Set every frame (cheap) so toggling in the Inspector applies
+                // immediately without a keyword/variant dependency.
+                m_Material.SetFloat(k_DebugHitPathId, m_Settings.DebugHitPath ? 1f : 0f);
 
                 // Scene color (post-transparent, pre-tonemap HDR).
                 RTHandle sceneColor = cameraData.renderer.cameraColorTargetHandle;

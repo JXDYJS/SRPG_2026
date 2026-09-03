@@ -34,11 +34,6 @@ Shader "Hidden/SSR"
             #pragma vertex Vert
             #pragma fragment TraceFragment
             #pragma target 5.0
-            // Debug-only: visualize the hit path (see Settings.DebugHitPath in
-            // SSRFeature). When the keyword is on, the fragment returns a solid
-            // color instead of the accumulated radiance: red = screen-space
-            // scene hit, green = voxel relight fallback.
-            #pragma shader_feature_local _SSR_DEBUG_HIT
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.core/Runtime/Utilities/Blit.hlsl"
@@ -63,6 +58,12 @@ Shader "Hidden/SSR"
             float4   _SSRParams;   // x = unused, y = maxAccum, z = (unused), w = (unused)
             float    _Frame;       // temporal noise decorrelation
             int      _FrameIdx;
+            // Debug-only hit-path visualization toggle (see Settings.DebugHitPath
+            // in SSRFeature). A plain uniform so the branch always exists in the
+            // base variant (a shader_feature variant was silently skipped because
+            // only the Trace pass of Hidden/SSR uses it, so the material keyword
+            // never produced the alternate variant).
+            float    _SSRDebugHitPath;
 
             // _ReflNormal stores oct-encoded world normals remapped to [0,1]
             // (see CustomLitReflectionDataPass.hlsl). Un-remap, then oct-decode.
@@ -187,9 +188,10 @@ Shader "Hidden/SSR"
 
                 // Debug visualization: solid red = screen-space hit, solid green =
                 // voxel relight. Skip the temporal accumulation entirely.
-                #if defined(_SSR_DEBUG_HIT)
-                return float4(hitType == 1 ? float3(1, 0, 0) : float3(0, 1, 0), 1.0);
-                #endif
+                if (_SSRDebugHitPath > 0.5)
+                {
+                    return float4(hitType == 1 ? float3(1, 0, 0) : float3(0, 1, 0), 1.0);
+                }
 
                 // Temporal accumulation with manual 4-tap (catmull-free bilinear)
                 // history fetch, gating each tap independently (iterationRP scheme):
