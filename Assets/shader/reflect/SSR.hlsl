@@ -14,6 +14,12 @@
 #define SSR_HIT_WATER  64
 #define SSR_HIT_UNIT  100
 
+// Miss reason codes (reported in typeId when alpha == 0) so the debug view can
+// distinguish "ray never aimed at the screen" from "marched but found nothing".
+#define SSR_MISS_OFFSCREEN     201  // ray starts outside / points off-screen / backward
+#define SSR_MISS_NO_CROSSING   202  // marched the whole screen path, no surface crossed
+#define SSR_MISS_THICKNESS     203  // crossed a surface but the binary refine failed thickness
+
 #define SSR_MAX_STEPS    32
 #define SSR_REFINE_STEPS 6
 #define SSR_THICKNESS    0.1
@@ -70,14 +76,22 @@ SSRRaytraceRes SSRRaytrace(float3 ori, float3 dir)
 
     // Ray origin outside the frustum: nothing to do.
     float3 screenPos = SSRScreenPosFromViewPos(ori);
-    if (any(screenPos.xy < -0.05) || any(screenPos.xy > 1.05)) return res;
+    if (any(screenPos.xy < -0.05) || any(screenPos.xy > 1.05))
+    {
+        res.typeId = SSR_MISS_OFFSCREEN;
+        return res;
+    }
 
     // Project a far point to get the 3D screen-space march direction.
     float3 screenFar = SSRScreenPosFromViewPos(ori + dir * SSR_MARCH_DIST);
     float3 screenRayDir = normalize(screenFar - screenPos);
 
     // Reflected ray must move away from the camera (linear depth increases).
-    if (screenRayDir.z <= 0.0) return res;
+    if (screenRayDir.z <= 0.0)
+    {
+        res.typeId = SSR_MISS_OFFSCREEN;
+        return res;
+    }
 
     // Step length until the ray exits the screen cube.
     float3 rInv = 1.0 / screenRayDir;
@@ -85,7 +99,11 @@ SSRRaytraceRes SSRRaytrace(float3 ori, float3 dir)
     float3 t2 = (float3(1.0, 1.0, 1.0) - screenPos) * rInv;
     float3 tMax = max(t1, t2);
     float marchLen = min(min(tMax.x, tMax.y), tMax.z);
-    if (marchLen <= 0.0) return res;
+    if (marchLen <= 0.0)
+    {
+        res.typeId = SSR_MISS_OFFSCREEN;
+        return res;
+    }
     float stepLen = marchLen / SSR_MAX_STEPS;
 
     float3 rayPos = screenPos;
@@ -95,8 +113,16 @@ SSRRaytraceRes SSRRaytrace(float3 ori, float3 dir)
         rayPos += screenRayDir * stepLen;
 
         // Left the screen or went behind the camera.
-        if (any(rayPos.xy < 0.0) || any(rayPos.xy > 1.0)) return res;
-        if (rayPos.z <= 0.0) return res;
+        if (any(rayPos.xy < 0.0) || any(rayPos.xy > 1.0))
+        {
+            res.typeId = SSR_MISS_NO_CROSSING;
+            return res;
+        }
+        if (rayPos.z <= 0.0)
+        {
+            res.typeId = SSR_MISS_NO_CROSSING;
+            return res;
+        }
 
         // Surface closer than the ray => the ray crossed geometry.
         float sceneDepth = SSRSampleViewDepth(rayPos.xy);
@@ -122,10 +148,15 @@ SSRRaytraceRes SSRRaytrace(float3 ori, float3 dir)
                 res.alpha = 1.0;
                 res.typeId = SSR_HIT_SURFACE;
             }
+            else
+            {
+                res.typeId = SSR_MISS_THICKNESS;
+            }
             return res; // crossed something (hit or not) - stop marching
         }
     }
 
+    res.typeId = SSR_MISS_NO_CROSSING;
     return res;
 }
 

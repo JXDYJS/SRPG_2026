@@ -159,6 +159,7 @@ Shader "Hidden/SSR"
 
                 float3 radiance;
                 int hitType = 0; // 0 = none yet, 1 = screen-space, 2 = voxel
+                int ssrMissReason = 0; // SSRRaytrace miss code when hitType ends up voxel
 
                 // 1) Screen-space ray march over the current depth buffer.
                 float3 viewOri = TransformWorldToView(worldPos + normalWS * 1e-3);
@@ -175,6 +176,10 @@ Shader "Hidden/SSR"
                         hitType = 1;
                     }
                 }
+                else
+                {
+                    ssrMissReason = ssrHit.typeId;
+                }
 
                 // 2) Voxel DDA along the reflection ray when SSR missed. Every
                 // outcome is a valid radiance (block/unit relight, sky color, or
@@ -186,11 +191,21 @@ Shader "Hidden/SSR"
                     hitType = 2;
                 }
 
-                // Debug visualization: solid red = screen-space hit, solid green =
-                // voxel relight. Skip the temporal accumulation entirely.
+                // Debug visualization of the hit path, skipping temporal accumulation:
+                //   red    = screen-space scene hit
+                //   green  = voxel fallback because the SSR ray never aimed on-screen
+                //            (started off-screen / pointed backward / depth regressed)
+                //   blue   = voxel fallback because SSR marched the whole screen path
+                //            but no surface crossed (ray aimed into empty/background)
+                //   yellow = voxel fallback because SSR crossed a surface but the
+                //            binary refine failed the thickness gate
                 if (_SSRDebugHitPath > 0.5)
                 {
-                    return float4(hitType == 1 ? float3(1, 0, 0) : float3(0, 1, 0), 1.0);
+                    float3 c = float3(0, 1, 0); // default green
+                    if (hitType == 1) c = float3(1, 0, 0);
+                    else if (ssrMissReason == SSR_MISS_NO_CROSSING) c = float3(0, 0, 1);
+                    else if (ssrMissReason == SSR_MISS_THICKNESS) c = float3(1, 1, 0);
+                    return float4(c, 1.0);
                 }
 
                 // Temporal accumulation with manual 4-tap (catmull-free bilinear)
