@@ -215,9 +215,12 @@ Shader "Hidden/SSR"
                     else
                     {
                         c = float3(0, 1, 0); // default green
-                        if (hitType == 1) c = float3(1, 0, 0);
-                        else if (ssrMissReason == SSR_MISS_NO_CROSSING) c = float3(0, 0, 1);
-                        else if (ssrMissReason == SSR_MISS_THICKNESS) c = float3(1, 1, 0);
+                        if (hitType == 1) c = float3(1, 0, 0); // red: screen-space hit
+                        else if (ssrMissReason == SSR_MISS_ORIGIN_OFFSCREEN) c = float3(0, 1, 0); // green
+                        else if (ssrMissReason == SSR_MISS_Z_REGRESS) c = float3(1, 0.5, 0); // orange: dir points toward camera
+                        else if (ssrMissReason == SSR_MISS_MARCHLEN) c = float3(1, 1, 0); // yellow
+                        else if (ssrMissReason == SSR_MISS_NO_CROSSING) c = float3(0, 0, 1); // blue
+                        else if (ssrMissReason == SSR_MISS_THICKNESS) c = float3(0, 1, 1); // cyan
                     }
                     return float4(c, 1.0);
                 }

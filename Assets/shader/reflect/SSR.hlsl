@@ -24,9 +24,11 @@ float4x4 _SSRInvProj; // inverse GPU projection
 
 // Miss reason codes (reported in typeId when alpha == 0) so the debug view can
 // distinguish "ray never aimed at the screen" from "marched but found nothing".
-#define SSR_MISS_OFFSCREEN     201  // ray starts outside / points off-screen / backward
-#define SSR_MISS_NO_CROSSING   202  // marched the whole screen path, no surface crossed
-#define SSR_MISS_THICKNESS     203  // crossed a surface but the binary refine failed thickness
+#define SSR_MISS_ORIGIN_OFFSCREEN 201  // ray origin projected off the screen cube
+#define SSR_MISS_Z_REGRESS        202  // reflected ray does not go deeper (screenRayDir.z <= 0)
+#define SSR_MISS_MARCHLEN         203  // no valid march length (degenerate direction)
+#define SSR_MISS_NO_CROSSING      204  // marched the whole screen path, no surface crossed
+#define SSR_MISS_THICKNESS        205  // crossed a surface but the binary refine failed thickness
 
 #define SSR_MAX_STEPS    32
 #define SSR_REFINE_STEPS 6
@@ -88,7 +90,7 @@ SSRRaytraceRes SSRRaytrace(float3 ori, float3 dir)
     float3 screenPos = SSRScreenPosFromViewPos(ori);
     if (any(screenPos.xy < -0.05) || any(screenPos.xy > 1.05))
     {
-        res.typeId = SSR_MISS_OFFSCREEN;
+        res.typeId = SSR_MISS_ORIGIN_OFFSCREEN;
         return res;
     }
 
@@ -99,7 +101,7 @@ SSRRaytraceRes SSRRaytrace(float3 ori, float3 dir)
     // Reflected ray must move away from the camera (linear depth increases).
     if (screenRayDir.z <= 0.0)
     {
-        res.typeId = SSR_MISS_OFFSCREEN;
+        res.typeId = SSR_MISS_Z_REGRESS;
         return res;
     }
 
@@ -111,7 +113,7 @@ SSRRaytraceRes SSRRaytrace(float3 ori, float3 dir)
     float marchLen = min(min(tMax.x, tMax.y), tMax.z);
     if (marchLen <= 0.0)
     {
-        res.typeId = SSR_MISS_OFFSCREEN;
+        res.typeId = SSR_MISS_MARCHLEN;
         return res;
     }
     float stepLen = marchLen / SSR_MAX_STEPS;
