@@ -53,11 +53,11 @@ Shader "Hidden/SSR"
             float    _Frame;       // temporal noise decorrelation
             int      _FrameIdx;
 
+            // _ReflNormal stores oct-encoded world normals remapped to [0,1]
+            // (see CustomLitReflectionDataPass.hlsl). Un-remap, then oct-decode.
             float3 SSRDecodeNormal(float2 enc)
             {
-                float2 f = enc * 2.0 - 1.0;
-                float z = sqrt(saturate(1.0 - dot(f, f)));
-                return float3(f, z);
+                return UnpackNormalOctQuadEncode(enc * 2.0 - 1.0);
             }
 
             // GGX (visible-normal-ish) sample of the reflection lobe around n,
