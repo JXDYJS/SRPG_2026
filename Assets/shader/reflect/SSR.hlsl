@@ -29,6 +29,7 @@ float4x4 _SSRInvProj; // inverse GPU projection
 #define SSR_MISS_MARCHLEN         203  // no valid march length (degenerate direction)
 #define SSR_MISS_NO_CROSSING      204  // marched the whole screen path, no surface crossed
 #define SSR_MISS_THICKNESS        205  // crossed a surface but the binary refine failed thickness
+#define SSR_MISS_NO_DATA          206  // no reflection data (not CustomLit): skip SSR
 
 #define SSR_MAX_STEPS    32
 #define SSR_REFINE_STEPS 6

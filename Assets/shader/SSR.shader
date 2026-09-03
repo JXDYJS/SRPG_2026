@@ -145,6 +145,13 @@ Shader "Hidden/SSR"
                 float perceptualRoughness = rm.r;
                 float roughness = max(perceptualRoughness * perceptualRoughness, 0.02);
 
+                // No reflection data written here (e.g. special-shader block not
+                // fed by CustomLitReflectionDataPass: texture texel stays 0,0,0,0).
+                // Treating it as data makes a mirror-rough GGX ray around a
+                // garbage oct-decoded normal, which fabricates site-wide orange
+                // Z_REGRESS. Skip SSR; the voxel fallback answers these pixels.
+                bool hasReflData = rm.r > 1e-4;
+
                 // Interleaved gradient noise (Jimenez 2014): spatially
                 // decorrelated blue-noise-like sequence; each frame slips the
                 // noise field by one step so the 1-spp trace decorrelates
@@ -166,15 +173,25 @@ Shader "Hidden/SSR"
                 // is always inside [0,1]; sample the scene color there directly.
                 float3 viewOri = TransformWorldToView(worldPos + normalWS * 1e-3);
                 float3 viewDirS = TransformWorldToViewDir(dir, false);
-                SSRRaytraceRes ssrHit = SSRRaytrace(viewOri, viewDirS);
-                if (ssrHit.alpha > 0.5)
+                SSRRaytraceRes ssrHit;
+                if (hasReflData)
                 {
-                    radiance = SAMPLE_TEXTURE2D(_SceneColor, sampler_SceneColor, ssrHit.hitUv).rgb;
-                    hitType = 1;
+                    ssrHit = SSRRaytrace(viewOri, viewDirS);
+                    if (ssrHit.alpha > 0.5)
+                    {
+                        radiance = SAMPLE_TEXTURE2D(_SceneColor, sampler_SceneColor, ssrHit.hitUv).rgb;
+                        hitType = 1;
+                    }
+                    else
+                    {
+                        ssrMissReason = ssrHit.typeId;
+                    }
                 }
                 else
                 {
-                    ssrMissReason = ssrHit.typeId;
+                    // Not a CustomLit skin: the trace would run around a garbage
+                    // normal; report a clean no-data miss and fall through to voxel.
+                    ssrMissReason = SSR_MISS_NO_DATA;
                 }
 
                 // 2) Voxel DDA along the reflection ray when SSR missed. Every
@@ -200,6 +217,8 @@ Shader "Hidden/SSR"
                 //            but no surface crossed (ray aimed into empty/background)
                 //   yellow = voxel fallback because SSR crossed a surface but the
                 //            binary refine failed the thickness gate
+                //   dark red = no reflection data at this pixel (special shader);
+                //             voxel answer only, SSR skipped on purpose.
                 if (_SSRDebugHitPath > 0.5)
                 {
                     // Consistency check: worldPos (via the known-good _InvViewProj)
@@ -222,6 +241,7 @@ Shader "Hidden/SSR"
                         else if (ssrMissReason == SSR_MISS_MARCHLEN) c = float3(1, 1, 0); // yellow
                         else if (ssrMissReason == SSR_MISS_NO_CROSSING) c = float3(0, 0, 1); // blue
                         else if (ssrMissReason == SSR_MISS_THICKNESS) c = float3(0, 1, 1); // cyan
+                        else c = float3(0.5, 0, 0); // dark red: no reflection data
                     }
                     return float4(c, 1.0);
                 }
