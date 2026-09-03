@@ -35,6 +35,11 @@ float4x4 _SSRInvProj; // inverse GPU projection
 #define SSR_REFINE_STEPS 6
 #define SSR_THICKNESS    0.1
 #define SSR_MARCH_DIST   100.0
+// Metre-space self-rejection band for the depth crossing test. The ray starts
+// 1mm off its own surface, so crossings within a few cm would still belong to
+// the reflector itself (its UV never leaves the origin in practice): do not
+// treat them as hits -- they are the "reflecting itself" artifact.
+#define SSR_SELF_OFFSET  0.05
 
 TEXTURE2D(_CameraDepthTexture);
 SAMPLER(sampler_CameraDepthTexture);
@@ -178,8 +183,12 @@ SSRRaytraceRes SSRRaytrace(float3 ori, float3 dir)
         }
 
         // Surface closer than the ray => the ray crossed geometry.
+        // Self-offset: the ray starts 1mm off its own surface; reject any
+        // crossing that is still within the near-surface band (a few cm) so the
+        // ray cannot hit the reflector's own pixel on step 0/1 and paint
+        // "itself" into the reflection (mirror-shot bug).
         float sceneDepth = SSRSampleViewDepth(rayPos.xy);
-        if (sceneDepth < rayPos.z)
+        if (sceneDepth < rayPos.z - SSR_SELF_OFFSET)
         {
             // Binary search the crossing inside [lo, rayPos].
             float3 lo = rayPos - screenRayDir * stepLen;

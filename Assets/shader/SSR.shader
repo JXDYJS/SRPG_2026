@@ -175,7 +175,10 @@ Shader "Hidden/SSR"
                 // 1) Screen-space ray march over the current depth buffer. The
                 // march runs entirely in screen (uv, depth) space, so a hit's uv
                 // is always inside [0,1]; sample the scene color there directly.
-                float3 viewOri = TransformWorldToView(worldPos + normalWS * 1e-3);
+                // The origin is pushed along the normal (5cm, matching the
+                // SSR_SELF_OFFSET rejection band) so the ray cannot immediately
+                // hit the reflector's own pixel and mirror itself.
+                float3 viewOri = TransformWorldToView(worldPos + normalWS * 0.05);
                 float3 viewDirS = TransformWorldToViewDir(dir, false);
                 SSRRaytraceRes ssrHit;
                 if (hasReflData)
