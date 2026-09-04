@@ -6,9 +6,10 @@ using Cysharp.Threading.Tasks;
 using UI.Panel;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using UnityEngine.Networking;
 using UnityEngine.AddressableAssets.ResourceLocators;
+using UnityEngine.Networking;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using UnityEngine.ResourceManagement.ResourceLocations;
 
 namespace Managers
 {
@@ -71,10 +72,12 @@ namespace Managers
         /// Pre-downloads every addressable bundle that has no cached copy yet, driving the load bar
         /// with byte progress. Retries failed bundles a limited number of times; returns false when a
         /// bundle still cannot be fetched so the caller can block the game start.
+        /// Keys are pre-filtered via locator.Locate so non-resolvable catalog keys (e.g. 'byfile.lua')
+        /// never reach GetDownloadSizeAsync and trigger InvalidKeyException noise.
         /// </summary>
         private static async UniTask<bool> PreDownloadAllBundles(LoadWindow window)
         {
-            List<object> keys = CollectAllKeys();
+            List<object> keys = CollectResolvableKeys();
             List<KeyValuePair<object, long>> pending = new List<KeyValuePair<object, long>>();
             long totalBytes = 0;
 
@@ -94,13 +97,20 @@ namespace Managers
                 }
                 catch (Exception e)
                 {
-                    // Unknown/invalid key — ignore, not every catalog entry is a remote bundle.
+                    // Defensive: still possible for a resolvable key with a broken location.
                     Debug.LogWarning($"[Update] GetDownloadSizeAsync 跳过 '{key}': {e.Message}");
                 }
             }
 
             Debug.Log($"[Update] 待预下载 {pending.Count} 个 bundle，共 {BytesToMb(totalBytes)} MB");
             window.SetProgress(0f);
+
+            if (pending.Count == 0)
+            {
+                window.SetProgress(1f);
+                Debug.Log("[Update] 全部内容已在本地/缓存，无需下载");
+                return true;
+            }
 
             long doneBytes = 0;
             foreach (KeyValuePair<object, long> entry in pending)
@@ -151,8 +161,11 @@ namespace Managers
             return true;
         }
 
-        /// <summary>All string/object keys exposed by the active content catalog (asset addresses etc.).</summary>
-        private static List<object> CollectAllKeys()
+        /// <summary>
+        /// Catalog keys that resolve to at least one location. Filtering here keeps non-asset keys
+        /// (Lua loader names, labels, etc.) from being fed to GetDownloadSizeAsync/DownloadDependenciesAsync.
+        /// </summary>
+        private static List<object> CollectResolvableKeys()
         {
             List<object> keys = new List<object>();
             foreach (IResourceLocator locator in Addressables.ResourceLocators)
@@ -160,7 +173,12 @@ namespace Managers
                 if (locator == null) continue;
                 foreach (object key in locator.Keys)
                 {
-                    if (key != null) keys.Add(key);
+                    if (key == null) continue;
+                    if (locator.Locate(key, typeof(object), out IList<IResourceLocation> locations) &&
+                        locations != null && locations.Count > 0)
+                    {
+                        keys.Add(key);
+                    }
                 }
             }
             return keys;
