@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using UI.Panel;
 using UnityEngine;
@@ -11,11 +12,25 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace Managers
 {
-    /// <summary>Startup version check and hot-update pipeline (manifest comparison + Addressables catalog update).</summary>
+    /// <summary>
+    /// Startup version check and hot-update pipeline (manifest comparison + Addressables catalog update).
+    /// Remote operations are bounded by timeouts; pre-download of all remote bundles is retried a
+    /// limited number of times, then reported as failed so the caller can stop at the loading screen.
+    /// </summary>
     public static class UpdateManager
     {
-        /// <summary>Runs the full update check, driving a progress bar via the window.</summary>
-        public static async UniTask CheckAndUpdate(LoadWindow window)
+        // ================ Tunables ================
+        static readonly TimeSpan RemoteManifestTimeout = TimeSpan.FromSeconds(5);
+        static readonly TimeSpan CatalogUpdateTimeout = TimeSpan.FromSeconds(20);
+        const int BundleDownloadRetryCount = 5;
+        static readonly TimeSpan BundleRetryDelay = TimeSpan.FromSeconds(2);
+
+        /// <summary>
+        /// Runs the full startup update flow. Returns true when the game can proceed (content ready
+        /// or server unreachable → local content), false when a required bundle download failed and
+        /// the caller should stop (e.g. show an error on the load screen).
+        /// </summary>
+        public static async UniTask<bool> CheckAndUpdate(LoadWindow window)
         {
             try
             {
@@ -27,18 +42,134 @@ namespace Managers
                     // Full update: client version too old to patch
                     Debug.LogWarning($"[Update] 需要全量更新: local app={local.appVersion} < minApp={remote.minAppVersion}");
                     window.SetProgress(1f);
+                    return true;
                 }
-                else
+
+                // Remote server reachable → refresh catalog so bundle lookups point at the newest content.
+                if (remote != null)
                 {
-                    await ApplyCatalogUpdate(window);
+                    bool catalogOk = await ApplyCatalogUpdate(window);
+                    if (!catalogOk)
+                    {
+                        // Catalog refresh failed; continue with whatever catalog is active (local baseline
+                        // or previous cache). Bundle pre-download below will still run against it.
+                        Debug.LogWarning("[Update] catalog 更新失败，使用当前生效 catalog 继续");
+                    }
                 }
+
+                // Pre-download every bundle that is not cached yet (local-only when offline → instant).
+                return await PreDownloadAllBundles(window);
             }
             catch (Exception e)
             {
                 Debug.LogWarning($"[Update] 更新检查失败，使用本地内容继续: {e.Message}");
+                return true;
             }
         }
 
+        /// <summary>
+        /// Pre-downloads every addressable bundle that has no cached copy yet, driving the load bar
+        /// with byte progress. Retries failed bundles a limited number of times; returns false when a
+        /// bundle still cannot be fetched so the caller can block the game start.
+        /// </summary>
+        private static async UniTask<bool> PreDownloadAllBundles(LoadWindow window)
+        {
+            List<object> keys = CollectAllKeys();
+            List<KeyValuePair<object, long>> pending = new List<KeyValuePair<object, long>>();
+            long totalBytes = 0;
+
+            // First pass: measure how much still needs downloading (skip keys already cached / local).
+            foreach (object key in keys)
+            {
+                try
+                {
+                    AsyncOperationHandle<long> sizeHandle = Addressables.GetDownloadSizeAsync(key);
+                    long size = await sizeHandle.ToUniTask();
+                    Addressables.Release(sizeHandle);
+                    if (size > 0)
+                    {
+                        pending.Add(new KeyValuePair<object, long>(key, size));
+                        totalBytes += size;
+                    }
+                }
+                catch (Exception e)
+                {
+                    // Unknown/invalid key — ignore, not every catalog entry is a remote bundle.
+                    Debug.LogWarning($"[Update] GetDownloadSizeAsync 跳过 '{key}': {e.Message}");
+                }
+            }
+
+            Debug.Log($"[Update] 待预下载 {pending.Count} 个 bundle，共 {BytesToMb(totalBytes)} MB");
+            window.SetProgress(0f);
+
+            long doneBytes = 0;
+            foreach (KeyValuePair<object, long> entry in pending)
+            {
+                object key = entry.Key;
+                bool ok = false;
+                for (int attempt = 1; attempt <= BundleDownloadRetryCount && !ok; attempt++)
+                {
+                    using (CancellationTokenSource cts = new CancellationTokenSource(CatalogUpdateTimeout))
+                    {
+                        AsyncOperationHandle handle = Addressables.DownloadDependenciesAsync(key, autoReleaseHandle: false);
+                        try
+                        {
+                            await handle.WithCancellation(cts.Token, cancelImmediately: true, autoReleaseWhenCanceled: true);
+                            ok = handle.IsValid() && handle.Status == AsyncOperationStatus.Succeeded;
+                        }
+                        catch (Exception e)
+                        {
+                            Debug.LogWarning($"[Update] 下载 bundle '{key}' 第 {attempt}/{BundleDownloadRetryCount} 次失败: {e.Message}");
+                        }
+                        finally
+                        {
+                            if (handle.IsValid())
+                            {
+                                Addressables.Release(handle);
+                            }
+                        }
+                    }
+
+                    if (!ok)
+                    {
+                        await UniTask.Delay(BundleRetryDelay);
+                    }
+                }
+
+                if (!ok)
+                {
+                    Debug.LogError($"[Update] bundle 预下载失败(已达重试上限): '{key}'");
+                    return false;
+                }
+
+                doneBytes += entry.Value;
+                window.SetProgress(totalBytes > 0 ? (float)((double)doneBytes / totalBytes) : 1f);
+            }
+
+            window.SetProgress(1f);
+            Debug.Log("[Update] 全部内容预下载完成");
+            return true;
+        }
+
+        /// <summary>All string/object keys exposed by the active content catalog (asset addresses etc.).</summary>
+        private static List<object> CollectAllKeys()
+        {
+            List<object> keys = new List<object>();
+            foreach (IResourceLocator locator in Addressables.ResourceLocators)
+            {
+                if (locator == null) continue;
+                foreach (object key in locator.Keys)
+                {
+                    if (key != null) keys.Add(key);
+                }
+            }
+            return keys;
+        }
+
+        private static string BytesToMb(long bytes)
+        {
+            return (bytes / 1048576.0).ToString("F2");
+        }
 
         private static bool IsFullUpdateNeeded(VersionManifest local, VersionManifest remote)
         {
@@ -54,7 +185,6 @@ namespace Managers
                 return va.CompareTo(vb);
             return string.CompareOrdinal(a, b);
         }
-
 
         private static VersionManifest ReadLocalManifest()
         {
@@ -75,7 +205,6 @@ namespace Managers
             }
         }
 
-
         private static async UniTask<VersionManifest> FetchRemoteManifest(string serverBaseUrl)
         {
             if (string.IsNullOrEmpty(serverBaseUrl))
@@ -89,11 +218,11 @@ namespace Managers
             {
                 try
                 {
-                    await req.SendWebRequest().ToUniTask();
+                    await req.SendWebRequest().ToUniTask().Timeout(RemoteManifestTimeout);
                 }
                 catch (Exception e)
                 {
-                    Debug.LogWarning($"[Update] 拉取远程清单异常: {e.Message}");
+                    Debug.LogWarning($"[Update] 拉取远程清单超时/异常: {url} → {e.Message}");
                     return null;
                 }
 
@@ -115,33 +244,59 @@ namespace Managers
             }
         }
 
-
-        private static async UniTask ApplyCatalogUpdate(LoadWindow window)
+        /// <summary>
+        /// Refreshes the active Addressables catalog. Returns false when the remote catalog cannot be
+        /// reached or the update times out (caller decides whether to fall back to the current catalog).
+        /// </summary>
+        private static async UniTask<bool> ApplyCatalogUpdate(LoadWindow window)
         {
             window.SetProgress(0f);
-            AsyncOperationHandle<List<string>> check = Addressables.CheckForCatalogUpdates();
-            await check.ToUniTask();
 
-            if (check.Result == null || check.Result.Count == 0)
+            AsyncOperationHandle<List<string>> check = default;
+            AsyncOperationHandle<List<IResourceLocator>> update = default;
+            try
             {
-                Debug.Log("[Update] 无内容更新，直接进游戏");
-                return;
+                check = Addressables.CheckForCatalogUpdates();
+                List<string> updates = await check.ToUniTask().Timeout(CatalogUpdateTimeout);
+                if (updates == null || updates.Count == 0)
+                {
+                    Debug.Log("[Update] 无内容更新，直接进游戏");
+                    return true;
+                }
+
+                Debug.Log($"[Update] 检测到 {updates.Count} 个 catalog 更新，开始下载...");
+                // autoReleaseHandle:false — keep the locator alive or address resolution breaks
+                update = Addressables.UpdateCatalogs(updates, autoReleaseHandle: false);
+
+                while (!update.IsDone)
+                {
+                    DownloadStatus st = update.GetDownloadStatus();
+                    window.SetProgress(st.Percent);
+                    await UniTask.Yield();
+                }
+
+                await update.ToUniTask().Timeout(CatalogUpdateTimeout);
+                Debug.Log("[Update] 内容更新完成");
+                return true;
             }
-
-            Debug.Log($"[Update] 检测到 {check.Result.Count} 个 catalog 更新，开始下载...");
-            // autoReleaseHandle:false — keep the locator alive or address resolution breaks
-            AsyncOperationHandle<List<IResourceLocator>> update =
-                Addressables.UpdateCatalogs(check.Result, autoReleaseHandle: false);
-
-            while (!update.IsDone)
+            catch (Exception e)
             {
-                DownloadStatus st = update.GetDownloadStatus();
-                window.SetProgress(st.Percent);
-                await UniTask.Yield();
+                Debug.LogWarning($"[Update] catalog 更新失败: {e.Message}");
+                return false;
             }
-
-            await update.ToUniTask();
-            Debug.Log("[Update] 内容更新完成");
+            finally
+            {
+                // autoReleaseHandle:false keeps locators alive; the raw handles still need release
+                // to avoid leaking the operation objects themselves.
+                if (update.IsValid())
+                {
+                    Addressables.Release(update);
+                }
+                if (check.IsValid())
+                {
+                    Addressables.Release(check);
+                }
+            }
         }
     }
 
