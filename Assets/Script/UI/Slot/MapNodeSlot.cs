@@ -96,12 +96,11 @@ namespace UI.Slot
                 }
                 node._onEnterNode?.Invoke();
 
-                if (win != null)
-                {
-                    // Unlock the next layer right away (and persist) so a mid-level
-                    // exit + continue never leaves the whole map locked.
-                    win.UnlockNextFromCurrent();
-                }
+                // Persist position immediately so a mid-level exit + continue restores
+                // the right layer/row. The next layer is NOT unlocked here: unlocking
+                // next connections + locking this node is atomic and only happens on a
+                // node completion via NextLevel().
+                win?.SaveCurrentProgress();
             });
 
             this.node._onLockChange += updateMask;

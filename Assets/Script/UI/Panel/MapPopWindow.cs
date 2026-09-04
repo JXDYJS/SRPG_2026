@@ -272,6 +272,12 @@ namespace UI.Panel
             _lineMap.Clear();
             scroll.onValueChanged.RemoveListener(OnScrollChanged);
         }
+        /// <summary>
+        /// Completes the current node (battle won, shop closed, event finished).
+        /// Atomically locks the completed node and unlocks its next-layer connections,
+        /// then persists. This is the ONLY place the next layer is revealed: entering a
+        /// node never unlocks anything, so a mid-level exit + continue cannot skip ahead.
+        /// </summary>
         public void NextLevel()
         {
             if (nodeMapData == null || playerLayer >= nodeMapData.layers.Count) return;
@@ -284,18 +290,6 @@ namespace UI.Panel
             Refresh();
 
             // Persist immediately so a reloaded save reflects the latest unlock state.
-            SaveCurrentProgress();
-        }
-
-        /// <summary>
-        /// Unlocks the next-layer connections of the current position without locking
-        /// the node itself. Called on node entry so a mid-level exit + continue never
-        /// leaves the whole map locked (NextLevel() only runs after a win).
-        /// </summary>
-        public void UnlockNextFromCurrent()
-        {
-            if (nodeMapData == null || playerLayer >= nodeMapData.layers.Count) return;
-            UnlockConnectionsOf(playerLayer, playerRow);
             SaveCurrentProgress();
         }
 
