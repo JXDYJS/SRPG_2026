@@ -48,11 +48,21 @@ namespace UI.BootsTrap
             }
 
             bool freshMap = Data.Persistent?.Data?.nodeMapData == null;
-            NodeMapData map = freshMap ? NodeMapData.GenerateFakeData() : Data.Persistent.Data.nodeMapData;
-            if (freshMap && Data.Persistent?.Data != null)
+            NodeMapData map = null;
+            if (freshMap)
             {
-                Data.Persistent.Data.nodeMapData = map;
-                Data.Persistent.Data.seed = Random.Range(int.MinValue, int.MaxValue);
+                // Deep fake map (128 layers) exercises the virtual-scroll map UI for a
+                // new run; real runs will replace this with a true generator later.
+                map = NodeMapData.GenerateFakeDeepMap();
+                if (Data.Persistent?.Data != null)
+                {
+                    Data.Persistent.Data.nodeMapData = map;
+                    Data.Persistent.Data.seed = Random.Range(int.MinValue, int.MaxValue);
+                }
+            }
+            else
+            {
+                map = Data.Persistent.Data.nodeMapData;
             }
 
             if (UIManager.Instance?.Background == null)
