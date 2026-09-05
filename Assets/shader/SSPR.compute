@@ -25,7 +25,6 @@ float _EdgeFadeOut;
 
 // --- 辅助函数 ---
 uint PackHeightColor(float height, float3 color) {
-    // 高度取反，让低处像素拥有更大的值以便 InterlockedMax 竞争成功
     uint h = (uint)(saturate(1.0 - height) * 65535); 
     uint r = (uint)(saturate(color.r) * 31);
     uint g = (uint)(saturate(color.g) * 63);
@@ -62,10 +61,8 @@ void SSPR_Clear(uint3 id : SV_DispatchThreadID) {
 void SSPR_Render(uint3 id : SV_DispatchThreadID) {
     if (id.x >= (uint)_SSPR_RT_Size.x || id.y >= (uint)_SSPR_RT_Size.y) return;
 
-    // 使用中心点对齐的 UV 解决 4070 几何偏移
     float2 uv = (id.xy + 0.5) * _SSPR_RT_Size.zw;
     
-    // 使用专用的深度采样器，确保 4070 精度对齐
     float depth = _CameraDepthTexture.SampleLevel(sampler_CameraDepthTexture, uv, 0).r;
     
     #if UNITY_REVERSED_Z
@@ -101,8 +98,6 @@ void SSPR_Render(uint3 id : SV_DispatchThreadID) {
 
     if (any(ruv < 0) || any(ruv > 1)) return;
 
-    // --- 采样颜色 ---
-    // 关键修复：使用专用的颜色采样器，解决 AMD/Vulkan 崩溃
     float3 sceneColor = _CameraColorTexture.SampleLevel(sampler_CameraColorTexture, uv, 0).rgb;
     
     uint packed = PackHeightColor(saturate(heightStretch / 100.0), sceneColor);
@@ -127,7 +122,6 @@ void SSPR_Resolve(uint3 id : SV_DispatchThreadID) {
     if (packed > 0) {
         _SSPR_ReflectionTexture[id.xy] = float4(UnpackColor(packed), 1.0);
     } else {
-        // --- 简单的空洞填充 ---
         uint maxIdx = (uint)(_SSPR_RT_Size.x * _SSPR_RT_Size.y);
         uint p1 = (idx + 1 < maxIdx) ? _HashBuffer[idx + 1] : 0;
         uint p2 = (idx > 0) ? _HashBuffer[idx - 1] : 0;

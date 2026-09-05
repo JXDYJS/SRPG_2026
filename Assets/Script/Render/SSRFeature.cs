@@ -48,6 +48,8 @@ namespace Render
         static readonly int k_InvViewProjId = Shader.PropertyToID("_InvViewProj");
         static readonly int k_SSRProjId = Shader.PropertyToID("_SSRProj");
         static readonly int k_SSRInvProjId = Shader.PropertyToID("_SSRInvProj");
+        static readonly int k_SSRViewId = Shader.PropertyToID("_SSRView");
+        static readonly int k_SSRViewITId = Shader.PropertyToID("_SSRViewIT");
         static readonly int k_SSRParamsId = Shader.PropertyToID("_SSRParams");
         static readonly int k_FrameId = Shader.PropertyToID("_Frame");
         static readonly int k_FrameIdxId = Shader.PropertyToID("_FrameIdx");

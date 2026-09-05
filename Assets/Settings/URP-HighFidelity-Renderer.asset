@@ -72,6 +72,39 @@ MonoBehaviour:
     speedLightToDark: 1
     minLuminance: 0.001
     maxLuminance: 10
+--- !u!114 &-1111111111111111113
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f7c6147250b861428b0dec2dc7ae7b4, type: 3}
+  m_Name: SSR
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  _shader: {fileID: 4800000, guid: 36ef81641d00be64b9b6627a6c90944a, type: 3}
+  settings:
+    MaxAccum: 128
+    Scale: 1
+    DebugHitPath: 0
+--- !u!114 &-1111111111111111112
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: edcdd4bac22190f4e8bf19e5592d6b4f, type: 3}
+  m_Name: ReflectionData
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  settings:
+    scale: 1
 --- !u!114 &-876543210987654321
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -211,7 +244,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88ab7227842cc2d4faa9761283efff87, type: 3}
   m_Name: VoxelRaytrace
   m_EditorClassIdentifier: 
-  m_Active: 1
+  m_Active: 0
   _material: {fileID: 0}
 --- !u!114 &1085916960507657859
 MonoBehaviour:
@@ -247,34 +280,3 @@ MonoBehaviour:
     stretchIntensity: 1
     stretchThreshold: 0.5
     edgeFadeOut: 0.1
---- !u!114 &-1111111111111111112
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: edcdd4bac22190f4e8bf19e5592d6b4f, type: 3}
-  m_Name: ReflectionData
-  m_EditorClassIdentifier: 
-  m_Active: 1
-  settings:
-    scale: 1
---- !u!114 &-1111111111111111113
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2f7c6147250b861428b0dec2dc7ae7b4, type: 3}
-  m_Name: SSR
-  m_EditorClassIdentifier: 
-  m_Active: 1
-  settings:
-    MaxAccum: 16
-    Scale: 1

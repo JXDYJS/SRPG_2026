@@ -191,6 +191,7 @@ Shader "Hidden/SSR"
                         // exactly what a mirror sees; the reflector's own albedo /
                         // F0 is applied once by the forward EnvironmentBRDF.
                         radiance = SAMPLE_TEXTURE2D(_SceneColor, sampler_SceneColor, ssrHit.hitUv).rgb;
+                        //radiance = float3(ssrHit.hitUv, 0);
                         hitType = 1;
                     }
                     else
