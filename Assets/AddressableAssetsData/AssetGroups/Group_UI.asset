@@ -52,11 +52,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 1fa5ed02170d55947b756aed565cbe77
-    m_Address: Assets/UI/Launch/LaunchWindow.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 29edd8586e8cde246b488aa0955b449e
     m_Address: Assets/UI/Event/EventChoicePanel.prefab
     m_ReadOnly: 0
