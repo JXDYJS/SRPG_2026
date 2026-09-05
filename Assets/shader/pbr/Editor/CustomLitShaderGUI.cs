@@ -9,12 +9,14 @@ internal class CustomLitShaderGUI : BaseShaderGUI
 
     private LitGUI.LitProperties _litProperties;
     private MaterialProperty _brdfDebugProp;
+    private MaterialProperty _ircDebugProp;
 
     public override void FindProperties(MaterialProperty[] properties)
     {
         base.FindProperties(properties);
         _litProperties = new LitGUI.LitProperties(properties);
         _brdfDebugProp = FindProperty("_BRDFDebug", properties, false);
+        _ircDebugProp = FindProperty("_IRCDebug", properties, false);
     }
 
     public override void ValidateMaterial(Material material)
@@ -52,6 +54,11 @@ internal class CustomLitShaderGUI : BaseShaderGUI
         {
             EditorGUILayout.Space();
             materialEditor.ShaderProperty(_brdfDebugProp, new GUIContent("BRDF Debug Mode"));
+        }
+
+        if (_ircDebugProp != null)
+        {
+            materialEditor.ShaderProperty(_ircDebugProp, new GUIContent("IRC Debug Mode"));
         }
 
         base.DrawAdvancedOptions(material);

@@ -27,6 +27,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 06e09af6f51f2ff468c4f9af6faaff9f
+    m_Address: Assets/UI/Battle/ItemWindow.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0b3fd872f413ca64f8471ce512ae4c61
     m_Address: Assets/UI/SelectHighLight.prefab
     m_ReadOnly: 0
@@ -39,6 +44,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 17f96277b112ac1488c5ccf4254342ef
     m_Address: Assets/UI/Main/MapWindow.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1e2c4f73931237146b6869e308cff079
+    m_Address: Assets/UI/Main/EndWindow.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -74,6 +84,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 56a5bc5d70a815f469fded0f61249c91
     m_Address: Assets/UI/Battle/ActionMenuPanel.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5e24b48bd811474499f5b41eed3b925c
+    m_Address: Assets/UI/Battle/Slot/ChestSlot.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -142,6 +157,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b2d90b6129351a44197962a72e65cc50
+    m_Address: Assets/UI/Battle/RewardWindow.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b91182ec6e11a4943bb8b73647fa431e
     m_Address: Assets/UI/Battle/StatusPopWindow.prefab
     m_ReadOnly: 0
@@ -172,8 +192,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: db51bf08d653a9447804f679ec65abb7
+    m_Address: Assets/UI/Battle/Slot/RewardSlot.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: dda72fa6f849a6e41b6431e4220a50e4
     m_Address: Assets/UI/Highlight.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e9e0d0f91298cf24cb10f81efb20d810
+    m_Address: Assets/UI/Battle/Slot/ItemSlot.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

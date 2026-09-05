@@ -16,12 +16,7 @@ MonoBehaviour:
   m_Data:
     m_SerializedData: []
   m_GUID: fa3a0d2a04846514ba9e903cd3c304dd
-  m_SerializeEntries:
-  - m_GUID: 1fa5ed02170d55947b756aed565cbe77
-    m_Address: Assets/UI/Launch/LaunchWindow.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
+  m_SerializeEntries: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 1f6ca7d155b268c408ed984de8fdd20b, type: 2}
   m_SchemaSet:

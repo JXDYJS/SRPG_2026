@@ -48,7 +48,7 @@ Shader "Hidden/Custom/ApplyExposure"
                 float4 color = SAMPLE_TEXTURE2D(_BlitTexture, sampler_LinearClamp, uv);
 
                 // 4. 应用曝光
-                //color.rgb *= exposure;
+                color.rgb *= exposure;
 
                 return color;
             }

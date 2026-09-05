@@ -26,6 +26,7 @@ Material:
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
   - _BRDFDEBUG_OFF
+  - _IRCDEBUG_OFF
   - _METALLICSPECGLOSSMAP
   - _NORMALMAP
   m_InvalidKeywords: []
@@ -124,6 +125,7 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0.3
     - _GlossyReflections: 1
+    - _IRCDebug: 0
     - _Iterations: 4
     - _MaxRayLength: 50
     - _Metallic: 0

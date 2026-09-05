@@ -1,0 +1,429 @@
+// Irradiance cache bake: Jacobi iterations over the static voxel map.
+// One thread = one LOGICAL cache texel (4x4x4 texels per map voxel, +1 border
+// texel per face counted in the dispatch). Each logical air texel stores an
+// L2 radiance spherical-harmonics function + an accumulation counter N across
+// IRC_SH_SLICES physical z-slices (see IrradianceCacheCommon.hlsl).
+//
+// Solid / unit-solid texels write zero across all slices (N = 0 marker).
+// Air texels with no solid/unit neighbour are fully open and never sampled by
+// a consumer, so they are zeroed and skipped (they restart fresh if a unit
+// later approaches). Wanted air texels trace spp uniform-sphere rays from the
+// cell center and project each hit's radiance onto the 9 SH bases:
+//   ray miss            -> sky ambient radiance along the ray
+//   block/unit hit      -> albedo*(direct sun + emissive + prev-IRC bounce)
+//   water hit           -> Fresnel + HackWaterColor
+// Sun-lit surfaces stay in the SH (smooth); the sky's sun disk is excluded
+// and comes from _DynamicSkyMap at read time (L2 cannot resolve it sharply).
+// Accumulation is progressive 1/N (N in slice IRC_SH_SLICES-1 .w, cap
+// IRC_SH_MAX_N); N resets to 1 when a solid/unit-occupied or fully-open texel
+// returns to wanted air (was N = 0), so changes re-converge quickly.
+//
+// Global bindings (IrradianceCacheFeature):
+//   _VoxelMap / _VoxelMapSize / _VoxelFaceTiles / _WaterSurfaceHeight  (existing)
+//   _IRCCachePrev  Texture3D read side of this iteration
+//   _IRCCacheWrite RWTexture3D write side
+//   _IRCTypeMasks  StructuredBuffer<uint2>, 128 x (key = map byte & 0x7F)
+//   _IRCEmissive   StructuredBuffer<float4>, typeId 1..63
+//   _MainLightShadowmapTexture + LightShadows constants (URP, same frame)
+
+#pragma kernel IRCBake
+#pragma kernel IRCDump
+#pragma kernel IRCProbe
+#pragma kernel IRCEProbe
+#pragma target 5.0
+#pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE
+
+// Test hook (IrradianceCacheVerify): x > 0.5 overrides every hit albedo with
+// .yzw, bypassing the face tiles. Linearity asserts stay exact because the
+// RNG seed depends only on (texel, round), never on albedo — two bakes with
+// different forced albedos traverse identical ray paths per texel.
+float4 _IrcForceAlbedo;
+
+#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+// Shadows.hlsl uses LerpWhiteTo (LerpWhiteTo/lerp white) from core but does
+// not include CommonMaterial.hlsl itself; fragment passes get it indirectly
+// through their lighting includes, which compute has no counterpart for.
+#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/CommonMaterial.hlsl"
+#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Shadows.hlsl"
+#include "Assets/shader/voxel/IrradianceCacheCommon.hlsl"
+
+RWTexture3D<float4> _IRCCacheWrite;
+Texture3D<float4> _IRCCachePrev;
+
+float _IrcBlend;       // EMA factor for the old value (0.9)
+float _IrcFudge;       // sphere-sample calibration weight (1.6)
+float _IrcSelfBounce;  // prev-cache weight for recursive bounces (<= 0.01)
+uint _IrcRound;        // iteration index for sample decorrelation
+float _IrcSpp;         // rays per texel per iteration (>= 1)
+
+uint g_seed;
+
+uint IrcRandNext()
+{
+    g_seed = g_seed * 1664525u + 1013904223u;
+    return g_seed;
+}
+
+float IrcRand01()
+{
+    return (IrcRandNext() >> 8) * (1.0 / 16777216.0);
+}
+
+/// <summary>Uniform sampling on the unit sphere.</summary>
+void IrcSphereSample(out float3 dir)
+{
+    float z = IrcRand01() * 2.0 - 1.0;
+    float phi = 2.0 * IRC_PI * IrcRand01();
+    float r = sqrt(max(0.0, 1.0 - z * z));
+    dir = float3(r * cos(phi), z, r * sin(phi));
+}
+
+/// <summary>Cosine-weighted sampling around the hemisphere axis n.</summary>
+void IrcCosHemiSample(float3 n, out float3 dir)
+{
+    float u1 = IrcRand01();
+    float u2 = IrcRand01();
+    float3 up = abs(n.y) < 0.999 ? float3(0.0, 1.0, 0.0) : float3(1.0, 0.0, 0.0);
+    float3 T = normalize(cross(up, n));
+    float3 B = cross(n, T);
+    float r = sqrt(u1);
+    float phi = 2.0 * IRC_PI * u2;
+    dir = T * (r * cos(phi)) + B * (r * sin(phi)) + n * sqrt(max(0.0, 1.0 - u1));
+}
+
+[numthreads(4, 4, 4)]
+void IRCBake(uint3 dtid : SV_DispatchThreadID)
+{
+    int3 texel = int3(dtid);
+    int3 size = int3(IrcTexelSize() + 0.5);
+    if (any(texel >= size)) return;
+
+    int3 voxel = IrcTexelToVoxel(texel);
+    int3 off = IrcTexelOffset(texel, voxel);
+    uint key = IrcVoxelKey(voxel);
+    bool solid = IrcSubMaskBit(key, off);
+
+    // Solid texels: zero coefficients, N = 0 marker written across every slice.
+    // Sampling a solid interior returns ~0 radiance (rays never spawn there);
+    // N = 0 is the "solid" marker that resets accumulation when air returns.
+    if (solid)
+    {
+        [unroll]
+        for (int k = 0; k < IRC_SH_SLICES; k++)
+        {
+            _IRCCacheWrite[uint3(texel.x, texel.y, texel.z * IRC_SH_SLICES + k)] = float4(0.0, 0.0, 0.0, 0.0);
+        }
+        return;
+    }
+
+    // Dynamic units: a cache texel whose center sits inside a unit voxel is
+    // treated as solid too, so rays never spawn inside a unit. Otherwise the
+    // unit would read as "air" (static map) while its own voxels occlude the
+    // sun, leaving a dark ring where rays sample the unit's shaded interior.
+    float3 cellCenter = IrcTexelToWorld(texel);
+    if (IrcUnitSolidAtWorld(cellCenter) > 0.5)
+    {
+        [unroll]
+        for (int k = 0; k < IRC_SH_SLICES; k++)
+        {
+            _IRCCacheWrite[uint3(texel.x, texel.y, texel.z * IRC_SH_SLICES + k)] = float4(0.0, 0.0, 0.0, 0.0);
+        }
+        return;
+    }
+
+    // Any neighbour (static solid, unit solid, or solid texel) makes this air
+    // texel "wanted": its radiance is sampled by adjacent surface lighting /
+    // reflections. A fully-open texel (no solid neighbour at all) is never
+    // read by any consumer, so it is skipped (stale data, N untouched).
+    bool hasSolidNbr = false;
+    [unroll]
+    for (int a = 0; a < 6; a++)
+    {
+        int3 delta = a == 0 ? int3(-1, 0, 0)
+                  : a == 1 ? int3(1, 0, 0)
+                  : a == 2 ? int3(0, -1, 0)
+                  : a == 3 ? int3(0, 1, 0)
+                  : a == 4 ? int3(0, 0, -1)
+                  : int3(0, 0, 1);
+        if (IrcSolidAtTexel(texel + delta))
+        {
+            hasSolidNbr = true;
+            break;
+        }
+        float3 nbrCenter = IrcTexelToWorld(texel + delta);
+        if (IrcUnitSolidAtWorld(nbrCenter) > 0.5)
+        {
+            hasSolidNbr = true;
+            break;
+        }
+    }
+    if (!hasSolidNbr)
+    {
+        // Fully-open texel: never read by any consumer. Zero it out so a later
+        // unit approach (which flips this texel back to "wanted") starts with
+        // N = 0 -> accumulation restarts fresh instead of continuing stale data.
+        [unroll]
+        for (int k = 0; k < IRC_SH_SLICES; k++)
+        {
+            _IRCCacheWrite[uint3(texel.x, texel.y, texel.z * IRC_SH_SLICES + k)] = float4(0.0, 0.0, 0.0, 0.0);
+        }
+        return;
+    }
+
+    uint seed = (uint)texel.x * 73856093u ^ (uint)texel.y * 19349663u ^ (uint)texel.z * 83492791u;
+    g_seed = seed ^ (_IrcRound + 1u) * 2654435761u;
+
+    float3 sunDir = IrcSafeNormalize(_MainLightPosition.xyz);
+    float3 sunColor = _MainLightColor.rgb;
+
+    // Current frame's projected SH coefficients (radiance, unnormalized by N).
+    // Stored per basis as RGB triplets in slot order b*3+{r,g,b}.
+    float3 E[9] = { float3(0, 0, 0), float3(0, 0, 0), float3(0, 0, 0),
+                    float3(0, 0, 0), float3(0, 0, 0), float3(0, 0, 0),
+                    float3(0, 0, 0), float3(0, 0, 0), float3(0, 0, 0) };
+    uint spp = max((uint)_IrcSpp, 1u);
+    for (uint s = 0u; s < spp; s++)
+    {
+        // Unified uniform-sphere sampling for every air texel (single interface
+        // or open): no more cosine-hemisphere branch. Direction isotropy keeps
+        // the SH projection consistent regardless of local geometry.
+        float3 dir;
+        IrcSphereSample(dir);
+
+        VoxelRaytraceRes hit = VoxelRaytrace(cellCenter, dir);
+
+        float3 rad = float3(0.0, 0.0, 0.0);
+        if (hit.typeId == VOXEL_HIT_NONE)
+        {
+            rad = IrcSkyAmbient(dir);
+        }
+        else if (hit.typeId == VOXEL_HIT_WATER)
+        {
+            float cosT = abs(dir.y);
+            float F = 0.02 + 0.98 * pow(1.0 - cosT, 5.0);
+            // From a viewpoint above the surface: reflect + scattered body light;
+            // from below the ray is absorbed (no contribution).
+            if (dir.y < 0.0)
+            {
+                float3 sunVis = sunColor * IrcSunVisibility(hit.hitPos);
+                float dist = (_WaterSurfaceHeight - hit.hitPos.y) / max(sunDir.y, 1e-3);
+                if (dist > 0.0) sunVis *= exp(-(_WaterScatter + _WaterAbsorb) * dist);
+                rad = F * IrcSkyAmbient(reflect(dir, float3(0.0, 1.0, 0.0)))
+                    + (1.0 - F) * IrcWaterColor(dir, sunDir, sunVis);
+            }
+        }
+        else
+        {
+            // Block / unit hit: Lambertian emission from the hit surface.
+            // Sun-lit wall radiance (smooth) stays inside SH; the sun disk in
+            // the sky is excluded from SH and comes from _DynamicSkyMap at read.
+            bool isUnit = hit.typeId == VOXEL_HIT_UNIT;
+            float3 albedo = _IrcForceAlbedo.x > 0.5 ? _IrcForceAlbedo.yzw
+                          : isUnit ? hit.hitColor
+                          : VoxelSampleFace(hit.typeId, hit.hitNormal, hit.hitPos).rgb;
+            float3 emissive = isUnit ? float3(0.0, 0.0, 0.0)
+                                     : IrcEmissive(hit.typeId);
+            float3 direct = emissive
+                          + sunColor * saturate(dot(hit.hitNormal, sunDir)) * IrcSunVisibility(hit.hitPos);
+            float3 prevPos = hit.hitPos + hit.hitNormal * IRC_EPS;
+            int3 prevTexel = IrcWorldToTexel(prevPos);
+            prevTexel = clamp(prevTexel, int3(0, 0, 0), int3(IrcTexelSize() + 0.5) - 1);
+            // Self-bounce reads the previous frame's diffuse irradiance at the
+            // hit (L0 band only: c0 * Y00 * lambda0).
+            float3 prevL0 = _IRCCachePrev.Load(int4(prevTexel.x, prevTexel.y, prevTexel.z * IRC_SH_SLICES, 0)).rgb;
+            rad = albedo * (direct + prevL0 * IRC_SH_L0 * IRC_LAM0 * _IrcSelfBounce);
+        }
+
+        // Project radiance along dir onto the 9 SH bases (add into E[b]).
+        float y0, y1, y2, y3, y4, y5, y6, y7, y8;
+        IrcEvalBasis(dir, y0, y1, y2, y3, y4, y5, y6, y7, y8);
+        E[0] += rad * y0;
+        E[1] += rad * y1;
+        E[2] += rad * y2;
+        E[3] += rad * y3;
+        E[4] += rad * y4;
+        E[5] += rad * y5;
+        E[6] += rad * y6;
+        E[7] += rad * y7;
+        E[8] += rad * y8;
+    }
+
+    // Normalize: uniform sphere sampling, coeff_b = (4pi/spp) * sum_i rad_i Y_b(dir_i).
+    float norm = (4.0 * IRC_PI) / (float)spp;
+    float3 meanE[9];
+    [unroll]
+    for (int b = 0; b < 9; b++) meanE[b] = E[b] * norm;
+
+    // Progressive 1/N accumulation. N counts accumulated samples (cap 1024;
+    // half-precision float4 keeps integers <= 2048 exact, 1024 well within).
+    // N is carried in slice 6 .w (slot 27).
+    float4 prevNslice = _IRCCachePrev.Load(int4(texel.x, texel.y, texel.z * IRC_SH_SLICES + (IRC_SH_SLICES - 1), 0));
+    float nFrames = prevNslice.w;
+    if (nFrames <= 0.0)
+    {
+        nFrames = 1.0; // was solid or uninitialized -> start fresh
+    }
+    else
+    {
+        nFrames = min(nFrames + 1.0, IRC_SH_MAX_N);
+    }
+    float blendWeight = 1.0 / nFrames;
+
+    // Load previous coefficients and progress toward the new mean.
+    float3 pc0, pc1, pc2, pc3, pc4, pc5, pc6, pc7, pc8;
+    float pN;
+    IrcReadCoeffsFrom(_IRCCachePrev, texel, pc0, pc1, pc2, pc3, pc4, pc5, pc6, pc7, pc8, pN);
+    float3 c0 = lerp(pc0, meanE[0], blendWeight);
+    float3 c1 = lerp(pc1, meanE[1], blendWeight);
+    float3 c2 = lerp(pc2, meanE[2], blendWeight);
+    float3 c3 = lerp(pc3, meanE[3], blendWeight);
+    float3 c4 = lerp(pc4, meanE[4], blendWeight);
+    float3 c5 = lerp(pc5, meanE[5], blendWeight);
+    float3 c6 = lerp(pc6, meanE[6], blendWeight);
+    float3 c7 = lerp(pc7, meanE[7], blendWeight);
+    float3 c8 = lerp(pc8, meanE[8], blendWeight);
+
+    // Pack 9 RGB coefficients + N back into the 7 physical slices.
+    _IRCCacheWrite[uint3(texel.x, texel.y, texel.z * IRC_SH_SLICES + 0)] = float4(c0, c1.r);
+    _IRCCacheWrite[uint3(texel.x, texel.y, texel.z * IRC_SH_SLICES + 1)] = float4(c1.g, c1.b, c2.r, c2.g);
+    _IRCCacheWrite[uint3(texel.x, texel.y, texel.z * IRC_SH_SLICES + 2)] = float4(c2.b, c3.r, c3.g, c3.b);
+    _IRCCacheWrite[uint3(texel.x, texel.y, texel.z * IRC_SH_SLICES + 3)] = float4(c4.r, c4.g, c4.b, c5.r);
+    _IRCCacheWrite[uint3(texel.x, texel.y, texel.z * IRC_SH_SLICES + 4)] = float4(c5.g, c5.b, c6.r, c6.g);
+    _IRCCacheWrite[uint3(texel.x, texel.y, texel.z * IRC_SH_SLICES + 5)] = float4(c6.b, c7.r, c7.g, c7.b);
+    _IRCCacheWrite[uint3(texel.x, texel.y, texel.z * IRC_SH_SLICES + 6)] = float4(c8.r, c8.g, c8.b, nFrames);
+}
+
+// ---- verification readback (IrradianceCacheVerify) -------------------------
+// One thread per LOGICAL cache texel. Writes the L0 diffuse radiance
+// (c0 * Y00, the SH mean term) as the texel's "ambient color" to a flat
+// float4 buffer, so C# golden tests operate on a single color per logical
+// texel (the logical depth, not the stacked physical depth).
+
+RWStructuredBuffer<float4> _IRCDumpOut;
+uint4 _IrcDumpSize; // (w, h, d, 0) = LOGICAL dims
+
+[numthreads(8, 8, 8)]
+void IRCDump(uint3 dtid : SV_DispatchThreadID)
+{
+    uint3 size = _IrcDumpSize.xyz;
+    if (any(size == 0u)) return;
+    uint3 t = min(dtid, size - 1u);
+    float4 v = _IRCCacheRead.Load(int4(t.x, t.y, t.z * IRC_SH_SLICES, 0));
+    uint idx = (t.z * size.y + t.y) * size.x + t.x;
+    _IRCDumpOut[idx] = v;
+}
+
+// ---- fixpoint shadow probe (IrradianceCacheInputLog) -----------------------
+// Deterministic per-frame probe of the shadow path inputs inside the same
+// dispatch that IRCBake uses. Rewrites nothing: writes the raw world->shadow
+// matrix row-0 and a fixed world point's shadow visibility into the dump
+// buffer. Two consecutive frames must produce identical bytes; any change
+// proves the shadow state (matrix or shadowmap) is frame-variant, which is
+// exactly the EMA non-convergence condition.
+
+RWStructuredBuffer<float4> _IRCProbeOut; // 0 = matRow0, 1 = matRow1, 2 = vis
+
+[numthreads(1, 1, 1)]
+void IRCProbe()
+{
+    // First two rows of _MainLightWorldToShadow[0] (supplied by the same
+    // LightShadows cbuffer bind IRCBake consumes, read via Core's accessor).
+    float4x4 m = _MainLightWorldToShadow[0];
+    _IRCProbeOut[0] = float4(m._m00, m._m01, m._m02, m._m03);
+    _IRCProbeOut[1] = float4(m._m10, m._m11, m._m12, m._m13);
+
+    // Fixed world point high above the map in full sun; shadow visibility
+    // must be exactly 1.0 if the matrix+shadowmap are stable.
+    float3 fixedPos = float3(0.0, 24.0, 0.0);
+    float4 sc = TransformWorldToShadowCoord(fixedPos);
+    _IRCProbeOut[2] = float4(IrcSunVisibility(fixedPos), sc.x, sc.y, sc.z);
+}
+
+// ---- E decomposition probe (IrradianceCacheInputLog) ------------------------
+// Replays the IRCBake E computation for a small set of fixed texels with a
+// FIXED rng seed (round override), splitting E into its three sources so any
+// frame-to-frame variation can be attributed to the exact pipeline stage:
+//   channel0 = direct (sun*NdotL*IrcSunVisibility + emissive)
+//   channel1 = albedo point-sample (VoxelSampleFace output rgb)
+//   channel2 = prev cache read at hit position (self-bounce source)
+//   channel3 = full E (weights + bounce applied)
+// If all channels stay constant but the published cache still drifts, the
+// variation is coming from the RNG round sequence (sampling noise), not from
+// the deterministic inputs.
+
+RWStructuredBuffer<float4> _IRCEProbeOut; // 4 slots, one per probe texel
+float4 _IRCEProbeTexels;                  // 4 x (tx, ty, tz, 0)
+
+[numthreads(4, 1, 1)]
+void IRCEProbe(uint3 dtid : SV_DispatchThreadID)
+{
+    if (dtid.x >= 4u) return;
+    float4 t = _IRCEProbeTexels;
+    int3 texel = dtid.x == 0 ? int3(t.x, t.y, t.z)
+              : dtid.x == 1 ? int3(t.w, t.x, t.y)
+              : dtid.x == 2 ? int3(t.z, t.w, t.x)
+              : int3(t.y, t.z, t.w);
+    int3 size = int3(IrcTexelSize() + 0.5);
+    texel = clamp(texel, int3(0, 0, 0), size - 1);
+
+    float3 cellCenter = IrcTexelToWorld(texel);
+
+    // Fixed deterministic direction hash with a frozen round so the ray is
+    // identical across frames: only task inputs can differ between frames.
+    uint seed = (uint)texel.x * 73856093u ^ (uint)texel.y * 19349663u ^ (uint)texel.z * 83492791u;
+    g_seed = seed ^ 0x1337CAFEu;
+    float3 dir;
+    IrcSphereSample(dir);
+
+    VoxelRaytraceRes hit = VoxelRaytrace(cellCenter, dir);
+    float3 E = float3(0.0, 0.0, 0.0);
+    float directSum = 0.0;
+    float3 albedo = float3(1.0, 1.0, 1.0);
+    float prevVal = 0.0;
+
+    if (hit.typeId == VOXEL_HIT_NONE)
+    {
+        E = IrcSkyAmbient(dir);
+    }
+    else if (hit.typeId == VOXEL_HIT_WATER)
+    {
+        E = float3(0.2, 0.5, 0.8);
+    }
+    else
+    {
+        float3 sunDir = IrcSafeNormalize(_MainLightPosition.xyz);
+        float3 sunColor = _MainLightColor.rgb;
+        bool isUnit = hit.typeId == VOXEL_HIT_UNIT;
+        albedo = isUnit ? hit.hitColor
+                        : VoxelSampleFace(hit.typeId, hit.hitNormal, hit.hitPos).rgb;
+        float3 emissive = isUnit ? float3(0.0, 0.0, 0.0)
+                                 : IrcEmissive(hit.typeId);
+        float3 direct = emissive
+                      + sunColor * saturate(dot(hit.hitNormal, sunDir)) * IrcSunVisibility(hit.hitPos);
+        directSum = dot(direct, float3(1.0, 1.0, 1.0)) * (1.0 / 3.0);
+        float3 prevPos = hit.hitPos + hit.hitNormal * IRC_EPS;
+        int3 prevTexel = IrcWorldToTexel(prevPos);
+        prevTexel = clamp(prevTexel, int3(0, 0, 0), int3(IrcTexelSize() + 0.5) - 1);
+        prevVal = _IRCCachePrev.Load(int4(prevTexel.x, prevTexel.y, prevTexel.z * IRC_SH_SLICES, 0)).x;
+        E = albedo * (direct + prevVal * IRC_SH_L0 * IRC_LAM0 * _IrcSelfBounce);
+    }
+
+    _IRCEProbeOut[dtid.x] = float4(directSum, albedo.r, prevVal, dot(E, float3(1.0, 1.0, 1.0)) * (1.0 / 3.0));
+}
+
+// Map byte dump for diagnostics (IrradianceCacheDiagnose): flat uint per voxel.
+#pragma kernel IRCDumpMap
+
+RWStructuredBuffer<uint> _IRCDumpMapOut;
+uint4 _IrcDumpMapSize; // (w, h, d, 0)
+
+[numthreads(8, 8, 8)]
+void IRCDumpMap(uint3 dtid : SV_DispatchThreadID)
+{
+    uint3 size = _IrcDumpMapSize.xyz;
+    if (any(size == 0u)) return;
+    uint3 t = min(dtid, size - 1u);
+    uint b = (uint)round(_VoxelMap.Load(int4(t, 0)).r * 255.0);
+    uint idx = (t.z * size.y + t.y) * size.x + t.x;
+    _IRCDumpMapOut[idx] = b;
+}

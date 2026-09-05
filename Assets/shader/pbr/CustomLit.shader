@@ -23,6 +23,7 @@ Shader "Custom/CustomLit"
         [ToggleOff] _EnvironmentReflections("Environment Reflections", Float) = 1.0
 
         [KeywordEnum(Off, D, G, F, Specular)] _BRDFDebug("BRDF Debug", Float) = 0
+        [KeywordEnum(Off, EnvDiffuse)] _IRCDebug("IRC Debug", Float) = 0
 
         _BumpScale("Scale", Float) = 1.0
         _BumpMap("Normal Map", 2D) = "bump" {}
@@ -109,7 +110,8 @@ Shader "Custom/CustomLit"
             AlphaToMask[_AlphaToMask]
 
             HLSLPROGRAM
-            #pragma target 2.0
+            // IRC sampling in the GI term requires Texture3D (SM 4.0+).
+            #pragma target 4.5
 
             // -------------------------------------
             // Shader Stages
@@ -136,6 +138,8 @@ Shader "Custom/CustomLit"
             // -------------------------------------
             // BRDF Debug Keywords
             #pragma multi_compile_local _BRDFDEBUG_OFF _BRDFDEBUG_D _BRDFDEBUG_G _BRDFDEBUG_F _BRDFDEBUG_SPECULAR
+            // IRC Debug Keywords (env diffuse visualization; separate from BRDF debug)
+            #pragma multi_compile_local _IRCDEBUG_OFF _IRCDEBUG_ENVDIFFUSE
 
             // -------------------------------------
             // Universal Pipeline keywords
@@ -171,6 +175,11 @@ Shader "Custom/CustomLit"
             #pragma multi_compile_instancing
             #pragma instancing_options renderinglayer
             #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DOTS.hlsl"
+
+            // Consume the temporal SSR accumulation (_Accum) as the env-specular
+            // term when present; CustomDynamicGI falls back to the sky map when
+            // the per-pixel hit-count is zero (units/water/open sky).
+            #define _SSR_ENABLED 1
 
             #include "Assets/shader/pbr/CustomLitInput.hlsl"
             #include "Assets/shader/pbr/CustomLitForwardPass.hlsl"
@@ -308,6 +317,45 @@ Shader "Custom/CustomLit"
             // Includes
             #include "Assets/shader/pbr/CustomLitInput.hlsl"
             #include "Assets/shader/pbr/CustomLitGBufferPass.hlsl"
+            ENDHLSL
+        }
+
+        // Writes per-pixel reflection inputs (albedo / rough+metal / oct
+        // normal). Drawn by ReflectionDataFeature via ShaderTagId, using each
+        // object's own material (LightMode=ReflectionData). Kept in sync with
+        // the ForwardLit surface sampling so reflector params match shading.
+        Pass
+        {
+            Name "ReflectionData"
+            Tags
+            {
+                "LightMode" = "ReflectionData"
+            }
+
+            ZWrite Off
+            Cull[_Cull]
+
+            HLSLPROGRAM
+            #pragma target 4.5
+
+            #pragma vertex ReflectionDataVertex
+            #pragma fragment ReflectionDataFragment
+
+            #pragma shader_feature_local _NORMALMAP
+            #pragma shader_feature_local _PARALLAXMAP
+            #pragma shader_feature_local _ _DETAIL_MULX2 _DETAIL_SCALED
+            #pragma shader_feature_local_fragment _ALPHATEST_ON
+            #pragma shader_feature_local_fragment _METALLICSPECGLOSSMAP
+            #pragma shader_feature_local_fragment _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
+            #pragma shader_feature_local_fragment _SPECULAR_SETUP
+
+            #pragma multi_compile_fragment _ LOD_FADE_CROSSFADE
+
+            #pragma multi_compile_instancing
+            #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DOTS.hlsl"
+
+            #include "Assets/shader/pbr/CustomLitInput.hlsl"
+            #include "Assets/shader/pbr/CustomLitReflectionDataPass.hlsl"
             ENDHLSL
         }
 

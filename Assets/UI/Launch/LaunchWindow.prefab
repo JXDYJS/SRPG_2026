@@ -289,7 +289,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: SRPG DEMO
+  m_text: SRPG DEMO New!!!
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 83f4d3cf1f0c3754f85f638e32c62d76, type: 2}
   m_sharedMaterial: {fileID: -1276086254079153843, guid: 83f4d3cf1f0c3754f85f638e32c62d76,
@@ -1161,6 +1161,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _animationDuration: 0.25
   _slideDistance: 300
+  _dropDistance: 0
   _enterDirection: 0
   _exitDirection: 1
   NewGameBtn: {fileID: 4720513504846712389}

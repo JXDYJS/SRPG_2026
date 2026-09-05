@@ -2,5 +2,9 @@
   "minecraft:grass_block": 1,
   "minecraft:cobblestone_slab": 4,
   "minecraft:dirt": 2,
-  "minecraft:cobblestone": 3
+  "minecraft:cobblestone": 3,
+  "minecraft:iron_block": 9,
+  "minecraft:quartz_block": 6,
+  "minecraft:red_concrete": 8,
+  "minecraft:green_concrete": 7
 }

@@ -122,6 +122,9 @@ console_dump.txt.meta
 # Item 系统设计文档（本地讨论用，不入库）
 /.planning/docs/ItemSystem-Design.md
 
+# 辐照度缓存开发任务书（本地讨论用，不入库）
+/.planning/docs/IrradianceCache-Plan.md
+
 # Addressables 平台构建产物（content_state 等，可重新生成，不提交）
 Assets/AddressableAssetsData/Windows/
 Assets/AddressableAssetsData/Windows.meta

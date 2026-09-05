@@ -72,6 +72,65 @@ MonoBehaviour:
     speedLightToDark: 1
     minLuminance: 0.001
     maxLuminance: 10
+--- !u!114 &-1111111111111111113
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f7c6147250b861428b0dec2dc7ae7b4, type: 3}
+  m_Name: SSR
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  _shader: {fileID: 4800000, guid: 36ef81641d00be64b9b6627a6c90944a, type: 3}
+  settings:
+    MaxAccum: 128
+    Scale: 1
+    DebugHitPath: 0
+--- !u!114 &-1111111111111111112
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: edcdd4bac22190f4e8bf19e5592d6b4f, type: 3}
+  m_Name: ReflectionData
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  settings:
+    scale: 1
+--- !u!114 &-876543210987654321
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1d5b52200f459148a3ba4ba54112c3a, type: 3}
+  m_Name: IrradianceCache
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  settings:
+    BakeCompute: {fileID: 7200000, guid: 683bf0ff4a445aa45ac9354c5f0dd4cd, type: 3}
+    BakeIterations: 128
+    Blend: 0.9
+    BakeEveryFrame: 1
+    PerFrameBlend: 0.99
+    SphereFudge: 1.6
+    SelfBounce: 0.01
+    Spp: 4
+    DebugExposure: 1
+    WaterHackDepth: 2
+    SkyZenith: {x: 0.85, y: 0.9, z: 1, w: 0}
+    SkyHorizon: {x: 0.25, y: 0.32, z: 0.4, w: 0}
 --- !u!114 &-468816753662192350
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -87,6 +146,21 @@ MonoBehaviour:
   m_Active: 1
   settings:
     Mat: {fileID: 0}
+--- !u!114 &-119711594952331695
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df82e3ac28de3724abae82f95ee0c863, type: 3}
+  m_Name: VoxelUnitBakerFeature
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  settings:
+    VoxelWriteShader: {fileID: 0}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -104,13 +178,18 @@ MonoBehaviour:
       type: 3}
     hdrDebugViewPS: {fileID: 4800000, guid: 573620ae32aec764abd4d728906d2587, type: 3}
   m_RendererFeatures:
+  - {fileID: -876543210987654321}
   - {fileID: -1878332245247344467}
   - {fileID: -1558598540239434210}
   - {fileID: 1085916960507657859}
   - {fileID: 3367451691278569946}
   - {fileID: -5600187897153478597}
   - {fileID: -468816753662192350}
-  m_RendererFeatureMap: adc0de57c6d2eee51e0e96ade2be5eea837ea1deb8f3110fda91f2c07897bb2e2295367da56d7ef9
+  - {fileID: 286769587864370014}
+  - {fileID: -119711594952331695}
+  - {fileID: -1111111111111111112}
+  - {fileID: -1111111111111111113}
+  m_RendererFeatureMap: adc0de57c6d2eee51e0e96ade2be5eea837ea1deb8f3110fda91f2c07897bb2e2295367da56d7ef9fe56b2f04b5eee51
   m_UseNativeRenderPass: 0
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}
@@ -153,6 +232,20 @@ MonoBehaviour:
   m_CopyDepthMode: 0
   m_AccurateGbufferNormals: 0
   m_IntermediateTextureMode: 1
+--- !u!114 &286769587864370014
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88ab7227842cc2d4faa9761283efff87, type: 3}
+  m_Name: VoxelRaytrace
+  m_EditorClassIdentifier: 
+  m_Active: 0
+  _material: {fileID: 0}
 --- !u!114 &1085916960507657859
 MonoBehaviour:
   m_ObjectHideFlags: 0
