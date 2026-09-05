@@ -220,8 +220,9 @@ SSRRaytraceRes SSRRaytrace(float3 ori, float3 dir)
         // The scene depth at the projected ray position.
         float sceneDepth = SSRSampleViewDepth(uv);
 
-        // Surface closer than the ray => the ray crossed geometry.
-        // 只使用 0.001 防止浮点数误差，不再使用 SSR_SELF_OFFSET
+        // Surface closer than the ray => the ray crossed geometry. A tiny
+        // epsilon guards float error; self-rejection happens further below via
+        // the hit distance / UV-travel test instead of a fixed offset band.
         if (sceneDepth < rayDepth - 0.001)
         {
             // ------------------------------------------------------------
@@ -336,14 +337,15 @@ SSRRaytraceRes SSRRaytrace(float3 ori, float3 dir)
             float2 startUv = screenPos.xy; 
             float uvMoveDist = length(hitUv - startUv);
             
+            // Reject hits on the reflector's own surface: either the ray barely
+            // left its origin or the projected UV barely moved. Advance the
+            // lower search bound and keep marching past it.
             if (hitT < 0.1 || uvMoveDist < 0.005)
             {
-                //hit self
                 prevT = currentT;
                 prevRayViewPos = rayViewPos;
                 continue;
             }
-            // ==========================================
 
             if (diff < SSR_THICKNESS * max(hitDepth, 0.001))
             {
