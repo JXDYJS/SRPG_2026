@@ -208,3 +208,12 @@ Before declaring any task as "complete", "fixed", or ready for user Review, you 
 5. **Graceful Degradation**: If the Unity Editor cannot be connected to (e.g., Editor is not running, skill timeout) or if errors persist after multiple refactoring attempts (max 3-5 loops):
    - You **MUST halt** the task immediately.
    - Do not push the code or ask for review blindly. Present the exact blockages, error logs, or connection failures to the user, and explain the root cause.
+  
+### Windows Task Notification Rule (Win-Only)
+
+1. **触发条件**：当耗时任务（如编译、重构、测试）**执行完毕**，或遇到**需要用户决策/验收的阻断性节点**时。
+2. **通知指令**：在 PowerShell 中执行以下命令，触发桌面弹窗与提示音：
+```powershell
+New-BurntToastNotification -Text "AI 任务通知", "任务已完成/等待决策：[说明事项]" -Sound 'Default'
+
+```
