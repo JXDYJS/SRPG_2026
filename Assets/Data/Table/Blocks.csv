@@ -6,3 +6,6 @@ BlockConfig,BlockConfigs,TRUE,string,string,Global.BlockType,bool,float,float,fl
 ,,,cobbles_slab,Assets/Perfob/block/Block_Cobbles_Slab.prefab,Slab,TRUE,1,0.5,1,0,0,[],[],[]
 ,,,iron,Assets/Perfob/block/Block_Iron.prefab,Solid,TRUE,1,1,1,0,0,[],[],[]
 ,,,magma,Assets/Perfob/block/Magma.prefab,Solid,FALSE,1,1,1,0,5,[],[],"[""FireDamage"", 1, ""Fire""]"
+,,,quartz,Assets/Perfob/block/Block_Quartz.prefab,Solid,TRUE,1,1,1,0,0,[],[],[]
+,,,red_concrete,Assets/Perfob/block/Block_Red_Concrete.prefab,Solid,TRUE,1,1,1,0,0,[],[],[]
+,,,green_concrete,Assets/Perfob/block/Block_Green_Concrete.prefab,Solid,TRUE,1,1,1,0,0,[],[],[]

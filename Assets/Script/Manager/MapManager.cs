@@ -43,6 +43,10 @@ namespace Managers
         { "3", "cobblestone" },
         { "4", "cobbles_slab" },
         { "5", "magma" },
+        { "6", "quartz" },
+        { "7", "green_concrete" },
+        { "8", "red_concrete" },
+        { "9", "iron" },
     };
 
         private void Awake()

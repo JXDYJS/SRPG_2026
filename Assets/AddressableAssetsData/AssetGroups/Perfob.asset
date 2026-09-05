@@ -47,6 +47,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 47cb67023493caf4ea4ac98ab59383c4
+    m_Address: Assets/Perfob/block/Block_Red_Concrete.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5b9bc299b0214744fade9135e3bcacc6
     m_Address: Assets/Perfob/mob_portrait/Ari.prefab
     m_ReadOnly: 0
@@ -67,8 +72,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 855cb877ddfdde74e9c58b02e486e98b
+    m_Address: Assets/Perfob/block/Block_Quartz.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 934f3e067153f894f83c22a48263c2f1
     m_Address: Assets/Perfob/mob/zombie.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 93a8dcf20d4a5b644accf0d79b5b6c74
+    m_Address: Assets/Perfob/block/Block_Green_Concrete.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
