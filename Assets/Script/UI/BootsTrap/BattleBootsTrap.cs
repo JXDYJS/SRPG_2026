@@ -53,7 +53,9 @@ namespace UI.BootsTrap
             {
                 // Deep fake map (128 layers) exercises the virtual-scroll map UI for a
                 // new run; real runs will replace this with a true generator later.
-                map = NodeMapData.GenerateFakeDeepMap();
+                //map = NodeMapData.GenerateFakeDeepMap();
+                map = NodeMapData.GenerateFakeData();
+
                 if (Data.Persistent?.Data != null)
                 {
                     Data.Persistent.Data.nodeMapData = map;
