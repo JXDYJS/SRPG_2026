@@ -122,6 +122,10 @@ console_dump.txt.meta
 # AI 本地工具与规划产物（保留本地，不入库）
 /.opencode/
 /.planning/
+/.marscode/
+
+# AI 调试辅助脚本（保留本地，不入库）
+/test_compile_debug.py
 
 # Addressables 平台构建产物（content_state 等，可重新生成，不提交）
 Assets/AddressableAssetsData/Windows/

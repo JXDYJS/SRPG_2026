@@ -167,16 +167,12 @@ When working on this project:
 1. **Always verify namespace alignment** with folder structure
 2. **Follow existing patterns** in similar files
 3. **Test changes in Unity Editor** before committing
-4. **Update CONCERNS.md** when addressing technical debt
-5. **Follow Commenting Guidelines above**: concise English comments, no AI-style decoration, English log messages
-6. **Check .planning/STATE.md** for project status and blockers
+4. **Follow Commenting Guidelines above**: concise English comments, no AI-style decoration, English log messages
 
 ## Quick Reference
-- **Project analysis**: `.planning/codebase/` directory
-- **Current concerns**: `.planning/codebase/CONCERNS.md`
-- **State tracking**: `.planning/STATE.md`
-- **Roadmap**: `.planning/ROADMAP.md`
 - **Skills directory**: `.agent/skills/` for Unity automation tools
+- **Project docs**: `Docs/` (design and architecture notes)
+
 ## Git Branching & Workflow Rules
 1. **禁止在 main 分支直接修改**：所有开发、代码变更严禁直接提交到 `main` 分支。
 2. **分支策略**：请切换至 `dev` 分支，或者（最推荐）针对特定 AI 开发任务创建自定义的独立分支，避免把所有开发任务堆积在 `dev` 上。
