@@ -1,219 +1,74 @@
+# SRPG_2026
 
----
+基于 Unity 2022.3 (URP) 的 3D 方块风格战棋策略 RPG。以体素（Minecraft 风格）世界呈现棋盘，玩法采用 Slay-the-Spire 式节点推进，战斗为回合制战棋。主要面向 Windows。
 
-# 方块肉鸽战棋 (Blocky Spire Tactics) - 技术实现手册 v1.0
+## 环境要求
 
-## 📂 模块 1：核心数值与伤害流水线 (Namespace: `Status`)
+- Unity 2022.3.50f1 (LTS)
+- Windows（主平台）
+- 依赖包：Addressables、Cinemachine、URP、UniTask、DOTween、Newtonsoft.Json、xLua
 
-**目标**：建立一套解耦的伤害计算系统，允许 Buff 和 藏品 (Relics) 介入并修改伤害数值。
+## 运行与构建
 
-### 1.1 核心接口 `IDamageModifier` (新增)
+1. 用 Unity Hub 打开本目录（`Unity.exe -projectPath <repo>`）。
+2. 首次打开后等待脚本编译与 Addressables 组构建完成。
+3. 进入 `Assets/Scenes/LaunchScene` 运行游戏：
+   - `LaunchScene`：启动流程（版本检查 / 热更下载 → 主菜单）。
+   - 战斗中通过 `BattleBootstrap` 生成节点地图并进入关卡。
+4. 构建：`File → Build Settings → Build`（Windows）。
 
-* **文件位置**: `Assets/Script/Core/Status/IDamageModifier.cs`
-* **职责**: 任何想要改变伤害的东西（Buff/藏品/被动技能）都必须实现此接口。
-* **代码蓝图**:
-```csharp
-namespace Status.damage {
-    public interface IDamageModifier {
-        // 优先级：数字越小越先计算（建议：固定数值修改用 0，百分比修改用 100）
-        int Priority { get; }
+> 热更新相关内容见 `Assets/Script/Manager/UpdateManager.cs` 与 `Docs/`。
 
-        // 当拥有者发起攻击时触发
-        // ref damage: 允许直接修改伤害值
-        void OnOutgoingDamage(ref float damage, DamageInfo info);
+## 场景入口
 
-        // 当拥有者受到攻击时触发
-        void OnIncomingDamage(ref float damage, DamageInfo info);
-    }
-}
+| 场景 | 路径 | 用途 |
+|---|---|---|
+| LaunchScene | `Assets/Scenes/LaunchScene.unity` | 启动、热更、主菜单 |
+| LoadScene | `Assets/Scenes/LoadScene.unity` | 加载/更新进度界面 |
+| SampleScene | `Assets/Scenes/SampleScene.unity` | 基础测试场景 |
+| RenderTestScene | `Assets/Scenes/RenderTestScene.unity` | 渲染特性验证 |
 
-```
-
-
-
-### 1.2 伤害计算器 `CombatCalculator` (重写)
-
-* **文件位置**: `Assets/Script/Core/Status/CombatCalculator.cs`
-* **逻辑流程**:
-1. 提取基础伤害 (`info.damage`)。
-2. **阶段 A (输出修正)**: 获取攻击者身上所有的 `IDamageModifier`，按优先级排序，依次调用 `OnOutgoingDamage`。
-3. **阶段 B (基础防御)**: 此时的伤害值是“理论伤害”。根据 `info.damageType` 计算防御减免 (物理减法 / 魔法百分比)。
-4. **阶段 C (受击修正)**: 获取防御者身上所有的 `IDamageModifier`，按优先级排序，依次调用 `OnIncomingDamage`。
-5. **阶段 D (保底)**: 确保伤害 `>= 0`，返回最终值。
-
-
-
-### 1.3 伤害信息 `DamageInfo` (优化)
-
-* **建议**: 确保 `CharacterInstance source` 和 `CharacterInstance target` 都在里面，方便修改器判断（比如“如果目标血量低于30%则伤害翻倍”）。
-
----
-
-## 📂 模块 2：角色与全局成长 (Namespace: `Character` & `Managers`)
-
-**目标**：实现“战斗赚取全局经验 -> 提升全局等级 -> 获得强化点 -> 强化具体棋子”的循环。
-
-### 2.1 角色配置 `CharacterData` (完善)
-
-* **文件位置**: `Assets/Script/Core/Character/CharacterData.cs`
-* **新增字段**:
-```csharp
-[Header("成长配置")]
-public int HP_Growth = 10;  // 每次强化+10 HP
-public int ATK_Growth = 2;  // 每次强化+2 ATK
-public int DEF_Growth = 1;
-// public List<SkillData> UnlockableSkills; // 未来扩展：每级解锁的技能
+## 代码结构
 
 ```
-
-
-
-### 2.2 全局等级配置 `GlobalLevelConfig` (新增)
-
-* **文件位置**: `Assets/Script/Core/GlobalLevelConfig.cs` (ScriptableObject)
-* **字段**:
-* `List<int> ExpRequirements`: 索引 0 代表 1级升2级所需经验，索引 1 代表 2级升3级...
-
-
-
-### 2.3 升级管理器 `LevelingManager` (新增)
-
-* **文件位置**: `Assets/Script/Managers/LevelingManager.cs`
-* **职责**: 管理“银行”账户（经验和点数）。
-* **变量**:
-* `int GlobalLevel` (当前队伍等级)
-* `int CurrentExp` (当前经验池)
-* `int UpgradePoints` (可用强化点数)
-
-
-* **核心方法 `AddExp(int amount)**`:
-* 加经验，循环检查是否满足 `GlobalLevelConfig` 的升级门槛。
-* 如果升级：`GlobalLevel++`, `UpgradePoints++`。
-
-
-* **核心方法 `TryUpgradeUnit(CharacterInstance unit)**`:
-* 检查 `UpgradePoints > 0` 和 `unit.level < 5`。
-* 如果通过：
-* `UpgradePoints--`
-* 修改 `unit.statSystem` 的 BaseValue (加上 Data 里的 Growth 数值)。
-* **满血奖励**: `unit.statSystem.currentHP = unit.statSystem.maxHP.getValue()`。
-* `unit.level++`。
-
-
-
-
-
----
-
-## 📂 模块 3：战斗实体与交互 (Namespace: `Gameplay`)
-
-**目标**：把数据层 (`CharacterInstance`) 变成 3D 场景里能动的方块。
-
-### 3.1 战斗单位 `MapUnit` (核心 MonoBehaviour)
-
-* **文件位置**: `Assets/Script/Gameplay/Units/MapUnit.cs`
-* **继承**: `MonoBehaviour`
-* **职责**: 它是连接“数据”和“画面”的桥梁。
-* **核心变量**:
-* `CharacterInstance _data`: 数据的引用。
-* `Animator _animator`: 控制动画。
-* `Vector2Int GridPosition`: 当前在棋盘的哪一格。
-
-
-* **关键方法 `GetDamageModifiers()**`:
-* 创建 `List<IDamageModifier>`。
-* 遍历 `_data` 里的 BuffManager，把实现了接口的 Buff 加进去。
-* (如果是玩家单位) 访问 `RunManager.Relics`，把实现了接口的藏品加进去。
-* 返回列表给计算器使用。
-
-
-* **关键方法 `TakeDamage(float amount)**`:
-* 调用 `_data.statSystem.currentHP -= amount`。
-* 更新头顶血条 UI。
-* 播放受击动画。
-* 检测死亡：如果 HP <= 0，触发死亡流程。
-
-
-
-### 3.2 棋盘系统 `GridManager`
-
-* **职责**:
-* `LogicalGrid`: 二维数组 `Node[,]`，记录哪个格子是墙，哪个格子站了人。
-* `WorldToGrid(Vector3)` / `GridToWorld(Vector2Int)`: 坐标转换。
-* `GetPath(start, end)`: A* 寻路算法，返回路径列表。
-
-
-
----
-
-## 📂 模块 4：藏品系统 (Namespace: `Gameplay.Relics`)
-
-**目标**：实现“改变规则”的物品。
-
-### 4.1 藏品基类 `RelicBase`
-
-* **文件位置**: `Assets/Script/Gameplay/Relics/RelicBase.cs`
-* **继承**: `ScriptableObject`, `IDamageModifier`
-* **虚方法**:
-* `OnOutgoingDamage`: 默认空实现。
-* `OnIncomingDamage`: 默认空实现。
-* `OnBattleStart`: 战斗开始时触发（如：获得一层护盾）。
-
-
-
-### 4.2 示例：火焰背心 `Relic_FireVest`
-
-* **代码逻辑**:
-```csharp
-public override void OnIncomingDamage(ref float damage, DamageInfo info) {
-    if (info.damageType == DamageType.Fire) {
-        damage *= 0.5f; // 这里的代码实现了具体功能
-    }
-}
-
+Assets/Script/
+├── Core/        # 数据层：伤害/战斗数值、状态、命令、表格配置
+│   ├── Data/    #   表格加载 (CSV → 配置字典)
+│   ├── Status/  #   状态 / 伤害修改器
+│   └── Command/ #   指令系统
+├── GamePlay/    # 玩法层：单位、战斗、AI、网格、Buff、技能、藏品、事件
+├── Manager/     # 全局管理器：战斗/回合/地图/单位/运行/UI/热更
+├── Map/         # 地图：节点地图生成与持久化
+├── Render/      # 自定义渲染特性（URP ScriptableRendererFeature）
+├── UI/          # 界面：引导、面板、节点地图、Timeline 等
+└── LUA/         # Lua 运行时逻辑（Buff/Skill/Relic 扩展，经 xLua 绑定）
 ```
 
+配置数据采用 CSV 驱动，位于 `Assets/Data/Table/`（方块、单位、关卡、节点、事件、藏品、道具等），由 `Core.Data.TableData` 加载为运行时字典。
 
+## 渲染特性
 
----
+`Assets/Script/Render/` 内含一组自定义 URP 渲染器特性（与 `Assets/shader/` 配套），用于体素世界的实时渲染实验：
 
-## 🛠️ 执行清单：你接下来要做什么？
+- 体素射线追踪与体素单位烘焙（`VoxelRaytraceFeature`、`VoxelUnitBakerFeature`、`VoxelFaceBaker`）
+- 屏幕空间反射与累积（`SSRFeature`、`ReflectionDataFeature`）
+- 辐照度缓存全局光（`IrradianceCacheFeature`）
+- 单位描边 / 对象 ID（`UnitStrokeRenderFeature`、`UnitObjectIdRegistry`）
+- 曝光的应用与自动曝光
 
-请严格按照以下顺序编写代码，每完成一步，确保没有编译错误。
+各特性开关与参数在 `Assets/Settings/` 下的 URP Renderer Asset（`URP-HighFidelity-Renderer.asset` 等）中配置。
 
-### 第一阶段：打通数据与伤害 (纯代码，无场景)
+## 调试与测试
 
-1. **创建接口**: 编写 `IDamageModifier.cs`。
-2. **完善计算器**: 修改 `CombatCalculator.cs`，把 Switch 改成流水线逻辑（获取接口列表 -> 循环调用 -> 基础计算）。
-3. **完善数据**: 修改 `CharacterData.cs` 加入 `HP_Growth` 等成长字段。
+项目未配置自动化测试框架，以编辑器内手动测试为主：
 
-### 第二阶段：场景实体化 (Unity 场景工作)
+- `Assets/Script/Debug/`：`Test_Battle.cs`（战斗系统）、`Test_ClickMove.cs`（移动测试）
+- 将测试脚本挂到场景对象，进入 Play Mode，通过 Inspector 按钮或 Console 触发
+- 渲染相关诊断工具位于 `Assets/Script/Editor/`（Voxel / 辐照度缓存校验等）
 
-4. **创建 MapUnit**: 编写 `MapUnit.cs`。
-* 写一个 `Setup(CharacterInstance data)` 方法。
-* 在 `Start` 里测试：创建一个临时的 `CharacterData`，生成一个 `CharacterInstance`，传给 `MapUnit`，看看血量是不是读对了。
+## 相关文档
 
-
-5. **实现移动**: 利用你现有的 `Astar.cs` 和 `Test_ClickMove.cs`，把逻辑整合进 `MapUnit`。让它能根据 `GridManager` 的指令移动。
-
-### 第三阶段：战斗闭环
-
-6. **编写 BattleManager**:
-* 状态机：`PlayerTurn`（玩家点选单位移动/攻击） -> `EnemyTurn`（AI自动行动）。
-
-
-7. **攻击测试**:
-* 在场景里放两个 `MapUnit`（一个玩家，一个敌人）。
-* 编写逻辑：当玩家走到敌人旁边点击攻击 -> 构建 `DamageInfo` -> 调用 `CombatCalculator` -> 敌人 `TakeDamage` -> 敌人血条减少。
-
-
-
-### 第四阶段：成长与肉鸽
-
-8. **编写 LevelingManager**: 实现经验累加和升级点数逻辑。
-9. **编写 RunManager**: 串联“战斗场景”和“休息场景”。
-
----
-
-你可以把这份文档复制下来。
-**现在的建议**：先不要管地图生成和商店，**集中精力完成第一阶段和第二阶段**。只要能让一个方块人读到数据，并按照新的计算公式扣血，剩下的就是堆内容了。
+- `AGENTS.md`：协作与代码规范（面向 AI 助手与开发者）
+- `Docs/BALANCE_REFERENCE.md`：数值设计基准
+- `Docs/HotUpdate_Architecture_zh.md`：热更新架构说明（本地）
+- `Assets/XLua/Doc/`：xLua 官方文档
