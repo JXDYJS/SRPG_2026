@@ -32,6 +32,9 @@ namespace Managers
         /// </summary>
         public int PendingDeathAnimCount => _pendingDeathAnims.Count;
 
+        /// <summary>True while a death-animation flush is running; used to defer battle-end fallbacks.</summary>
+        public bool IsDeathFlushRunning => _isFlushing;
+
         /// <summary>
         /// Fired when all pending death animations have finished.
         /// </summary>
@@ -249,7 +252,7 @@ namespace Managers
             var players = new List<MapUnit>();
             foreach(var unit in allUnits)
             {
-                if(unit.Faction == FactionType.Player && unit.CurrentState != UnitState.Dead)
+                if(unit.Faction == FactionType.Player && unit.IsAlive)
                 {
                     players.Add(unit);
                 }
@@ -261,7 +264,7 @@ namespace Managers
             List<MapUnit> ans = new List<MapUnit>();
             foreach (var _unit in allUnits)
             {
-                if (_unit != null && _unit.CurrentState != UnitState.Dead)
+                if (_unit != null && _unit.IsAlive)
                 {
                     ans.Add(_unit);
                 }
