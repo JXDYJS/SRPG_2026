@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using GamePlay.Units;
 using GamePlay.Control;
+using GamePlay.Battle;
 using Global;
 using Managers;
 using Command;
@@ -23,8 +24,6 @@ public class TurnManager : MonoBehaviour
 
     public MapUnit ActiveUnit { get; private set; }
 
-    private List<MapUnit> _allBattleUnits = new List<MapUnit>();
-    
     public List<MapUnit> ActionQueue { get; private set; } = new List<MapUnit>();
 
     void Awake()
@@ -34,33 +33,33 @@ public class TurnManager : MonoBehaviour
 
     public void StartBattle()
     {
-        Debug.Log("[TURN] StartBattle called");
+        //Debug.Log("[TURN] StartBattle called");
 
-        _allBattleUnits = UnitManager.Instance.GetAllUnits();
-        Debug.Log($"[TURN] GetAllUnits returned {_allBattleUnits.Count} units");
+        List<MapUnit> allBattleUnits = UnitManager.Instance.GetAllUnits();
+        //Debug.Log($"[TURN] GetAllUnits returned {allBattleUnits.Count} units");
         
-        foreach(var unit in _allBattleUnits)
+        foreach(var unit in allBattleUnits)
         {
             unit.ResetActionValue();
             unit.OnBattleStart();
         }
 
-        Debug.Log("[TURN] calling CalculateNextAction");
+        //Debug.Log("[TURN] calling CalculateNextAction");
         CalculateNextAction();
-        Debug.Log("[TURN] CalculateNextAction returned");
+        //Debug.Log("[TURN] CalculateNextAction returned");
     }
 
     public void CalculateNextAction()
     {
-        _allBattleUnits.RemoveAll(u => u == null || !u.IsAlive);
-        Debug.Log($"[TURN] CalculateNextAction: {_allBattleUnits.Count} units alive");
-        if (_allBattleUnits.Count == 0)
+        List<MapUnit> allBattleUnits = UnitManager.Instance.GetAllAliveUnit();
+        //Debug.Log($"[TURN] CalculateNextAction: {allBattleUnits.Count} units alive");
+        if (allBattleUnits.Count == 0)
         {
             Debug.LogWarning("[TURN] CalculateNextAction: no units left, aborting");
             return;
         }
 
-        ActionQueue = new List<MapUnit>(_allBattleUnits);
+        ActionQueue = new List<MapUnit>(allBattleUnits);
         ActionQueue.Sort((a, b) => {
             int avCompare = a.CurrentActionValue.CompareTo(b.CurrentActionValue);
             if (avCompare != 0) return avCompare;
@@ -73,15 +72,49 @@ public class TurnManager : MonoBehaviour
         MapUnit nextUnit = ActionQueue[0];
 
         float timeElapsed = nextUnit.CurrentActionValue;
-        foreach(var unit in _allBattleUnits)
+        foreach(var unit in allBattleUnits)
         {
             unit.CurrentActionValue -= timeElapsed;
         }
 
         ActiveUnit = nextUnit;
-        Debug.Log($"[TURN] ActiveUnit set to: {nextUnit.name} (Faction={nextUnit.Faction})");
+        //Debug.Log($"[TURN] ActiveUnit set to: {nextUnit.name} (Faction={nextUnit.Faction})");
         UnitStrokeRenderFeature.RefreshColors();
+
+        // Fallback end-of-battle check: if only one faction remains on the field and
+        // there is nothing left to animate, end the level now instead of starting
+        // another turn. Deferred if death animations are still pending/running so the
+        // existing AllDeathAnimationsFinished flow can end the level normally.
+        if (TryEndLevelByFactionFallback())
+        {
+            ActiveUnit = null;
+            return;
+        }
+
         StartUnitTurn(ActiveUnit);
+    }
+
+    /// <summary>
+    /// True when only one faction is still alive and no death animation is in flight.
+    /// Ending here is a safety net for cases where the last kill happens outside an
+    /// action sequence (e.g. KillAllEnemy) and AllDeathAnimationsFinished never fires.
+    /// </summary>
+    private bool TryEndLevelByFactionFallback()
+    {
+        var bfm = BattleFlowManager.Instance;
+        if (bfm == null || bfm.IsLevelEnded) return false;
+
+        UnitManager um = UnitManager.Instance;
+        if (um == null) return false;
+
+        // Defer while the last kill is still animating: let the flush finish and let
+        // AllDeathAnimationsFinished drive the normal end (avoids skipping the animation).
+        if (um.PendingDeathAnimCount > 0 || um.IsDeathFlushRunning) return false;
+
+        if (!bfm.isLevelEnd()) return false;
+
+        bfm.EndLevel();
+        return true;
     }
 
     private void StartUnitTurn(MapUnit unit)

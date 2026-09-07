@@ -58,6 +58,7 @@ namespace GamePlay.Battle
         private List<CharacterMeta> _characterMetas = new List<CharacterMeta>();
         private List<MapUnit> _previewUnits = new List<MapUnit>();
         private List<AsyncOperationHandle<GameObject>> _previewAssetHandles = new List<AsyncOperationHandle<GameObject>>();
+        public bool IsLevelEnded => _levelEnded;
         private bool _levelEnded;
 
         void Awake()
@@ -372,8 +373,8 @@ namespace GamePlay.Battle
 
         private void StartBattle()
         {
-            Debug.Log("[FLOW] StartBattle: calling TurnManager.Instance.StartBattle()");
-            Debug.Log($"[FLOW] TurnManager.Instance == null ? {TurnManager.Instance == null}");
+            //Debug.Log("[FLOW] StartBattle: calling TurnManager.Instance.StartBattle()");
+            //Debug.Log($"[FLOW] TurnManager.Instance == null ? {TurnManager.Instance == null}");
 
             var timeline = UIManager.Instance.GetPanel<TimelinePanel>();
             if (timeline != null)
@@ -389,7 +390,7 @@ namespace GamePlay.Battle
             }
 
             TurnManager.Instance.StartBattle();
-            Debug.Log("[FLOW] TurnManager.Instance.StartBattle() returned");
+            //Debug.Log("[FLOW] TurnManager.Instance.StartBattle() returned");
         }
 
         private void SwitchState(BattleFlowState newState)
